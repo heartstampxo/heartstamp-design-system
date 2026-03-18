@@ -198,36 +198,59 @@ export function CodeBlock({ code, filename }: { code: string; filename?: string 
   };
 
   return (
-    <div style={{ background: "#0d1117", borderRadius: 0, position: "relative", overflow: "hidden" }}>
-      {filename && (
-        <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", borderBottom: "1px solid #21262d" }}>
-          <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#ff5f56" }} />
-          <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#febc2e" }} />
-          <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#27c840" }} />
-          <span style={{ marginLeft: 8, fontSize: 11, color: "#8b949e", fontFamily: "monospace" }}>{filename}</span>
-        </div>
-      )}
-      <button
-        onClick={copy}
-        style={{
-          position: "absolute", top: filename ? 38 : 8, right: 10,
-          background: "rgba(255,255,255,.06)", border: "1px solid #30363d", borderRadius: 6,
-          padding: "4px 8px", cursor: "pointer",
-          color: copied ? "#27c840" : "#8b949e",
-          display: "flex", alignItems: "center", gap: 4, fontSize: 11,
-        }}
-      >
-        {copied ? <Check size={12} /> : <Copy size={12} />}
-        {copied ? "Copied!" : "Copy"}
-      </button>
-      <pre style={{ margin: 0, padding: 16, overflowX: "auto", fontSize: 12.5, lineHeight: 1.7, fontFamily: "monospace" }}>
+    <div style={{
+      background: "#09090b",
+      border: "1px solid #27272a",
+      borderRadius: 8,
+      overflow: "hidden",
+      fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
+    }}>
+      {/* ── Header bar — filename + copy button ── */}
+      <div style={{
+        display: "flex",
+        alignItems: "center",
+        borderBottom: "1px solid #27272a",
+        padding: "0 4px 0 16px",
+        minHeight: 40,
+      }}>
+        {filename && (
+          <span style={{ fontSize: 12, color: "#71717a", fontFamily: "inherit", flex: 1 }}>
+            {filename}
+          </span>
+        )}
+        <button
+          onClick={copy}
+          style={{
+            marginLeft: "auto",
+            display: "flex",
+            alignItems: "center",
+            gap: 5,
+            background: copied ? "rgba(255,255,255,.08)" : "transparent",
+            border: "1px solid #3f3f46",
+            borderRadius: 5,
+            padding: "4px 10px",
+            cursor: "pointer",
+            color: copied ? "#a1a1aa" : "#71717a",
+            fontSize: 11,
+            fontFamily: "inherit",
+            transition: "all .15s",
+            margin: "6px 8px",
+          }}
+        >
+          {copied ? <Check size={11} /> : <Copy size={11} />}
+          {copied ? "Copied!" : "Copy"}
+        </button>
+      </div>
+
+      {/* ── Code area ── */}
+      <pre style={{ margin: 0, padding: "16px 20px", overflowX: "auto", fontSize: 13, lineHeight: 1.7, fontFamily: "inherit" }}>
         {code.split("\n").map((line: string, i: number) => (
           <div key={i} style={{ display: "flex" }}>
-            <span style={{ minWidth: 28, color: "#484f58", userSelect: "none", textAlign: "right", marginRight: 16 }}>
+            <span style={{ minWidth: 28, color: "#3f3f46", userSelect: "none", textAlign: "right", marginRight: 20, flexShrink: 0 }}>
               {i + 1}
             </span>
             <span
-              style={{ color: "#e6edf3" }}
+              style={{ color: "#e4e4e7" }}
               dangerouslySetInnerHTML={{ __html: hi(line) || " " }}
             />
           </div>
