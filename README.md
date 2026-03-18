@@ -1,6 +1,6 @@
 # HeartStamp Design System
 
-A React component library built on [Radix UI](https://www.radix-ui.com/) primitives and [Tailwind CSS](https://tailwindcss.com/), based on the [HeartStamp Figma Design System](https://www.figma.com/design/E0p4VHO129Jf4k0KFdVnPx/HeartStamp-DS).
+A React component library built on [Radix UI](https://www.radix-ui.com/) primitives and [Tailwind CSS](https://tailwindcss.com/), based on the [HeartStamp Figma Library](https://www.figma.com/design/fm22sR1a5DlXgX4IkjDVXz/HeartStamp-Library?node-id=8098-7906&p=f&t=nu7E7IFzwdnrpSgV-0).
 
 ---
 
@@ -9,20 +9,20 @@ A React component library built on [Radix UI](https://www.radix-ui.com/) primiti
 ```bash
 npm install @heartstamp/design-system
 # or
-yarn add @heartstamp/design-system
-# or
 pnpm add @heartstamp/design-system
+# or
+yarn add @heartstamp/design-system
 ```
 
-> **Peer dependencies** — React 18+ and ReactDOM 18+ must be installed in your project.
+> **Peer dependencies** — `react` and `react-dom` ≥ 18 must be installed in your project.
 
 ---
 
 ## Setup
 
-### 1. Import the CSS
+### 1. Import the stylesheet
 
-Import the design system stylesheet **once** in your app entry point (e.g. `main.tsx` or `_app.tsx`):
+Import the bundled stylesheet **once** in your app entry point (e.g. `main.tsx`):
 
 ```ts
 import '@heartstamp/design-system/design-system.css';
@@ -31,33 +31,26 @@ import '@heartstamp/design-system/design-system.css';
 ### 2. Use components
 
 ```tsx
-import { HsBtn, HsInp, HsCrd } from '@heartstamp/design-system';
+import { Btn, Bdg, HsCrd, HsInp } from '@heartstamp/design-system';
 
 export default function App() {
   return (
     <HsCrd>
       <HsInp placeholder="Enter your email" />
-      <HsBtn>Submit</HsBtn>
+      <Btn variant="default">Submit</Btn>
+      <Bdg variant="default">New</Bdg>
     </HsCrd>
   );
 }
 ```
 
+All components are exported from the package root — no deep path imports needed. Your bundler will automatically tree-shake unused components.
+
 ---
 
 ## Theming
 
-The library ships with a full light/dark token system via CSS variables. Apply a theme by setting the `data-theme` attribute (or the `dark` class) on your root element:
-
-```html
-<!-- Light (default) -->
-<html>...</html>
-
-<!-- Dark -->
-<html class="dark">...</html>
-```
-
-You can override individual tokens in your own CSS:
+The library ships with a full light/dark token system via CSS variables. You can override any token in your own CSS:
 
 ```css
 :root {
@@ -70,11 +63,13 @@ See `src/app/theme.ts` for the full token reference.
 
 ---
 
-## Available Components
+## Components
+
+### HeartStamp Components (`Hs*`)
 
 | Export | Component |
 |---|---|
-| `HsBtn` | Button |
+| `Btn` | Button |
 | `HsInp` | Input |
 | `HsCrd` | Card |
 | `HsBdg` | Badge |
@@ -109,11 +104,15 @@ See `src/app/theme.ts` for the full token reference.
 | `HsTgl` | Toggle |
 | `HsTip` | Tooltip |
 
-All base Radix UI primitives are also re-exported (e.g. `Button`, `Card`, `Dialog`, `Tabs`, etc.).
+### Radix / Base Primitives
+
+All underlying Radix UI primitives are also re-exported for advanced use cases:
+
+`Accordion` · `AlertDialog` · `Alert` · `AspectRatio` · `Avatar` · `Badge` · `Breadcrumb` · `Button` · `Calendar` · `Card` · `Carousel` · `Chart` · `Checkbox` · `Collapsible` · `Command` · `ContextMenu` · `Dialog` · `Drawer` · `DropdownMenu` · `Form` · `HoverCard` · `Input` · `InputOTP` · `Label` · `Menubar` · `NavigationMenu` · `Pagination` · `Popover` · `ProfileNav` · `Progress` · `RadioGroup` · `Resizable` · `ScrollArea` · `Select` · `Separator` · `Sheet` · `Sidebar` · `Skeleton` · `Slider` · `Sonner` · `Stepper` · `Switch` · `Table` · `Tabs` · `Textarea` · `Toggle` · `ToggleGroup` · `Tooltip`
 
 ---
 
-## Building from Source
+## Development
 
 ```bash
 # Install dependencies
@@ -133,13 +132,21 @@ npm run typecheck
 
 ## Publishing
 
-The `prepublishOnly` script runs `npm run build` automatically before publishing, so simply run:
+The `prepublishOnly` script runs `npm run build` automatically before publishing:
 
 ```bash
 npm publish --access public
 ```
 
 The `dist/` folder is what gets published. Source files and `node_modules` are excluded via the `files` field in `package.json`.
+
+---
+
+## Links
+
+- 📐 [Figma Library](https://www.figma.com/design/fm22sR1a5DlXgX4IkjDVXz/HeartStamp-Library?node-id=8098-7906&p=f&t=nu7E7IFzwdnrpSgV-0)
+- 📦 [npm](https://www.npmjs.com/package/@heartstamp/design-system)
+- 🐙 [GitHub](https://github.com/mdheartstamp/heartstamp-design-system)
 
 ---
 
