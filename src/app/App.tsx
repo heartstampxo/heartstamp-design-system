@@ -1980,14 +1980,11 @@ function PageTokensColor() {
           <div style={{ width: 3, height: 18, borderRadius: 99, background: "#be1d2c" }} />
           <h2 style={{ margin: 0, fontSize: 17, fontWeight: 700, color: "var(--fg)" }}>CSS Variable Reference</h2>
         </div>
-        <div style={{ background: "#0d1117", borderRadius: 10, overflow: "hidden" }}>
-          <div style={{ padding: "8px 16px", borderBottom: "1px solid #21262d", display: "flex", alignItems: "center", gap: 6 }}>
-            <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#ff5f56" }} />
-            <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#febc2e" }} />
-            <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#27c840" }} />
-            <span style={{ marginLeft: 8, fontSize: 11, color: "#8b949e", fontFamily: "monospace" }}>tokens.css</span>
+        <div style={{ background: "#09090b", border: "1px solid #27272a", borderRadius: 8, overflow: "hidden", fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
+          <div style={{ padding: "0 16px", borderBottom: "1px solid #27272a", display: "flex", alignItems: "center", minHeight: 40 }}>
+            <span style={{ fontSize: 12, color: "#71717a" }}>tokens.css</span>
           </div>
-          <pre style={{ margin: 0, padding: 20, fontSize: 11.5, lineHeight: 1.9, fontFamily: "monospace", overflowX: "auto" }}>
+          <pre style={{ margin: 0, padding: 20, fontSize: 11.5, lineHeight: 1.9, fontFamily: "inherit", overflowX: "auto" }}>
             <span style={{ color: "#c084fc" }}>:root</span>
             <span style={{ color: "#e6edf3" }}>{" {"}</span>
             {"\n"}
@@ -2083,36 +2080,34 @@ function JsonTokenSection({ lightTokens, darkTokens }: { lightTokens: Record<str
         </span>
       </div>
 
-      <div style={{ background: "#0d1117", borderRadius: 10, overflow: "hidden" }}>
-        <div style={{ padding: "8px 14px", borderBottom: "1px solid #21262d", display: "flex", alignItems: "center", gap: 6 }}>
-          <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#ff5f56" }} />
-          <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#febc2e" }} />
-          <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#27c840" }} />
-          <span style={{ marginLeft: 8, fontSize: 11, color: "#8b949e", fontFamily: "monospace", flex: 1 }}>
+      <div style={{ background: "#09090b", border: "1px solid #27272a", borderRadius: 8, overflow: "hidden", fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
+        <div style={{ padding: "0 8px 0 16px", borderBottom: "1px solid #27272a", display: "flex", alignItems: "center", gap: 6, minHeight: 40 }}>
+          <span style={{ fontSize: 12, color: "#71717a", flex: 1 }}>
             color-tokens.json <span style={{ opacity: 0.5 }}>({jsonMode} mode)</span>
           </span>
-          <div style={{ display: "flex", alignItems: "center", gap: 4, marginRight: 8 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
             {(["light", "dark"] as const).map(m => (
               <button key={m} onClick={() => setJsonMode(m)} style={{
-                padding: "3px 12px", borderRadius: 20, border: "none", cursor: "pointer",
-                fontSize: 11, fontWeight: 500, fontFamily: "monospace",
-                background: jsonMode === m ? "#30363d" : "transparent",
-                color: jsonMode === m ? "#e6edf3" : "#8b949e",
+                padding: "3px 12px", borderRadius: 20, border: "1px solid",
+                borderColor: jsonMode === m ? "#3f3f46" : "transparent",
+                cursor: "pointer", fontSize: 11, fontWeight: 500, fontFamily: "inherit",
+                background: jsonMode === m ? "#18181b" : "transparent",
+                color: jsonMode === m ? "#e4e4e7" : "#71717a",
                 transition: "all 0.15s ease"
               }}>{m === "light" ? "☀️ Light" : "🌙 Dark"}</button>
             ))}
           </div>
           <button onClick={copy} style={{
-            display: "flex", alignItems: "center", gap: 5, padding: "4px 12px",
-            borderRadius: 6, border: "1px solid #30363d", background: copied ? "#1a2e1a" : "#21262d",
-            color: copied ? "#86efac" : "#8b949e", fontSize: 11, fontFamily: "monospace",
-            cursor: "pointer", transition: "all 0.15s ease"
+            display: "flex", alignItems: "center", gap: 5, padding: "4px 10px",
+            borderRadius: 5, border: "1px solid #3f3f46", background: "transparent",
+            color: copied ? "#a1a1aa" : "#71717a", fontSize: 11, fontFamily: "inherit",
+            cursor: "pointer", transition: "all .15s", margin: "6px 8px 6px 0",
           }}>
             {copied ? <Check size={11} /> : <Copy size={11} />}
             {copied ? "Copied!" : "Copy JSON"}
           </button>
         </div>
-        <pre style={{ margin: 0, padding: "20px 24px", fontSize: 11.5, lineHeight: 1.9, fontFamily: "monospace", overflowX: "auto", maxHeight: 520, overflowY: "auto" }}>
+        <pre style={{ margin: 0, padding: "20px 24px", fontSize: 11.5, lineHeight: 1.9, fontFamily: "inherit", overflowX: "auto", maxHeight: 520, overflowY: "auto" }}>
           {jsonStr.split("\n").map((line, i) => renderLine(line, i))}
         </pre>
       </div>
@@ -3800,27 +3795,25 @@ function PageTheming() {
         </div>
 
         {/* Generated CSS snippet */}
-        <div style={{ border: "1px solid var(--border)", borderRadius: 12, overflow: "hidden" }}>
+        <div style={{ background: "#09090b", border: "1px solid #27272a", borderRadius: 8, overflow: "hidden", fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
           <div style={{
-            padding: "8px 14px", background: "var(--muted)", borderBottom: "1px solid var(--border)",
-            display: "flex", alignItems: "center", gap: 6,
+            padding: "0 8px 0 16px", borderBottom: "1px solid #27272a",
+            display: "flex", alignItems: "center", minHeight: 40,
           }}>
-            <span style={{ width: 9, height: 9, borderRadius: "50%", background: "#ff5f56" }} />
-            <span style={{ width: 9, height: 9, borderRadius: "50%", background: "#febc2e" }} />
-            <span style={{ width: 9, height: 9, borderRadius: "50%", background: "#27c840" }} />
-            <span style={{ marginLeft: 6, fontSize: 11, color: "var(--muted-fg)", fontFamily: "monospace", flex: 1 }}>
+            <span style={{ fontSize: 12, color: "#71717a", flex: 1, fontFamily: "inherit" }}>
               theme-override.css <span style={{ opacity: 0.5 }}>— generated from your selection above</span>
             </span>
             <button onClick={copySnippet} style={{
-              background: "rgba(255,255,255,.06)", border: "1px solid rgba(255,255,255,.12)", borderRadius: 6,
-              padding: "3px 9px", cursor: "pointer", color: copied ? "#27c840" : "#8b949e",
-              display: "flex", alignItems: "center", gap: 4, fontSize: 11, fontFamily: "inherit",
+              display: "flex", alignItems: "center", gap: 5,
+              background: "transparent", border: "1px solid #3f3f46", borderRadius: 5,
+              padding: "4px 10px", cursor: "pointer", color: copied ? "#a1a1aa" : "#71717a",
+              fontSize: 11, fontFamily: "inherit", transition: "all .15s", margin: "6px 8px 6px 0",
             }}>
               {copied ? <Check size={11} /> : <Copy size={11} />} {copied ? "Copied!" : "Copy"}
             </button>
           </div>
-          <div style={{ background: "#0d1117", padding: "16px 20px", overflowX: "auto" }}>
-            <pre style={{ margin: 0, fontSize: 12.5, lineHeight: 1.85, fontFamily: "monospace" }}>
+          <div style={{ padding: "16px 20px", overflowX: "auto" }}>
+            <pre style={{ margin: 0, fontSize: 12.5, lineHeight: 1.85, fontFamily: "inherit" }}>
               {cssSnippet.split("\n").map((line, i) => {
                 if (line.trim() === "") return <span key={i} style={{ display: "block" }}>&nbsp;</span>;
                 if (line.includes("/*")) return <span key={i} style={{ display: "block", color: "#6b7280", fontStyle: "italic" }}>{line}</span>;
