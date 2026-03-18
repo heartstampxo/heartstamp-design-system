@@ -19,11 +19,55 @@ interface PreviewProps {
   height?: number;
 }
 
+/**
+ * Rewrite every `from '@/components/ui/xxx'` (or double-quoted) import
+ * to `from '@heartstamp/design-system'`, then merge any duplicate import
+ * lines into a single consolidated import statement.
+ */
+function normalizeImports(code: string): string {
+  // Step 1 — swap local paths to the npm package
+  const swapped = code.replace(
+    /from\s+(['"])@\/components\/ui\/[^'"]+\1/g,
+    "from '@heartstamp/design-system'"
+  );
+
+  // Step 2 — merge multiple `import { … } from '@heartstamp/design-system'` lines
+  const lines = swapped.split("\n");
+  const PKG = "@heartstamp/design-system";
+  const hsLines: number[] = [];
+
+  lines.forEach((line, i) => {
+    if (line.includes(`from '${PKG}'`) || line.includes(`from "${PKG}"`)) {
+      hsLines.push(i);
+    }
+  });
+
+  if (hsLines.length <= 1) return swapped;
+
+  // Collect all named specifiers from every hs import line
+  const specifiers: string[] = [];
+  hsLines.forEach(i => {
+    const m = lines[i].match(/import\s+\{([^}]+)\}/);
+    if (m) specifiers.push(...m[1].split(",").map(s => s.trim()).filter(Boolean));
+  });
+
+  // Remove duplicate specifier names
+  const unique = [...new Set(specifiers)];
+  const merged = `import { ${unique.join(", ")} } from '${PKG}'`;
+
+  // Replace the first hs-import line with the merged one; delete the rest
+  const firstIdx = hsLines[0];
+  const result = lines.filter((_, i) => !hsLines.includes(i) || i === firstIdx);
+  result[result.indexOf(lines[firstIdx])] = merged;
+  return result.join("\n");
+}
+
 export function Preview({ title, code, filename, children, height = 160 }: PreviewProps) {
   const [tab, setTab] = useState("preview");
   const [vp, setVp] = useState("full");
   const [dark, setDark] = useState(false);
   const vpW = VIEWPORTS.find(v => v.id === vp)?.w || "100%";
+  const normalizedCode = normalizeImports(code);
 
   /* render-prop support: children can be (vp: string) => ReactNode */
   const renderedChildren = typeof children === "function" ? children(vp) : children;
@@ -94,7 +138,7 @@ export function Preview({ title, code, filename, children, height = 160 }: Previ
             </div>
           </div>
         )
-        : <CodeBlock code={code} filename={filename} />}
+        : <CodeBlock code={normalizedCode} filename={filename} />}
     </div>
   );
 }
