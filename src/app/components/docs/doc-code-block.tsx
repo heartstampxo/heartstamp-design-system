@@ -143,37 +143,57 @@ export function CodeBlock({ code, filename }: { code: string; filename?: string 
   };
 
   const hi = (line: string) => {
-    // Highlight JSX component tags: <Foo or </Foo
-    // We first HTML-escape the raw "<" so the browser doesn't mis-parse
-    // "<<span>" as a malformed tag when using dangerouslySetInnerHTML.
-    let out = line
-      // escape literal "<" that haven't been escaped yet
-      .replace(/</g, "&lt;")
-      // now match both &lt; and the already-escaped form, plus optional /
-      .replace(/(&lt;)(\/?)([A-Z][A-Za-z]*)/g, (_, lt, sl, tag) =>
-        `${lt}${sl}<span style="color:#7dd3fc">${tag}</span>`
-      );
+    // Apply a regex only to plain-text nodes — never inside an HTML tag's
+    // attributes. This prevents later passes from matching e.g. style="color:#…"
+    // that were injected by an earlier pass.
+    type Rep = string | ((m: string, ...a: string[]) => string);
+    const onText = (html: string, regex: RegExp, rep: Rep) =>
+      html.replace(/(<[^>]*>)|([^<]+)/g, (match, tag, text) => {
+        if (tag)  return tag;
+        if (text) return typeof rep === "function"
+          ? text.replace(regex, rep)
+          : text.replace(regex, rep);
+        return match;
+      });
 
-    // highlight keywords
-    out = out.replace(
+    // Step 1 — escape literal "<" in source code
+    let out = line.replace(/</g, "&lt;");
+
+    // Step 2 — whole-line comments (run before any <span> insertion)
+    const wholeComment = out.match(/^(\s*)(\/\/.*)$/);
+    if (wholeComment) {
+      return `${wholeComment[1]}<span style="color:#6b7280;font-style:italic">${wholeComment[2]}</span>`;
+    }
+
+    // Step 3 — strings  (single / double / backtick)
+    out = onText(out, /(["`'])([^"`'\n]*)\1/g,
+      (_, q, body) => `<span style="color:#86efac">${q}${body}${q}</span>`
+    );
+
+    // Step 4 — keywords  (text nodes only → won't touch span style attrs)
+    out = onText(
+      out,
       /\b(import|from|const|let|return|export|default|async|await|function|true|false|null)\b/g,
       '<span style="color:#c084fc">$1</span>'
     );
-    // highlight strings
-    out = out.replace(
-      /(["`'])([^"`'\n]*)\1/g,
-      '<span style="color:#86efac">$1$2$1</span>'
+
+    // Step 5 — JSX component tags  (&lt;Foo or &lt;/Foo)
+    out = onText(out, /(&lt;)(\/?)([A-Z][A-Za-z]*)/g,
+      (_, lt, sl, tag) => `${lt}${sl}<span style="color:#7dd3fc">${tag}</span>`
     );
-    // highlight common prop names
-    out = out.replace(
+
+    // Step 6 — common JSX prop names
+    out = onText(
+      out,
       /\b(variant|size|disabled|className|onClick|asChild|value|onChange|checked|placeholder)=/g,
       '<span style="color:#fda4af">$1</span>='
     );
-    // highlight comments
-    out = out.replace(
-      /\/\/.*/g,
-      '<span style="color:#6b7280;font-style:italic">$&</span>'
+
+    // Step 7 — inline trailing comments  (e.g. code  // note)
+    out = onText(out, /\/\/.*/g,
+      (m) => `<span style="color:#6b7280;font-style:italic">${m}</span>`
     );
+
     return out;
   };
 
