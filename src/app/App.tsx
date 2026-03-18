@@ -56,7 +56,7 @@ import {
 } from "lucide-react";
 import * as LucideIcons from "lucide-react";
 import { NAV, ALL_ITEMS } from "./nav-config";
-import { CodeBlock } from "./components/docs/doc-code-block";
+import { CodeBlock, InstallBlock } from "./components/docs/doc-code-block";
 import { Preview } from "./components/docs/doc-preview";
 import { PropsTable } from "./components/docs/doc-props-table";
 import { DocPage, DocSection } from "./components/docs/doc-page";
@@ -2762,50 +2762,22 @@ function PageIntro() {
    INSTALLATION PAGE
 ═══════════════════════════════════════════════════════════ */
 function PageInstallation() {
-  const [pkgMgr, setPkgMgr] = useState<"npm" | "pnpm" | "yarn">("npm");
-
-  const installCmds: Record<string, string> = {
-    npm:  "npm install react react-dom\nnpm install @emotion/react @emotion/styled @mui/material @mui/icons-material\nnpm install @radix-ui/react-dialog @radix-ui/react-dropdown-menu lucide-react",
-    pnpm: "pnpm add react react-dom\npnpm add @emotion/react @emotion/styled @mui/material @mui/icons-material\npnpm add @radix-ui/react-dialog @radix-ui/react-dropdown-menu lucide-react",
-    yarn: "yarn add react react-dom\nyarn add @emotion/react @emotion/styled @mui/material @mui/icons-material\nyarn add @radix-ui/react-dialog @radix-ui/react-dropdown-menu lucide-react",
+  const installPkg = {
+    npm:  "npm install @heartstamp/design-system",
+    pnpm: "pnpm add @heartstamp/design-system",
+    yarn: "yarn add @heartstamp/design-system",
   };
 
-  const devCmds: Record<string, string> = {
-    npm:  "npm install -D vite @vitejs/plugin-react @tailwindcss/vite tailwindcss",
-    pnpm: "pnpm add -D vite @vitejs/plugin-react @tailwindcss/vite tailwindcss",
-    yarn: "yarn add -D vite @vitejs/plugin-react @tailwindcss/vite tailwindcss",
+  const peerInstall = {
+    npm:  "npm install react react-dom",
+    pnpm: "pnpm add react react-dom",
+    yarn: "yarn add react react-dom",
   };
 
-  const viteConfig = `import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import tailwindcss from '@tailwindcss/vite'
-import path from 'path'
+  const importCss = `// main.tsx — add this once at your app entry point
+import '@heartstamp/design-system/design-system.css'`;
 
-export default defineConfig({
-  plugins: [react(), tailwindcss()],
-  resolve: {
-    alias: { '@': path.resolve(__dirname, './src') },
-  },
-})`;
-
-  const tailwindCss = `/* src/styles/index.css */
-@import "tailwindcss";
-@import "./theme.css";`;
-
-  const themeCss = `/* src/styles/theme.css */
-:root {
-  --bg: #ffffff;
-  --fg: #242423;
-  --accent: #be1d2c;
-  --muted: #f5f5f4;
-  --muted-fg: #6e6d6a;
-  --border: #e5e5e4;
-  --radius-button: 25px;
-  /* … see Theming page for full token list */
-}`;
-
-  const firstComponentCode = `import { Btn } from '@/components/ui/btn'
-import { Bdg } from '@/components/ui/bdg'
+  const firstComponentCode = `import { Btn, Bdg } from '@heartstamp/design-system'
 
 export default function App() {
   return (
@@ -2829,15 +2801,14 @@ export default function App() {
   };
 
   const prereqs = [
-    { label: "Node.js", req: "≥ 18.0", note: "LTS recommended" },
-    { label: "React", req: "18.x", note: "peer dependency" },
-    { label: "Vite", req: "≥ 5.0", note: "dev dependency" },
-    { label: "Tailwind CSS", req: "4.x", note: "via @tailwindcss/vite" },
+    { label: "Node.js",   req: "≥ 18.0", note: "LTS recommended" },
+    { label: "react",     req: "≥ 18.0", note: "peer dependency" },
+    { label: "react-dom", req: "≥ 18.0", note: "peer dependency" },
   ];
 
   return (
     <div>
-      {/* Header */}
+      {/* ── Header ── */}
       <div style={{ marginBottom: 36 }}>
         <span style={{
           display: "inline-block", fontSize: 11, fontWeight: 700, padding: "3px 10px",
@@ -2849,24 +2820,23 @@ export default function App() {
           Installation
         </h1>
         <p style={{ margin: 0, fontSize: 14, color: "var(--muted-fg)", lineHeight: 1.7, maxWidth: 560 }}>
-          Set up HeartStamp DS in a new or existing React + Vite project in four steps.
+          Add <code style={{ fontFamily: "monospace", background: "var(--muted)", padding: "1px 6px", borderRadius: 4 }}>@heartstamp/design-system</code> to your React project in three steps. The stylesheet ships bundled — no extra tooling required.
         </p>
       </div>
 
-      {/* Divider */}
       <div style={{ height: 1, background: "var(--border)", marginBottom: 36 }} />
 
-      {/* Step 1 — Prerequisites */}
+      {/* ── Step 1 — Prerequisites ── */}
       <div style={stepRowStyle}>
         <div style={stepNumStyle}>1</div>
         <div style={{ flex: 1 }}>
           <div style={{ fontSize: 16, fontWeight: 700, color: "var(--fg)", marginBottom: 4 }}>Prerequisites</div>
           <div style={{ fontSize: 13, color: "var(--muted-fg)", marginBottom: 16, lineHeight: 1.6 }}>
-            Make sure your environment meets the following requirements before installing.
+            Make sure your project satisfies these peer dependencies before installing.
           </div>
-          <div style={{
-            border: "1px solid var(--border)", borderRadius: 10, overflow: "hidden",
-          }}>
+
+          {/* Prereq table */}
+          <div style={{ border: "1px solid var(--border)", borderRadius: 10, overflow: "hidden", marginBottom: 16 }}>
             <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
               <thead>
                 <tr style={{ background: "var(--muted)", borderBottom: "1px solid var(--border)" }}>
@@ -2886,77 +2856,47 @@ export default function App() {
               </tbody>
             </table>
           </div>
-          <div style={{ marginTop: 12 }}>
-            <Callout variant="info">
-              HeartStamp DS is an <strong>internal component library</strong>. React and react-dom are peer dependencies — install them separately in your project.
-            </Callout>
-          </div>
+
+          {/* Peer deps — shadcn-style install block */}
+          <InstallBlock
+            label="Don't have React yet? Install peer deps first:"
+            commands={peerInstall}
+          />
         </div>
       </div>
 
-      {/* Step 2 — Install */}
+      {/* ── Step 2 — Install the package ── */}
       <div style={stepRowStyle}>
         <div style={stepNumStyle}>2</div>
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 16, fontWeight: 700, color: "var(--fg)", marginBottom: 4 }}>Install Dependencies</div>
+          <div style={{ fontSize: 16, fontWeight: 700, color: "var(--fg)", marginBottom: 4 }}>Install the Package</div>
           <div style={{ fontSize: 13, color: "var(--muted-fg)", marginBottom: 16, lineHeight: 1.6 }}>
-            Install all runtime and dev dependencies. Pick your package manager:
+            Install <code style={{ fontFamily: "monospace", background: "var(--muted)", padding: "1px 5px", borderRadius: 4 }}>@heartstamp/design-system</code> from the npm registry:
           </div>
 
-          {/* Package manager tabs */}
-          <Tabs value={pkgMgr} onValueChange={(v) => setPkgMgr(v as typeof pkgMgr)} style={{ marginBottom: 12 }}>
-            <TabsList>
-              <TabsTrigger value="npm">npm</TabsTrigger>
-              <TabsTrigger value="pnpm">pnpm</TabsTrigger>
-              <TabsTrigger value="yarn">yarn</TabsTrigger>
-            </TabsList>
-          </Tabs>
+          <InstallBlock commands={installPkg} />
 
-          <div style={{ marginBottom: 12 }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: "var(--muted-fg)", textTransform: "uppercase", letterSpacing: ".05em", marginBottom: 6 }}>Runtime deps</div>
-            <CodeBlock code={installCmds[pkgMgr]} filename="terminal" />
+          <div style={{ marginTop: 16 }}>
+            <CodeBlock code={importCss} filename="main.tsx" />
           </div>
-          <div>
-            <div style={{ fontSize: 11, fontWeight: 700, color: "var(--muted-fg)", textTransform: "uppercase", letterSpacing: ".05em", marginBottom: 6 }}>Dev deps</div>
-            <CodeBlock code={devCmds[pkgMgr]} filename="terminal" />
-          </div>
-        </div>
-      </div>
 
-      {/* Step 3 — Configure Vite & Tailwind */}
-      <div style={stepRowStyle}>
-        <div style={stepNumStyle}>3</div>
-        <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 16, fontWeight: 700, color: "var(--fg)", marginBottom: 4 }}>Configure Vite & Tailwind</div>
-          <div style={{ fontSize: 13, color: "var(--muted-fg)", marginBottom: 16, lineHeight: 1.6 }}>
-            Both the React and Tailwind plugins are required. The <code style={{ fontFamily: "monospace", background: "var(--muted)", padding: "1px 5px", borderRadius: 4 }}>@</code> alias maps to <code style={{ fontFamily: "monospace", background: "var(--muted)", padding: "1px 5px", borderRadius: 4 }}>./src</code>.
-          </div>
-          <div style={{ marginBottom: 16 }}>
-            <CodeBlock code={viteConfig} filename="vite.config.ts" />
-          </div>
-          <div style={{ fontSize: 13, color: "var(--muted-fg)", marginBottom: 12, lineHeight: 1.6 }}>
-            Import Tailwind and your theme tokens in your main CSS entry point:
-          </div>
-          <div style={{ marginBottom: 12 }}>
-            <CodeBlock code={tailwindCss} filename="src/styles/index.css" />
-          </div>
-          <CodeBlock code={themeCss} filename="src/styles/theme.css" />
           <div style={{ marginTop: 12 }}>
             <Callout variant="warning">
-              Do not remove the <strong>tailwindcss()</strong> plugin even if Tailwind utilities aren't actively used — it's required for HeartStamp DS internals to resolve correctly.
+              The CSS import must be added <strong>once</strong> at the root of your app (e.g. <code style={{ fontFamily: "monospace" }}>main.tsx</code>). Skipping it will cause components to render unstyled.
             </Callout>
           </div>
         </div>
       </div>
 
-      {/* Step 4 — First Component */}
+      {/* ── Step 3 — Use components ── */}
       <div style={stepRowStyle}>
-        <div style={stepNumStyle}>4</div>
+        <div style={stepNumStyle}>3</div>
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 16, fontWeight: 700, color: "var(--fg)", marginBottom: 4 }}>Your First Component</div>
+          <div style={{ fontSize: 16, fontWeight: 700, color: "var(--fg)", marginBottom: 4 }}>Use Components</div>
           <div style={{ fontSize: 13, color: "var(--muted-fg)", marginBottom: 16, lineHeight: 1.6 }}>
-            Import directly from the component path. No barrel exports — this keeps tree-shaking optimal.
+            Import any component from <code style={{ fontFamily: "monospace", background: "var(--muted)", padding: "1px 5px", borderRadius: 4 }}>@heartstamp/design-system</code>. Tree-shaking is fully supported — only what you import is bundled.
           </div>
+
           <Preview title="Button & Badge" code={firstComponentCode} filename="App.tsx" height={68}>
             <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
               <Btn variant="default">Get started</Btn>
@@ -2964,32 +2904,37 @@ export default function App() {
               <Bdg variant="default">New</Bdg>
             </div>
           </Preview>
+
+          <div style={{ marginTop: 12 }}>
+            <Callout variant="info">
+              All components are exported from the package root — no deep path imports needed.
+            </Callout>
+          </div>
         </div>
       </div>
 
-      {/* Divider */}
       <div style={{ height: 1, background: "var(--border)", margin: "8px 0 32px" }} />
 
-      {/* Troubleshooting */}
+      {/* ── Troubleshooting ── */}
       <div style={{ marginBottom: 8 }}>
         <div style={{ fontSize: 20, fontWeight: 800, color: "var(--fg)", letterSpacing: "-.02em", marginBottom: 4 }}>Troubleshooting</div>
         <div style={{ fontSize: 13, color: "var(--muted-fg)", marginBottom: 20, lineHeight: 1.6 }}>Common issues and how to fix them.</div>
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           <Callout variant="danger">
-            <strong>Tailwind v4 + Vite plugin mismatch</strong><br />
-            If you see <code style={{ fontFamily: "monospace" }}>Cannot find module '@tailwindcss/vite'</code>, ensure you installed <code style={{ fontFamily: "monospace" }}>tailwindcss@4.x</code> and <code style={{ fontFamily: "monospace" }}>@tailwindcss/vite</code> together — they must match major versions.
+            <strong>Components render without styles</strong><br />
+            You're missing the CSS import. Add <code style={{ fontFamily: "monospace" }}>import '@heartstamp/design-system/design-system.css'</code> to your app entry point.
           </Callout>
           <Callout variant="warning">
             <strong>React peer dependency not found</strong><br />
-            HeartStamp DS lists <code style={{ fontFamily: "monospace" }}>react</code> and <code style={{ fontFamily: "monospace" }}>react-dom</code> as peer dependencies. Install them explicitly in your project: <code style={{ fontFamily: "monospace" }}>npm install react react-dom</code>.
+            <code style={{ fontFamily: "monospace" }}>react</code> and <code style={{ fontFamily: "monospace" }}>react-dom</code> must be installed in your own project. Run <code style={{ fontFamily: "monospace" }}>npm install react react-dom</code>.
           </Callout>
           <Callout variant="warning">
-            <strong>CSS variables not resolving</strong><br />
-            Make sure <code style={{ fontFamily: "monospace" }}>theme.css</code> is imported <em>after</em> <code style={{ fontFamily: "monospace" }}>@import "tailwindcss"</code> so your custom properties override Tailwind defaults correctly.
+            <strong>Module not found: @heartstamp/design-system</strong><br />
+            Ensure the package is published or linked locally. For local dev: <code style={{ fontFamily: "monospace" }}>npm install ../path-to-design-system</code>.
           </Callout>
           <Callout variant="info">
             <strong>Node.js version</strong><br />
-            Vite 6 requires Node.js ≥ 18. Run <code style={{ fontFamily: "monospace" }}>node -v</code> to verify. Use <a href="https://github.com/nvm-sh/nvm" style={{ color: "var(--accent)" }}>nvm</a> to manage multiple versions.
+            Node.js ≥ 18 is required. Run <code style={{ fontFamily: "monospace" }}>node -v</code> to verify. Use <a href="https://github.com/nvm-sh/nvm" style={{ color: "var(--accent)" }}>nvm</a> to manage multiple versions.
           </Callout>
         </div>
       </div>
