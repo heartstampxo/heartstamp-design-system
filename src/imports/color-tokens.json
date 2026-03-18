@@ -1,0 +1,225 @@
+{
+  "Text": {
+    "Primary": {
+      "$type": "color",
+      "$value": "#242423"
+    },
+    "Secondary": {
+      "$type": "color",
+      "$value": "#6e6d6a"
+    },
+    "Disabled - placeholder": {
+      "$type": "color",
+      "$value": "#a9a8a4"
+    },
+    "On primary": {
+      "$type": "color",
+      "$value": "#ffffff"
+    },
+    "On secondary": {
+      "$type": "color",
+      "$value": "#ffffff"
+    }
+  },
+  "Background": {
+    "Main": {
+      "$type": "color",
+      "$value": "#ffffff"
+    },
+    "Muted": {
+      "$type": "color",
+      "$value": "#faf6f0"
+    },
+    "Menues": {
+      "$type": "color",
+      "$value": "#ffffff"
+    },
+    "Input": {
+      "$type": "color",
+      "$value": "#ffffff"
+    },
+    "Editor": {
+      "$type": "color",
+      "$value": "#f5f5f4"
+    }
+  },
+  "Brand": {
+    "Primary": {
+      "$type": "color",
+      "$value": "#be1d2c"
+    },
+    "Primary dim": {
+      "$type": "color",
+      "$value": "rgba(190, 29, 44, 0.0800)"
+    },
+    "Primary - hover active": {
+      "$type": "color",
+      "$value": "#d42031"
+    },
+    "Primary - pressed": {
+      "$type": "color",
+      "$value": "#a81a27"
+    },
+    "Secondary": {
+      "$type": "color",
+      "$value": "#242423"
+    },
+    "Secondary dim": {
+      "$type": "color",
+      "$value": "rgba(36, 36, 35, 0.0600)"
+    },
+    "Secondary - hover active": {
+      "$type": "color",
+      "$value": "#313130"
+    },
+    "Secondary - pressed": {
+      "$type": "color",
+      "$value": "#171717"
+    },
+    "Lockup heart color": {
+      "$type": "color",
+      "$value": "#f5bdc2"
+    }
+  },
+  "Element": {
+    "Subtle": {
+      "$type": "color",
+      "$value": "rgba(36, 36, 35, 0.1000)"
+    },
+    "Disabled": {
+      "$type": "color",
+      "$value": "rgba(36, 36, 35, 0.0600)"
+    },
+    "Link": {
+      "$type": "color",
+      "$value": "#be1d2c"
+    }
+  },
+  "States": {
+    "Hover": {
+      "$type": "color",
+      "$value": "rgba(36, 36, 35, 0.0600)"
+    },
+    "Pressed": {
+      "$type": "color",
+      "$value": "rgba(36, 36, 35, 0.0800)"
+    },
+    "Error": {
+      "$type": "color",
+      "$value": "#be1d2c"
+    }
+  }
+}
+Colors.Dark mode.tokens.json
+{
+  "Text": {
+    "Primary": {
+      "$type": "color",
+      "$value": "#f5f5f4"
+    },
+    "Secondary": {
+      "$type": "color",
+      "$value": "#c4c3c1"
+    },
+    "Disabled - placeholder": {
+      "$type": "color",
+      "$value": "#7a7a77"
+    },
+    "On primary": {
+      "$type": "color",
+      "$value": "#f8f8f7"
+    },
+    "On secondary": {
+      "$type": "color",
+      "$value": "#141414"
+    }
+  },
+  "Background": {
+    "Main": {
+      "$type": "color",
+      "$value": "#141414"
+    },
+    "Muted": {
+      "$type": "color",
+      "$value": "#1e1d1b"
+    },
+    "Menues": {
+      "$type": "color",
+      "$value": "#1c1c1c"
+    },
+    "Input": {
+      "$type": "color",
+      "$value": "rgba(255, 255, 255, 0.0325)"
+    },
+    "Editor": {
+      "$type": "color",
+      "$value": "#1f1f1f"
+    }
+  },
+  "Brand": {
+    "Primary": {
+      "$type": "color",
+      "$value": "#cf2737"
+    },
+    "Primary dim": {
+      "$type": "color",
+      "$value": "rgba(207, 39, 55, 0.1200)"
+    },
+    "Primary - hover active": {
+      "$type": "color",
+      "$value": "#d93545"
+    },
+    "Primary - pressed": {
+      "$type": "color",
+      "$value": "#b92331"
+    },
+    "Secondary": {
+      "$type": "color",
+      "$value": "#f5f5f4"
+    },
+    "Secondary dim": {
+      "$type": "color",
+      "$value": "rgba(245, 245, 244, 0.0800)"
+    },
+    "Secondary - hover active": {
+      "$type": "color",
+      "$value": "#e9e9e7"
+    },
+    "Secondary - pressed": {
+      "$type": "color",
+      "$value": "#ddddda"
+    },
+    "Lockup heart color": {
+      "$type": "color",
+      "$value": "#eb7a85"
+    }
+  },
+  "Element": {
+    "Subtle": {
+      "$type": "color",
+      "$value": "rgba(245, 245, 244, 0.1300)"
+    },
+    "Disabled": {
+      "$type": "color",
+      "$value": "rgba(245, 245, 244, 0.0900)"
+    },
+    "Link": {
+      "$type": "color",
+      "$value": "#f54051"
+    }
+  },
+  "States": {
+    "Hover": {
+      "$type": "color",
+      "$value": "rgba(245, 245, 244, 0.0800)"
+    },
+    "Pressed": {
+      "$type": "color",
+      "$value": "rgba(245, 245, 244, 0.1000)"
+    },
+    "Error": {
+      "$type": "color",
+      "$value": "#f54051"
+    }
+  }
+}
