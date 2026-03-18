@@ -50,14 +50,45 @@ All components are exported from the package root — no deep path imports neede
 
 ## Theming
 
-The library ships with a full light/dark token system via CSS variables. You can override any token in your own CSS:
+The library ships with a full light/dark token system via CSS variables. Reference them in your own styles using `var()`:
+
+```css
+.my-component {
+  background: var(--bg);
+  color: var(--fg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-button);
+}
+
+.my-highlight {
+  color: var(--accent);
+  background: var(--accent-subtle);
+}
+
+.my-secondary {
+  color: var(--muted-fg);
+  background: var(--muted);
+}
+```
+
+To override a token, redefine it in your own `:root`:
 
 ```css
 :root {
-  --color-primary: #be1d2c;
-  --radius-button: 25px;
+  --accent: #0066ff;          /* swap brand colour */
+  --radius-button: 4px;       /* sharper buttons   */
+  --font-family-body: 'Inter', sans-serif;
 }
 ```
+
+**Core token groups:**
+
+| Group | Variables |
+|---|---|
+| **Colour** | `--bg` `--fg` `--muted` `--muted-fg` `--border` `--accent` `--accent-hover` `--accent-subtle` |
+| **Radius** | `--radius-xs` `--radius-sm` `--radius-md` `--radius-lg` `--radius-button` `--radius-input` `--radius-full` |
+| **Shadow** | `--shadow-xs` `--shadow-sm` `--shadow-md` `--shadow-lg` `--shadow-xl` |
+| **Typography** | `--font-family-body` `--font-family-heading` `--font-family-mono` |
 
 See `src/app/theme.ts` for the full token reference.
 
