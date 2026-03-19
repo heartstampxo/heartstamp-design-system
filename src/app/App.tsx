@@ -4213,7 +4213,7 @@ export default function App() {
           )
         }}>
           <div style={{ width: isMobile ? 240 : 220, flexShrink: 0, height: "100%", display: "flex", flexDirection: "column" }}>
-            <Sidebar active={page} onSelect={(p: string) => { setPage(p); setSidebarOpen(false); }} onClose={() => setSidebarOpen(false)} />
+            <Sidebar active={page} onSelect={(p: string) => setPage(p)} onClose={() => setSidebarOpen(false)} />
           </div>
         </aside>
 
