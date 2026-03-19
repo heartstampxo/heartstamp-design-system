@@ -11,6 +11,9 @@ node_modules/
 # Build output — published via npm, not committed to git
 dist/
 
+# Docs site build output (Vercel)
+dist-site/
+
 # Next.js build cache
 .next/
 out/

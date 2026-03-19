@@ -32,6 +32,7 @@
   },
   "scripts": {
     "build": "vite build",
+    "build:site": "vite build --config vite.site.config.ts",
     "dev": "vite",
     "typecheck": "tsc --noEmit",
     "prepublishOnly": "npm run build"
