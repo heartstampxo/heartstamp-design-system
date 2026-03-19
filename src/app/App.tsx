@@ -2684,7 +2684,7 @@ function PageIntro() {
       </p>
       <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
         <Btn variant="default" onClick={() => goToPage("separator")}><ArrowRight size={16} style={{ marginRight: 6 }} />Browse Components</Btn>
-        <Btn variant="outline" style={{ borderRadius: "999px" }}>Shadcn UI ↗</Btn>
+        <Btn variant="outline" style={{ borderRadius: "999px" }} onClick={() => window.open("https://github.com/mdheartstamp/heartstamp-design-system", "_blank")}><Github size={15} style={{ marginRight: 6 }} />GitHub Repo</Btn>
       </div>
     </div>
     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(210px,1fr))", gap: 12, marginBottom: 36 }}>
@@ -4104,8 +4104,17 @@ const PAGES: Record<string, any> = {
 export default function App() {
   const [dark, setDark] = useState(false);
   const [page, setPage] = useState("intro");
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(typeof window !== "undefined" ? window.innerWidth : 1200);
+  const [sidebarOpen, setSidebarOpen] = useState(windowWidth >= 768);
   const [iconSearch, setIconSearch] = useState("");
+
+  useEffect(() => {
+    const handler = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", handler);
+    return () => window.removeEventListener("resize", handler);
+  }, []);
+
+  const isMobile = windowWidth < 768;
 
   const theme = dark ? DARK_THEME : LIGHT_THEME;
 
@@ -4177,21 +4186,35 @@ export default function App() {
 
       <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
         {/* Mobile overlay */}
-        {sidebarOpen && <div onClick={() => setSidebarOpen(false)}
-          style={{ position: "fixed", inset: 0, top: 52, background: "rgba(0,0,0,.5)", zIndex: 40, backdropFilter: "blur(4px)" }} />}
+        {isMobile && sidebarOpen && (
+          <div onClick={() => setSidebarOpen(false)} style={{
+            position: "fixed", inset: 0, top: 52, background: "rgba(0,0,0,.45)",
+            zIndex: 40, backdropFilter: "blur(4px)"
+          }} />
+        )}
 
-        {/* SIDEBAR */}
+        {/* SIDEBAR — desktop: collapse width; mobile: slide over content */}
         <aside style={{
-          width: 220, flexShrink: 0, borderRight: "1px solid var(--border)", background: "var(--bg)",
-          display: "flex", flexDirection: "column",
-          ...(typeof window !== "undefined" && window.innerWidth < 768
+          flexShrink: 0, background: "var(--bg)", display: "flex", flexDirection: "column",
+          ...(isMobile
             ? {
-              position: "fixed", top: 52, bottom: 0, left: sidebarOpen ? 0 : -260, zIndex: 50, transition: "left .2s ease",
-              boxShadow: sidebarOpen ? "4px 0 24px rgba(0,0,0,.2)" : "none"
-            }
-            : {})
+                position: "fixed", top: 52, bottom: 0, width: 240,
+                left: sidebarOpen ? 0 : -240, zIndex: 50,
+                borderRight: "1px solid var(--border)",
+                boxShadow: sidebarOpen ? "4px 0 24px rgba(0,0,0,.18)" : "none",
+                transition: "left .22s cubic-bezier(.4,0,.2,1)",
+              }
+            : {
+                width: sidebarOpen ? 220 : 0,
+                overflow: "hidden",
+                borderRight: sidebarOpen ? "1px solid var(--border)" : "none",
+                transition: "width .22s cubic-bezier(.4,0,.2,1)",
+              }
+          )
         }}>
-          <Sidebar active={page} onSelect={(p: string) => { setPage(p); setSidebarOpen(false); }} onClose={() => setSidebarOpen(false)} />
+          <div style={{ width: isMobile ? 240 : 220, flexShrink: 0, height: "100%", display: "flex", flexDirection: "column" }}>
+            <Sidebar active={page} onSelect={(p: string) => { setPage(p); setSidebarOpen(false); }} onClose={() => setSidebarOpen(false)} />
+          </div>
         </aside>
 
         {/* MAIN */}
