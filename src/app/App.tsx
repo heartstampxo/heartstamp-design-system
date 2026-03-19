@@ -2683,25 +2683,34 @@ function PageIntro() {
         A curated set of <strong style={{ color: "var(--fg)" }}>{componentCount} accessible, reusable components</strong> built on top of Shadcn UI and Radix UI primitives — documented and tested right here.
       </p>
       <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-        <Btn variant="default" onClick={() => goToPage("separator")}><ArrowRight size={16} style={{ marginRight: 6 }} />Browse Components</Btn>
+        <Btn variant="default" onClick={() => goToPage("accordion")}><ArrowRight size={16} style={{ marginRight: 6 }} />Browse Components</Btn>
         <Btn variant="outline" style={{ borderRadius: "999px" }} onClick={() => window.open("https://github.com/mdheartstamp/heartstamp-design-system", "_blank")}><Github size={15} style={{ marginRight: 6 }} />GitHub Repo</Btn>
       </div>
     </div>
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(210px,1fr))", gap: 12, marginBottom: 36 }}>
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(210px,1fr))", gap: "var(--space-3)", marginBottom: "var(--space-9)" }}>
       {features.map(({ Icon, title, desc }) => (
-        <div key={title} style={{ padding: 18, border: "1px solid var(--border)", borderRadius: 12, background: "var(--muted)" }}>
+        <div key={title} style={{
+          padding: "var(--space-5)",
+          border: "1px solid var(--color-element-subtle)",
+          borderRadius: "var(--radius-xl)",
+          background: "var(--color-surface-secondary)",
+        }}>
           <div style={{
-            width: 32, height: 32, borderRadius: 8, background: "var(--bg)", display: "flex", alignItems: "center",
-            justifyContent: "center", marginBottom: 10, border: "1px solid var(--border)"
+            width: 32, height: 32,
+            borderRadius: "var(--radius-md)",
+            background: "var(--bg)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            marginBottom: "var(--space-3)",
+            border: "1px solid var(--color-element-subtle)",
           }}>
-            <Icon size={16} style={{ color: "var(--muted-fg)" }} />
+            <Icon size={16} style={{ color: "var(--color-text-secondary)" }} />
           </div>
-          <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 6, color: "var(--fg)" }}>{title}</div>
-          <div style={{ fontSize: 12.5, color: "var(--muted-fg)", lineHeight: 1.6 }}>{desc}</div>
+          <div style={{ fontWeight: "var(--font-weight-bold)" as any, fontSize: "var(--font-size-body-14)", marginBottom: "var(--space-2)", color: "var(--color-text-primary)" }}>{title}</div>
+          <div style={{ fontSize: "var(--font-size-body-13)", color: "var(--color-text-secondary)", lineHeight: 1.6 }}>{desc}</div>
         </div>
       ))}
     </div>
-    <div style={{ marginBottom: 12, fontSize: 11, fontWeight: 700, color: "var(--muted-fg)", textTransform: "uppercase", letterSpacing: ".06em" }}>All {componentCount} components</div>
+    <div style={{ marginBottom: 12, marginTop: 36, fontSize: "var(--font-size-label-sb-15)", fontWeight: "var(--font-weight-label-sb-15)" as any, color: "var(--color-text-primary)", textTransform: "capitalize", letterSpacing: "normal" }}>All {componentCount} components</div>
     <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
       {NAV.flatMap(g => g.items).filter(i => !["intro", "install", "theming"].includes(i.id)).map(item => (
         <span key={item.id} style={{
@@ -3007,13 +3016,30 @@ function PageIcons() {
         </p>
       </div>
 
-      {/* Search */}
-      <div style={{ maxWidth: 320, marginBottom: 20 }}>
-        <Inp
-          placeholder="Search icons…"
-          value={query}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setQuery(e.target.value)}
-        />
+      {/* Search + Figma link */}
+      <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)", marginBottom: 20 }}>
+        <div style={{ flex: 1, position: "relative" }}>
+          <Search size={13} style={{
+            position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)",
+            color: "var(--muted-fg)", pointerEvents: "none", zIndex: 1,
+          }} />
+          <Inp
+            placeholder="Search icons…"
+            value={query}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setQuery(e.target.value)}
+            style={{ paddingLeft: 32 }}
+          />
+        </div>
+        <Btn variant="outline" size="lg" onClick={() => window.open("https://www.figma.com/community/plugin/1233659525460777155/lucide-icons", "_blank")}>
+          <svg width="14" height="14" viewBox="0 0 38 57" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0 }}>
+            <path d="M19 28.5C19 25.9804 20.0009 23.5641 21.7825 21.7825C23.5641 20.0009 25.9804 19 28.5 19C31.0196 19 33.4359 20.0009 35.2175 21.7825C36.9991 23.5641 38 25.9804 38 28.5C38 31.0196 36.9991 33.4359 35.2175 35.2175C33.4359 36.9991 31.0196 38 28.5 38C25.9804 38 23.5641 36.9991 21.7825 35.2175C20.0009 33.4359 19 31.0196 19 28.5Z" fill="#1ABCFE"/>
+            <path d="M0 47.5C0 44.9804 1.00089 42.5641 2.78249 40.7825C4.56408 39.0009 6.98044 38 9.5 38H19V47.5C19 50.0196 17.9991 52.4359 16.2175 54.2175C14.4359 55.9991 12.0196 57 9.5 57C6.98044 57 4.56408 55.9991 2.78249 54.2175C1.00089 52.4359 0 50.0196 0 47.5Z" fill="#0ACF83"/>
+            <path d="M19 0V19H28.5C31.0196 19 33.4359 17.9991 35.2175 16.2175C36.9991 14.4359 38 12.0196 38 9.5C38 6.98044 36.9991 4.56408 35.2175 2.78249C33.4359 1.00089 31.0196 0 28.5 0H19Z" fill="#FF7262"/>
+            <path d="M0 9.5C0 12.0196 1.00089 14.4359 2.78249 16.2175C4.56408 17.9991 6.98044 19 9.5 19H19V0H9.5C6.98044 0 4.56408 1.00089 2.78249 2.78249C1.00089 4.56408 0 6.98044 0 9.5Z" fill="#F24E1E"/>
+            <path d="M0 28.5C0 31.0196 1.00089 33.4359 2.78249 35.2175C4.56408 36.9991 6.98044 38 9.5 38H19V19H9.5C6.98044 19 4.56408 20.0009 2.78249 21.7825C1.00089 23.5641 0 25.9804 0 28.5Z" fill="#A259FF"/>
+          </svg>
+          Figma Icons
+        </Btn>
       </div>
 
       {/* Empty state */}
