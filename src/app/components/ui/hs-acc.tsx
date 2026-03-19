@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { ChevronDown } from "lucide-react";
+import { Sep } from "./hs-sep";
 
 /* HeartStamp — Accordion primitive
    Props:
@@ -29,9 +30,10 @@ export function Acc({ items, multiple = false, defaultOpen = [], variant = "defa
   return (
     <div style={isGhost ? {} : { border: "1px solid var(--border)", borderRadius: 8, overflow: "hidden" }}>
       {items.map((item: any, i: number) => (
+        <React.Fragment key={i}>
+          {isGhost && i > 0 && <Sep style={{ margin: "var(--space-2) 0" }} />}
         <div
-          key={i}
-          style={isGhost ? { marginBottom: 2 } : { borderBottom: i < items.length - 1 ? "1px solid var(--border)" : "none" }}
+          style={isGhost ? {} : { borderBottom: i < items.length - 1 ? "1px solid var(--border)" : "none" }}
         >
           <button
             onClick={() => toggle(i)}
@@ -40,7 +42,7 @@ export function Acc({ items, multiple = false, defaultOpen = [], variant = "defa
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
-              padding: isGhost ? "5px 10px" : "14px 16px",
+              padding: isGhost ? "5px var(--space-4)" : "14px 16px",
               background: "none",
               border: "none",
               cursor: "pointer",
@@ -70,6 +72,7 @@ export function Acc({ items, multiple = false, defaultOpen = [], variant = "defa
             </div>
           )}
         </div>
+        </React.Fragment>
       ))}
     </div>
   );

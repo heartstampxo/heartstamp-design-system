@@ -32,11 +32,36 @@ function BrightnessIcon({ size = 16 }: { size?: number }) {
 }
 
 /* ── Row components ────────────────────────────────────────────────────── */
-export function PnNavRow({ icon, label }: { icon: React.ReactNode; label: string }) {
+export function PnNavRow({
+  icon, label, onClick, active = false, badge, size = "default",
+}: {
+  icon?: React.ReactNode;
+  label: string;
+  onClick?: () => void;
+  active?: boolean;
+  badge?: React.ReactNode;
+  size?: "default" | "sm";
+}) {
+  const smStyle: React.CSSProperties = size === "sm"
+    ? { fontSize: 12.5, padding: "6px var(--space-4)", borderRadius: 7 }
+    : {};
+  const activeStyle: React.CSSProperties = active
+    ? { background: "var(--color-state-hover)", color: "var(--color-text-primary)", fontWeight: 600 }
+    : {};
   return (
-    <motion.button style={pnItemStyle} whileHover={{ background: "var(--color-state-hover)" }} transition={{ duration: 0.12 }}>
-      <span style={{ color: "var(--color-text-secondary)", display: "flex", flexShrink: 0, width: 16, height: 16, alignItems: "center", justifyContent: "center" }}>{icon}</span>
-      {label}
+    <motion.button
+      onClick={onClick}
+      style={{ ...pnItemStyle, justifyContent: "space-between", ...smStyle, ...activeStyle }}
+      whileHover={active ? {} : { background: "var(--color-state-hover)" }}
+      transition={{ duration: 0.12 }}
+    >
+      <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+        {icon && (
+          <span style={{ color: active ? "var(--accent)" : "var(--color-text-secondary)", display: "flex", flexShrink: 0, width: 16, height: 16, alignItems: "center", justifyContent: "center" }}>{icon}</span>
+        )}
+        {label}
+      </span>
+      {badge}
     </motion.button>
   );
 }

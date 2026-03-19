@@ -4170,17 +4170,16 @@ export default function App() {
 
         <div style={{ flex: 1 }} />
 
-        <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-          <a href="https://github.com" target="_blank" rel="noreferrer" style={{ color: "var(--muted-fg)", display: "flex", padding: 6, borderRadius: 6 }}><Github size={15} /></a>
-          <a href="https://ui.shadcn.com" target="_blank" rel="noreferrer" style={{ color: "var(--muted-fg)", fontSize: 12, display: "flex", alignItems: "center", gap: 4, padding: "4px 8px", borderRadius: 6, border: "1px solid var(--border)", textDecoration: "none" }}>
-            <ExternalLink size={10} />Shadcn
-          </a>
-          <button onClick={() => setDark(d => !d)} style={{
-            width: 32, height: 32, borderRadius: 8, border: "1px solid var(--border)",
-            background: "var(--muted)", cursor: "pointer", color: "var(--fg)", display: "flex", alignItems: "center", justifyContent: "center"
-          }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)" }}>
+          <Btn variant="outline" size="sm" onClick={() => window.open("https://github.com/mdheartstamp/heartstamp-design-system", "_blank")}>
+            <Github size={14} />GitHub
+          </Btn>
+          <Btn variant="outline" size="sm" onClick={() => window.open("https://ui.shadcn.com", "_blank")}>
+            <ExternalLink size={12} />Shadcn
+          </Btn>
+          <Btn variant="outline" size="icon" onClick={() => setDark(d => !d)}>
             {dark ? <Sun size={14} /> : <Moon size={14} />}
-          </button>
+          </Btn>
         </div>
       </header>
 

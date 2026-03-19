@@ -3,6 +3,7 @@ import { Search, X } from "lucide-react";
 import { NAV, ALL_ITEMS } from "../../nav-config";
 import { Inp } from "../ui/hs-inp";
 import { Acc } from "../ui/hs-acc";
+import { PnNavRow } from "../ui/profile-nav";
 
 const LABEL_COLORS: Record<string, { bg: string; color: string }> = {
   new:        { bg: "rgba(16,185,129,.13)",  color: "#10b981" },
@@ -20,31 +21,24 @@ export function Sidebar({ active, onSelect, onClose }: SidebarProps) {
   const activeGroupIndex = NAV.findIndex(g => g.items.some(i => i.id === active));
   const [search, setSearch] = useState("");
 
-  // Build nav link buttons for a group
+  // Build nav link buttons for a group using PnNavRow
   const navLinks = (items: any[]) => (
     <>
       {items.map((item: any) => (
-        <button
+        <PnNavRow
           key={item.id}
+          size="sm"
+          label={item.title}
+          active={active === item.id}
           onClick={() => onSelect(item.id)}
-          style={{
-            width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between",
-            padding: "6px 10px", borderRadius: 7, border: "none", cursor: "pointer", fontSize: 12.5,
-            fontWeight: active === item.id ? 600 : 400, textAlign: "left", transition: "all .12s",
-            background: active === item.id ? "var(--accent-subtle)" : "transparent",
-            color: active === item.id ? "var(--accent)" : "var(--muted-fg)",
-            fontFamily: "inherit",
-          }}
-        >
-          {item.title}
-          {item.label && (
+          badge={item.label && (
             <span style={{
               fontSize: 9, fontWeight: 700, padding: "1px 5px", borderRadius: 999,
               background: LABEL_COLORS[item.label].bg, color: LABEL_COLORS[item.label].color,
               textTransform: "uppercase", letterSpacing: ".04em",
             }}>{item.label}</span>
           )}
-        </button>
+        />
       ))}
     </>
   );
@@ -79,7 +73,7 @@ export function Sidebar({ active, onSelect, onClose }: SidebarProps) {
       </div>
 
       {/* nav items — using Acc component in ghost variant */}
-      <div style={{ flex: 1, overflowY: "auto", padding: "4px 8px" }}>
+      <div style={{ flex: 1, overflowY: "auto" }}>
         {search.trim() ? (
           // Flat search results (no accordion)
           <div style={{ marginTop: 4 }}>
@@ -93,7 +87,7 @@ export function Sidebar({ active, onSelect, onClose }: SidebarProps) {
           <Acc
             variant="ghost"
             multiple
-            defaultOpen={NAV.map((_, i) => i).filter(i => i < 3 || i === activeGroupIndex)}
+            defaultOpen={Array.from(new Set([0, ...NAV.map((_, i) => i).filter(i => i === activeGroupIndex)]))}
             items={NAV.map(group => ({
               title: group.title,
               content: navLinks(group.items),
