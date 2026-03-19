@@ -7,7 +7,6 @@ export * from './app/components/ui/aspect-ratio';
 export * from './app/components/ui/avatar';
 export * from './app/components/ui/badge';
 export * from './app/components/ui/breadcrumb';
-export * from './app/components/ui/btn-export';
 export * from './app/components/ui/btn';
 export * from './app/components/ui/button';
 export * from './app/components/ui/calendar';
