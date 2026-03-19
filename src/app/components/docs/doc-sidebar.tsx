@@ -1,15 +1,9 @@
 import React, { useState } from "react";
 import { Search, X } from "lucide-react";
-import { NAV, ALL_ITEMS } from "../../nav-config";
+import { NAV, ALL_ITEMS, LABEL_COLORS } from "../../nav-config";
 import { Inp } from "../ui/hs-inp";
 import { Acc } from "../ui/hs-acc";
 import { PnNavRow } from "../ui/profile-nav";
-
-const LABEL_COLORS: Record<string, { bg: string; color: string }> = {
-  new:        { bg: "rgba(16,185,129,.13)",  color: "#10b981" },
-  beta:       { bg: "rgba(245,158,11,.13)",  color: "#f59e0b" },
-  deprecated: { bg: "rgba(239,68,68,.13)",   color: "#ef4444" },
-};
 
 interface SidebarProps {
   active: string;
@@ -51,7 +45,7 @@ export function Sidebar({ active, onSelect, onClose }: SidebarProps) {
   return (
     <nav style={{ display: "flex", flexDirection: "column", height: "100%", overflow: "hidden" }}>
       {/* search — using Inp component */}
-      <div style={{ padding: "10px 10px 6px", position: "relative" }}>
+      <div style={{ padding: "10px var(--space-3) 6px", position: "relative" }}>
         <Search size={12} style={{
           position: "absolute", left: 20, top: "50%", transform: "translateY(-50%)",
           color: "var(--muted-fg)", pointerEvents: "none", zIndex: 1,
@@ -73,7 +67,7 @@ export function Sidebar({ active, onSelect, onClose }: SidebarProps) {
       </div>
 
       {/* nav items — using Acc component in ghost variant */}
-      <div style={{ flex: 1, overflowY: "auto" }}>
+      <div style={{ flex: 1, overflowY: "auto", paddingTop: "var(--space-2)" }}>
         {search.trim() ? (
           // Flat search results (no accordion)
           <div style={{ marginTop: 4 }}>

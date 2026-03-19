@@ -4,6 +4,7 @@ import svgPaths from "../imports/svg-lnhmzo4612";
 import { Btn } from "./components/ui/btn";
 import { Stepper as StepperComp, HorizontalSwapStepper, type StepDef } from "./components/ui/stepper";
 import { TopNavDesktop, TopNavMobile } from "./components/ui/hs-nav";
+import { Footer } from "./components/ui/hs-footer";
 import { HSLogo, HSEmblem, HSLockup, getSvgString, useIsDark } from "./components/ui/hs-logo";
 import { ProfileNavDesktop, ProfileNavMobile } from "./components/ui/profile-nav";
 import { Inp } from "./components/ui/hs-inp";
@@ -54,7 +55,7 @@ import {
   Contrast, AtSign, CalendarDays, CalendarCheck, Wallet,
 } from "lucide-react";
 import * as LucideIcons from "lucide-react";
-import { NAV, ALL_ITEMS } from "./nav-config";
+import { NAV, ALL_ITEMS, LABEL_COLORS } from "./nav-config";
 import { CodeBlock, InstallBlock } from "./components/docs/doc-code-block";
 import { Preview } from "./components/docs/doc-preview";
 import { PropsTable } from "./components/docs/doc-props-table";
@@ -63,13 +64,7 @@ import { Callout } from "./components/docs/doc-callout";
 import { Sidebar } from "./components/docs/doc-sidebar";
 import { PlaceholderPage } from "./components/docs/doc-placeholder";
 
-/* NAV CONFIG & ALL_ITEMS → imported from ./nav-config */
-
-const LABEL_COLORS: Record<string, { bg: string; color: string }> = {
-  new:        { bg: "rgba(16,185,129,.13)", color: "#10b981" },
-  beta:       { bg: "rgba(245,158,11,.13)",  color: "#f59e0b" },
-  deprecated: { bg: "rgba(239,68,68,.13)",   color: "#ef4444" },
-};
+/* NAV CONFIG, ALL_ITEMS & LABEL_COLORS → imported from ./nav-config */
 
 /* ═══════════════════════════════════════════════════════════
    DOC COMPONENTS → ./components/docs/
@@ -1761,6 +1756,39 @@ function PageStepper() {
           { name: "id",    type: "string", def: "", desc: "Unique identifier for the step (used as React key)." },
           { name: "label", type: "string", def: "", desc: "Display label shown below (mobile) or inside (desktop) the indicator." },
           { name: "icon",  type: '"recipients" | "message" | "gifts" | "envelope" | "review"', def: "", desc: "Icon slot mapped to the HeartStamp Figma icon set." },
+        ]} />
+      </DocSection>
+    </DocPage>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════
+   FOOTER PAGE
+═══════════════════════════════════════════════════════════ */
+function PageFooter() {
+  const autoCode =
+`import { Footer } from "@/components/ui/hs-footer";
+
+<Footer />`;
+
+  return (
+    <DocPage
+      title="Footer"
+      subtitle="Responsive website footer. Auto-switches between wide and stacked layouts at 768px via ResizeObserver."
+      sourceSlug="hs-footer"
+    >
+      <DocSection
+        title="Default"
+        desc="Auto-switches between wide (≥768px) and stacked centered (<768px) layouts based on container width."
+      >
+        <Preview title="Footer" code={autoCode} height={260} fullWidth>
+          <Footer />
+        </Preview>
+      </DocSection>
+
+      <DocSection title="Props">
+        <PropsTable props={[
+          { name: "layout", type: '"desktop" | "mobile"', desc: 'Optionally force a layout. Omit to auto-switch at 768px via ResizeObserver.' },
         ]} />
       </DocSection>
     </DocPage>
@@ -4122,6 +4150,7 @@ const PAGES: Record<string, any> = {
   stepper: PageStepper,
   "top-nav": PageTopNav,
   "profile-nav": PageProfileNav,
+  footer: PageFooter,
 };
 
 /* ═══════════════════════════════════════════════════════════
@@ -4244,7 +4273,7 @@ export default function App() {
 
         {/* MAIN */}
         <main style={{ flex: 1, overflowY: "auto", padding: "28px 24px" }}>
-          <div style={{ maxWidth: 820, margin: "0 auto" }}>
+          <div style={{ maxWidth: page === "footer" ? 1066 : 820, margin: "0 auto" }}>
             <PageComp id={page} />
           </div>
         </main>

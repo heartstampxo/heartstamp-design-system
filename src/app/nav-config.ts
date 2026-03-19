@@ -1,6 +1,13 @@
 /* ═══════════════════════════════════════════════════════════
    NAV CONFIG — single source of truth for sidebar navigation
 ═══════════════════════════════════════════════════════════ */
+
+/** Badge colours for nav item labels (new / beta / deprecated) */
+export const LABEL_COLORS: Record<string, { bg: string; color: string }> = {
+  new:        { bg: "rgba(16,185,129,.13)", color: "#10b981" },
+  beta:       { bg: "rgba(245,158,11,.13)",  color: "#f59e0b" },
+  deprecated: { bg: "rgba(239,68,68,.13)",   color: "#ef4444" },
+};
 export const NAV = [
   {
     title: "Getting Started", items: [
@@ -42,6 +49,7 @@ export const NAV = [
       { title: "Context Menu",    id: "context-menu" },
       { title: "Dialog",          id: "dialog"       },
       { title: "Dropdown Menu",   id: "dropdown"     },
+      { title: "Footer",          id: "footer",        label: "new"  },
       { title: "Hover Card",      id: "hover-card"   },
       { title: "Input",           id: "input"        },
       { title: "Label",           id: "label"        },

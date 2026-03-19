@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
 import { Sep } from "./hs-sep";
 
@@ -11,6 +11,18 @@ import { Sep } from "./hs-sep";
 */
 export function Acc({ items, multiple = false, defaultOpen = [], variant = "default" }: any) {
   const [openSet, setOpenSet] = useState<Set<number>>(new Set(defaultOpen));
+
+  // Ensure newly active group is always opened; guard against no-op re-renders
+  useEffect(() => {
+    setOpenSet(prev => {
+      const toAdd = (defaultOpen as number[]).filter(i => !prev.has(i));
+      if (toAdd.length === 0) return prev; // nothing new — bail out, keep same reference
+      const next = new Set(prev);
+      toAdd.forEach(i => next.add(i));
+      return next;
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(defaultOpen)]);
 
   const toggle = (i: number) => {
     setOpenSet(prev => {

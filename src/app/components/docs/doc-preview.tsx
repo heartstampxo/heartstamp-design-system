@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Eye, Code2, Moon, Sun, Smartphone, Tablet, Monitor, Maximize2 } from "lucide-react";
 import { PREVIEW_DARK_VARS } from "../../theme";
 import { CodeBlock } from "./doc-code-block";
@@ -17,6 +17,8 @@ interface PreviewProps {
   filename?: string;
   children: React.ReactNode | ((vp: string) => React.ReactNode);
   height?: number;
+  /** Remove all padding so content stretches edge-to-edge inside the preview */
+  fullWidth?: boolean;
 }
 
 /**
@@ -62,12 +64,12 @@ function normalizeImports(code: string): string {
   return result.join("\n");
 }
 
-export function Preview({ title, code, filename, children, height = 160 }: PreviewProps) {
+export function Preview({ title, code, filename, children, height = 160, fullWidth = false }: PreviewProps) {
   const [tab, setTab] = useState("preview");
   const [vp, setVp] = useState("full");
   const [dark, setDark] = useState(false);
   const vpW = VIEWPORTS.find(v => v.id === vp)?.w || "100%";
-  const normalizedCode = normalizeImports(code);
+  const normalizedCode = useMemo(() => normalizeImports(code), [code]);
 
   /* render-prop support: children can be (vp: string) => ReactNode */
   const renderedChildren = typeof children === "function" ? children(vp) : children;
@@ -119,7 +121,7 @@ export function Preview({ title, code, filename, children, height = 160 }: Previ
         ? (
           <div style={{
             ...(dark ? PREVIEW_DARK_VARS : {}) as React.CSSProperties,
-            background: dark ? "#09090b" : "var(--bg)", padding: 16, minHeight: height,
+            background: dark ? "#09090b" : "var(--bg)", padding: fullWidth ? 0 : 16, minHeight: height,
             display: "flex", alignItems: "center", justifyContent: "center",
             position: "relative", transition: "background .2s",
             borderRadius: "0 0 12px 12px", overflow: "visible",
@@ -131,7 +133,7 @@ export function Preview({ title, code, filename, children, height = 160 }: Previ
             }}>
               <div style={{
                 display: "flex", alignItems: "center", justifyContent: "center", flexWrap: "wrap",
-                gap: 10, padding: "16px", minHeight: height, overflow: "visible",
+                gap: fullWidth ? 0 : 10, padding: fullWidth ? 0 : "16px", minHeight: height, overflow: "visible",
               }}>
                 {renderedChildren}
               </div>
