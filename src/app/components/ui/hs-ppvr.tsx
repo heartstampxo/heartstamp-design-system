@@ -1,7 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
 
 /* HeartStamp — Popover primitive */
-export function Ppvr({ trigger, children, title }: any) {
+
+interface PpvrProps {
+  trigger: React.ReactNode;
+  children: React.ReactNode;
+  title?: string;
+}
+
+export function Ppvr({ trigger, children, title }: PpvrProps) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -20,19 +27,19 @@ export function Ppvr({ trigger, children, title }: any) {
         <div
           style={{
             position: "absolute",
-            top: "calc(100% + 6px)",
+            top: "calc(100% + var(--space-1-5))",
             left: 0,
             zIndex: 100,
             background: "var(--bg-menus)",
             border: "1px solid var(--border)",
-            borderRadius: 12,
+            borderRadius: "var(--radius-2xl)",
             boxShadow: "0 8px 32px rgba(0,0,0,.15)",
-            padding: 16,
+            padding: "var(--space-4)",
             minWidth: 220,
           }}
         >
           {title && (
-            <div style={{ fontWeight: 600, fontSize: 13, marginBottom: 8, color: "var(--fg)" }}>
+            <div style={{ fontWeight: "var(--font-weight-label-sb-15)", fontSize: "var(--font-size-body-13)", marginBottom: "var(--space-2)", color: "var(--fg)" }}>
               {title}
             </div>
           )}

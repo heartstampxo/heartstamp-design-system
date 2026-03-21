@@ -2,15 +2,22 @@ import React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 /* HeartStamp — Pagination primitive */
-export function Pgn({ total = 10, current = 1, onChange }: any) {
+
+interface PgnProps {
+  total?: number;
+  current?: number;
+  onChange: (page: number) => void;
+}
+
+export function Pgn({ total = 10, current = 1, onChange }: PgnProps) {
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 2 }}>
+    <div style={{ display: "flex", alignItems: "center", gap: "var(--space-0)" }}>
       <button
         onClick={() => onChange(Math.max(1, current - 1))}
         disabled={current === 1}
         style={{
-          padding: "6px 10px",
-          borderRadius: 6,
+          padding: "var(--space-1-5) var(--space-2)",
+          borderRadius: "var(--radius-sm)",
           border: "1px solid var(--border)",
           background: "transparent",
           cursor: current === 1 ? "not-allowed" : "pointer",
@@ -28,15 +35,15 @@ export function Pgn({ total = 10, current = 1, onChange }: any) {
             key={n}
             onClick={() => onChange(n)}
             style={{
-              width: 32,
-              height: 32,
-              borderRadius: 6,
+              width: "var(--space-8)",
+              height: "var(--space-8)",
+              borderRadius: "var(--radius-sm)",
               border: `1px solid ${n === current ? "var(--accent)" : "var(--border)"}`,
               background: n === current ? "var(--accent)" : "transparent",
-              color: n === current ? "var(--text-on-primary)" : "var(--fg)",
+              color: n === current ? "var(--color-text-on-primary)" : "var(--fg)",
               cursor: "pointer",
-              fontSize: 13,
-              fontWeight: n === current ? 600 : 400,
+              fontSize: "var(--font-size-body-13)",
+              fontWeight: n === current ? "var(--font-weight-label-sb-15)" : "var(--font-weight-normal)",
             }}
           >
             {n}
@@ -47,8 +54,8 @@ export function Pgn({ total = 10, current = 1, onChange }: any) {
         onClick={() => onChange(Math.min(total, current + 1))}
         disabled={current === total}
         style={{
-          padding: "6px 10px",
-          borderRadius: 6,
+          padding: "var(--space-1-5) var(--space-2)",
+          borderRadius: "var(--radius-sm)",
           border: "1px solid var(--border)",
           background: "transparent",
           cursor: current === total ? "not-allowed" : "pointer",

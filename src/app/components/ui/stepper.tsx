@@ -7,8 +7,8 @@ import { Btn } from "./btn";
    ─ mobile variant  : icon-circle (32 px) indicators + hairlines
    ─ desktop variant : labelled pill buttons + hairlines
    ─ HorizontalSwapStepper : mobile-first swipeable layout
-     (icon-circle stepper ＋ sliding content panels ＋ prev/next)
-───────────────────────────────────────────────────────────── */
+     (icon-circle stepper + sliding content panels + prev/next)
+─────────────────────────────────────────────────────────────── */
 
 /* ── Types ────────────────────────────────────────────────── */
 export type StepDef = { id: string; label: string; icon: string };
@@ -43,7 +43,7 @@ export function Stepper({ steps, activeStep, onStepChange, variant = "mobile" }:
               style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "var(--space-2)", flex: 1 }}
             >
               {/* Connector + indicator row */}
-              <div style={{ display: "flex", alignItems: "center", width: "100%", height: 32 }}>
+              <div style={{ display: "flex", alignItems: "center", width: "100%", height: "var(--space-8)" }}>
                 {/* Left hairline */}
                 <div style={{ flex: 1, height: 1.5, background: i === 0 ? "transparent" : "var(--border)" }} />
                 {/* Circle indicator */}
@@ -51,7 +51,7 @@ export function Stepper({ steps, activeStep, onStepChange, variant = "mobile" }:
                   variant={isActive ? "default" : "outline"}
                   size="icon"
                   onClick={() => onStepChange(i)}
-                  style={{ width: 32, height: 32, borderRadius: "var(--radius-full)", padding: 0, flexShrink: 0 }}
+                  style={{ width: "var(--space-8)", height: "var(--space-8)", borderRadius: "var(--radius-full)", padding: 0, flexShrink: 0 }}
                 >
                   {React.createElement(STEP_ICONS[step.icon] ?? Eye, { size: 16 })}
                 </Btn>
@@ -61,9 +61,9 @@ export function Stepper({ steps, activeStep, onStepChange, variant = "mobile" }:
               {/* Label */}
               <span
                 style={{
-                  fontSize: 13,
-                  fontWeight: 600,
-                  color: isActive ? "var(--fg)" : "var(--text-disabled)",
+                  fontSize: "var(--font-size-body-13)",
+                  fontWeight: "var(--font-weight-label-sb-15)",
+                  color: isActive ? "var(--fg)" : "var(--color-text-disabled)",
                   whiteSpace: "nowrap",
                   userSelect: "none",
                 }}
@@ -79,7 +79,7 @@ export function Stepper({ steps, activeStep, onStepChange, variant = "mobile" }:
 
   /* desktop: labelled pill buttons connected by hairlines */
   return (
-    <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 0 }}>
+    <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: "var(--space-0)" }}>
       {steps.map((step, i) => {
         const isActive = i === activeStep;
         return (
@@ -105,10 +105,10 @@ export function Stepper({ steps, activeStep, onStepChange, variant = "mobile" }:
 
 /* ── HorizontalSwapStepper ────────────────────────────────── */
 const STEP_PANELS = [
-  { emoji: "👥", title: "Add Recipients",  desc: "Choose who receives this gift campaign.",           hint: "Tap a contact or search by name" },
-  { emoji: "✉️", title: "Write Message",   desc: "Personalise your message for each recipient.",      hint: "Use placeholders like {name} for dynamic text" },
-  { emoji: "🎁", title: "Pick Gifts",      desc: "Select from the curated gift catalogue.",           hint: "Choose up to 3 gifts per recipient" },
-  { emoji: "📬", title: "Send Envelope",   desc: "Preview the digital envelope before dispatch.",     hint: "Envelopes are delivered via email & push" },
+  { emoji: "👥", title: "Add Recipients",  desc: "Choose who receives this gift campaign.",            hint: "Tap a contact or search by name" },
+  { emoji: "✉️", title: "Write Message",   desc: "Personalise your message for each recipient.",       hint: "Use placeholders like {name} for dynamic text" },
+  { emoji: "🎁", title: "Pick Gifts",      desc: "Select from the curated gift catalogue.",            hint: "Choose up to 3 gifts per recipient" },
+  { emoji: "📬", title: "Send Envelope",   desc: "Preview the digital envelope before dispatch.",      hint: "Envelopes are delivered via email & push" },
   { emoji: "🔍", title: "Review & Send",   desc: "Confirm all details before launching the campaign.", hint: "Scheduled sends are supported" },
 ];
 
@@ -154,7 +154,7 @@ export function HorizontalSwapStepper({ steps, activeStep, onStepChange }: Horiz
         onTouchEnd={handleTouchEnd}
         style={{
           overflow: "hidden",
-          borderRadius: 14,
+          borderRadius: "var(--radius-3xl)",
           border: "1px solid var(--border)",
           background: "var(--bg)",
         }}
@@ -182,10 +182,10 @@ export function HorizontalSwapStepper({ steps, activeStep, onStepChange }: Horiz
                   textAlign: "center",
                 }}
               >
-                <span style={{ fontSize: 36, lineHeight: 1 }}>{panel.emoji}</span>
+                <span style={{ fontSize: "var(--space-10)", lineHeight: 1 }}>{panel.emoji}</span>
                 <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-1)" }}>
-                  <span style={{ fontSize: 15, fontWeight: 700, color: "var(--fg)" }}>{panel.title}</span>
-                  <span style={{ fontSize: 13, color: "var(--muted-fg)", lineHeight: 1.55, maxWidth: 260 }}>
+                  <span style={{ fontSize: "var(--font-size-body-15)", fontWeight: "var(--font-weight-label-sb-15)", color: "var(--fg)" }}>{panel.title}</span>
+                  <span style={{ fontSize: "var(--font-size-body-13)", color: "var(--muted-fg)", lineHeight: 1.55, maxWidth: 260 }}>
                     {panel.desc}
                   </span>
                 </div>
@@ -198,7 +198,7 @@ export function HorizontalSwapStepper({ steps, activeStep, onStepChange }: Horiz
                     background: "var(--muted)",
                     borderRadius: "var(--radius-full)",
                     padding: "var(--space-1) var(--space-3)",
-                    fontSize: 11,
+                    fontSize: "var(--font-size-label-12)",
                     color: "var(--muted-fg)",
                   }}
                 >
@@ -229,11 +229,11 @@ export function HorizontalSwapStepper({ steps, activeStep, onStepChange }: Horiz
             pointerEvents: activeStep === 0 ? "none" : "auto",
           }}
         >
-          <ChevronLeft size={16} style={{ marginRight: 4 }} />
+          <ChevronLeft size={16} style={{ marginRight: "var(--space-1)" }} />
           Back
         </Btn>
 
-        <span style={{ fontSize: 12, color: "var(--muted-fg)" }}>
+        <span style={{ fontSize: "var(--font-size-label-12)", color: "var(--muted-fg)" }}>
           {activeStep + 1} / {steps.length}
         </span>
 
@@ -247,7 +247,7 @@ export function HorizontalSwapStepper({ steps, activeStep, onStepChange }: Horiz
           }}
         >
           {activeStep === steps.length - 1 ? "Finish" : "Next"}
-          {activeStep < steps.length - 1 && <ChevronRight size={16} style={{ marginLeft: 4 }} />}
+          {activeStep < steps.length - 1 && <ChevronRight size={16} style={{ marginLeft: "var(--space-1)" }} />}
         </Btn>
       </div>
     </div>

@@ -234,7 +234,7 @@ export function CodeBlock({ code, filename }: { code: string; filename?: string 
             fontSize: 11,
             fontFamily: "inherit",
             transition: "all .15s",
-            margin: "6px 8px",
+            margin: "var(--space-1-5) 8px",
           }}
         >
           {copied ? <Check size={11} /> : <Copy size={11} />}

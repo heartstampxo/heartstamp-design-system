@@ -1,15 +1,22 @@
 import React from "react";
 
-/* HeartStamp — Label primitive */
-export function Lbl({ children, style }: any) {
+interface LblProps {
+  children: React.ReactNode;
+  htmlFor?: string;
+  style?: React.CSSProperties;
+}
+
+export function Lbl({ children, style, htmlFor }: LblProps) {
   return (
     <label
+      htmlFor={htmlFor}
       style={{
-        fontSize: 13,
-        fontWeight: 500,
-        color: "var(--fg)",
+        fontSize: "var(--font-size-body-13)",
+        fontWeight: "var(--font-weight-label-15)" as React.CSSProperties["fontWeight"],
+        color: "var(--color-text-primary)",
         display: "block",
-        marginBottom: 4,
+        marginBottom: "var(--space-1)",
+        lineHeight: 1.4,
         ...style,
       }}
     >

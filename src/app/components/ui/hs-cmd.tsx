@@ -1,10 +1,25 @@
 import React, { useState } from "react";
-import { Search, Home, FileText, Plus, Upload, Trash2, Settings, Bell } from "lucide-react";
+import { Search, Home, FileText, Plus, Upload, Trash2, Settings, Bell, LucideIcon } from "lucide-react";
+
+interface CmdItem {
+  icon: React.ReactElement<{ size?: number }>;
+  label: string;
+  destructive?: boolean;
+}
+
+interface CmdGroup {
+  group: string;
+  items: CmdItem[];
+}
+
+interface CmdProps {
+  placeholder?: string;
+}
 
 /* HeartStamp — Command palette primitive */
-export function Cmd({ placeholder = "Type a command…" }: any) {
+export function Cmd({ placeholder = "Type a command…" }: CmdProps) {
   const [q, setQ] = useState("");
-  const cmds = [
+  const cmds: CmdGroup[] = [
     {
       group: "Navigation",
       items: [
@@ -38,7 +53,7 @@ export function Cmd({ placeholder = "Type a command…" }: any) {
       style={{
         background: "var(--bg-menus)",
         border: "1px solid var(--border)",
-        borderRadius: 12,
+        borderRadius: "var(--radius-2xl)",
         overflow: "hidden",
         width: "100%",
         maxWidth: 400,
@@ -48,8 +63,8 @@ export function Cmd({ placeholder = "Type a command…" }: any) {
         style={{
           display: "flex",
           alignItems: "center",
-          gap: 8,
-          padding: "10px 14px",
+          gap: "var(--space-2)",
+          padding: "var(--space-2) var(--space-3-5)",
           borderBottom: "1px solid var(--border)",
         }}
       >
@@ -63,15 +78,15 @@ export function Cmd({ placeholder = "Type a command…" }: any) {
             background: "none",
             border: "none",
             outline: "none",
-            fontSize: 13,
+            fontSize: "var(--font-size-body-13)",
             color: "var(--fg)",
             fontFamily: "inherit",
           }}
         />
       </div>
-      <div style={{ maxHeight: 280, overflowY: "auto", padding: "4px 0" }}>
+      <div style={{ maxHeight: 280, overflowY: "auto", padding: "var(--space-1) 0" }}>
         {filtered.length === 0 ? (
-          <div style={{ padding: "24px", textAlign: "center", fontSize: 13, color: "var(--muted-fg)" }}>
+          <div style={{ padding: "var(--space-6)", textAlign: "center", fontSize: "var(--font-size-body-13)", color: "var(--muted-fg)" }}>
             No results found.
           </div>
         ) : (
@@ -79,8 +94,8 @@ export function Cmd({ placeholder = "Type a command…" }: any) {
             <div key={g.group}>
               <div
                 style={{
-                  padding: "6px 14px 2px",
-                  fontSize: 10.5,
+                  padding: "var(--space-1-5) var(--space-3-5) var(--space-1)",
+                  fontSize: "var(--font-size-label-12)",
                   fontWeight: 700,
                   color: "var(--muted-fg)",
                   textTransform: "uppercase",
@@ -89,22 +104,22 @@ export function Cmd({ placeholder = "Type a command…" }: any) {
               >
                 {g.group}
               </div>
-              {g.items.map((item: any, i: number) => (
+              {g.items.map((item, i) => (
                 <div
                   key={i}
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    gap: 10,
-                    padding: "8px 14px",
+                    gap: "var(--space-2)",
+                    padding: "var(--space-2) var(--space-3-5)",
                     cursor: "pointer",
-                    fontSize: 13,
-                    color: item.destructive ? "#ef4444" : "var(--fg)",
+                    fontSize: "var(--font-size-body-13)",
+                    color: item.destructive ? "var(--color-state-error)" : "var(--fg)",
                   }}
                   onMouseEnter={e => (e.currentTarget.style.background = "var(--muted)")}
                   onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
                 >
-                  <span style={{ color: item.destructive ? "#ef4444" : "var(--muted-fg)" }}>
+                  <span style={{ color: item.destructive ? "var(--color-state-error)" : "var(--muted-fg)" }}>
                     {item.icon}
                   </span>
                   {item.label}

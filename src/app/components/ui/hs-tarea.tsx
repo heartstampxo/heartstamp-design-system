@@ -1,7 +1,14 @@
 import React, { useState } from "react";
 
 /* HeartStamp — Textarea primitive */
-export function Tarea({ placeholder, rows = 3, disabled }: any) {
+
+interface TareaProps {
+  placeholder?: string;
+  rows?: number;
+  disabled?: boolean;
+}
+
+export function Tarea({ placeholder, rows = 3, disabled }: TareaProps) {
   const [v, setV] = useState("");
   const [focused, setFocused] = useState(false);
   return (
@@ -15,12 +22,12 @@ export function Tarea({ placeholder, rows = 3, disabled }: any) {
       onBlur={() => setFocused(false)}
       style={{
         width: "100%",
-        padding: "10px 12px",
-        borderRadius: 12,
+        padding: "var(--space-2) var(--space-3)",
+        borderRadius: "var(--radius-2xl)",
         border: `1px solid ${focused ? "var(--secondary)" : "var(--border)"}`,
         background: "var(--bg-input)",
         color: "var(--fg)",
-        fontSize: 15,
+        fontSize: "var(--font-size-body-15)",
         fontFamily: "inherit",
         outline: "none",
         resize: "vertical",

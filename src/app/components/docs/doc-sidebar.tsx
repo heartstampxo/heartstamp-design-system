@@ -45,7 +45,7 @@ export function Sidebar({ active, onSelect, onClose }: SidebarProps) {
   return (
     <nav style={{ display: "flex", flexDirection: "column", height: "100%", overflow: "hidden" }}>
       {/* search — using Inp component */}
-      <div style={{ padding: "10px var(--space-3) 6px", position: "relative" }}>
+      <div style={{ padding: "10px var(--space-3) var(--space-1-5)", position: "relative" }}>
         <Search size={12} style={{
           position: "absolute", left: 20, top: "50%", transform: "translateY(-50%)",
           color: "var(--muted-fg)", pointerEvents: "none", zIndex: 1,
@@ -73,7 +73,7 @@ export function Sidebar({ active, onSelect, onClose }: SidebarProps) {
           <div style={{ marginTop: 4 }}>
             {searchResults.length > 0
               ? navLinks(searchResults)
-              : <p style={{ fontSize: 12, color: "var(--muted-fg)", padding: "6px 10px" }}>No results</p>
+              : <p style={{ fontSize: 12, color: "var(--muted-fg)", padding: "var(--space-1-5) 10px" }}>No results</p>
             }
           </div>
         ) : (

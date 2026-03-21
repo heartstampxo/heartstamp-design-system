@@ -1,8 +1,15 @@
 import React from "react";
 import { X } from "lucide-react";
 
-/* HeartStamp — Dialog primitive */
-export function Dlg({ open, onClose, title, children, footer }: any) {
+interface DlgProps {
+  open: boolean;
+  onClose: () => void;
+  title: React.ReactNode;
+  children: React.ReactNode;
+  footer?: React.ReactNode;
+}
+
+export function Dlg({ open, onClose, title, children, footer }: DlgProps) {
   if (!open) return null;
   return (
     <div
@@ -28,9 +35,9 @@ export function Dlg({ open, onClose, title, children, footer }: any) {
         style={{
           position: "relative",
           background: "var(--bg)",
-          borderRadius: 14,
+          borderRadius: "var(--radius-3xl)",
           border: "1px solid var(--border)",
-          padding: 24,
+          padding: "var(--space-6)",
           width: "min(440px,90%)",
           boxShadow: "0 24px 64px rgba(0,0,0,.3)",
           zIndex: 1,
@@ -41,10 +48,10 @@ export function Dlg({ open, onClose, title, children, footer }: any) {
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            marginBottom: 12,
+            marginBottom: "var(--space-3)",
           }}
         >
-          <div style={{ fontSize: 16, fontWeight: 700, color: "var(--fg)" }}>{title}</div>
+          <div style={{ fontSize: "var(--font-size-label-sb-15)", fontWeight: "var(--font-weight-label-sb-15)" as React.CSSProperties["fontWeight"], color: "var(--fg)" }}>{title}</div>
           <button
             onClick={onClose}
             style={{
@@ -52,18 +59,18 @@ export function Dlg({ open, onClose, title, children, footer }: any) {
               border: "none",
               cursor: "pointer",
               color: "var(--muted-fg)",
-              padding: 4,
-              borderRadius: 6,
+              padding: "var(--space-1)",
+              borderRadius: "var(--radius-sm)",
             }}
           >
             <X size={16} />
           </button>
         </div>
-        <div style={{ fontSize: 13, color: "var(--muted-fg)", lineHeight: 1.6, marginBottom: 20 }}>
+        <div style={{ fontSize: "var(--font-size-body-13)", color: "var(--muted-fg)", lineHeight: 1.6, marginBottom: "var(--space-5)" }}>
           {children}
         </div>
         {footer && (
-          <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>{footer}</div>
+          <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--space-2)" }}>{footer}</div>
         )}
       </div>
     </div>

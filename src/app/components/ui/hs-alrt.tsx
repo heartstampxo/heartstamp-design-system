@@ -1,13 +1,28 @@
 import React from "react";
-import { Info, XCircle, CheckCircle2, AlertTriangle } from "lucide-react";
+import { Info, XCircle, CheckCircle2, AlertTriangle, LucideIcon } from "lucide-react";
+
+type AlrtVariant = "default" | "destructive" | "success" | "warning";
+
+interface AlrtProps {
+  variant?: AlrtVariant;
+  title?: React.ReactNode;
+  children?: React.ReactNode;
+}
+
+interface VariantStyle {
+  border: string;
+  bg: string;
+  color: string;
+  Icon: LucideIcon;
+}
 
 /* HeartStamp — Alert primitive */
-export function Alrt({ variant = "default", title, children }: any) {
-  const vmap: any = {
-    default:     { border: "var(--border)",      bg: "var(--muted)",        color: "var(--fg)",     Icon: Info },
-    destructive: { border: "var(--state-error)", bg: "var(--accent-subtle)", color: "var(--accent)", Icon: XCircle },
-    success:     { border: "#22c55e60",          bg: "#22c55e10",            color: "#22c55e",       Icon: CheckCircle2 },
-    warning:     { border: "#f59e0b60",          bg: "#f59e0b10",            color: "#f59e0b",       Icon: AlertTriangle },
+export function Alrt({ variant = "default", title, children }: AlrtProps) {
+  const vmap: Record<AlrtVariant, VariantStyle> = {
+    default:     { border: "var(--border)",           bg: "var(--muted)",         color: "var(--fg)",              Icon: Info },
+    destructive: { border: "var(--state-error)",      bg: "var(--accent-subtle)", color: "var(--accent)",          Icon: XCircle },
+    success:     { border: "var(--color-state-success-subtle, #22c55e60)", bg: "var(--color-state-success-bg, #22c55e10)", color: "var(--color-state-success, #22c55e)", Icon: CheckCircle2 },
+    warning:     { border: "var(--color-state-warning-subtle, #f59e0b60)", bg: "var(--color-state-warning-bg, #f59e0b10)", color: "var(--color-state-warning, #f59e0b)", Icon: AlertTriangle },
   };
   const v = vmap[variant];
   return (
@@ -24,7 +39,7 @@ export function Alrt({ variant = "default", title, children }: any) {
       <v.Icon size={16} style={{ color: v.color, marginTop: 1, flexShrink: 0 }} />
       <div>
         {title && (
-          <div style={{ fontWeight: 600, fontSize: "var(--font-size-body-13)", marginBottom: 2, color: "var(--fg)" }}>
+          <div style={{ fontWeight: "var(--font-weight-label-sb-15)", fontSize: "var(--font-size-body-13)", marginBottom: "var(--space-1)", color: "var(--fg)" }}>
             {title}
           </div>
         )}

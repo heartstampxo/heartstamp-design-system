@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 
 /* HeartStamp — Switch primitive */
+
 export function Swt({
   checked,
   onChange,
@@ -21,11 +22,11 @@ export function Swt({
   const thumbOn = trackW - thumbSz - pad;
 
   const trackBg = disabled
-    ? checked ? "rgba(190,29,44,0.30)" : "rgba(36,36,35,0.06)"
-    : checked  ? "var(--accent)"       : "rgba(36,36,35,0.10)";
+    ? checked ? "rgba(190,29,44,0.30)" : "var(--color-element-disabled)"
+    : checked  ? "var(--accent)"       : "var(--color-element-subtle)";
 
   const thumbBg = disabled
-    ? checked ? "rgba(255,255,255,0.65)" : "rgba(36,36,35,0.18)"
+    ? checked ? "rgba(255,255,255,0.65)" : "var(--color-text-disabled)"
     : "#ffffff";
 
   return (
@@ -59,7 +60,7 @@ export function Swt({
         />
       </div>
       {label && (
-        <span style={{ fontSize: 13, color: disabled ? "var(--muted-fg)" : "var(--fg)" }}>
+        <span style={{ fontSize: "var(--font-size-body-13)", color: disabled ? "var(--muted-fg)" : "var(--fg)" }}>
           {label}
         </span>
       )}

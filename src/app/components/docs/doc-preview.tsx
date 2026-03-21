@@ -80,7 +80,7 @@ export function Preview({ title, code, filename, children, height = 160, fullWid
       {/* toolbar */}
       <div style={{
         display: "flex", alignItems: "center", justifyContent: "space-between",
-        padding: "6px 10px", background: "var(--muted)", borderBottom: "1px solid var(--border)",
+        padding: "var(--space-1-5) 10px", background: "var(--muted)", borderBottom: "1px solid var(--border)",
         borderRadius: "12px 12px 0 0",
       }}>
         <span style={{ fontSize: 11, color: "var(--muted-fg)", fontWeight: 500, maxWidth: 180, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>

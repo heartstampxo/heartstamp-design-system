@@ -18,7 +18,7 @@ export function CalMini() {
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const cells       = Array(firstDay).fill(null).concat(
     Array.from({ length: daysInMonth }, (_, i) => i + 1)
-  );
+  ) as (number | null)[];
 
   const prev = () => {
     if (month === 0) { setMonth(11); setYear(y => y - 1); }
@@ -35,28 +35,28 @@ export function CalMini() {
         display: "inline-block",
         background: "var(--bg)",
         border: "1px solid var(--border)",
-        borderRadius: 12,
-        padding: 16,
+        borderRadius: "var(--radius-2xl)",
+        padding: "var(--space-4)",
         userSelect: "none",
         minWidth: 240,
       }}
     >
       {/* Header */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "var(--space-3)" }}>
         <button
           onClick={prev}
           style={{
             background: "none",
             border: "1px solid var(--border)",
-            borderRadius: 6,
+            borderRadius: "var(--radius-sm)",
             cursor: "pointer",
-            padding: "3px 7px",
+            padding: "var(--space-1) var(--space-2)",
             color: "var(--fg)",
           }}
         >
           <ChevronLeft size={13} />
         </button>
-        <span style={{ fontSize: 13, fontWeight: 600, color: "var(--fg)" }}>
+        <span style={{ fontSize: "var(--font-size-body-13)", fontWeight: "var(--font-weight-label-sb-15)", color: "var(--fg)" }}>
           {months[month]} {year}
         </span>
         <button
@@ -64,9 +64,9 @@ export function CalMini() {
           style={{
             background: "none",
             border: "1px solid var(--border)",
-            borderRadius: 6,
+            borderRadius: "var(--radius-sm)",
             cursor: "pointer",
-            padding: "3px 7px",
+            padding: "var(--space-1) var(--space-2)",
             color: "var(--fg)",
           }}
         >
@@ -75,33 +75,33 @@ export function CalMini() {
       </div>
 
       {/* Grid */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 2 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: "var(--space-1)" }}>
         {days.map(d => (
           <div
             key={d}
-            style={{ textAlign: "center", fontSize: 11, fontWeight: 600, color: "var(--muted-fg)", padding: "4px 0" }}
+            style={{ textAlign: "center", fontSize: "var(--font-size-label-12)", fontWeight: "var(--font-weight-label-sb-15)", color: "var(--muted-fg)", padding: "var(--space-1) 0" }}
           >
             {d}
           </div>
         ))}
-        {cells.map((d: any, i: number) => (
+        {cells.map((d, i) => (
           <div
             key={i}
             onClick={() => d && setSel(d)}
             style={{
               textAlign: "center",
-              fontSize: 12,
-              padding: "5px 0",
-              borderRadius: 6,
+              fontSize: "var(--font-size-label-12)",
+              padding: "var(--space-1) 0",
+              borderRadius: "var(--radius-sm)",
               cursor: d ? "pointer" : "default",
               background: d === sel && month === now.getMonth() ? "var(--accent)" : "transparent",
               color:
                 d === sel && month === now.getMonth()
-                  ? "var(--text-on-primary)"
+                  ? "var(--color-text-on-primary)"
                   : d
                   ? "var(--fg)"
                   : "transparent",
-              fontWeight: d === sel ? "700" : "400",
+              fontWeight: d === sel ? "var(--font-weight-label-sb-15)" : "var(--font-weight-normal)",
             }}
           >
             {d}

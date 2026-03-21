@@ -1,6 +1,5 @@
-import React, { useState, useRef, useEffect, useMemo } from "react";
-import { motion, AnimatePresence } from "motion/react";
-import svgPaths from "../imports/svg-lnhmzo4612";
+import React, { useState, useEffect, useMemo } from "react";
+import { motion } from "motion/react";
 import { Btn } from "./components/ui/btn";
 import { Stepper as StepperComp, HorizontalSwapStepper, type StepDef } from "./components/ui/stepper";
 import { TopNavDesktop, TopNavMobile } from "./components/ui/hs-nav";
@@ -8,6 +7,7 @@ import { Footer } from "./components/ui/hs-footer";
 import { HSLogo, HSEmblem, HSLockup, getSvgString, useIsDark } from "./components/ui/hs-logo";
 import { ProfileNavDesktop, ProfileNavMobile } from "./components/ui/profile-nav";
 import { Inp } from "./components/ui/hs-inp";
+import { Kbd, KbdGroup } from "./components/ui/hs-kbd";
 import { Lbl } from "./components/ui/hs-lbl";
 import { Tarea } from "./components/ui/hs-tarea";
 import { Bdg } from "./components/ui/hs-bdg";
@@ -51,8 +51,7 @@ import {
   User, Bell, Settings, LogOut, Search, Plus, Trash2, Edit,
   Star, Home, FileText, MoreHorizontal, AlertCircle,
   Calendar, ChevronsLeft, ChevronsRight, Upload, RefreshCw,
-  AppWindow, Code2, Download, CreditCard, MapPin, History, Shield, Lock,
-  Contrast, AtSign, CalendarDays, CalendarCheck, Wallet,
+  AppWindow, Code2, Download, History, Lock,
 } from "lucide-react";
 import * as LucideIcons from "lucide-react";
 import { NAV, ALL_ITEMS, LABEL_COLORS } from "./nav-config";
@@ -60,6 +59,7 @@ import { CodeBlock, InstallBlock } from "./components/docs/doc-code-block";
 import { Preview } from "./components/docs/doc-preview";
 import { PropsTable } from "./components/docs/doc-props-table";
 import { DocPage, DocSection } from "./components/docs/doc-page";
+import { CopyLinkButton } from "./components/docs/doc-copy-link";
 import { Callout } from "./components/docs/doc-callout";
 import { Sidebar } from "./components/docs/doc-sidebar";
 import { PlaceholderPage } from "./components/docs/doc-placeholder";
@@ -79,84 +79,11 @@ import { PlaceholderPage } from "./components/docs/doc-placeholder";
 /* PREVIEW_DARK_VARS → imported from ./theme */
 
 
-function _DEAD_Preview({ title, code, filename, children, height = 160 }: any) {
-  const [tab, setTab] = useState("preview");
-  const [vp, setVp] = useState("full");
-  const [dark, setDark] = useState(false);
-  const vpW = ([] as any[]).find(v => v.id === vp)?.w || "100%";
 
-  /* ── render-prop support: children can be (vp: string) => ReactNode ── */
-  const renderedChildren = typeof children === "function" ? children(vp) : children;
-  const tabS = (a: string) => ({
-    display: "inline-flex", alignItems: "center", gap: 5, padding: "4px 10px",
-    borderRadius: 6, fontSize: 12, fontWeight: 500, cursor: "pointer", border: "none",
-    background: tab === a ? "var(--bg)" : "transparent", color: tab === a ? "var(--fg)" : "var(--muted-fg)",
-    boxShadow: tab === a ? "0 1px 3px rgba(0,0,0,.12)" : "none", transition: "all .12s"
-  });
-  return <div style={{ border: "1px solid var(--border)", borderRadius: 12, marginBottom: 20 }}>
-    <div style={{
-      display: "flex", alignItems: "center", justifyContent: "space-between",
-      padding: "6px 10px", background: "var(--muted)", borderBottom: "1px solid var(--border)",
-      borderRadius: "12px 12px 0 0"
-    }}>
-      <span style={{ fontSize: 11, color: "var(--muted-fg)", fontWeight: 500, maxWidth: 180, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{title}</span>
-      <div style={{ display: "flex", gap: 2 }}>
-        {["preview", "code"].map(t => (
-          <button key={t} style={tabS(t)} onClick={() => setTab(t)}>
-            {t === "preview" ? <Eye size={11} /> : <Code2 size={11} />}{t === "preview" ? "Preview" : "Code"}
-          </button>
-        ))}
-      </div>
-      <div style={{ display: "flex", alignItems: "center", gap: 2 }}>
-        {([] as any[]).map(v => (
-          <button key={v.id} onClick={() => setVp(v.id)} title={v.w}
-            style={{
-              width: 24, height: 24, borderRadius: 5, border: "none", cursor: "pointer",
-              background: vp === v.id ? "var(--bg)" : "transparent", color: vp === v.id ? "var(--fg)" : "var(--muted-fg)",
-              display: "inline-flex", alignItems: "center", justifyContent: "center",
-              boxShadow: vp === v.id ? "0 1px 3px rgba(0,0,0,.12)" : "none"
-            }}>
-            <v.Icon size={11} />
-          </button>
-        ))}
-        <div style={{ width: 1, height: 14, background: "var(--border)", margin: "0 3px" }} />
-        <button onClick={() => setDark(d => !d)} title="Toggle preview bg"
-          style={{
-            width: 24, height: 24, borderRadius: 5, border: "none", cursor: "pointer",
-            background: dark ? "#18181b" : "transparent", color: dark ? "#a1a1aa" : "var(--muted-fg)",
-            display: "inline-flex", alignItems: "center", justifyContent: "center"
-          }}>
-          {dark ? <Moon size={11} /> : <Sun size={11} />}
-        </button>
-      </div>
-    </div>
-    {tab === "preview"
-      ? <div style={{
-        ...(dark ? ({} as any) : {}),
-        background: dark ? "#09090b" : "var(--bg)", padding: 16, minHeight: height,
-        display: "flex", alignItems: "center", justifyContent: "center", position: "relative", transition: "background .2s",
-        borderRadius: "0 0 12px 12px", overflow: "visible"
-      } as React.CSSProperties}>
-        <div style={{
-          maxWidth: vpW, width: "100%", transition: "max-width .3s",
-          border: vp !== "full" && vp !== "desktop" ? "1px dashed var(--border)" : "none", borderRadius: 8
-        }}>
-          <div style={{
-            display: "flex", alignItems: "center", justifyContent: "center", flexWrap: "wrap",
-            gap: 10, padding: "16px", minHeight: height
-          }}>
-            {renderedChildren}
-          </div>
-        </div>
-      </div>
-      : null}
-  </div>;
-}
 /* ═══════════════════════════════════════════════════════════
    ALL COMPONENT PAGES
 ═══════════════════════════════════════════════════════════ */
 function PageButton() {
-  const [loading, setLoading] = useState(false);
   return <DocPage title="Button" subtitle="Triggers an action or event — submit a form, open a dialog, or navigate." sourceSlug="button">
     <DocSection title="Variants">
       <Preview title="All variants" code={`{/* Primary */}\n<Button size="sm" variant="default">Button</Button>\n<Button variant="default">Button</Button>\n<Button size="lg" variant="default">Button</Button>\n\n{/* Secondary */}\n<Button size="sm" variant="secondary">Button</Button>\n<Button variant="secondary">Button</Button>\n<Button size="lg" variant="secondary">Button</Button>\n\n{/* Outline */}\n<Button size="sm" variant="outline">Button</Button>\n<Button variant="outline">Button</Button>\n<Button size="lg" variant="outline">Button</Button>\n\n{/* Link */}\n<Button size="sm" variant="link">Button</Button>\n<Button variant="link">Button</Button>\n<Button size="lg" variant="link">Button</Button>\n\n{/* Icon only */}\n<Button size="icon" variant="default"><Plus size={14} /></Button>\n<Button size="icon" variant="secondary"><Search size={14} /></Button>\n<Button size="icon" variant="outline"><Star size={14} /></Button>`} filename="button-variants.tsx">
@@ -250,15 +177,6 @@ function PageButton() {
         );
       })}
     </DocSection>
-    {false && <DocSection title="__x">
-      <span />
-      <Preview title="Loading" code={`<Button disabled>\n  <Loader2 size={14} style={{ marginRight: 6, animation: "spin 1s linear infinite" }} />\n  Please wait\n</Button>`}>
-        <Btn disabled={loading} onClick={() => { setLoading(true); setTimeout(() => setLoading(false), 2000); }}>
-          {loading && <Loader2 size={16} style={{ marginRight: 6, animation: "spin 1s linear infinite" }} />}
-          {loading ? "Please wait…" : "Click to simulate load"}
-        </Btn>
-      </Preview>
-    </DocSection>}
     <DocSection title="Loading State">
       {React.createElement(() => {
         const [loadSize, setLoadSize] = useState<"sm"|"default"|"lg">("default");
@@ -277,7 +195,7 @@ function PageButton() {
             </div>
             <Preview title="Loading" code={code}>
               <Btn size={loadSize} disabled={loadingLocal} onClick={() => { setLoadingLocal(true); setTimeout(() => setLoadingLocal(false), 2000); }}>
-                {loadingLocal && <IcoLink name="Loader2"><Loader2 size={16} style={{ marginRight: 6, animation: "spin 1s linear infinite" }} /></IcoLink>}
+                {loadingLocal && <IcoLink name="Loader2"><Loader2 size={16} style={{ marginRight: "var(--space-1-5)", animation: "spin 1s linear infinite" }} /></IcoLink>}
                 {loadingLocal ? "Please wait…" : "Click to simulate load"}
               </Btn>
             </Preview>
@@ -324,7 +242,7 @@ function PageButton() {
         ].map((row, i) => (
           <div key={row.token} style={{ padding: "10px 16px", display: "grid", gridTemplateColumns: "1.4fr 1fr 1fr 1.6fr", gap: 12, alignItems: "center", borderBottom: i < 19 ? "1px solid var(--border)" : "none", background: i % 2 === 0 ? "var(--bg)" : "var(--muted)" }}>
             <code style={{ fontSize: 11, fontFamily: "monospace", color: "var(--accent)" }}>{row.token}</code>
-            <code style={{ fontSize: 11, fontFamily: "monospace", color: "var(--fg)", background: "var(--color-element-disabled)", padding: "2px 6px", borderRadius: 4 }}>{row.value}</code>
+            <code style={{ fontSize: 11, fontFamily: "monospace", color: "var(--fg)", background: "var(--color-element-disabled)", padding: "2px var(--space-1-5)", borderRadius: 4 }}>{row.value}</code>
             <span style={{ fontSize: 11.5, color: "var(--muted-fg)" }}>{row.cat}</span>
             <span style={{ fontSize: 12, color: "var(--muted-fg)" }}>{row.usage}</span>
           </div>
@@ -337,46 +255,73 @@ function PageButton() {
 function PageInput() {
   const [v, setV] = useState("");
   const [ve, setVe] = useState("invalid@");
+  const [category, setCategory] = useState("");
   return <DocPage title="Input" subtitle="Displays a form input field for text entry." sourceSlug="input">
-    <DocSection title="Default">
-      <Preview title="Default input" code={`<Input placeholder="Email" />`}>
-        <div style={{ width: 280 }}><Inp placeholder="Email" value={v} onChange={(e: any) => setV(e.target.value)} /></div>
+
+    {/* ── All variants in one preview ── */}
+    <DocSection title="Variants" desc="Search, right icon, keyboard shortcuts, and plain label inputs.">
+      <Preview title="Input variants" height={420} code={
+`import { Search, Eye, ChevronDown } from "lucide-react";
+
+// 1. Search — icon left
+<Inp label="Search" placeholder="Search…" iconLeft={<Search size={14} />} />
+
+// 2. Right icon — reveal password
+<Inp label="Password" type="password" placeholder="Enter password" iconRight={<Eye size={14} />} />
+
+// 3. KBD
+<Inp label="Quick find" placeholder="Search components…" kbd="⌘K" />
+
+// 4. No icon
+<Inp label="Email address" type="email" placeholder="you@example.com" />
+
+// 5. Dropdown — click to open menu
+<DdMenu
+  style={{ width: "100%" }}
+  trigger={<Inp label="Category" placeholder="Select a category…" iconRight={<ChevronDown size={14} />} />}
+  items={[
+    { label: "Design Request" },
+    { label: "Bug Report" },
+    { label: "Feature Request" },
+    { separator: true },
+    { label: "Other" },
+  ]}
+/>`}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-5)", width: 300 }}>
+          <Inp label="Search" placeholder="Search…" iconLeft={<LucideIcons.Search size={14} />} value={v} onChange={(e: any) => setV(e.target.value)} />
+          <Inp label="Password" type="password" placeholder="Enter password" iconRight={<LucideIcons.Eye size={14} />} />
+          <Inp label="Quick find" placeholder="Search components…" kbd="⌘K" />
+          <Inp label="Email address" type="email" placeholder="you@example.com" value={v} onChange={(e: any) => setV(e.target.value)} />
+          <DdMenu
+            style={{ width: "100%" }}
+            trigger={
+              <Inp
+                label="Category"
+                placeholder="Select a category…"
+                value={category}
+                onChange={() => {}}
+                iconRight={<ChevronDown size={14} />}
+              />
+            }
+            items={[
+              { label: "Design Request", onClick: () => setCategory("Design Request") },
+              { label: "Bug Report",     onClick: () => setCategory("Bug Report") },
+              { label: "Feature Request", onClick: () => setCategory("Feature Request") },
+              { separator: true },
+              { label: "Other",          onClick: () => setCategory("Other") },
+            ]}
+          />
+        </div>
       </Preview>
     </DocSection>
-    <DocSection title="Filled">
-      <Preview title="Filled input" code={`<Input placeholder="Email" value="user@example.com" />`}>
-        <div style={{ width: 280 }}><Inp placeholder="Email" value="user@example.com" onChange={() => {}} /></div>
-      </Preview>
-    </DocSection>
-    <DocSection title="Focus">
-      <Preview title="Focus state" code={`// Focus state — border transitions to var(--secondary) on focus\n<Input placeholder="Click to focus" />`}>
-        <div style={{ width: 280 }}><Inp placeholder="Click to focus" value="" onChange={() => {}} /></div>
-      </Preview>
-    </DocSection>
-    <DocSection title="Error">
-      <Preview title="Error state" code={`<Input placeholder="Email" error />\n<p style={{ color: "var(--state-error)", fontSize: 13, marginTop: 6 }}>Please enter a valid email address.</p>`}>
-        <div style={{ width: 280 }}>
+
+    {/* ── States ── */}
+    <DocSection title="States">
+      <Preview title="States" code={`<Inp placeholder="Default" />\n<Inp placeholder="Email" error />\n<Inp placeholder="Disabled" disabled />`}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)", width: 280 }}>
+          <Inp placeholder="Default" value={v} onChange={(e: any) => setV(e.target.value)} />
           <Inp placeholder="Email" value={ve} onChange={(e: any) => setVe(e.target.value)} error />
-          <p style={{ color: "var(--state-error)", fontSize: 13, marginTop: 6, marginBottom: 0 }}>Please enter a valid email address.</p>
-        </div>
-      </Preview>
-    </DocSection>
-    <DocSection title="Disabled">
-      <Preview title="Disabled state" code={`<Input disabled placeholder="Disabled input" />`}>
-        <div style={{ width: 280 }}><Inp placeholder="Disabled input" disabled /></div>
-      </Preview>
-    </DocSection>
-    <DocSection title="With Label">
-      <Preview title="Labelled input" code={`<div style={{ display: "flex", flexDirection: "column", gap: 6 }}>\n  <Label htmlFor="email">Email</Label>\n  <Input id="email" type="email" placeholder="m@example.com" />\n</div>`}>
-        <div style={{ width: 280 }}>
-          <Lbl>Email</Lbl><Inp id="email" type="email" placeholder="m@example.com" />
-        </div>
-      </Preview>
-    </DocSection>
-    <DocSection title="Types">
-      <Preview title="Input types" code={`<Input type="text" placeholder="Text" />\n<Input type="password" placeholder="Password" />\n<Input type="number" placeholder="Number" />`}>
-        <div style={{ display: "flex", flexDirection: "column", gap: 8, width: 280 }}>
-          <Inp placeholder="Text" /><Inp type="password" placeholder="Password" /><Inp type="number" placeholder="Number" />
+          <Inp placeholder="Disabled" disabled />
         </div>
       </Preview>
     </DocSection>
@@ -471,7 +416,7 @@ function PageInput() {
         ].map((row, i) => (
           <div key={row.token} style={{ padding: "10px 16px", display: "grid", gridTemplateColumns: "1.4fr 1fr 1fr 1.6fr", gap: 12, alignItems: "center", borderBottom: i < 9 ? "1px solid var(--border)" : "none", background: i % 2 === 0 ? "var(--bg)" : "var(--muted)" }}>
             <code style={{ fontSize: 11, fontFamily: "monospace", color: "var(--accent)" }}>{row.token}</code>
-            <code style={{ fontSize: 11, fontFamily: "monospace", color: "var(--fg)", background: "var(--color-element-disabled)", padding: "2px 6px", borderRadius: 4 }}>{row.value}</code>
+            <code style={{ fontSize: 11, fontFamily: "monospace", color: "var(--fg)", background: "var(--color-element-disabled)", padding: "2px var(--space-1-5)", borderRadius: 4 }}>{row.value}</code>
             <span style={{ fontSize: 11.5, color: "var(--muted-fg)" }}>{row.cat}</span>
             <span style={{ fontSize: 12, color: "var(--muted-fg)" }}>{row.usage}</span>
           </div>
@@ -507,6 +452,59 @@ function PageTextarea() {
       ]} />
     </DocSection>
   </DocPage>;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   KBD PAGE
+═══════════════════════════════════════════════════════════ */
+function PageKbd() {
+  return (
+    <DocPage title="Kbd" subtitle="Displays a keyboard key or shortcut. Use KbdGroup to combine multiple keys." sourceSlug="kbd">
+
+      <DocSection title="Single Key" desc="Use Kbd to display a single keyboard key.">
+        <Preview title="Single key" code={`import { Kbd } from "@/components/ui/hs-kbd";\n\n<Kbd>⌘</Kbd>\n<Kbd>K</Kbd>\n<Kbd>Enter</Kbd>\n<Kbd>Esc</Kbd>`}>
+          <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
+            <Kbd>⌘</Kbd>
+            <Kbd>K</Kbd>
+            <Kbd>Enter</Kbd>
+            <Kbd>Esc</Kbd>
+          </div>
+        </Preview>
+      </DocSection>
+
+      <DocSection title="Group" desc="Mac: symbol and key combined in one badge. Windows: full shortcut in one badge.">
+        <Preview title="Key group" code={`import { Kbd } from "@/components/ui/hs-kbd";\n\n// Mac\n<Kbd>⌘K</Kbd>\n\n// Windows\n<Kbd>Ctrl+P</Kbd>`}>
+          <div style={{ display: "flex", alignItems: "center", gap: "var(--space-5)" }}>
+            <Kbd>⌘K</Kbd>
+            <Kbd>Ctrl+P</Kbd>
+          </div>
+        </Preview>
+      </DocSection>
+
+      <DocSection title="In Context" desc="Kbd inside a sentence or label.">
+        <Preview title="Inline usage" code={`<p>Press <Kbd>⌘</Kbd> + <Kbd>K</Kbd> to open the command palette.</p>`}>
+          <p style={{ margin: 0, fontSize: "var(--font-size-body-15)", color: "var(--color-text-primary)" }}>
+            Press <Kbd>⌘</Kbd> + <Kbd>K</Kbd> to open the command palette.
+          </p>
+        </Preview>
+      </DocSection>
+
+      <DocSection title="Props">
+        <PropsTable props={[
+          { name: "children", type: "React.ReactNode", desc: "The key label or symbol to display." },
+          { name: "style",    type: "React.CSSProperties", desc: "Optional inline style overrides." },
+        ]} />
+      </DocSection>
+
+      <DocSection title="KbdGroup Props">
+        <PropsTable props={[
+          { name: "children",  type: "React.ReactNode", desc: "Two or more Kbd components to group." },
+          { name: "separator", type: "string", def: '"+"', desc: "Character rendered between keys." },
+          { name: "style",     type: "React.CSSProperties", desc: "Optional inline style overrides." },
+        ]} />
+      </DocSection>
+    </DocPage>
+  );
 }
 
 function PageLabel() {
@@ -758,7 +756,7 @@ function PageToggleGroup() {
         <div style={{ display: "flex", gap: 2, border: "1px solid var(--border)", borderRadius: 8, padding: 3 }}>
           {["left", "center", "right"].map(a => (
             <button key={a} onClick={() => setV(a)} style={{
-              padding: "6px 14px", borderRadius: 6, border: "none", cursor: "pointer",
+              padding: "var(--space-1-5) 14px", borderRadius: 6, border: "none", cursor: "pointer",
               fontSize: 12, fontWeight: 500, background: v === a ? "var(--fg)" : "transparent", color: v === a ? "var(--bg)" : "var(--muted-fg)",
               transition: "all .15s", textTransform: "capitalize"
             }}>{a}</button>
@@ -908,7 +906,7 @@ function PageScrollArea() {
     <DocSection title="Vertical">
       <Preview title="Vertical scroll" code={`<ScrollArea className="h-[200px] w-[350px] rounded-md border p-4">\n  {items.map(tag => <div key={tag}>{tag}</div>)}\n</ScrollArea>`}>
         <ScrollBox height={180}>
-          {tags.map(t => <div key={t} style={{ padding: "6px 0", borderBottom: "1px solid var(--border)", fontSize: 13, color: "var(--muted-fg)" }}>{t}</div>)}
+          {tags.map(t => <div key={t} style={{ padding: "var(--space-1-5) 0", borderBottom: "1px solid var(--border)", fontSize: 13, color: "var(--muted-fg)" }}>{t}</div>)}
         </ScrollBox>
       </Preview>
     </DocSection>
@@ -1029,7 +1027,7 @@ function PageAlertDialog() {
     <DocSection title="Default">
       <Preview title="Alert Dialog" code={`<AlertDialog>\n  <AlertDialogTrigger asChild>\n    <Button variant="outline">Delete account</Button>\n  </AlertDialogTrigger>\n  <AlertDialogContent>\n    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>\n    <AlertDialogDescription>This action cannot be undone.</AlertDialogDescription>\n    <AlertDialogCancel>Cancel</AlertDialogCancel>\n    <AlertDialogAction>Continue</AlertDialogAction>\n  </AlertDialogContent>\n</AlertDialog>`} height={120}>
         <Btn variant="destructive" onClick={() => setOpen(true)}>
-          <IcoLink name="Trash2"><Trash2 size={16} style={{ marginRight: 6 }} /></IcoLink>Delete Account
+          <IcoLink name="Trash2"><Trash2 size={16} style={{ marginRight: "var(--space-1-5)" }} /></IcoLink>Delete Account
         </Btn>
         <Dlg open={open} onClose={() => setOpen(false)} title="Are you absolutely sure?"
           footer={<><Btn variant="outline" onClick={() => setOpen(false)}>Cancel</Btn><Btn variant="destructive" onClick={() => setOpen(false)}>Yes, delete account</Btn></>}>
@@ -1169,7 +1167,7 @@ function PageDropdown() {
   return <DocPage title="Dropdown Menu" subtitle="Displays a menu to the user — such as a set of actions or functions — triggered by a button." sourceSlug="dropdown-menu">
     <DocSection title="Default">
       <Preview title="Dropdown" code={`<DropdownMenu>\n  <DropdownMenuTrigger asChild><Button variant="outline">Open</Button></DropdownMenuTrigger>\n  <DropdownMenuContent>\n    <DropdownMenuLabel>My Account</DropdownMenuLabel>\n    <DropdownMenuSeparator />\n    <DropdownMenuItem>Profile</DropdownMenuItem>\n    <DropdownMenuItem>Settings</DropdownMenuItem>\n    <DropdownMenuSeparator />\n    <DropdownMenuItem>Log out</DropdownMenuItem>\n  </DropdownMenuContent>\n</DropdownMenu>`}>
-        <DdMenu trigger={<Btn variant="outline">My Account<ChevronDown size={16} style={{ marginLeft: 6 }} /></Btn>} items={items} />
+        <DdMenu trigger={<Btn variant="outline">My Account<ChevronDown size={16} style={{ marginLeft: "var(--space-1-5)" }} /></Btn>} items={items} />
       </Preview>
     </DocSection>
     <DocSection title="With Icons">
@@ -1228,7 +1226,7 @@ function PageHoverCard() {
             <div>
               <div style={{ fontWeight: 700, fontSize: 14, color: "var(--fg)", marginBottom: 2 }}>@shadcn</div>
               <div style={{ fontSize: 12, color: "var(--muted-fg)", lineHeight: 1.5 }}>Creator of shadcn/ui. Building design systems.</div>
-              <div style={{ fontSize: 11, color: "var(--muted-fg)", marginTop: 6, display: "flex", alignItems: "center", gap: 4 }}><Calendar size={11} />Joined April 2023</div>
+              <div style={{ fontSize: 11, color: "var(--muted-fg)", marginTop: "var(--space-1-5)", display: "flex", alignItems: "center", gap: 4 }}><Calendar size={11} />Joined April 2023</div>
             </div>
           </div>
         </HvrCard>
@@ -1380,7 +1378,7 @@ function PageCollapsible() {
           <Collapsible trigger="@peduarte starred 3 repositories">
             <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
               {["@radix-ui/primitives", "@radix-ui/colors", "@stitches/react"].map(r => (
-                <div key={r} style={{ padding: "6px 0", borderBottom: "1px solid var(--border)", fontSize: 13, color: "var(--muted-fg)", fontFamily: "monospace" }}>{r}</div>
+                <div key={r} style={{ padding: "var(--space-1-5) 0", borderBottom: "1px solid var(--border)", fontSize: 13, color: "var(--muted-fg)", fontFamily: "monospace" }}>{r}</div>
               ))}
             </div>
           </Collapsible>
@@ -1437,7 +1435,7 @@ function PageSkeleton() {
       <Preview title="Card loading state" code={`<div className="flex items-center space-x-4">\n  <Skeleton className="h-12 w-12 rounded-full" />\n  <div className="space-y-2">\n    <Skeleton className="h-4 w-[250px]" />\n    <Skeleton className="h-4 w-[200px]" />\n  </div>\n</div>`}>
         <div style={{ display: "flex", gap: 12, alignItems: "center", width: 280 }}>
           <Skl style={{ width: 44, height: 44, borderRadius: "50%", flexShrink: 0 }} />
-          <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 6 }}>
+          <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "var(--space-1-5)" }}>
             <Skl style={{ height: 14, width: "75%" }} />
             <Skl style={{ height: 11, width: "55%" }} />
           </div>
@@ -1463,7 +1461,7 @@ function PageProgress() {
       <Preview title="Progress" code={`<Progress value={60} />`}>
         <div style={{ width: 280, display: "flex", flexDirection: "column", gap: 12 }}>
           <div>
-            <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: "var(--muted-fg)", marginBottom: 6 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: "var(--muted-fg)", marginBottom: "var(--space-1-5)" }}>
               <span>Progress</span><span>{v}%</span>
             </div>
             <Prg value={v} />
@@ -1572,7 +1570,7 @@ function PageNavMenu() {
             {items.map(item => (
               <div key={item.label} style={{ position: "relative" }}>
                 <button onClick={() => setActive(active === item.label ? null : item.label)} style={{
-                  padding: "6px 12px", borderRadius: 6, border: "none", background: active === item.label ? "var(--state-hover)" : "transparent",
+                  padding: "var(--space-1-5) 12px", borderRadius: 6, border: "none", background: active === item.label ? "var(--state-hover)" : "transparent",
                   color: active === item.label ? "var(--fg)" : "var(--muted-fg)", cursor: "pointer", fontSize: 13, fontWeight: 500,
                   display: "flex", alignItems: "center", gap: 4
                 }}>
@@ -1937,7 +1935,7 @@ function PageTokensColor() {
       {groups.map(group => (
         <section key={group} style={{ marginBottom: 40 }}>
           <div style={{ marginBottom: 16 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: "var(--space-1-5)" }}>
               <div style={{ width: 3, height: 18, borderRadius: 99, background: "#be1d2c" }} />
               <h2 style={{ margin: 0, fontSize: 17, fontWeight: 700, color: "var(--fg)" }}>{group}</h2>
               <span style={{
@@ -2075,7 +2073,7 @@ function JsonTokenSection({ lightTokens, darkTokens }: { lightTokens: Record<str
       </div>
 
       <div style={{ background: "#09090b", border: "1px solid #27272a", borderRadius: 8, overflow: "hidden", fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
-        <div style={{ padding: "0 8px 0 16px", borderBottom: "1px solid #27272a", display: "flex", alignItems: "center", gap: 6, minHeight: 40 }}>
+        <div style={{ padding: "0 8px 0 16px", borderBottom: "1px solid #27272a", display: "flex", alignItems: "center", gap: "var(--space-1-5)", minHeight: 40 }}>
           <span style={{ fontSize: 12, color: "#71717a", flex: 1 }}>
             color-tokens.json <span style={{ opacity: 0.5 }}>({jsonMode} mode)</span>
           </span>
@@ -2095,7 +2093,7 @@ function JsonTokenSection({ lightTokens, darkTokens }: { lightTokens: Record<str
             display: "flex", alignItems: "center", gap: 5, padding: "4px 10px",
             borderRadius: 5, border: "1px solid #3f3f46", background: "transparent",
             color: copied ? "#a1a1aa" : "#71717a", fontSize: 11, fontFamily: "inherit",
-            cursor: "pointer", transition: "all .15s", margin: "6px 8px 6px 0",
+            cursor: "pointer", transition: "all .15s", margin: "var(--space-1-5) 8px var(--space-1-5) 0",
           }}>
             {copied ? <Check size={11} /> : <Copy size={11} />}
             {copied ? "Copied!" : "Copy JSON"}
@@ -2267,7 +2265,7 @@ function PageTokensTypography() {
 
           {/* List — Label 15 */}
           <div style={{ display: "flex", alignItems: "flex-start", gap: 16, marginBottom: 16 }}>
-            <ul style={{ flex: 1, margin: 0, paddingLeft: 20, display: "flex", flexDirection: "column", gap: 6 }}>
+            <ul style={{ flex: 1, margin: 0, paddingLeft: 20, display: "flex", flexDirection: "column", gap: "var(--space-1-5)" }}>
               {[
                 { item: "1st level of puns", detail: ": 5 gold coins" },
                 { item: "2nd level of jokes", detail: ": 10 gold coins" },
@@ -2332,11 +2330,11 @@ function PageTokensTypography() {
             <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
               <div style={{ flex: 1 }}>
                 <div style={{ ...headingFF, fontSize: 36, fontWeight: 700, color: "var(--fg)", marginBottom: 8, lineHeight: 1.1 }}>Aa Bb Cc Dd Ee 0–9</div>
-                <div style={{ ...headingFF, fontSize: 15, fontWeight: 300, color: "var(--muted-fg)", marginBottom: 6 }}>The quick brown fox jumps over the lazy dog.</div>
+                <div style={{ ...headingFF, fontSize: 15, fontWeight: 300, color: "var(--muted-fg)", marginBottom: "var(--space-1-5)" }}>The quick brown fox jumps over the lazy dog.</div>
                 <div style={{ fontSize: 11.5, color: "var(--muted-fg)" }}>Headings — H1 through H5, Subheadline</div>
               </div>
               <div style={{ flexShrink: 0, minWidth: 210 }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: "var(--fg)", marginBottom: 6 }}>Stack Sans Text</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "var(--fg)", marginBottom: "var(--space-1-5)" }}>Stack Sans Text</div>
                 <code style={{ fontSize: 11, fontFamily: "monospace", color: "#be1d2c", display: "block", marginBottom: 4 }}>--font-family-heading</code>
                 <div style={{ fontSize: 10.5, color: "var(--muted-fg)", fontFamily: "monospace", lineHeight: 1.6 }}>'Stack Sans Text', 'Instrument Sans',<br/>system-ui, sans-serif</div>
                 <div style={{ marginTop: 8, display: "inline-flex", alignItems: "center", gap: 4, fontSize: 10.5, padding: "2px 8px", borderRadius: 99, background: "rgba(190,29,44,0.08)", color: "#be1d2c" }}>Licensed · Figma Library</div>
@@ -2348,11 +2346,11 @@ function PageTokensTypography() {
             <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
               <div style={{ flex: 1 }}>
                 <div style={{ ...bodyFF, fontSize: 36, fontWeight: 500, color: "var(--fg)", marginBottom: 8, lineHeight: 1.1 }}>Aa Bb Cc Dd Ee 0–9</div>
-                <div style={{ ...bodyFF, fontSize: 15, fontWeight: 400, color: "var(--muted-fg)", marginBottom: 6 }}>The quick brown fox jumps over the lazy dog.</div>
+                <div style={{ ...bodyFF, fontSize: 15, fontWeight: 400, color: "var(--muted-fg)", marginBottom: "var(--space-1-5)" }}>The quick brown fox jumps over the lazy dog.</div>
                 <div style={{ fontSize: 11.5, color: "var(--muted-fg)" }}>Body, Labels, UI — inputs, buttons, captions</div>
               </div>
               <div style={{ flexShrink: 0, minWidth: 210 }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: "var(--fg)", marginBottom: 6 }}>DM Sans</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "var(--fg)", marginBottom: "var(--space-1-5)" }}>DM Sans</div>
                 <code style={{ fontSize: 11, fontFamily: "monospace", color: "#be1d2c", display: "block", marginBottom: 4 }}>--font-family-body</code>
                 <div style={{ fontSize: 10.5, color: "var(--muted-fg)", fontFamily: "monospace", lineHeight: 1.6 }}>'DM Sans', system-ui, sans-serif</div>
                 <div style={{ marginTop: 8, display: "inline-flex", alignItems: "center", gap: 4, fontSize: 10.5, padding: "2px 8px", borderRadius: 99, background: "rgba(16,185,129,0.1)", color: "#10b981" }}>Google Fonts · Open Source</div>
@@ -2364,11 +2362,11 @@ function PageTokensTypography() {
             <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
               <div style={{ flex: 1 }}>
                 <div style={{ ...monoFF, fontSize: 30, fontWeight: 400, color: "var(--fg)", marginBottom: 8, lineHeight: 1.1 }}>{"Aa 01 <> == => !=="}</div>
-                <div style={{ ...monoFF, fontSize: 13, color: "var(--muted-fg)", marginBottom: 6 }}>{'const ds = "HeartStamp";'}</div>
+                <div style={{ ...monoFF, fontSize: 13, color: "var(--muted-fg)", marginBottom: "var(--space-1-5)" }}>{'const ds = "HeartStamp";'}</div>
                 <div style={{ fontSize: 11.5, color: "var(--muted-fg)" }}>Code blocks, token values, keyboard shortcuts</div>
               </div>
               <div style={{ flexShrink: 0, minWidth: 210 }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: "var(--fg)", marginBottom: 6 }}>Monospace</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "var(--fg)", marginBottom: "var(--space-1-5)" }}>Monospace</div>
                 <code style={{ fontSize: 11, fontFamily: "monospace", color: "#be1d2c", display: "block", marginBottom: 4 }}>--font-family-mono</code>
                 <div style={{ fontSize: 10.5, color: "var(--muted-fg)", fontFamily: "monospace", lineHeight: 1.6 }}>ui-monospace, 'Cascadia Code',<br/>monospace</div>
               </div>
@@ -2475,6 +2473,7 @@ function PageTokensSpacing() {
   const scale = [
     { name: "0", variable: "--space-0", value: "0px", px: 0 },
     { name: "1", variable: "--space-1", value: "4px", px: 4 },
+    { name: "1.5", variable: "--space-1-5", value: "6px", px: 6 },
     { name: "2", variable: "--space-2", value: "8px", px: 8 },
     { name: "3", variable: "--space-3", value: "12px", px: 12 },
     { name: "4", variable: "--space-4", value: "16px", px: 16 },
@@ -2503,7 +2502,7 @@ function PageTokensSpacing() {
   return (
     <DocPage title="Spacing Tokens" subtitle="A 4px-base spacing scale used consistently across every layout gap, padding, and margin in the system.">
       <DocSection title="Base Scale" desc="Built on a 4px grid. All spacing values are multiples of 4px for perfect pixel alignment.">
-        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-1-5)" }}>
           {scale.map((s, i) => (
             <div key={s.name} style={{
               display: "flex", alignItems: "center", gap: 14, padding: "8px 14px",
@@ -2535,7 +2534,7 @@ function PageTokensSpacing() {
               background: i % 2 === 0 ? "var(--bg)" : "var(--muted)"
             }}>
               <span style={{ fontSize: 12.5, fontWeight: 500, color: "var(--fg)" }}>{item.component}</span>
-              <code style={{ fontSize: 11, fontFamily: "monospace", color: "var(--fg)", background: "var(--color-element-disabled)", padding: "2px 6px", borderRadius: 4 }}>{item.value}</code>
+              <code style={{ fontSize: 11, fontFamily: "monospace", color: "var(--fg)", background: "var(--color-element-disabled)", padding: "2px var(--space-1-5)", borderRadius: 4 }}>{item.value}</code>
               <code style={{ fontSize: 10.5, fontFamily: "monospace", color: "#be1d2c" }}>{item.variable}</code>
               <span style={{ fontSize: 12, color: "var(--muted-fg)" }}>{item.desc}</span>
             </div>
@@ -2548,6 +2547,7 @@ function PageTokensSpacing() {
         <TokenTable rows={[
           { token: "--space-0",              value: "0px",       category: "Scale",     usage: "Reset / no spacing" },
           { token: "--space-1",              value: "4px",       category: "Scale",     usage: "Micro gaps, icon nudges" },
+          { token: "--space-1-5",            value: "6px",       category: "Scale",     usage: "Compact padding, kbd keys" },
           { token: "--space-2",              value: "8px",       category: "Scale",     usage: "Tight inline gaps" },
           { token: "--space-3",              value: "12px",      category: "Scale",     usage: "Small element padding" },
           { token: "--space-4",              value: "16px",      category: "Scale",     usage: "Default card padding, section gap" },
@@ -2608,7 +2608,7 @@ function PageTokensRadius() {
               <div>
                 <div style={{ fontSize: 12.5, fontWeight: 600, color: "var(--fg)", marginBottom: 3 }}>{r.name}</div>
                 <code style={{ fontSize: 11, fontFamily: "monospace", color: "#be1d2c", display: "block", marginBottom: 4 }}>{r.variable}</code>
-                <div style={{ fontSize: 12, fontFamily: "monospace", fontWeight: 700, color: "#242423", marginBottom: 6 }}>{r.value}</div>
+                <div style={{ fontSize: 12, fontFamily: "monospace", fontWeight: 700, color: "#242423", marginBottom: "var(--space-1-5)" }}>{r.value}</div>
                 <div style={{ fontSize: 10.5, color: "var(--muted-fg)", lineHeight: 1.5 }}>{r.usage}</div>
               </div>
             </div>
@@ -2711,8 +2711,8 @@ function PageIntro() {
         A curated set of <strong style={{ color: "var(--fg)" }}>{componentCount} accessible, reusable components</strong> built on top of Shadcn UI and Radix UI primitives — documented and tested right here.
       </p>
       <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-        <Btn variant="default" onClick={() => goToPage("accordion")}><ArrowRight size={16} style={{ marginRight: 6 }} />Browse Components</Btn>
-        <Btn variant="outline" style={{ borderRadius: "999px" }} onClick={() => window.open("https://github.com/mdheartstamp/heartstamp-design-system", "_blank")}><Github size={15} style={{ marginRight: 6 }} />GitHub Repo</Btn>
+        <Btn variant="default" onClick={() => goToPage("accordion")}><ArrowRight size={16} style={{ marginRight: "var(--space-1-5)" }} />Browse Components</Btn>
+        <Btn variant="outline" style={{ borderRadius: "999px" }} onClick={() => window.open("https://github.com/mdheartstamp/heartstamp-design-system", "_blank")}><Github size={15} style={{ marginRight: "var(--space-1-5)" }} />GitHub Repo</Btn>
       </div>
     </div>
     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(210px,1fr))", gap: "var(--space-3)", marginBottom: "var(--space-9)" }}>
@@ -2739,7 +2739,7 @@ function PageIntro() {
       ))}
     </div>
     <div style={{ marginBottom: 12, marginTop: 36, fontSize: "var(--font-size-label-sb-15)", fontWeight: "var(--font-weight-label-sb-15)" as any, color: "var(--color-text-primary)", textTransform: "capitalize", letterSpacing: "normal" }}>All {componentCount} components</div>
-    <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+    <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-1-5)" }}>
       {NAV.flatMap(g => g.items).filter(i => !["intro", "install", "theming"].includes(i.id)).map(item => (
         <span key={item.id} style={{
           padding: "3px 10px", border: "1px solid var(--border)", borderRadius: 6, fontSize: 12,
@@ -2808,17 +2808,14 @@ export default function App() {
     <div>
       {/* ── Header ── */}
       <div style={{ marginBottom: 36 }}>
-        <span style={{
-          display: "inline-block", fontSize: 11, fontWeight: 700, padding: "3px 10px",
-          borderRadius: 999, background: "var(--muted)", color: "var(--muted-fg)",
-          border: "1px solid var(--border)", marginBottom: 16,
-          textTransform: "uppercase", letterSpacing: ".06em",
-        }}>Getting Started</span>
-        <h1 style={{ margin: "0 0 10px", fontSize: 34, fontWeight: 900, color: "var(--fg)", letterSpacing: "-.03em", lineHeight: 1.1 }}>
-          Installation
-        </h1>
+        <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", marginBottom: 10 }}>
+          <h1 style={{ margin: 0, fontSize: 34, fontWeight: 900, color: "var(--fg)", letterSpacing: "-.03em", lineHeight: 1.1 }}>
+            Installation
+          </h1>
+          <CopyLinkButton />
+        </div>
         <p style={{ margin: 0, fontSize: 14, color: "var(--muted-fg)", lineHeight: 1.7, maxWidth: 560 }}>
-          Add <code style={{ fontFamily: "monospace", background: "var(--muted)", padding: "1px 6px", borderRadius: 4 }}>@heartstamp/design-system</code> to your React project in three steps. The stylesheet ships bundled — no extra tooling required.
+          Add <code style={{ fontFamily: "monospace", background: "var(--muted)", padding: "1px var(--space-1-5)", borderRadius: 4 }}>@heartstamp/design-system</code> to your React project in three steps. The stylesheet ships bundled — no extra tooling required.
         </p>
       </div>
 
@@ -2966,7 +2963,7 @@ function IcoLink({ name, children }: { name: string; children: React.ReactNode }
           borderRadius: 6, padding: "4px 8px",
           fontSize: 11, fontWeight: 500,
           whiteSpace: "nowrap", zIndex: 100,
-          display: "flex", alignItems: "center", gap: 6,
+          display: "flex", alignItems: "center", gap: "var(--space-1-5)",
           pointerEvents: "none",
         }}>
           {name}
@@ -3038,7 +3035,7 @@ function PageIcons() {
         <h1 style={{ fontSize: "var(--font-size-h1)", fontWeight: "var(--font-weight-heading)", color: "var(--fg)", margin: 0 }}>
           Icons
         </h1>
-        <p style={{ color: "var(--muted-fg)", marginTop: 6, fontSize: 14 }}>
+        <p style={{ color: "var(--muted-fg)", marginTop: "var(--space-1-5)", fontSize: 14 }}>
           Lucide icon pack · {filtered.length.toLocaleString()} of {allIcons.length.toLocaleString()} icons
           · Click any icon to copy its import
         </p>
@@ -3091,7 +3088,7 @@ function PageIcons() {
               style={{
                 display: "flex", flexDirection: "column",
                 alignItems: "center", justifyContent: "center",
-                gap: 6, padding: "12px 6px",
+                gap: "var(--space-1-5)", padding: "12px var(--space-1-5)",
                 height: 80,
                 borderRadius: 8,
                 border: `1px solid ${isCopied ? "var(--color-brand-primary)" : "var(--border)"}`,
@@ -3532,7 +3529,7 @@ function PageTheming() {
                 padding: "10px 20px", borderRadius: 10, border: "2px solid #be1d2c",
                 background: "rgba(190,29,44,0.06)", textAlign: "center" as const, minWidth: 130,
               }}>
-                <div style={{ width: 24, height: 24, borderRadius: 6, background: hex, margin: "0 auto 6px", border: "1px solid rgba(0,0,0,.1)" }} />
+                <div style={{ width: 24, height: 24, borderRadius: 6, background: hex, margin: "0 auto var(--space-1-5)", border: "1px solid rgba(0,0,0,.1)" }} />
                 <div style={{ fontWeight: 800, fontSize: 12.5, color: "#be1d2c", fontFamily: "monospace" }}>{hex}</div>
                 <div style={{ fontSize: 11, color: "var(--muted-fg)", marginTop: 2 }}>{label}</div>
               </div>
@@ -3550,7 +3547,7 @@ function PageTheming() {
                 background: "var(--bg)", textAlign: "center" as const, minWidth: 120,
               }}>
                 <div style={{ fontWeight: 700, fontSize: 12.5, color: "var(--fg)", marginBottom: 4, fontFamily: "monospace" }}>{label}</div>
-                <div style={{ fontSize: 11, color: "var(--muted-fg)", marginBottom: 6 }}>{sub}</div>
+                <div style={{ fontSize: 11, color: "var(--muted-fg)", marginBottom: "var(--space-1-5)" }}>{sub}</div>
                 <span style={{ fontSize: 9.5, fontWeight: 700, padding: "2px 7px", borderRadius: 999, background: `${badgeColor}22`, color: badgeColor, textTransform: "uppercase" as const }}>{badge}</span>
               </div>
             ))}
@@ -3564,7 +3561,7 @@ function PageTheming() {
             <div style={{ fontSize: 11, color: "var(--muted-fg)" }}>inline <code style={{ fontFamily: "monospace", fontSize: 11 }}>style</code> object applied at runtime — no class toggle, no build step</div>
           </div>
           <div style={{ fontSize: 18, color: "var(--muted-fg)", lineHeight: 1 }}>↓</div>
-          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" as const, justifyContent: "center", maxWidth: 540 }}>
+          <div style={{ display: "flex", gap: "var(--space-1-5)", flexWrap: "wrap" as const, justifyContent: "center", maxWidth: 540 }}>
             {["Btn","Inp","Lbl","Bdg","Avt","Alrt","Crd","Sel","Swt","Cbx","Rdo","Sldr","Prg","Skl","Tbl","Acc","Dlg","Tip","Cmd","…"].map(c => (
               <div key={c} style={{
                 padding: "4px 10px", borderRadius: 6, border: "1px solid var(--border)",
@@ -3710,8 +3707,8 @@ function PageTheming() {
             background: "rgba(36,36,35,0.07)", borderBottom: "1px solid rgba(36,36,35,0.1)",
             padding: "0 14px", height: 33, display: "flex", alignItems: "center",
           }}>
-            <span style={{ width: 9, height: 9, borderRadius: "50%", background: "#ff5f56", marginRight: 6, flexShrink: 0 }} />
-            <span style={{ width: 9, height: 9, borderRadius: "50%", background: "#febc2e", marginRight: 6, flexShrink: 0 }} />
+            <span style={{ width: 9, height: 9, borderRadius: "50%", background: "#ff5f56", marginRight: "var(--space-1-5)", flexShrink: 0 }} />
+            <span style={{ width: 9, height: 9, borderRadius: "50%", background: "#febc2e", marginRight: "var(--space-1-5)", flexShrink: 0 }} />
             <span style={{ width: 9, height: 9, borderRadius: "50%", background: "#27c840", marginRight: 12, flexShrink: 0 }} />
             <span style={{ fontSize: 11, color: "#6e6d6a", fontFamily: "monospace", flex: 1 }}>
               live-preview · {primary.toUpperCase()} / {secondary.toUpperCase()} · {demoMode}
@@ -3761,7 +3758,7 @@ function PageTheming() {
                 width: 330, minWidth: 260, flexShrink: 0, boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
                 padding: "21px 21px 28px",
               }}>
-                <div style={{ fontWeight: 700, fontSize: 15, color: "var(--fg)", marginBottom: 6 }}>Sign in</div>
+                <div style={{ fontWeight: 700, fontSize: 15, color: "var(--fg)", marginBottom: "var(--space-1-5)" }}>Sign in</div>
                 <div style={{ fontSize: 12.5, color: "var(--muted-fg)", marginBottom: 20 }}>Enter your credentials to continue.</div>
                 <div style={{ marginBottom: 12 }}>
                   <Lbl style={{ display: "block", marginBottom: 4, fontSize: 13 }}>Email</Lbl>
@@ -3827,7 +3824,7 @@ function PageTheming() {
               display: "flex", alignItems: "center", gap: 5,
               background: "transparent", border: "1px solid #3f3f46", borderRadius: 5,
               padding: "4px 10px", cursor: "pointer", color: copied ? "#a1a1aa" : "#71717a",
-              fontSize: 11, fontFamily: "inherit", transition: "all .15s", margin: "6px 8px 6px 0",
+              fontSize: 11, fontFamily: "inherit", transition: "all .15s", margin: "var(--space-1-5) 8px var(--space-1-5) 0",
             }}>
               {copied ? <Check size={11} /> : <Copy size={11} />} {copied ? "Copied!" : "Copy"}
             </button>
@@ -3921,7 +3918,7 @@ function App() {
       <DocSection title="Consuming Tokens in Components" desc="Correct patterns for referencing HeartStamp CSS variables inside your own custom components.">
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 20 }}>
           <div style={{ borderRadius: 10, overflow: "hidden", border: "1px solid rgba(52,211,153,0.3)" }}>
-            <div style={{ padding: "8px 14px", background: "rgba(52,211,153,0.08)", borderBottom: "1px solid rgba(52,211,153,0.2)", display: "flex", alignItems: "center", gap: 6 }}>
+            <div style={{ padding: "8px 14px", background: "rgba(52,211,153,0.08)", borderBottom: "1px solid rgba(52,211,153,0.2)", display: "flex", alignItems: "center", gap: "var(--space-1-5)" }}>
               <CheckCircle2 size={14} style={{ color: "#34d399" }} />
               <span style={{ fontSize: 12, fontWeight: 600, color: "#34d399" }}>Do — use CSS variables</span>
             </div>
@@ -3945,7 +3942,7 @@ const [hov, setHov] = useState(false);
    onMouseLeave={() => setHov(false)} />`} />
           </div>
           <div style={{ borderRadius: 10, overflow: "hidden", border: "1px solid rgba(239,68,68,0.3)" }}>
-            <div style={{ padding: "8px 14px", background: "rgba(239,68,68,0.08)", borderBottom: "1px solid rgba(239,68,68,0.2)", display: "flex", alignItems: "center", gap: 6 }}>
+            <div style={{ padding: "8px 14px", background: "rgba(239,68,68,0.08)", borderBottom: "1px solid rgba(239,68,68,0.2)", display: "flex", alignItems: "center", gap: "var(--space-1-5)" }}>
               <XCircle size={14} style={{ color: "#ef4444" }} />
               <span style={{ fontSize: 12, fontWeight: 600, color: "#ef4444" }}>Don't — hardcode values</span>
             </div>
@@ -3979,7 +3976,7 @@ const [hov, setHov] = useState(false);
             { prefix: "var(--state-*)",     full: "--state-hover / --state-pressed / --state-error",                     desc: "Overlay tints for interactive states" },
             { prefix: "var(--radius-*)",    full: "--radius-none → --radius-full (11 steps)",                            desc: "Border radius scale — prefer over raw px" },
             { prefix: "var(--shadow-*)",    full: "--shadow-xs → --shadow-2xl (6 steps)",                                desc: "Elevation shadow scale" },
-            { prefix: "var(--space-*)",     full: "--space-1 → --space-12 (10 steps, 4px base)",                         desc: "Spacing — padding, gap, margin" },
+            { prefix: "var(--space-*)",     full: "--space-0 → --space-12 (12 steps incl. --space-1-5, 4px base)",       desc: "Spacing — padding, gap, margin" },
             { prefix: "var(--text-on-*)",   full: "--text-on-primary / --text-on-secondary",                             desc: "Guaranteed readable text on colored surfaces" },
             { prefix: "var(--font-size-*)", full: "--font-size-h1 → --font-size-body-13",                                desc: "Typography scale — headings & body" },
             { prefix: "var(--heart)",       full: "--heart",                                                             desc: "Brand heart lockup accent — decorative" },
@@ -4013,13 +4010,13 @@ const [hov, setHov] = useState(false);
                     </td>
                     <td style={{ padding: "8px 14px", color: "var(--muted-fg)", fontSize: 12, lineHeight: 1.4 }}>{desc}</td>
                     <td style={{ padding: "8px 14px" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "var(--space-1-5)" }}>
                         {isColorVal(lightVal) && <Swatch color={lightVal} />}
                         <code style={{ fontFamily: "monospace", fontSize: 10.5, color: "var(--fg)" }}>{lightVal}</code>
                       </div>
                     </td>
                     <td style={{ padding: "8px 14px" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "var(--space-1-5)" }}>
                         {isColorVal(darkVal) && <Swatch color={darkVal} dark />}
                         <code style={{ fontFamily: "monospace", fontSize: 10.5, color: "#c084fc" }}>{darkVal}</code>
                       </div>
@@ -4111,6 +4108,7 @@ const PAGES: Record<string, any> = {
   "tokens-shadow": PageTokensShadow,
   button: PageButton,
   input: PageInput,
+  kbd: PageKbd,
   textarea: PageTextarea,
   label: PageLabel,
   select: PageSelect,
@@ -4158,10 +4156,28 @@ const PAGES: Record<string, any> = {
 ═══════════════════════════════════════════════════════════ */
 export default function App() {
   const [dark, setDark] = useState(false);
-  const [page, setPage] = useState("intro");
+  const [page, setPage] = useState(() => {
+    const hash = typeof window !== "undefined" ? window.location.hash.slice(1) : "";
+    return hash && PAGES[hash] ? hash : "intro";
+  });
   const [windowWidth, setWindowWidth] = useState(typeof window !== "undefined" ? window.innerWidth : 1200);
   const [sidebarOpen, setSidebarOpen] = useState(windowWidth >= 768);
   const [iconSearch, setIconSearch] = useState("");
+
+  // Sync URL hash whenever the page changes
+  useEffect(() => {
+    window.location.hash = page;
+  }, [page]);
+
+  // Support browser back / forward navigation
+  useEffect(() => {
+    const onHashChange = () => {
+      const hash = window.location.hash.slice(1);
+      if (hash && PAGES[hash]) setPage(hash);
+    };
+    window.addEventListener("hashchange", onHashChange);
+    return () => window.removeEventListener("hashchange", onHashChange);
+  }, []);
 
   useEffect(() => {
     const handler = () => setWindowWidth(window.innerWidth);

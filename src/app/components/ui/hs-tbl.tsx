@@ -1,21 +1,34 @@
 import React from "react";
 
 /* HeartStamp — Table primitive */
-export function Tbl({ columns, rows }: any) {
+
+interface TblColumn {
+  key: string;
+  label: string;
+}
+
+type TblRow = Record<string, React.ReactNode>;
+
+interface TblProps {
+  columns: TblColumn[];
+  rows: TblRow[];
+}
+
+export function Tbl({ columns, rows }: TblProps) {
   return (
-    <div style={{ border: "1px solid var(--border)", borderRadius: 10, overflow: "hidden" }}>
-      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+    <div style={{ border: "1px solid var(--border)", borderRadius: "var(--radius-xl)", overflow: "hidden" }}>
+      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "var(--font-size-body-13)" }}>
         <thead>
           <tr style={{ background: "var(--muted)", borderBottom: "1px solid var(--border)" }}>
-            {columns.map((c: any) => (
+            {columns.map(c => (
               <th
                 key={c.key}
                 style={{
-                  padding: "10px 14px",
+                  padding: "var(--space-2) var(--space-3-5)",
                   textAlign: "left",
-                  fontWeight: 600,
+                  fontWeight: "var(--font-weight-label-sb-15)",
                   color: "var(--muted-fg)",
-                  fontSize: 11.5,
+                  fontSize: "var(--font-size-label-12)",
                   textTransform: "uppercase",
                   letterSpacing: ".04em",
                 }}
@@ -26,7 +39,7 @@ export function Tbl({ columns, rows }: any) {
           </tr>
         </thead>
         <tbody>
-          {rows.map((row: any, i: number) => (
+          {rows.map((row, i) => (
             <tr
               key={i}
               style={{
@@ -34,8 +47,8 @@ export function Tbl({ columns, rows }: any) {
                 background: i % 2 === 0 ? "var(--bg)" : "var(--muted)",
               }}
             >
-              {columns.map((c: any) => (
-                <td key={c.key} style={{ padding: "10px 14px", color: "var(--fg)" }}>
+              {columns.map(c => (
+                <td key={c.key} style={{ padding: "var(--space-2) var(--space-3-5)", color: "var(--fg)" }}>
                   {row[c.key]}
                 </td>
               ))}

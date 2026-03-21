@@ -1,16 +1,22 @@
 import React, { useState } from "react";
 
+interface AvtProps {
+  src?: string;
+  fallback?: string;
+  size?: number;
+}
+
 /* HeartStamp — Avatar primitive */
-export function Avt({ src, fallback = "AB", size = 40 }: any) {
+export function Avt({ src, fallback = "AB", size = 40 }: AvtProps) {
   const [err, setErr] = useState(false);
   return (
     <div
       style={{
         width: size,
         height: size,
-        borderRadius: "50%",
+        borderRadius: "var(--radius-full)",
         overflow: "hidden",
-        background: "var(--bg-editor)",
+        background: "var(--bg)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",

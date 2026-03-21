@@ -1,7 +1,19 @@
 import React, { useState, useRef, useEffect } from "react";
 
-/* HeartStamp — Context Menu primitive */
-export function CtxMenu({ children, items }: any) {
+interface CtxMenuItem {
+  label?: string;
+  icon?: React.ReactNode;
+  onClick?: () => void;
+  destructive?: boolean;
+  separator?: boolean;
+}
+
+interface CtxMenuProps {
+  children: React.ReactNode;
+  items: CtxMenuItem[];
+}
+
+export function CtxMenu({ children, items }: CtxMenuProps) {
   const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -30,16 +42,16 @@ export function CtxMenu({ children, items }: any) {
             zIndex: 200,
             background: "var(--bg-menus)",
             border: "1px solid var(--border)",
-            borderRadius: 12,
+            borderRadius: "var(--radius-2xl)",
             boxShadow: "0 8px 24px rgba(0,0,0,.15)",
             minWidth: 160,
             overflow: "hidden",
-            padding: "4px 0",
+            padding: "var(--space-1) 0",
           }}
         >
-          {items.map((item: any, i: number) =>
+          {items.map((item, i) =>
             item.separator ? (
-              <div key={i} style={{ height: 1, background: "var(--border)", margin: "4px 0" }} />
+              <div key={i} style={{ height: 1, background: "var(--border)", margin: "var(--space-1) 0" }} />
             ) : (
               <button
                 key={i}
@@ -48,22 +60,22 @@ export function CtxMenu({ children, items }: any) {
                   width: "100%",
                   display: "flex",
                   alignItems: "center",
-                  gap: 8,
-                  padding: "7px 14px",
+                  gap: "var(--space-2)",
+                  padding: "var(--space-1-5) var(--space-3-5)",
                   background: "none",
                   border: "none",
                   cursor: "pointer",
-                  fontSize: 12.5,
+                  fontSize: "var(--font-size-label-12)",
                   fontFamily: "inherit",
-                  color: item.destructive ? "var(--state-error)" : "var(--fg)",
+                  color: item.destructive ? "var(--color-state-error)" : "var(--fg)",
                   textAlign: "left",
                   transition: "background 0.1s ease",
                 }}
-                onMouseEnter={e => { e.currentTarget.style.background = "var(--state-hover)"; }}
+                onMouseEnter={e => { e.currentTarget.style.background = "var(--color-state-hover)"; }}
                 onMouseLeave={e => { e.currentTarget.style.background = "none"; }}
               >
                 {item.icon && (
-                  <span style={{ color: item.destructive ? "var(--state-error)" : "var(--muted-fg)" }}>
+                  <span style={{ color: item.destructive ? "var(--color-state-error)" : "var(--muted-fg)" }}>
                     {item.icon}
                   </span>
                 )}

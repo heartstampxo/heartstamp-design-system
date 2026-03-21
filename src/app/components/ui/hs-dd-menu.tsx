@@ -1,7 +1,22 @@
 import React, { useState, useRef, useEffect } from "react";
 
-/* HeartStamp — Dropdown Menu primitive */
-export function DdMenu({ trigger, items }: any) {
+interface DdMenuItem {
+  label?: string;
+  icon?: React.ReactNode;
+  shortcut?: string;
+  onClick?: () => void;
+  destructive?: boolean;
+  disabled?: boolean;
+  separator?: boolean;
+}
+
+interface DdMenuProps {
+  trigger: React.ReactNode;
+  items: DdMenuItem[];
+  style?: React.CSSProperties;
+}
+
+export function DdMenu({ trigger, items, style }: DdMenuProps) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -14,27 +29,27 @@ export function DdMenu({ trigger, items }: any) {
   }, []);
 
   return (
-    <div ref={ref} style={{ position: "relative", display: "inline-block" }}>
+    <div ref={ref} style={{ position: "relative", display: "inline-block", ...style }}>
       <div onClick={() => setOpen(o => !o)}>{trigger}</div>
       {open && (
         <div
           style={{
             position: "absolute",
-            top: "calc(100% + 4px)",
+            top: "calc(100% + var(--space-1))",
             left: 0,
             zIndex: 100,
             background: "var(--bg-menus)",
             border: "1px solid var(--border)",
-            borderRadius: 12,
+            borderRadius: "var(--radius-2xl)",
             boxShadow: "0 8px 24px rgba(0,0,0,.15)",
-            minWidth: 180,
+            minWidth: "100%",
             overflow: "hidden",
-            padding: "4px 0",
+            padding: "var(--space-1) 0",
           }}
         >
-          {items.map((item: any, i: number) =>
+          {items.map((item, i) =>
             item.separator ? (
-              <div key={i} style={{ height: 1, background: "var(--border)", margin: "4px 0" }} />
+              <div key={i} style={{ height: 1, background: "var(--border)", margin: "var(--space-1) 0" }} />
             ) : (
               <button
                 key={i}
@@ -43,33 +58,33 @@ export function DdMenu({ trigger, items }: any) {
                   width: "100%",
                   display: "flex",
                   alignItems: "center",
-                  gap: 8,
-                  padding: "8px 14px",
+                  gap: "var(--space-2)",
+                  padding: "var(--space-2) var(--space-3-5)",
                   background: "none",
                   border: "none",
                   cursor: item.disabled ? "not-allowed" : "pointer",
-                  fontSize: 13,
+                  fontSize: "var(--font-size-body-13)",
                   color: item.destructive
-                    ? "var(--state-error)"
+                    ? "var(--color-state-error)"
                     : item.disabled
-                    ? "var(--text-disabled)"
+                    ? "var(--color-text-disabled)"
                     : "var(--fg)",
                   textAlign: "left",
                   opacity: item.disabled ? 0.5 : 1,
                   fontFamily: "inherit",
                   transition: "background 0.1s ease",
                 }}
-                onMouseEnter={e => { if (!item.disabled) e.currentTarget.style.background = "var(--state-hover)"; }}
+                onMouseEnter={e => { if (!item.disabled) e.currentTarget.style.background = "var(--color-state-hover)"; }}
                 onMouseLeave={e => { e.currentTarget.style.background = "none"; }}
               >
                 {item.icon && (
-                  <span style={{ color: item.destructive ? "var(--state-error)" : "var(--muted-fg)" }}>
+                  <span style={{ color: item.destructive ? "var(--color-state-error)" : "var(--muted-fg)" }}>
                     {item.icon}
                   </span>
                 )}
                 {item.label}
                 {item.shortcut && (
-                  <span style={{ marginLeft: "auto", fontSize: 11, color: "var(--text-disabled)" }}>
+                  <span style={{ marginLeft: "auto", fontSize: "var(--font-size-label-12)", color: "var(--color-text-disabled)" }}>
                     {item.shortcut}
                   </span>
                 )}

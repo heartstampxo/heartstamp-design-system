@@ -5,7 +5,7 @@ import { HSLogo, useIsDark } from "./hs-logo";
 import lockupDark from "../../../assets/type=Lockup, color=brand, Theme=Dark.svg?url";
 
 const iconBtn: React.CSSProperties = {
-  width: 24, height: 24, display: "flex", alignItems: "center", justifyContent: "center",
+  width: "var(--space-6)", height: "var(--space-6)", display: "flex", alignItems: "center", justifyContent: "center",
   background: "none", border: "none", cursor: "pointer",
   color: "var(--muted-fg)", borderRadius: "var(--radius-sm)", flexShrink: 0,
 };
@@ -60,17 +60,17 @@ export function TopNavDesktop() {
               border: "none",
               outline: "none",
               background: "transparent",
-              fontSize: 14,
+              fontSize: "var(--font-size-body-13)",
               color: "var(--fg)",
               fontFamily: "inherit",
             }}
           />
           <span
             style={{
-              fontSize: 11,
+              fontSize: "var(--font-size-label-12)",
               color: "var(--muted-fg)",
               background: "var(--muted)",
-              padding: "2px 6px",
+              padding: "var(--space-0) var(--space-1-5)",
               borderRadius: "var(--radius-xs)",
               flexShrink: 0,
               fontFamily: "inherit",
@@ -165,7 +165,7 @@ export function TopNavMobile() {
           display: "flex",
           flexDirection: "column",
           padding: "var(--space-4)",
-          gap: 2,
+          gap: "var(--space-0)",
           height: 400,
         }}
       >
@@ -194,10 +194,10 @@ export function TopNavMobile() {
               border: "none",
               cursor: "pointer",
               textAlign: "left",
-              fontSize: 14,
-              fontWeight: 500,
+              fontSize: "var(--font-size-body-13)",
+              fontWeight: "var(--font-weight-label-15)",
               color: "var(--fg)",
-              padding: "9px 10px",
+              padding: "var(--space-2) var(--space-2)",
               borderRadius: "var(--radius-md)",
               fontFamily: "inherit",
               transition: "background 0.12s",

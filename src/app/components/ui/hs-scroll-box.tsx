@@ -1,18 +1,24 @@
 import React from "react";
 
 /* HeartStamp — ScrollBox primitive */
-export function ScrollBox({ children, height = 160 }: any) {
+
+interface ScrollBoxProps {
+  children: React.ReactNode;
+  height?: number | string;
+}
+
+export function ScrollBox({ children, height = 160 }: ScrollBoxProps) {
   return (
     <div
       style={{
         height,
         overflowY: "auto",
         border: "1px solid var(--border)",
-        borderRadius: 8,
-        padding: 12,
+        borderRadius: "var(--radius-lg)",
+        padding: "var(--space-3)",
         scrollbarWidth: "thin",
         scrollbarColor: "var(--border) transparent",
-      } as any}
+      } as React.CSSProperties}
     >
       {children}
     </div>

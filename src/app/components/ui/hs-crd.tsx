@@ -1,8 +1,11 @@
 import React from "react";
 
-/* HeartStamp — Card family primitives */
+interface CrdProps {
+  children: React.ReactNode;
+  style?: React.CSSProperties;
+}
 
-export function Crd({ children, style }: any) {
+export function Crd({ children, style }: CrdProps) {
   return (
     <div
       style={{
@@ -18,7 +21,7 @@ export function Crd({ children, style }: any) {
   );
 }
 
-export function CrdHeader({ children }: any) {
+export function CrdHeader({ children }: { children: React.ReactNode }) {
   return (
     <div style={{ padding: "var(--space-4) var(--space-5)", borderBottom: "1px solid var(--border)" }}>
       {children}
@@ -26,11 +29,11 @@ export function CrdHeader({ children }: any) {
   );
 }
 
-export function CrdBody({ children }: any) {
+export function CrdBody({ children }: { children: React.ReactNode }) {
   return <div style={{ padding: "var(--space-4) var(--space-5)" }}>{children}</div>;
 }
 
-export function CrdFooter({ children }: any) {
+export function CrdFooter({ children }: { children: React.ReactNode }) {
   return (
     <div
       style={{
@@ -44,14 +47,14 @@ export function CrdFooter({ children }: any) {
   );
 }
 
-export function CrdTitle({ children }: any) {
+export function CrdTitle({ children }: { children: React.ReactNode }) {
   return (
-    <div style={{ fontWeight: 700, fontSize: "var(--font-size-body-15)", color: "var(--fg)", marginBottom: 2 }}>
+    <div style={{ fontWeight: "var(--font-weight-label-sb-15)" as React.CSSProperties["fontWeight"], fontSize: "var(--font-size-body-15)", color: "var(--fg)", marginBottom: "var(--space-1)" }}>
       {children}
     </div>
   );
 }
 
-export function CrdDesc({ children }: any) {
-  return <div style={{ fontSize: 12.5, color: "var(--muted-fg)" }}>{children}</div>;
+export function CrdDesc({ children }: { children: React.ReactNode }) {
+  return <div style={{ fontSize: "var(--font-size-label-12)", color: "var(--muted-fg)" }}>{children}</div>;
 }

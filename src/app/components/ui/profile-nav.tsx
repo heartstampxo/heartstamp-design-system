@@ -11,7 +11,7 @@ import lockupDark from "../../../assets/type=Lockup, color=brand, Theme=Dark.svg
 
 /* ── Shared styles ─────────────────────────────────────────────────────── */
 const pnItemStyle: React.CSSProperties = {
-  width: "100%", display: "flex", alignItems: "center", gap: 6,
+  width: "100%", display: "flex", alignItems: "center", gap: "var(--space-1-5)",
   padding: "var(--space-2) var(--space-4)", background: "none", border: "none", cursor: "pointer",
   color: "var(--color-text-primary)", fontSize: "var(--font-size-body-15)", textAlign: "left", fontFamily: "inherit",
 };
@@ -43,10 +43,10 @@ export function PnNavRow({
   size?: "default" | "sm";
 }) {
   const smStyle: React.CSSProperties = size === "sm"
-    ? { fontSize: 12.5, padding: "6px var(--space-4)", borderRadius: 7 }
+    ? { fontSize: "var(--font-size-label-12)", padding: "var(--space-1-5) var(--space-4)", borderRadius: "var(--radius-md)" }
     : {};
   const activeStyle: React.CSSProperties = active
-    ? { background: "var(--color-state-hover)", color: "var(--color-text-primary)", fontWeight: 600 }
+    ? { background: "var(--color-state-hover)", color: "var(--color-text-primary)", fontWeight: "var(--font-weight-label-sb-15)" }
     : {};
   return (
     <motion.button
@@ -55,9 +55,9 @@ export function PnNavRow({
       whileHover={active ? {} : { background: "var(--color-state-hover)" }}
       transition={{ duration: 0.12 }}
     >
-      <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+      <span style={{ display: "flex", alignItems: "center", gap: "var(--space-1-5)" }}>
         {icon && (
-          <span style={{ color: active ? "var(--accent)" : "var(--color-text-secondary)", display: "flex", flexShrink: 0, width: 16, height: 16, alignItems: "center", justifyContent: "center" }}>{icon}</span>
+          <span style={{ color: active ? "var(--accent)" : "var(--color-text-secondary)", display: "flex", flexShrink: 0, width: "var(--space-4)", height: "var(--space-4)", alignItems: "center", justifyContent: "center" }}>{icon}</span>
         )}
         {label}
       </span>
@@ -83,7 +83,7 @@ export function PnSignOutRow() {
         if (s) s.style.color = "var(--color-text-secondary)";
       }}
     >
-      <span className="hs-signout-icon" style={{ color: "var(--color-text-secondary)", display: "flex", flexShrink: 0, width: 16, height: 16, alignItems: "center", justifyContent: "center", transition: "color 0.12s" }}>
+      <span className="hs-signout-icon" style={{ color: "var(--color-text-secondary)", display: "flex", flexShrink: 0, width: "var(--space-4)", height: "var(--space-4)", alignItems: "center", justifyContent: "center", transition: "color 0.12s" }}>
         <LogOut size={16} />
       </span>
       Sign out
@@ -91,22 +91,24 @@ export function PnSignOutRow() {
   );
 }
 
-export function PnThemeRow({ theme, setTheme }: { theme: "light"|"dark"|"system"; setTheme: (t: "light"|"dark"|"system") => void }) {
+type Theme = "light" | "dark" | "system";
+
+export function PnThemeRow({ theme, setTheme }: { theme: Theme; setTheme: (t: Theme) => void }) {
   return (
     <div style={{ ...pnItemStyle, cursor: "default" }}>
-      <span style={{ color: "var(--color-text-secondary)", display: "flex", flexShrink: 0, width: 16, height: 16, alignItems: "center", justifyContent: "center" }}><BrightnessIcon size={16} /></span>
+      <span style={{ color: "var(--color-text-secondary)", display: "flex", flexShrink: 0, width: "var(--space-4)", height: "var(--space-4)", alignItems: "center", justifyContent: "center" }}><BrightnessIcon size={16} /></span>
       <span style={{ flex: 1 }}>Theme</span>
       <div style={{ display: "flex", background: "var(--color-brand-secondary-dim)", borderRadius: "var(--radius-full)", padding: "var(--space-1)", gap: "var(--space-2)" }}>
-        {([["light", <Sun size={14} />], ["dark", <Moon size={14} />], ["system", <Monitor size={14} />]] as [string, React.ReactNode][]).map(([val, icon]) => (
+        {([["light", <Sun size={14} />], ["dark", <Moon size={14} />], ["system", <Monitor size={14} />]] as [Theme, React.ReactNode][]).map(([val, icon]) => (
           <motion.button
             key={val}
-            onClick={() => setTheme(val as any)}
+            onClick={() => setTheme(val)}
             style={{
-              height: 28, width: 36, border: "none", cursor: "pointer", borderRadius: "var(--radius-full)",
+              height: "var(--space-7)", width: "var(--space-10)", border: "none", cursor: "pointer", borderRadius: "var(--radius-full)",
               display: "flex", alignItems: "center", justifyContent: "center",
               background: theme === val ? "var(--bg-menus)" : "transparent",
               color: "var(--fg)",
-              boxShadow: theme === val ? "0 0 4px rgba(0,0,0,0.08)" : "none",
+              boxShadow: theme === val ? "0 0 var(--space-1) rgba(0,0,0,0.08)" : "none",
               fontFamily: "inherit",
             }}
             whileHover={theme !== val ? { background: "var(--color-state-hover)" } : {}}
@@ -125,15 +127,15 @@ export function PnUserHeader() {
     <div style={{ padding: "var(--space-4)", display: "flex", alignItems: "center", gap: "var(--space-3)" }}>
       <Avt size={40} src="https://i.pravatar.cc/80?img=68" fallback="JW" />
       <div>
-        <div style={{ fontSize: 16, fontWeight: 600, color: "var(--color-text-primary)", lineHeight: "24px" }}>Jason Williams</div>
-        <div style={{ fontSize: 14, color: "var(--color-text-secondary)", lineHeight: "20px" }}>jasonwilliams@gmail.com</div>
+        <div style={{ fontSize: "var(--font-size-body-15)", fontWeight: "var(--font-weight-label-sb-15)", color: "var(--color-text-primary)", lineHeight: "var(--space-6)" }}>Jason Williams</div>
+        <div style={{ fontSize: "var(--font-size-body-13)", color: "var(--color-text-secondary)", lineHeight: "var(--space-5)" }}>jasonwilliams@gmail.com</div>
       </div>
     </div>
   );
 }
 
 /* ── Desktop & Mobile ──────────────────────────────────────────────────── */
-export function ProfileNavDesktop({ theme, setTheme }: { theme: "light"|"dark"|"system"; setTheme: (t: "light"|"dark"|"system") => void }) {
+export function ProfileNavDesktop({ theme, setTheme }: { theme: Theme; setTheme: (t: Theme) => void }) {
   const sysIsDark = useIsDark();
   const themeVars: React.CSSProperties = theme === "dark" ? DARK_THEME : theme === "light" ? LIGHT_THEME : (sysIsDark ? DARK_THEME : LIGHT_THEME);
   return (
@@ -146,7 +148,7 @@ export function ProfileNavDesktop({ theme, setTheme }: { theme: "light"|"dark"|"
     >
       <PnUserHeader />
       <div style={{ borderTop: "1px solid var(--color-element-subtle)" }}>
-        <div style={{ display: "flex", flexDirection: "column", gap: 6, padding: "var(--space-3) 0" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-1-5)", padding: "var(--space-3) 0" }}>
           <PnNavRow icon={<Palette size={16} />}        label="My cards" />
           <PnDivider />
           <PnNavRow icon={<Settings size={16} />}       label="Settings" />
@@ -164,7 +166,7 @@ export function ProfileNavDesktop({ theme, setTheme }: { theme: "light"|"dark"|"
   );
 }
 
-export function ProfileNavMobile({ theme, setTheme }: { theme: "light"|"dark"|"system"; setTheme: (t: "light"|"dark"|"system") => void }) {
+export function ProfileNavMobile({ theme, setTheme }: { theme: Theme; setTheme: (t: Theme) => void }) {
   const sysIsDark = useIsDark();
   const themeVars: React.CSSProperties = theme === "dark" ? DARK_THEME : theme === "light" ? LIGHT_THEME : (sysIsDark ? DARK_THEME : LIGHT_THEME);
   const isDarkMode = theme === "dark" || (theme === "system" && sysIsDark);
@@ -177,20 +179,20 @@ export function ProfileNavMobile({ theme, setTheme }: { theme: "light"|"dark"|"s
       transition={{ duration: 0.25, ease: [0.32, 0.72, 0, 1] }}
     >
       <div style={{ padding: "0 var(--space-4)", height: 52, display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid var(--color-element-subtle)" }}>
-        <button style={{ width: 24, height: 24, display: "flex", alignItems: "center", justifyContent: "center", background: "none", border: "none", cursor: "pointer", color: "var(--color-text-secondary)", borderRadius: "var(--radius-sm)", flexShrink: 0 }}>
+        <button style={{ width: "var(--space-6)", height: "var(--space-6)", display: "flex", alignItems: "center", justifyContent: "center", background: "none", border: "none", cursor: "pointer", color: "var(--color-text-secondary)", borderRadius: "var(--radius-sm)", flexShrink: 0 }}>
           <X size={18} />
         </button>
         {isDarkMode
           ? <img src={lockupDark} height={26} width={104} alt="HeartStamp" style={{ display: "block" }} />
           : <HSLockup color="brand" height={26} />
         }
-        <button style={{ width: 24, height: 24, display: "flex", alignItems: "center", justifyContent: "center", background: "none", border: "none", cursor: "pointer", color: "var(--color-text-secondary)", borderRadius: "var(--radius-sm)", flexShrink: 0 }}>
+        <button style={{ width: "var(--space-6)", height: "var(--space-6)", display: "flex", alignItems: "center", justifyContent: "center", background: "none", border: "none", cursor: "pointer", color: "var(--color-text-secondary)", borderRadius: "var(--radius-sm)", flexShrink: 0 }}>
           <Search size={18} />
         </button>
       </div>
       <PnUserHeader />
       <div style={{ borderTop: "1px solid var(--color-element-subtle)" }}>
-        <div style={{ display: "flex", flexDirection: "column", gap: 6, padding: "var(--space-3) 0" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-1-5)", padding: "var(--space-3) 0" }}>
           <PnNavRow icon={<Home size={16} />}          label="Home" />
           <PnNavRow icon={<Palette size={16} />}       label="My cards" />
           <PnDivider />

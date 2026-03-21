@@ -2,7 +2,21 @@ import React, { useState, useRef, useEffect } from "react";
 import { ChevronDown, Check } from "lucide-react";
 
 /* HeartStamp — Select dropdown primitive */
-export function Sel({ options = [], value, onChange, placeholder = "Select…", style }: any) {
+
+interface SelOption {
+  value: string;
+  label: string;
+}
+
+interface SelProps {
+  options?: SelOption[];
+  value?: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+  style?: React.CSSProperties;
+}
+
+export function Sel({ options = [], value, onChange, placeholder = "Select…", style }: SelProps) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -14,7 +28,7 @@ export function Sel({ options = [], value, onChange, placeholder = "Select…", 
     return () => document.removeEventListener("mousedown", h);
   }, []);
 
-  const selected = options.find((o: any) => o.value === value);
+  const selected = options.find(o => o.value === value);
 
   return (
     <div ref={ref} style={{ position: "relative", ...style }}>
@@ -25,12 +39,12 @@ export function Sel({ options = [], value, onChange, placeholder = "Select…", 
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          padding: "10px 12px",
-          borderRadius: 32,
+          padding: "var(--space-2) var(--space-3)",
+          borderRadius: "var(--radius-input)",
           border: "1px solid var(--border)",
           background: "var(--bg-input)",
-          color: selected ? "var(--fg)" : "var(--text-disabled)",
-          fontSize: 15,
+          color: selected ? "var(--fg)" : "var(--color-text-disabled)",
+          fontSize: "var(--font-size-body-15)",
           fontFamily: "inherit",
           cursor: "pointer",
           transition: "border-color 0.15s ease",
@@ -52,34 +66,34 @@ export function Sel({ options = [], value, onChange, placeholder = "Select…", 
         <div
           style={{
             position: "absolute",
-            top: "calc(100% + 4px)",
+            top: "calc(100% + var(--space-1))",
             left: 0,
             right: 0,
             zIndex: 100,
             background: "var(--bg-menus)",
             border: "1px solid var(--border)",
-            borderRadius: 12,
+            borderRadius: "var(--radius-2xl)",
             boxShadow: "0 8px 24px rgba(0,0,0,.15)",
             overflow: "hidden",
           }}
         >
-          {options.map((o: any) => (
+          {options.map(o => (
             <div
               key={o.value}
               onClick={() => { onChange(o.value); setOpen(false); }}
               style={{
-                padding: "9px 14px",
-                fontSize: 14,
+                padding: "var(--space-2) var(--space-3-5)",
+                fontSize: "var(--font-size-body-13)",
                 cursor: "pointer",
                 color: "var(--fg)",
-                background: o.value === value ? "var(--state-hover)" : "transparent",
+                background: o.value === value ? "var(--color-state-hover)" : "transparent",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
                 transition: "background 0.1s ease",
               }}
-              onMouseEnter={e => (e.currentTarget.style.background = "var(--state-hover)")}
-              onMouseLeave={e => (e.currentTarget.style.background = o.value === value ? "var(--state-hover)" : "transparent")}
+              onMouseEnter={e => (e.currentTarget.style.background = "var(--color-state-hover)")}
+              onMouseLeave={e => (e.currentTarget.style.background = o.value === value ? "var(--color-state-hover)" : "transparent")}
             >
               {o.label}
               {o.value === value && <Check size={13} style={{ color: "var(--accent)" }} />}

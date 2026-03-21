@@ -1,11 +1,15 @@
 import React, { useState } from "react";
 import { ChevronDown } from "lucide-react";
 
-/* HeartStamp — Collapsible primitive */
-export function Collapsible({ trigger, children }: any) {
+interface CollapsibleProps {
+  trigger: React.ReactNode;
+  children: React.ReactNode;
+}
+
+export function Collapsible({ trigger, children }: CollapsibleProps) {
   const [open, setOpen] = useState(false);
   return (
-    <div style={{ border: "1px solid var(--border)", borderRadius: 8, overflow: "hidden" }}>
+    <div style={{ border: "1px solid var(--border)", borderRadius: "var(--radius-lg)", overflow: "hidden" }}>
       <button
         onClick={() => setOpen(o => !o)}
         style={{
@@ -13,13 +17,13 @@ export function Collapsible({ trigger, children }: any) {
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          padding: "12px 16px",
+          padding: "var(--space-3) var(--space-4)",
           background: "var(--muted)",
           border: "none",
           cursor: "pointer",
           color: "var(--fg)",
-          fontSize: 13,
-          fontWeight: 500,
+          fontSize: "var(--font-size-body-13)",
+          fontWeight: "var(--font-weight-label-15)" as React.CSSProperties["fontWeight"],
           textAlign: "left",
         }}
       >
@@ -34,7 +38,7 @@ export function Collapsible({ trigger, children }: any) {
         />
       </button>
       {open && (
-        <div style={{ padding: 16, fontSize: 13, color: "var(--muted-fg)", lineHeight: 1.7 }}>
+        <div style={{ padding: "var(--space-4)", fontSize: "var(--font-size-body-13)", color: "var(--muted-fg)", lineHeight: 1.7 }}>
           {children}
         </div>
       )}

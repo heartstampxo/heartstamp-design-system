@@ -52,6 +52,7 @@ export const NAV = [
       { title: "Footer",          id: "footer",        label: "new"  },
       { title: "Hover Card",      id: "hover-card"   },
       { title: "Input",           id: "input"        },
+      { title: "Kbd",             id: "kbd",           label: "new"  },
       { title: "Label",           id: "label"        },
       { title: "Navigation Menu", id: "nav-menu"     },
       { title: "Pagination",      id: "pagination"   },

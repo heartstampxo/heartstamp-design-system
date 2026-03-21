@@ -1,7 +1,13 @@
 import React, { useState } from "react";
 
 /* HeartStamp — Tooltip wrapper primitive */
-export function Tip({ label, children }: any) {
+
+interface TipProps {
+  label: string;
+  children: React.ReactNode;
+}
+
+export function Tip({ label, children }: TipProps) {
   const [show, setShow] = useState(false);
   return (
     <div
@@ -14,13 +20,13 @@ export function Tip({ label, children }: any) {
         <div
           style={{
             position: "absolute",
-            bottom: "calc(100% + 6px)",
+            bottom: "calc(100% + var(--space-1-5))",
             left: "50%",
             transform: "translateX(-50%)",
             background: "var(--fg)",
             color: "var(--bg)",
-            fontSize: 11,
-            fontWeight: 500,
+            fontSize: "var(--font-size-label-12)",
+            fontWeight: "var(--font-weight-label-15)",
             padding: "var(--space-1) var(--space-2)",
             borderRadius: "var(--radius-sm)",
             whiteSpace: "nowrap",

@@ -1,17 +1,25 @@
 import React from "react";
 
 /* HeartStamp — Slider primitive */
-export function Sldr({ value, onChange, min = 0, max = 100 }: any) {
+
+interface SldrProps {
+  value: number;
+  onChange: (value: number) => void;
+  min?: number;
+  max?: number;
+}
+
+export function Sldr({ value, onChange, min = 0, max = 100 }: SldrProps) {
   return (
-    <div style={{ width: "100%", padding: "8px 0", position: "relative" }}>
-      <div style={{ height: 4, borderRadius: 99, background: "var(--muted)", position: "relative" }}>
+    <div style={{ width: "100%", padding: "var(--space-2) 0", position: "relative" }}>
+      <div style={{ height: "var(--space-1)", borderRadius: "var(--radius-full)", background: "var(--muted)", position: "relative" }}>
         <div
           style={{
             position: "absolute",
             left: 0,
             top: 0,
             height: "100%",
-            borderRadius: 99,
+            borderRadius: "var(--radius-full)",
             background: "var(--accent)",
             width: `${((value - min) / (max - min)) * 100}%`,
           }}

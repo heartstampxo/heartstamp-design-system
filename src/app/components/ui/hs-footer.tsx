@@ -64,7 +64,7 @@ const SOCIAL_ICONS = [
 const linkStyle: React.CSSProperties = {
   color: "var(--color-text-secondary)",
   fontSize: "var(--font-size-body-15)",
-  fontWeight: 600,
+  fontWeight: "var(--font-weight-label-sb-15)" as React.CSSProperties["fontWeight"],
   cursor: "pointer",
   background: "none",
   border: "none",
@@ -76,7 +76,7 @@ const linkStyle: React.CSSProperties = {
 const legalStyle: React.CSSProperties = {
   color: "var(--color-text-secondary)",
   fontSize: "var(--font-size-body-15)",
-  fontWeight: 500,
+  fontWeight: "var(--font-weight-label-15)" as React.CSSProperties["fontWeight"],
   lineHeight: "20px",
   cursor: "pointer",
   background: "none",
@@ -199,7 +199,6 @@ export function Footer({ layout }: FooterProps = {}) {
       style={{
         ...linkStyle,
         textAlign: wide ? undefined : "center",
-        fontSize: wide ? "var(--font-size-body-15)" : "var(--font-size-body-15)",
       }}
       onMouseEnter={hoverFg}
       onMouseLeave={resetMuted}
@@ -285,7 +284,7 @@ export function Footer({ layout }: FooterProps = {}) {
               style={{
                 color: "var(--color-text-secondary)",
                 fontSize: "var(--font-size-body-15)",
-                fontWeight: 400,
+                fontWeight: "var(--font-weight-normal)" as React.CSSProperties["fontWeight"],
                 lineHeight: "20px",
               }}
             >
@@ -391,7 +390,7 @@ export function Footer({ layout }: FooterProps = {}) {
               textAlign: "center",
               color: "var(--color-text-secondary)",
               fontSize: "var(--font-size-body-13)",
-              fontWeight: 500,
+              fontWeight: "var(--font-weight-label-15)" as React.CSSProperties["fontWeight"],
               lineHeight: "20px",
             }}
           >

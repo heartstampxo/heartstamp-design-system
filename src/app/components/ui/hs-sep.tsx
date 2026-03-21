@@ -1,7 +1,13 @@
 import React from "react";
 
 /* HeartStamp — Separator primitive */
-export function Sep({ orientation = "horizontal", style }: any) {
+
+interface SepProps {
+  orientation?: "horizontal" | "vertical";
+  style?: React.CSSProperties;
+}
+
+export function Sep({ orientation = "horizontal", style }: SepProps) {
   return (
     <div
       style={{

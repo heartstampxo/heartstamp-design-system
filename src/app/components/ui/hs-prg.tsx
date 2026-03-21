@@ -1,12 +1,18 @@
 import React from "react";
 
 /* HeartStamp — Progress primitive */
-export function Prg({ value, style }: any) {
+
+interface PrgProps {
+  value: number;
+  style?: React.CSSProperties;
+}
+
+export function Prg({ value, style }: PrgProps) {
   return (
     <div
       style={{
-        height: 8,
-        borderRadius: 99,
+        height: "var(--space-2)",
+        borderRadius: "var(--radius-full)",
         background: "var(--muted)",
         overflow: "hidden",
         ...style,
@@ -15,7 +21,7 @@ export function Prg({ value, style }: any) {
       <div
         style={{
           height: "100%",
-          borderRadius: 99,
+          borderRadius: "var(--radius-full)",
           background: "var(--accent)",
           width: `${value}%`,
           transition: "width .3s",
