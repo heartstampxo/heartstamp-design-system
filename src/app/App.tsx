@@ -287,7 +287,7 @@ function PageInput() {
     { label: "Other" },
   ]}
 />`}>
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-5)", width: 300 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-8)", width: 300 }}>
           <Inp label="Search" placeholder="Search…" iconLeft={<LucideIcons.Search size={14} />} value={v} onChange={(e: any) => setV(e.target.value)} />
           <Inp label="Password" type="password" placeholder="Enter password" iconRight={<LucideIcons.Eye size={14} />} />
           <Inp label="Quick find" placeholder="Search components…" kbd="⌘K" />
@@ -1853,11 +1853,20 @@ function PageTopNav() {
 
 
 
-function TokenColorSwatch({ name, value, variable, mode }: { name: string; value: string; variable: string; mode: string }) {
+function TokenColorSwatch({ name, value, variable }: { name: string; value: string; variable: string }) {
   const [copied, setCopied] = useState(false);
   const copy = async (text: string) => {
-    try { await navigator.clipboard.writeText(text); } catch { }
-    setCopied(true); setTimeout(() => setCopied(false), 1800);
+    const confirm = () => { setCopied(true); setTimeout(() => setCopied(false), 1800); };
+    const fallback = () => {
+      const ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      document.execCommand("copy"); document.body.removeChild(ta);
+      confirm();
+    };
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(confirm).catch(fallback);
+    } else { fallback(); }
   };
   const isLight = (hex: string) => {
     const c = hex.replace("#", "");
@@ -1867,25 +1876,18 @@ function TokenColorSwatch({ name, value, variable, mode }: { name: string; value
     const b = parseInt(c.slice(4, 6), 16);
     return (r * 299 + g * 587 + b * 114) / 1000 > 128;
   };
-  const bg = mode === "dark" ? "#1a1a1a" : "#f0ede8";
   const isLightColor = value.startsWith("rgba") || isLight(value);
-  const labelColor = isLightColor ? "#242423" : "#ffffff";
   return (
     <div style={{
-      border: "1px solid rgba(36,36,35,0.1)", borderRadius: 12, overflow: "hidden",
+      border: "1px solid var(--color-element-subtle)", borderRadius: 12, overflow: "hidden",
       background: "var(--bg)", transition: "box-shadow 0.15s ease"
     }}>
-      {/* Swatch */}
+      {/* Full-bleed color block */}
       <div style={{
-        height: 80, background: bg, display: "flex", alignItems: "center", justifyContent: "center",
-        position: "relative"
-      }}>
-        <div style={{
-          width: 52, height: 52, borderRadius: 10, background: value,
-          border: value === "#ffffff" || value === "rgba(255, 255, 255, 0.0325)" ? "1px solid var(--border)" : "none",
-          boxShadow: "0 2px 8px rgba(0,0,0,0.12)"
-        }} />
-      </div>
+        height: 96,
+        background: value,
+        boxShadow: isLightColor ? "inset 0 0 0 1px rgba(0,0,0,0.07)" : "none",
+      }} />
       {/* Info */}
       <div style={{ padding: "10px 12px 12px" }}>
         <div style={{ fontSize: 12.5, fontWeight: 600, color: "var(--fg)", marginBottom: 3, lineHeight: 1.3 }}>{name}</div>
@@ -1897,15 +1899,15 @@ function TokenColorSwatch({ name, value, variable, mode }: { name: string; value
           fontSize: 10, fontFamily: "monospace", color: "#be1d2c",
           marginBottom: 10, wordBreak: "break-all", lineHeight: 1.4, opacity: 0.85
         }}>{variable}</div>
-        <button onClick={() => copy(value)} style={{
+        <button onClick={() => copy(variable)} style={{
           width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 5,
-          padding: "5px 0", borderRadius: 6, border: "1px solid rgba(36,36,35,0.1)",
+          padding: "5px 0", borderRadius: 6, border: "1px solid var(--color-element-subtle)",
           background: "transparent", cursor: "pointer", fontSize: 11, fontWeight: 500,
-          color: copied ? "#22c55e" : "var(--muted-fg)", fontFamily: "inherit",
+          color: copied ? "var(--color-text-primary)" : "var(--muted-fg)", fontFamily: "inherit",
           transition: "all 0.15s ease"
         }}>
           {copied ? <Check size={11} /> : <Copy size={11} />}
-          {copied ? "Copied!" : "Copy value"}
+          {copied ? "Copied!" : "Copy token"}
         </button>
       </div>
     </div>
@@ -1913,11 +1915,20 @@ function TokenColorSwatch({ name, value, variable, mode }: { name: string; value
 }
 
 function PageTokensColor() {
+  const { setMainStyle } = React.useContext(AppNavContext);
   const [mode, setMode] = useState<"light" | "dark">("light");
   const tokens = mode === "light" ? LIGHT_TOKENS : DARK_TOKENS;
+  const modeTheme = mode === "dark" ? DARK_THEME : LIGHT_THEME;
   const groups = Object.keys(tokens);
+
+  // Push theme tokens up to <main> before paint — useLayoutEffect prevents flicker
+  React.useLayoutEffect(() => {
+    setMainStyle({ ...modeTheme, background: "var(--bg)", color: "var(--fg)" });
+    return () => setMainStyle(null); // reset when leaving page
+  }, [mode]);
+
   return (
-    <DocPage title="Color Tokens" subtitle="The complete color system for HeartStamp DS — two full palettes (Light & Dark) connected to every component, text, and surface in the product.">
+    <DocPage title="Color Tokens" subtitle="The complete color system for HeartStamp DS — two full palettes (Light & Dark) connected to every component, text, and surface in the product." style={modeTheme}>
       {/* Mode toggle */}
       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 32, padding: "12px 16px", borderRadius: 12, border: "1px solid var(--border)", background: "var(--muted)" }}>
         <span style={{ fontSize: 13, fontWeight: 500, color: "var(--fg)", marginRight: 4 }}>Mode:</span>
@@ -1958,7 +1969,6 @@ function PageTokensColor() {
                 name={name}
                 value={value}
                 variable={TOKEN_VARIABLE_NAMES[group]?.[name] ?? `--color-${group.toLowerCase()}-${name.toLowerCase().replace(/ /g, "-")}`}
-                mode={mode}
               />
             ))}
           </div>
@@ -2700,17 +2710,21 @@ function PageIntro() {
   ];
   const componentCount = NAV.flatMap(g => g.items).filter(i => !["intro", "install", "theming"].includes(i.id)).length;
   return <div>
-    <div style={{ marginBottom: 40 }}>
+    <div style={{ marginBottom: "var(--space-10)" }}>
       <span style={{
-        display: "inline-block", fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 999,
-        background: "var(--muted)", color: "var(--muted-fg)", border: "1px solid var(--border)", marginBottom: 16,
-        textTransform: "uppercase", letterSpacing: ".06em"
+        display: "inline-block",
+        fontSize: "var(--font-size-body-13)",
+        fontWeight: "var(--font-weight-label-sb-15)" as React.CSSProperties["fontWeight"],
+        color: "var(--color-text-disabled)",
+        marginBottom: "var(--space-1-5)",
+        textTransform: "uppercase",
+        letterSpacing: ".06em",
       }}>Internal Design System</span>
-      <h1 style={{ margin: "0 0 12px", fontSize: 34, fontWeight: 900, color: "var(--fg)", letterSpacing: "-.03em", lineHeight: 1.1 }}>HeartStamp DS</h1>
-      <p style={{ margin: "0 0 24px", fontSize: 14, color: "var(--muted-fg)", lineHeight: 1.7, maxWidth: 520 }}>
+      <h1 style={{ margin: `0 0 var(--space-3)`, fontSize: 34, fontWeight: 900, color: "var(--fg)", letterSpacing: "-.03em", lineHeight: 1.1 }}>HeartStamp DS</h1>
+      <p style={{ margin: `0 0 var(--space-6)`, fontSize: "var(--font-size-body-14)" as React.CSSProperties["fontSize"], color: "var(--muted-fg)", lineHeight: 1.7, maxWidth: 520 }}>
         A curated set of <strong style={{ color: "var(--fg)" }}>{componentCount} accessible, reusable components</strong> built on top of Shadcn UI and Radix UI primitives — documented and tested right here.
       </p>
-      <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+      <div style={{ display: "flex", gap: "var(--space-2-5)", flexWrap: "wrap" }}>
         <Btn variant="default" onClick={() => goToPage("accordion")}><ArrowRight size={16} style={{ marginRight: "var(--space-1-5)" }} />Browse Components</Btn>
         <Btn variant="outline" style={{ borderRadius: "999px" }} onClick={() => window.open("https://github.com/mdheartstamp/heartstamp-design-system", "_blank")}><Github size={15} style={{ marginRight: "var(--space-1-5)" }} />GitHub Repo</Btn>
       </div>
@@ -2940,8 +2954,8 @@ export default function App() {
 /* ═══════════════════════════════════════════════════════════
    APP NAV CONTEXT — shared navigation for icon cross-linking
 ═══════════════════════════════════════════════════════════ */
-interface AppNav { goToIcon: (name: string) => void; iconSearch: string; goToPage: (id: string) => void; }
-const AppNavContext = React.createContext<AppNav>({ goToIcon: () => {}, iconSearch: "", goToPage: () => {} });
+interface AppNav { goToIcon: (name: string) => void; iconSearch: string; goToPage: (id: string) => void; setMainStyle: (s: React.CSSProperties | null) => void; }
+const AppNavContext = React.createContext<AppNav>({ goToIcon: () => {}, iconSearch: "", goToPage: () => {}, setMainStyle: () => {} });
 
 /* ── IcoLink — wraps any icon in a hover tooltip that links to
    the Icons page pre-searched for that icon name ─────────── */
@@ -4156,6 +4170,7 @@ const PAGES: Record<string, any> = {
 ═══════════════════════════════════════════════════════════ */
 export default function App() {
   const [dark, setDark] = useState(false);
+  const [mainStyle, setMainStyle] = useState<React.CSSProperties | null>(null);
   const [page, setPage] = useState(() => {
     const hash = typeof window !== "undefined" ? window.location.hash.slice(1) : "";
     return hash && PAGES[hash] ? hash : "intro";
@@ -4191,10 +4206,10 @@ export default function App() {
 
   const PageComp = PAGES[page] || PlaceholderPage;
   const goToIcon = (name: string) => { setPage("icons"); setIconSearch(name); };
-  const goToPage = (id: string) => { setPage(id); };
+  const goToPage = (id: string) => { setPage(id); setMainStyle(null); };
 
   return (
-    <AppNavContext.Provider value={{ goToIcon, iconSearch, goToPage }}>
+    <AppNavContext.Provider value={{ goToIcon, iconSearch, goToPage, setMainStyle }}>
     <div style={{ ...theme, fontFamily: "var(--font-family-body)", background: "var(--bg)", color: "var(--fg)", height: "100vh", display: "flex", flexDirection: "column", overflow: "hidden" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
@@ -4288,7 +4303,7 @@ export default function App() {
         </aside>
 
         {/* MAIN */}
-        <main style={{ flex: 1, overflowY: "auto", padding: "28px 24px" }}>
+        <main style={{ flex: 1, overflowY: "auto", padding: "28px 24px", transition: "background 0.15s ease, color 0.15s ease", ...mainStyle }}>
           <div style={{ maxWidth: page === "footer" ? 1066 : 820, margin: "0 auto" }}>
             <PageComp id={page} />
           </div>
