@@ -6,11 +6,12 @@ interface DocPageProps {
   subtitle?: string;
   sourceSlug?: string;
   children: React.ReactNode;
+  style?: React.CSSProperties;
 }
 
-export function DocPage({ title, subtitle, sourceSlug, children }: DocPageProps) {
+export function DocPage({ title, subtitle, sourceSlug, children, style }: DocPageProps) {
   return (
-    <div>
+    <div style={{ transition: "background 0.15s ease, color 0.15s ease", ...style }}>
       <div style={{ marginBottom: 28 }}>
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, marginBottom: "var(--space-1-5)" }}>
           {/* Title + copy link */}
