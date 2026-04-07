@@ -85,6 +85,12 @@ export const NAV = [
       { title: "Footer",          id: "footer",       group: "Display",           label: "new"  },
     ]
   },
+  {
+    title: "Chatbot", items: [
+      { title: "Stampy Chatbot",  id: "stampy-chatbot",       label: "new" },
+      { title: "Overflow Menus",  id: "chatbot-overflow-menus", label: "new" },
+    ]
+  },
 ];
 
 export const ALL_ITEMS = NAV.flatMap(g => g.items);

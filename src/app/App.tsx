@@ -39,6 +39,13 @@ import { CalMini } from "./components/ui/hs-cal";
 import { Collapsible } from "./components/ui/hs-collapsible";
 import { ScrollBox } from "./components/ui/hs-scroll-box";
 import { CtxMenu } from "./components/ui/hs-ctx-menu";
+import { StampyChatbot, OverflowMenu, ChecklistOverflowMenu, TemplateOverflowMenu, ActionOverflowMenu } from "./components/ui/hs-stampy-chat";
+import demoChatScript from "./components/ui/hs-chat-demo-script";
+import chatMascotImg from "../assets/chat-mascot.png";
+import chatAiIconImg from "../assets/chat-ai-icon.png";
+import chatHomeBgImg from "../assets/chat-home-bg.png";
+import stampyIconImg from "../assets/stampy-icon.svg";
+import partyPopperImg from "../assets/party-popper.gif";
 import {
   DARK_THEME, LIGHT_THEME,
   LIGHT_TOKENS, DARK_TOKENS, TOKEN_VARIABLE_NAMES, GROUP_DESCRIPTIONS,
@@ -4107,6 +4114,204 @@ import { ProfileNav } from "@/components/ui/profile-nav";
 }
 
 /* ═══════════════════════════════════════════════════════════
+   STAMPY CHATBOT
+═══════════════════════════════════════════════════════════ */
+function PageStampyChatbot() {
+  return (
+    <DocPage
+      title="Stampy Chatbot"
+      description="A fully interactive AI chatbot widget with conversation flow, overflow menus, template selection, checklist, style carousel, and animated typing indicators."
+    >
+      <DocSection title="Live Demo" anchor="chatbot-demo">
+        <p className="text-muted-foreground text-[15px] mb-4">
+          Click the Stampy icon in the bottom-right to open the chatbot. Try typing a message or selecting a suggestion to start the conversation flow.
+        </p>
+        <div style={{ width: "100%", height: 700, position: "relative", borderRadius: 16, overflow: "hidden", border: "1px solid var(--border)" }}>
+          <StampyChatbot chatScript={demoChatScript} mascotSrc={chatMascotImg} aiIconSrc={chatAiIconImg} backgroundSrc={chatHomeBgImg} stampyIconSrc={stampyIconImg} partyPopperSrc={partyPopperImg} />
+        </div>
+      </DocSection>
+
+      <DocSection title="Usage" anchor="chatbot-usage">
+        <CodeBlock
+          code={`import { StampyChatbot } from "@anthropic/design-system";
+import type { ChatScript } from "@anthropic/design-system";
+
+const myChatScript: ChatScript = {
+  examplePrompts: ["Make a birthday card for my friend"],
+  steps: [
+    { type: "stampy", message: "I can help with that!", delay: 2000 },
+    // ... more steps
+  ],
+};
+
+<StampyChatbot chatScript={myChatScript} />`}
+        />
+      </DocSection>
+
+      <DocSection title="Props" anchor="chatbot-props">
+        <PropsTable
+          props={[
+            { name: "chatScript",     type: "ChatScript",  def: "—",          desc: "Conversation script (prompts + step array)" },
+            { name: "mascotSrc",      type: "string",      def: "(required)",  desc: "Mascot image URL" },
+            { name: "aiIconSrc",      type: "string",      def: "(required)",  desc: "AI sparkle icon URL" },
+            { name: "backgroundSrc",  type: "string",      def: "(required)",  desc: "Home background pattern URL" },
+            { name: "stampyIconSrc",  type: "string",      def: "(required)",  desc: "FAB icon URL" },
+            { name: "partyPopperSrc", type: "string",      def: "(required)",  desc: "Party popper GIF URL" },
+            { name: "className",      type: "string",      def: '""',         desc: "Additional CSS classes on root" },
+          ]}
+        />
+      </DocSection>
+
+      <DocSection title="Step Types" anchor="chatbot-steps">
+        <PropsTable
+          props={[
+            { name: "stampy",         type: "step", desc: "AI sends a typed message with optional trigger buttons" },
+            { name: "overflow",       type: "step", desc: "Radio-button style option picker (paginated)" },
+            { name: "checklist",      type: "step", desc: "Multi-select checklist with custom input" },
+            { name: "template",       type: "step", desc: "2-column card grid for template selection" },
+            { name: "style-carousel", type: "step", desc: "Horizontal scrollable style picker with images" },
+            { name: "action",         type: "step", desc: "Generate button + Or Adjust options" },
+            { name: "final-card",     type: "step", desc: "Summary message with trigger button" },
+            { name: "banner",         type: "step", desc: "Loading → done animated banner" },
+          ]}
+        />
+      </DocSection>
+    </DocPage>
+  );
+}
+
+function PageChatbotOverflowMenus() {
+  return (
+    <DocPage title="Overflow Menus" subtitle="All four overflow menu variants used in the Stampy Chatbot conversation flow.">
+      <DocSection title="Overflow — Numbered List">
+        <p style={{ fontSize: 14, color: "var(--muted-fg)", marginBottom: 16 }}>
+          Radio-style numbered option picker. Supports multiple pages and a free-text input row.
+        </p>
+        <Preview title="Overflow menu" height={320}>
+          <div style={{ width: "100%", maxWidth: 400 }}>
+            <OverflowMenu
+              pages={[{
+                question: "What kind of vibe are you going for?",
+                options: [
+                  { num: "1", label: "Funny" },
+                  { num: "2", label: "Sentimental" },
+                  { num: "3", label: "Serious / Heartfelt" },
+                  { num: "4", label: "Celebratory" },
+                  { num: "5", label: "Formal" },
+                ],
+              }]}
+              inputPlaceholder="Type your own"
+              onClose={() => {}}
+              onComplete={() => {}}
+            />
+          </div>
+        </Preview>
+        <Preview title="Multi-page overflow (paginated)" height={320}>
+          <div style={{ width: "100%", maxWidth: 400 }}>
+            <OverflowMenu
+              pages={[
+                {
+                  question: "Tell me about the recipient",
+                  options: [
+                    { num: "1", label: "Friend" },
+                    { num: "2", label: "Partner" },
+                    { num: "3", label: "Boss" },
+                    { num: "4", label: "Coworker" },
+                    { num: "5", label: "Parent" },
+                  ],
+                },
+                {
+                  question: "How close are you?",
+                  options: [
+                    { num: "1", label: "Very close" },
+                    { num: "2", label: "Casual" },
+                    { num: "3", label: "Work only" },
+                  ],
+                },
+              ]}
+              inputPlaceholder="Type your own"
+              onClose={() => {}}
+              onComplete={() => {}}
+            />
+          </div>
+        </Preview>
+      </DocSection>
+
+      <DocSection title="Checklist — Multi-Select">
+        <p style={{ fontSize: 14, color: "var(--muted-fg)", marginBottom: 16 }}>
+          Checkbox-style multi-select. Items can be toggled, with a free-text input and skip/send actions.
+        </p>
+        <Preview title="Checklist overflow" height={380}>
+          <div style={{ width: "100%", maxWidth: 400 }}>
+            <ChecklistOverflowMenu
+              pages={[{
+                question: "What are they into?",
+                items: [
+                  { id: "cooking",  label: "Cooking" },
+                  { id: "golf",     label: "Golf" },
+                  { id: "gaming",   label: "Gaming" },
+                  { id: "hiking",   label: "Hiking" },
+                  { id: "reading",  label: "Reading" },
+                  { id: "running",  label: "Running" },
+                  { id: "sports",   label: "Sports" },
+                  { id: "travel",   label: "Travel" },
+                ],
+              }]}
+              inputPlaceholder="You make the call"
+              onClose={() => {}}
+              onComplete={() => {}}
+            />
+          </div>
+        </Preview>
+      </DocSection>
+
+      <DocSection title="Template — Card Picker">
+        <p style={{ fontSize: 14, color: "var(--muted-fg)", marginBottom: 16 }}>
+          2-column card grid for selecting a greeting card template. Supports pagination.
+        </p>
+        <Preview title="Template card picker" height={440}>
+          <div style={{ width: "100%", maxWidth: 400 }}>
+            <TemplateOverflowMenu
+              header="Pick a template"
+              cards={[
+                { num: "1", title: "For Someone Who Means the World", front: "For Someone Who Means the World!", insideBody: "From your love of Hiking to the way you light up a room — you make life better just by being in it.", giftMessage: "Hope this little treat makes your birthday soar!" },
+                { num: "2", title: "Have a Bird-tastic Birthday!", front: "Have a Bird-tastic Birthday!", insideBody: "Hope your big day flies high! Squawk and celebrate — you're the coolest bird in the flock.", giftMessage: "A little something to help you celebrate!" },
+                { num: "3", title: "Another Trip Around the Sun", front: "Another Trip Around the Sun!", insideBody: "Here's to the trails you've hiked, the views you've conquered, and the adventures still to come.", giftMessage: "Fuel up for your next great adventure!" },
+                { num: "4", title: "Born to Be Wild", front: "Born to Be Wild!", insideBody: "You bring energy and joy wherever you go. May this year take you to new heights!", giftMessage: "A little boost for your next big climb!" },
+              ]}
+              inputPlaceholder="Something else"
+              onClose={() => {}}
+              onComplete={() => {}}
+            />
+          </div>
+        </Preview>
+      </DocSection>
+
+      <DocSection title="Action — Generate &amp; Adjust">
+        <p style={{ fontSize: 14, color: "var(--muted-fg)", marginBottom: 16 }}>
+          Final action panel with a generate button, "Or Adjust" secondary options, and a free-text input.
+        </p>
+        <Preview title="Action overflow menu" height={240}>
+          <div style={{ width: "100%", maxWidth: 400 }}>
+            <ActionOverflowMenu
+              config={{
+                title: "Ready to generate?",
+                subtitle: "Your card concept is ready.",
+                generateButtonLabel: "Generate Card",
+                adjustOptions: ["Change Concept", "Start Over"],
+              }}
+              inputPlaceholder="Something else"
+              onClose={() => {}}
+              onGenerate={() => {}}
+            />
+          </div>
+        </Preview>
+      </DocSection>
+    </DocPage>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════
    PAGE ROUTER
 ═══════════════════════════════════════════════════════════ */
 const PAGES: Record<string, any> = {
@@ -4163,6 +4368,9 @@ const PAGES: Record<string, any> = {
   "top-nav": PageTopNav,
   "profile-nav": PageProfileNav,
   footer: PageFooter,
+  // Chatbot
+  "stampy-chatbot": PageStampyChatbot,
+  "chatbot-overflow-menus": PageChatbotOverflowMenus,
 };
 
 /* ═══════════════════════════════════════════════════════════

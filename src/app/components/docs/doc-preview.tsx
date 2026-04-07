@@ -13,7 +13,7 @@ const VIEWPORTS = [
 
 interface PreviewProps {
   title: string;
-  code: string;
+  code?: string;
   filename?: string;
   children: React.ReactNode | ((vp: string) => React.ReactNode);
   height?: number;
@@ -26,7 +26,8 @@ interface PreviewProps {
  * to `from '@heartstamp/design-system'`, then merge any duplicate import
  * lines into a single consolidated import statement.
  */
-function normalizeImports(code: string): string {
+function normalizeImports(code: string | undefined): string {
+  if (!code) return "";
   // Step 1 — swap local paths to the npm package
   const swapped = code.replace(
     /from\s+(['"])@\/components\/ui\/[^'"]+\1/g,
