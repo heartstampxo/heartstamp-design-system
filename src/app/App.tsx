@@ -39,13 +39,13 @@ import { CalMini } from "./components/ui/hs-cal";
 import { Collapsible } from "./components/ui/hs-collapsible";
 import { ScrollBox } from "./components/ui/hs-scroll-box";
 import { CtxMenu } from "./components/ui/hs-ctx-menu";
-import { StampyChatbot, OverflowMenu, ChecklistOverflowMenu, TemplateOverflowMenu, ActionOverflowMenu } from "./components/ui/hs-stampy-chat";
+import { StampyChatbot, OverflowMenu, ChecklistOverflowMenu, TemplateOverflowMenu, ActionOverflowMenu, ChatHeader, OccasionSuggestions, ChatHomeScreen, ChatHomeInput, ChatConversationInput, WorkingSpinner, BubbleButton, StampyBubble, UserBubble, StyleCarousel, TadaBanner } from "./components/ui/hs-stampy-chat";
 import demoChatScript from "./components/ui/hs-chat-demo-script";
-import chatMascotImg from "../assets/chat-mascot.png";
-import chatAiIconImg from "../assets/chat-ai-icon.png";
-import chatHomeBgImg from "../assets/chat-home-bg.png";
-import stampyIconImg from "../assets/stampy-icon.svg";
-import partyPopperImg from "../assets/party-popper.gif";
+import chatMascotImg   from "../assets/stampy/mascot.png";
+import chatAiIconImg   from "../assets/stampy/ai-icon.png";
+import chatHomeBgImg   from "../assets/stampy/home-bg.png";
+import stampyIconImg   from "../assets/stampy/icon.svg";
+import partyPopperImg  from "../assets/stampy/party-popper.gif";
 import {
   DARK_THEME, LIGHT_THEME,
   LIGHT_TOKENS, DARK_TOKENS, TOKEN_VARIABLE_NAMES, GROUP_DESCRIPTIONS,
@@ -4126,7 +4126,7 @@ function PageStampyChatbot() {
         <p className="text-muted-foreground text-[15px] mb-4">
           Click the Stampy icon in the bottom-right to open the chatbot. Try typing a message or selecting a suggestion to start the conversation flow.
         </p>
-        <div style={{ width: "100%", height: 700, position: "relative", borderRadius: 16, overflow: "hidden", border: "1px solid var(--border)" }}>
+        <div style={{ width: "100%", height: "100vh", position: "relative", borderRadius: 16, overflow: "hidden", border: "1px solid var(--border)" }}>
           <StampyChatbot chatScript={demoChatScript} mascotSrc={chatMascotImg} aiIconSrc={chatAiIconImg} backgroundSrc={chatHomeBgImg} stampyIconSrc={stampyIconImg} partyPopperSrc={partyPopperImg} />
         </div>
       </DocSection>
@@ -4173,6 +4173,246 @@ const myChatScript: ChatScript = {
             { name: "action",         type: "step", desc: "Generate button + Or Adjust options" },
             { name: "final-card",     type: "step", desc: "Summary message with trigger button" },
             { name: "banner",         type: "step", desc: "Loading → done animated banner" },
+          ]}
+        />
+      </DocSection>
+    </DocPage>
+  );
+}
+
+function PageChatInput() {
+  return (
+    <DocPage title="Chat Input" subtitle="Two input bar variants used inside the Stampy Chatbot — one for the home screen and one for the active conversation view.">
+      <DocSection title="Home Input">
+        <p style={{ fontSize: 14, color: "var(--muted-fg)", marginBottom: 16 }}>
+          Used on the chatbot home screen. Contains a free-text textarea, an "Add reference images" attachment button, a mic toggle, and a send button that activates when the field has content.
+        </p>
+        <Preview title="Chat home input" height={140}>
+          <div style={{ width: "100%", maxWidth: 420 }}>
+            <ChatHomeInput />
+          </div>
+        </Preview>
+      </DocSection>
+
+      <DocSection title="Conversation Input">
+        <p style={{ fontSize: 14, color: "var(--muted-fg)", marginBottom: 16 }}>
+          Used during an active conversation. Features a pulsing AI sparkle icon, a textarea, a hairline divider, and the action row with attachment, mic, and send controls.
+        </p>
+        <Preview title="Chat conversation input" height={140}>
+          <div style={{ width: "100%", maxWidth: 420, border: "1px solid var(--border)", borderRadius: 12, overflow: "hidden" }}>
+            <ChatConversationInput aiIconSrc={chatAiIconImg} />
+          </div>
+        </Preview>
+      </DocSection>
+
+      <DocSection title="Props — ChatHomeInput">
+        <Tbl
+          columns={["Prop", "Type", "Default", "Description"]}
+          rows={[
+            ["placeholder", "string", '"Ask, search or create your card"', "Textarea placeholder text"],
+            ["onSend", "(value: string) => void", "—", "Called when the user submits a message"],
+          ]}
+        />
+      </DocSection>
+
+      <DocSection title="Props — ChatConversationInput">
+        <Tbl
+          columns={["Prop", "Type", "Default", "Description"]}
+          rows={[
+            ["aiIconSrc", "string", "(required)", "AI sparkle icon URL shown left of the textarea"],
+            ["placeholder", "string", '"Ask, search or create your card"', "Textarea placeholder text"],
+            ["onSend", "(value: string) => void", "—", "Called when the user submits a message"],
+          ]}
+        />
+      </DocSection>
+    </DocPage>
+  );
+}
+
+function CarouselDemo() {
+  const [choice, setChoice] = React.useState<string | null>(null);
+  return <StyleCarousel themeChoice={choice} setThemeChoice={setChoice} />;
+}
+
+function PageChatBubbles() {
+  return (
+    <DocPage title="Chat Bubbles" subtitle="The individual message and indicator types that appear inside the Stampy Chatbot conversation view.">
+
+      <DocSection title="Working Spinner">
+        <p style={{ fontSize: 14, color: "var(--muted-fg)", marginBottom: 16 }}>
+          Shown while Stampy is processing a request. Displays a spinning arc loader alongside a status message.
+        </p>
+        <Preview title="Working spinner" height={90}>
+          <div style={{ width: "100%", maxWidth: 440 }}>
+            <WorkingSpinner />
+          </div>
+        </Preview>
+        <Tbl
+          columns={["Prop", "Type", "Default", "Description"]}
+          rows={[
+            ["text", "string", '"Working on your request..."', "Status text displayed next to the spinner"],
+            ["delay", "number", "0", "Entry animation delay in seconds"],
+          ]}
+        />
+      </DocSection>
+
+      <DocSection title="Stampy Bubble">
+        <p style={{ fontSize: 14, color: "var(--muted-fg)", marginBottom: 16 }}>
+          Left-aligned message bubble for AI (Stampy) responses. Optionally renders one or more trigger buttons below the message text.
+        </p>
+        <Preview title="Stampy message bubble" height={110}>
+          <div style={{ width: "100%", maxWidth: 440 }}>
+            <StampyBubble text="I can definitely help you put together a great birthday card. To get started:" buttons={["What kind of vibe are you going for?"]} />
+          </div>
+        </Preview>
+        <Tbl
+          columns={["Prop", "Type", "Default", "Description"]}
+          rows={[
+            ["text", "string", "(required)", "Message text displayed inside the bubble"],
+            ["buttons", "string[]", "—", "Optional trigger button labels rendered below the text"],
+          ]}
+        />
+      </DocSection>
+
+      <DocSection title="User Bubble">
+        <p style={{ fontSize: 14, color: "var(--muted-fg)", marginBottom: 16 }}>
+          Right-aligned message bubble for user messages. Plain text only, no buttons.
+        </p>
+        <Preview title="User message bubble" height={80}>
+          <div style={{ width: "100%", maxWidth: 440 }}>
+            <UserBubble text="I'm making a card for my girlfriend that will make her laugh for her birthday" />
+          </div>
+        </Preview>
+        <Tbl
+          columns={["Prop", "Type", "Default", "Description"]}
+          rows={[
+            ["text", "string", "(required)", "Message text displayed inside the bubble"],
+          ]}
+        />
+      </DocSection>
+
+      <DocSection title="Style Carousel">
+        <p style={{ fontSize: 14, color: "var(--muted-fg)", marginBottom: 16 }}>
+          A horizontally scrollable grid of art style cards shown inside a Stampy bubble. Supports touch and mouse drag. Selecting a card locks the choice and dims the others.
+        </p>
+        <Preview title="Style carousel" height={200}>
+          <div style={{ width: "100%", maxWidth: 440 }}>
+            <CarouselDemo />
+          </div>
+        </Preview>
+        <Tbl
+          columns={["Prop", "Type", "Default", "Description"]}
+          rows={[
+            ["themeChoice", "string | null", "null", "Currently selected style label; null means no selection yet"],
+            ["setThemeChoice", "(s: string) => void", "(required)", "Callback fired when the user selects a style card"],
+          ]}
+        />
+      </DocSection>
+
+      <DocSection title="Tada Banner">
+        <p style={{ fontSize: 14, color: "var(--muted-fg)", marginBottom: 16 }}>
+          A two-state loading → done banner shown when Stampy generates a card. Transitions from a spinner with muted styling to a checkmark with brand-red header after <code>loadingDuration</code> ms.
+        </p>
+        <Preview title="Tada banner" height={160}>
+          <div style={{ width: "100%", maxWidth: 440 }}>
+            <TadaBanner loadingDuration={5000} partyPopperSrc={partyPopperImg} />
+          </div>
+        </Preview>
+        <Tbl
+          columns={["Prop", "Type", "Default", "Description"]}
+          rows={[
+            ["loadingDuration", "number", "10000", "Milliseconds before switching to the done state"],
+            ["loadingTitle", "string", '"Creating your card…."', "Header text while loading"],
+            ["loadingMessage", "string", '"Initial generation might take…"', "Body text while loading"],
+            ["doneTitle", "string", '"Tada, Card generation is done!"', "Header text after completion"],
+            ["doneMessage", "string", '"Your birthday card for Keith…"', "Body text after completion"],
+            ["partyPopperSrc", "string", "—", "Optional party popper GIF URL shown on completion"],
+          ]}
+        />
+      </DocSection>
+    </DocPage>
+  );
+}
+
+function PageChatHomeScreen() {
+  return (
+    <DocPage title="Home Screen" subtitle="The initial state of the Stampy Chatbot — shown when the chat opens before any conversation begins. Features a greeting, a typewriter animation cycling through example prompts, and the input bar.">
+      <DocSection title="Default">
+        <p style={{ fontSize: 14, color: "var(--muted-fg)", marginBottom: 16 }}>
+          The mascot appears to the left of the greeting. The "Try:" prompt cycles through <code>examplePrompts</code> with a typewriter effect, refreshed on every open.
+        </p>
+        <Preview title="Chat home screen" height={210} fullWidth>
+          <div style={{ marginLeft: 80, width: 450, flexShrink: 0 }}>
+            <ChatHomeScreen mascotSrc={chatMascotImg} />
+          </div>
+        </Preview>
+      </DocSection>
+
+      <DocSection title="Props">
+        <Tbl
+          columns={["Prop", "Type", "Default", "Description"]}
+          rows={[
+            ["mascotSrc", "string", "(required)", "URL for the mascot image rendered to the left of the greeting"],
+            ["examplePrompts", "string[]", "4 built-in prompts", "Prompts cycled by the typewriter animation in the input hint"],
+          ]}
+        />
+      </DocSection>
+    </DocPage>
+  );
+}
+
+function PageChatHeader() {
+  return (
+    <DocPage title="Chat Header" subtitle="The top bar of the Stampy Chatbot — contains the Stampy label, conversation switcher dropdown, PiP expand toggle, and minimize button.">
+      <DocSection title="Default">
+        <p style={{ fontSize: 14, color: "var(--muted-fg)", marginBottom: 16 }}>
+          Standard header with conversation name pill and action buttons.
+        </p>
+        <Preview title="Chat header — default" height={120}>
+          <div style={{ width: "100%", maxWidth: 420, border: "1px solid var(--border)", borderRadius: "20px 20px 0 0" }}>
+            <ChatHeader
+              conversationName="Jack's Birthday Bi..."
+              conversations={[
+                { id: "1", name: "Jack's Birthday Bi..." },
+                { id: "2", name: "Lupe's Luau" },
+                { id: "3", name: "Mom's Anniversary" },
+              ]}
+            />
+          </div>
+        </Preview>
+      </DocSection>
+
+      <DocSection title="Expanded State">
+        <p style={{ fontSize: 14, color: "var(--muted-fg)", marginBottom: 16 }}>
+          When the chatbot is in PiP (picture-in-picture) expanded mode, the expand icon changes to indicate collapse.
+        </p>
+        <Preview title="Chat header — expanded" height={120}>
+          <div style={{ width: "100%", maxWidth: 420, border: "1px solid var(--border)", borderRadius: "20px 20px 0 0" }}>
+            <ChatHeader
+              conversationName="Jack's Birthday Bi..."
+              conversations={[
+                { id: "1", name: "Jack's Birthday Bi..." },
+                { id: "2", name: "Lupe's Luau" },
+                { id: "3", name: "Mom's Anniversary" },
+              ]}
+              expanded={true}
+            />
+          </div>
+        </Preview>
+      </DocSection>
+
+      <DocSection title="Props">
+        <Tbl
+          columns={["Prop", "Type", "Default", "Description"]}
+          rows={[
+            ["conversationName", "string", '"Jack\'s Birthday Bi..."', "Label shown in the conversation pill"],
+            ["conversations", "{ id, name }[]", "2 sample conversations", "List of conversations in the dropdown"],
+            ["expanded", "boolean", "false", "Switches the expand icon to indicate collapse"],
+            ["defaultDropdownOpen", "boolean", "false", "Opens the dropdown on mount (useful for snapshots)"],
+            ["onToggleExpand", "() => void", "—", "Called when the expand/collapse button is clicked"],
+            ["onMinimize", "() => void", "—", "Called when the minimize (–) button is clicked"],
+            ["onSelectConversation", "(id: string) => void", "—", "Called when a conversation item is selected"],
+            ["onNewConversation", "() => void", "—", "Called when 'New Conversation' is clicked"],
           ]}
         />
       </DocSection>
@@ -4307,6 +4547,21 @@ function PageChatbotOverflowMenus() {
           </div>
         </Preview>
       </DocSection>
+
+      <DocSection title="Occasion Suggestions">
+        <p style={{ fontSize: 14, color: "var(--muted-fg)", marginBottom: 16 }}>
+          Shown on the Stampy home screen when the chatbot opens. Displays 4 randomly selected occasion suggestions from a pool of 25, refreshed every time the chat is opened. Users can tap an item to start the conversation or dismiss the panel with the × button.
+        </p>
+        <Preview title="Occasion suggestions" height={260}>
+          <div style={{ width: "100%", maxWidth: 400 }}>
+            <OccasionSuggestions
+              suggestions={["Birthday", "Thank you", "Anniversary", "Graduation"]}
+              onSelect={() => {}}
+              onClose={() => {}}
+            />
+          </div>
+        </Preview>
+      </DocSection>
     </DocPage>
   );
 }
@@ -4371,6 +4626,10 @@ const PAGES: Record<string, any> = {
   // Chatbot
   "stampy-chatbot": PageStampyChatbot,
   "chatbot-overflow-menus": PageChatbotOverflowMenus,
+  "chatbot-header": PageChatHeader,
+  "chatbot-home-screen": PageChatHomeScreen,
+  "chatbot-input": PageChatInput,
+  "chatbot-bubbles": PageChatBubbles,
 };
 
 /* ═══════════════════════════════════════════════════════════

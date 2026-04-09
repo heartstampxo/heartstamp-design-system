@@ -4,13 +4,12 @@
 // ═══════════════════════════════════════════════════════════════════════════
 
 import { useState, useEffect, useRef, useId } from "react";
-import { ImagePlus, Mic, ArrowUp, X, PencilLine, Pencil, CheckCheck } from "lucide-react";
+import { ImagePlus, Mic, ArrowUp, X, PencilLine, Pencil, CheckCheck, ChevronRight, ChevronLeft, ChevronDown, Plus, Loader2 } from "lucide-react";
+import { Btn } from "./btn";
 import { motion, AnimatePresence } from "motion/react";
 
 import {
-  MIC_PATH, ADD_IMAGE_PATH, SEND_ARROW_PATH,
-  CHEVRON_RIGHT_PATH, CHEVRON_LEFT_PATH,
-  LOADER_ARC, CHECKMARK_PATH, BUBBLE_CHEVRON_PATH,
+  MIC_PATH, ADD_IMAGE_PATH, SEND_ARROW_PATH, CHECKMARK_PATH,
 } from "./hs-chat-svg";
 import type {
   ChatScript, ChatMessage, ConversationStep,
@@ -38,11 +37,10 @@ function getRandomSuggestions(count = 3): string[] {
 
 // ── Shared text styles ─────────────────────────────────────────────────────
 
-const dmSans400 = { fontFamily: "'DM Sans', sans-serif", fontWeight: 400 } as const;
-const dmSans500 = { fontFamily: "'DM Sans', sans-serif", fontWeight: 500 } as const;
-const inter400 = { fontFamily: "'Inter', sans-serif", fontWeight: 400 } as const;
-const inter500 = { fontFamily: "'Inter', sans-serif", fontWeight: 500 } as const;
-const bubbleBg = "rgba(36,36,35,0.06)";
+const dmSans400 = { fontFamily: "var(--font-family-body)", fontWeight: 400 } as const;
+const dmSans500 = { fontFamily: "var(--font-family-body)", fontWeight: 500 } as const;
+// Bubble background maps to the brand-secondary-dim token
+const bubbleBg = "var(--color-brand-secondary-dim)";
 
 // ── Spring configs ─────────────────────────────────────────────────────────
 
@@ -143,7 +141,7 @@ function useBubbleTypewriter(text: string | null) {
 
 // ── Shared sub-components ──────────────────────────────────────────────────
 
-function WorkingSpinner({ text = "Working on your request...", delay = 0 }: { text?: string; delay?: number }) {
+export function WorkingSpinner({ text = "Working on your request...", delay = 0 }: { text?: string; delay?: number }) {
   return (
     <motion.div
       className="flex gap-[8px] items-center shrink-0"
@@ -153,21 +151,20 @@ function WorkingSpinner({ text = "Working on your request...", delay = 0 }: { te
       transition={{ ...bubbleSpring, delay }}
     >
       <div className="shrink-0 relative" style={{ width: 16, height: 16 }}>
-        <motion.svg
-          width="14" height="14" viewBox="0 0 14 14" fill="none"
+        <motion.div
           className="absolute" style={{ top: 1, left: 1 }}
           animate={{ rotate: 360 }}
           transition={{ repeat: Infinity, duration: 0.9, ease: "linear" }}
         >
-          <path d={LOADER_ARC} stroke="#242423" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
-        </motion.svg>
+          <Loader2 size={14} strokeWidth={2} color="var(--color-text-primary)" />
+        </motion.div>
       </div>
       <p className="leading-[20px] text-[#242423] text-[15px]" style={dmSans400}>{text}</p>
     </motion.div>
   );
 }
 
-function BubbleButton({
+export function BubbleButton({
   label, isUsed, onClick, delay = 0,
 }: {
   label: string; isUsed: boolean; onClick?: () => void; delay?: number;
@@ -182,22 +179,17 @@ function BubbleButton({
       onClick={!isUsed ? onClick : undefined}
     >
       <div className="shrink-0 size-[18px] flex items-center justify-center">
-        <svg width="6" height="10.5" viewBox="0 0 6 10.5" fill="none">
-          <path
-            d={BUBBLE_CHEVRON_PATH}
-            stroke="#242423"
-            strokeOpacity={isUsed ? 0.35 : 1}
-            strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5"
-          />
-        </svg>
+        <ChevronRight size={12} strokeWidth={1.5}
+          style={{ color: isUsed ? "var(--color-text-disabled)" : "var(--color-text-primary)", flexShrink: 0 }}
+        />
       </div>
       <p
         className="leading-[20px] text-[15px]"
         style={{
-          fontFamily: "'DM Sans', sans-serif",
+          fontFamily: "var(--font-family-body)",
           fontWeight: 500,
           fontVariationSettings: "'opsz' 14",
-          color: isUsed ? "rgba(36,36,35,0.35)" : "#242423",
+          color: isUsed ? "var(--color-text-disabled)" : "var(--color-text-primary)",
         }}
       >
         {label}
@@ -220,7 +212,7 @@ const STYLE_OPTIONS = [
   { label: "Pop Art", image: "https://images.unsplash.com/photo-1759352641912-d4ce0f948fdc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400" },
 ];
 
-function StyleCarousel({ themeChoice, setThemeChoice }: { themeChoice: string | null; setThemeChoice: (s: string) => void }) {
+export function StyleCarousel({ themeChoice, setThemeChoice }: { themeChoice: string | null; setThemeChoice: (s: string) => void }) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const touchStartX = useRef(0);
   const touchStartScrollLeft = useRef(0);
@@ -247,8 +239,8 @@ function StyleCarousel({ themeChoice, setThemeChoice }: { themeChoice: string | 
             key={label}
             className={`flex flex-col gap-[8px] items-center p-[6px] rounded-[12px] shrink-0 ${!themeChoice ? "cursor-pointer" : "cursor-default"}`}
             style={{ opacity: themeChoice && themeChoice !== label ? 0.35 : 1, userSelect: "none" }}
-            animate={{ backgroundColor: themeChoice === label ? "rgba(36,36,35,0.12)" : "rgba(36,36,35,0.06)" }}
-            whileHover={!themeChoice ? { backgroundColor: "rgba(36,36,35,0.12)" } : {}}
+            animate={{ backgroundColor: themeChoice === label ? "var(--color-element-subtle)" : "var(--color-brand-secondary-dim)" }}
+            whileHover={!themeChoice ? { backgroundColor: "var(--color-element-subtle)" } : {}}
             transition={{ duration: 0.12 }}
             onClick={!themeChoice ? () => setThemeChoice(label) : undefined}
             draggable={false}
@@ -258,7 +250,7 @@ function StyleCarousel({ themeChoice, setThemeChoice }: { themeChoice: string | 
             </div>
             <p
               className="leading-[20px] text-[15px] text-center whitespace-nowrap"
-              style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontVariationSettings: "'opsz' 14", color: "#242423", minWidth: "100%" }}
+              style={{ fontFamily: "var(--font-family-body)", fontWeight: 500, fontVariationSettings: "'opsz' 14", color: "var(--color-text-primary)", minWidth: "100%" }}
             >
               {label}
             </p>
@@ -269,7 +261,77 @@ function StyleCarousel({ themeChoice, setThemeChoice }: { themeChoice: string | 
   );
 }
 
+// ── StampyBubble / UserBubble ─────────────────────────────────────────────
+
+export function StampyBubble({ text, buttons }: { text: string; buttons?: string[] }) {
+  return (
+    <motion.div
+      className="flex w-full justify-start shrink-0 pr-[56px]"
+      initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+      transition={bubbleSpring}
+    >
+      <div
+        className="rounded-[12px] px-[12px] py-[8px] max-w-[85%] sm:max-w-[440px]"
+        style={{ backgroundColor: bubbleBg, ...dmSans400, fontSize: 14, color: "var(--color-text-primary)", lineHeight: "1.5" }}
+      >
+        {text}
+        {buttons?.length ? (
+          <div className="flex flex-col gap-[6px] mt-[8px]">
+            {buttons.map((b, i) => <BubbleButton key={i} label={b} isUsed={false} />)}
+          </div>
+        ) : null}
+      </div>
+    </motion.div>
+  );
+}
+
+export function UserBubble({ text }: { text: string }) {
+  return (
+    <motion.div
+      className="flex w-full justify-end shrink-0 pl-[56px]"
+      initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+      transition={bubbleSpring}
+    >
+      <div
+        className="rounded-[12px] px-[12px] py-[8px] max-w-[85%] sm:max-w-[440px]"
+        style={{ backgroundColor: bubbleBg, ...dmSans400, fontSize: 14, color: "var(--color-text-primary)", lineHeight: "1.5" }}
+      >
+        {text}
+      </div>
+    </motion.div>
+  );
+}
+
 // ── OverflowMenu ───────────────────────────────────────────────────────────
+
+/** Shared close (×) button used across all 4 overflow menu variants */
+function OverflowCloseBtn({ onClose, className = "" }: { onClose: () => void; className?: string }) {
+  return (
+    <button
+      className={`flex items-center justify-center shrink-0 size-[16px] cursor-pointer opacity-60 hover:opacity-100 transition-opacity ${className}`}
+      onClick={onClose}
+    >
+      <X size={16} strokeWidth={1.5} absoluteStrokeWidth style={{ color: "var(--color-text-secondary)" }} />
+    </button>
+  );
+}
+
+/** Shared page-N-of-M pagination row used across 3 overflow menu variants */
+function OverflowPagination({ page, total, onPrev, onNext }: {
+  page: number; total: number; onPrev: () => void; onNext: () => void;
+}) {
+  return (
+    <div className="flex gap-[4px] items-center">
+      <button className="flex items-center justify-center size-[16px] cursor-pointer opacity-60 hover:opacity-100 transition-opacity disabled:opacity-30" onClick={onPrev} disabled={page === 1}>
+        <ChevronLeft size={16} strokeWidth={1.5} absoluteStrokeWidth style={{ color: "var(--color-text-secondary)" }} />
+      </button>
+      <p className="leading-normal text-[13px]" style={{ ...dmSans400, color: "var(--color-text-secondary)" }}>{page} of {total}</p>
+      <button className="flex items-center justify-center size-[16px] cursor-pointer opacity-60 hover:opacity-100 transition-opacity disabled:opacity-30" onClick={onNext} disabled={page === total}>
+        <ChevronRight size={16} strokeWidth={1.5} absoluteStrokeWidth style={{ color: "var(--color-text-secondary)" }} />
+      </button>
+    </div>
+  );
+}
 
 export function OverflowMenu({
   pages, inputPlaceholder, onClose, onComplete,
@@ -308,8 +370,8 @@ export function OverflowMenu({
 
   return (
     <div
-      className="bg-white flex flex-col gap-[4px] items-start p-[8px] relative rounded-[12px] w-full"
-      style={{ boxShadow: "0px 0px 12px 0px rgba(0,0,0,0.06)", border: "1px solid #e5e5e5" }}
+      className="flex flex-col gap-[4px] items-start p-[8px] relative rounded-[12px] w-full"
+      style={{ backgroundColor: "var(--color-bg-main)", boxShadow: "var(--shadow-xs)", border: "1px solid var(--color-element-subtle)" }}
     >
       <AnimatePresence mode="wait">
         <motion.div
@@ -322,25 +384,10 @@ export function OverflowMenu({
         >
           <div className="flex flex-row items-center w-full">
             <div className="flex gap-[8px] items-center p-[8px] w-full">
-              <p className="flex-1 leading-[20px] text-[#242423] text-[15px] min-w-0" style={dmSans500}>{header}</p>
+              <p className="flex-1 leading-[20px] text-[15px] min-w-0" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{header}</p>
               <div className="flex gap-[12px] items-center shrink-0">
-                {totalPages > 1 && (
-                  <div className="flex gap-[4px] items-center">
-                    <button className="flex items-center justify-center size-[16px] cursor-pointer opacity-60 hover:opacity-100 transition-opacity disabled:opacity-30" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}>
-                      <svg width="5.5" height="9.5" viewBox="0 0 5.5 9.5" fill="none"><path d={CHEVRON_LEFT_PATH} stroke="#6E6D6A" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" /></svg>
-                    </button>
-                    <p className="leading-normal text-[#6e6d6a] text-[13px]" style={dmSans400}>{page} of {totalPages}</p>
-                    <button className="flex items-center justify-center size-[16px] cursor-pointer opacity-60 hover:opacity-100 transition-opacity disabled:opacity-30" onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages}>
-                      <svg width="5.5" height="9.5" viewBox="0 0 5.5 9.5" fill="none"><path d={CHEVRON_RIGHT_PATH} stroke="#6E6D6A" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" /></svg>
-                    </button>
-                  </div>
-                )}
-                <button className="flex items-center justify-center size-[16px] cursor-pointer opacity-60 hover:opacity-100 transition-opacity" onClick={onClose}>
-                  <svg width="9.3" height="9.3" viewBox="0 0 9.3 9.3" fill="none">
-                    <path d="M8.65 0.65L0.65 8.65" stroke="#6E6D6A" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.3" />
-                    <path d="M0.65 0.65L8.65 8.65" stroke="#6E6D6A" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.3" />
-                  </svg>
-                </button>
+                {totalPages > 1 && <OverflowPagination page={page} total={totalPages} onPrev={() => setPage(p => Math.max(1, p - 1))} onNext={() => setPage(p => Math.min(totalPages, p + 1))} />}
+                <OverflowCloseBtn onClose={onClose} />
               </div>
             </div>
           </div>
@@ -356,10 +403,10 @@ export function OverflowMenu({
             >
               <div className="flex flex-row items-center size-full">
                 <div className="flex gap-[8px] items-center px-[8px] py-[6px] w-full cursor-pointer">
-                  <div className="flex items-center justify-center rounded-[4px] shrink-0 w-[20px]" style={{ backgroundColor: "rgba(36,36,35,0.06)" }}>
-                    <p className="leading-[20px] text-[#0a0a0a] text-[14px] text-center w-full" style={inter400}>{item.num}</p>
+                  <div className="flex items-center justify-center rounded-[4px] shrink-0 w-[20px]" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }}>
+                    <p className="leading-[20px] text-[14px] text-center w-full" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{item.num}</p>
                   </div>
-                  <p className="flex-1 leading-[20px] text-[#0a0a0a] text-[14px] truncate min-w-0" style={inter400}>{item.label}</p>
+                  <p className="flex-1 leading-[20px] text-[14px] truncate min-w-0" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{item.label}</p>
                 </div>
               </div>
             </motion.div>
@@ -368,15 +415,15 @@ export function OverflowMenu({
       </AnimatePresence>
 
       {/* "Something else" input */}
-      <div className="rounded-[12px] flex items-center px-[12px] py-[8px] w-full" style={{ outline: "1px solid rgba(36,36,35,0.1)", outlineOffset: "-1px" }}>
+      <div className="rounded-[12px] flex items-center px-[12px] py-[8px] w-full" style={{ outline: "1px solid var(--color-element-subtle)", outlineOffset: "-1px" }}>
         <div className="flex flex-1 items-center gap-[6px] min-w-0">
-          <div className="flex items-center justify-center rounded-[4px] shrink-0 size-[20px]" style={{ backgroundColor: "rgba(36,36,35,0.06)" }}>
-            <Pencil size={14} color="#0A0A0A" strokeWidth={2.5} />
+          <div className="flex items-center justify-center rounded-[4px] shrink-0 size-[20px]" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }}>
+            <Pencil size={14} color="var(--color-text-primary)" strokeWidth={2.5} />
           </div>
           {typewriterDone ? (
             <input
-              className="flex-1 leading-[20px] text-[#6e6d6a] text-[14px] min-w-0 bg-transparent outline-none border-none focus:text-[#242423]"
-              style={{ ...inter400, caretColor: "#242423" }}
+              className="flex-1 leading-[20px] text-[14px] min-w-0 bg-transparent outline-none border-none"
+              style={{ ...dmSans400, color: "var(--color-text-secondary)", caretColor: "var(--color-text-primary)" }}
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onFocus={() => { if (inputValue === TYPEWRITER_TARGET) setInputValue(""); }}
@@ -390,22 +437,17 @@ export function OverflowMenu({
               spellCheck={false}
             />
           ) : (
-            <span className="flex-1 leading-[20px] text-[#6e6d6a] text-[14px] truncate min-w-0 select-none" style={inter400}>
+            <span className="flex-1 leading-[20px] text-[14px] truncate min-w-0 select-none" style={{ ...dmSans400, color: "var(--color-text-secondary)" }}>
               {typewriterText}
-              <motion.span className="inline-block w-[1px] h-[12px] bg-[#6e6d6a] ml-[1px] align-middle" animate={{ opacity: [1, 1, 0, 0] }} transition={{ repeat: Infinity, duration: 0.7, times: [0, 0.45, 0.5, 1] }} />
+              <motion.span className="inline-block w-[1px] h-[12px] ml-[1px] align-middle" style={{ backgroundColor: "var(--color-text-secondary)" }} animate={{ opacity: [1, 1, 0, 0] }} transition={{ repeat: Infinity, duration: 0.7, times: [0, 0.45, 0.5, 1] }} />
             </span>
           )}
         </div>
         <div className="flex items-center gap-[8px]">
-          <motion.button type="button" className="flex gap-[4px] items-center px-[12px] py-[6px] rounded-[15px] cursor-pointer" style={{ backgroundColor: "#ededed" }} whileHover={{ backgroundColor: "#e0e0e0" }} whileTap={{ scale: 0.94 }} transition={{ duration: 0.12 }} onClick={() => onComplete("skip")}>
-            <p className="leading-[16px] text-[#737373] text-[13px]" style={inter500}>Skip</p>
-          </motion.button>
-          <button
-            className="bg-[#BE1D2C] hover:bg-[#d42031] flex items-center justify-center rounded-[20px] size-[32px] cursor-pointer transition-colors"
-            onClick={() => { const trimmed = inputValue.trim(); if (trimmed && trimmed !== TYPEWRITER_TARGET) onComplete([...selectedLabels, trimmed].join(", ")); }}
-          >
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d={SEND_ARROW_PATH} stroke="white" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" /></svg>
-          </button>
+          <Btn type="button" variant="outline" size="sm" onClick={() => onComplete("skip")}>Skip</Btn>
+          <Btn type="button" variant="default" size="icon-sm" onClick={() => { const trimmed = inputValue.trim(); if (trimmed && trimmed !== TYPEWRITER_TARGET) onComplete([...selectedLabels, trimmed].join(", ")); }}>
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d={SEND_ARROW_PATH} stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" /></svg>
+          </Btn>
         </div>
       </div>
     </div>
@@ -439,29 +481,14 @@ export function ChecklistOverflowMenu({
   const currentPageData = checklistPages[page];
 
   return (
-    <div className="bg-white flex flex-col gap-[4px] items-start pb-[10px] pt-[8px] px-[8px] relative rounded-[12px] w-full" style={{ boxShadow: "0px 0px 12px 0px rgba(0,0,0,0.06)", border: "1px solid #e5e5e5" }}>
+    <div className="flex flex-col gap-[4px] items-start pb-[10px] pt-[8px] px-[8px] relative rounded-[12px] w-full" style={{ backgroundColor: "var(--color-bg-main)", boxShadow: "var(--shadow-xs)", border: "1px solid var(--color-element-subtle)" }}>
       <div className="flex flex-col items-start w-full">
         <div className="flex flex-row items-center w-full">
           <div className="flex gap-[8px] items-center p-[8px] w-full">
-            <p className="flex-1 leading-[20px] text-[#242423] text-[15px] min-w-0 truncate" style={dmSans500}>{currentPageData.question}</p>
+            <p className="flex-1 leading-[20px] text-[15px] min-w-0 truncate" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{currentPageData.question}</p>
             <div className="flex gap-[12px] items-center shrink-0">
-              {totalPages > 1 && (
-                <div className="flex gap-[4px] items-center">
-                  <button className="flex items-center justify-center size-[16px] cursor-pointer transition-opacity" style={{ opacity: page === 0 ? 0.3 : 0.6 }} onClick={() => setPage(p => Math.max(0, p - 1))} disabled={page === 0}>
-                    <svg width="5.5" height="9.5" viewBox="0 0 5.5 9.5" fill="none"><path d={CHEVRON_LEFT_PATH} stroke="#6E6D6A" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" /></svg>
-                  </button>
-                  <p className="leading-normal text-[#6e6d6a] text-[13px]" style={dmSans400}>{page + 1} of {totalPages}</p>
-                  <button className="flex items-center justify-center size-[16px] cursor-pointer transition-opacity" style={{ opacity: page === totalPages - 1 ? 0.3 : 0.6 }} onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))} disabled={page === totalPages - 1}>
-                    <svg width="5.5" height="9.5" viewBox="0 0 5.5 9.5" fill="none"><path d={CHEVRON_RIGHT_PATH} stroke="#6E6D6A" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" /></svg>
-                  </button>
-                </div>
-              )}
-              <button className="flex items-center justify-center size-[16px] cursor-pointer opacity-60 hover:opacity-100 transition-opacity" onClick={onClose}>
-                <svg width="9.3" height="9.3" viewBox="0 0 9.3 9.3" fill="none">
-                  <path d="M8.65 0.65L0.65 8.65" stroke="#6E6D6A" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.3" />
-                  <path d="M0.65 0.65L8.65 8.65" stroke="#6E6D6A" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.3" />
-                </svg>
-              </button>
+              {totalPages > 1 && <OverflowPagination page={page + 1} total={totalPages} onPrev={() => setPage(p => Math.max(0, p - 1))} onNext={() => setPage(p => Math.min(totalPages - 1, p + 1))} />}
+              <OverflowCloseBtn onClose={onClose} />
             </div>
           </div>
         </div>
@@ -473,10 +500,10 @@ export function ChecklistOverflowMenu({
               return (
                 <motion.div key={item.id} className="relative rounded-[6px] w-full h-[36px] flex items-center cursor-pointer" animate={{ backgroundColor: "rgba(0,0,0,0)" }} whileHover={{ backgroundColor: "rgba(36,36,35,0.03)" }} transition={{ duration: 0.12 }} onClick={() => toggleItem(item.id)}>
                   <div className="flex gap-[8px] items-center px-[8px] py-[6px] w-full">
-                    <div className="relative rounded-[4px] shrink-0 size-[16px] flex items-center justify-center transition-colors duration-150" style={{ backgroundColor: checked ? "#BE1D2C" : "transparent", border: checked ? "1px solid #BE1D2C" : "1px solid #e5e5e5", boxShadow: "0px 1px 2px 0px rgba(0,0,0,0.05)" }}>
+                    <div className="relative rounded-[4px] shrink-0 size-[16px] flex items-center justify-center transition-colors duration-150" style={{ backgroundColor: checked ? "var(--color-brand-primary)" : "transparent", border: checked ? "1px solid var(--color-brand-primary)" : "1px solid var(--color-element-subtle)", boxShadow: "var(--shadow-xs)" }}>
                       {checked && <svg width="10.7" height="7.75" viewBox="0 0 10.6633 7.74667" fill="none"><path d={CHECKMARK_PATH} stroke="#FAFAFA" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33" /></svg>}
                     </div>
-                    <p className="flex-1 leading-[20px] text-[#0a0a0a] text-[14px] truncate min-w-0" style={inter400}>{item.label}</p>
+                    <p className="flex-1 leading-[20px] text-[14px] truncate min-w-0" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{item.label}</p>
                   </div>
                 </motion.div>
               );
@@ -485,20 +512,18 @@ export function ChecklistOverflowMenu({
         </AnimatePresence>
       </div>
 
-      <div className="rounded-[12px] flex items-center px-[12px] py-[8px] w-full" style={{ outline: "1px solid rgba(36,36,35,0.1)", outlineOffset: "-1px" }}>
+      <div className="rounded-[12px] flex items-center px-[12px] py-[8px] w-full" style={{ outline: "1px solid var(--color-element-subtle)", outlineOffset: "-1px" }}>
         <div className="flex flex-1 items-center gap-[6px] min-w-0">
-          <div className="flex items-center justify-center rounded-[4px] shrink-0 size-[20px]" style={{ backgroundColor: "rgba(36,36,35,0.06)" }}>
-            <Pencil size={14} color="#0A0A0A" strokeWidth={2.5} />
+          <div className="flex items-center justify-center rounded-[4px] shrink-0 size-[20px]" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }}>
+            <Pencil size={14} color="var(--color-text-primary)" strokeWidth={2.5} />
           </div>
-          <input type="text" value={inputValue} onChange={(e) => setInputValue(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") handleSend(); }} placeholder={inputPlaceholder ?? "You make the call"} className="flex-1 bg-transparent outline-none border-none text-[#242423] text-[14px] leading-[20px] placeholder:text-[#6e6d6a] min-w-0" style={inter400} />
+          <input type="text" value={inputValue} onChange={(e) => setInputValue(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") handleSend(); }} placeholder={inputPlaceholder ?? "You make the call"} className="flex-1 bg-transparent outline-none border-none text-[14px] leading-[20px] min-w-0" style={{ ...dmSans400, color: "var(--color-text-primary)" }} />
         </div>
         <div className="flex items-center gap-[8px]">
-          <motion.button type="button" className="flex gap-[4px] items-center px-[12px] py-[6px] rounded-[15px] cursor-pointer" style={{ backgroundColor: "#ededed" }} whileHover={{ backgroundColor: "#e0e0e0" }} whileTap={{ scale: 0.94 }} transition={{ duration: 0.12 }} onClick={() => onComplete([])}>
-            <p className="leading-[16px] text-[#737373] text-[13px]" style={inter500}>Skip</p>
-          </motion.button>
-          <button type="button" className="bg-[#BE1D2C] hover:bg-[#d42031] flex items-center justify-center rounded-[20px] size-[32px] cursor-pointer transition-colors" onClick={handleSend}>
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d={SEND_ARROW_PATH} stroke="white" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" /></svg>
-          </button>
+          <Btn type="button" variant="outline" size="sm" onClick={() => onComplete([])}>Skip</Btn>
+          <Btn type="button" variant="default" size="icon-sm" onClick={handleSend}>
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d={SEND_ARROW_PATH} stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" /></svg>
+          </Btn>
         </div>
       </div>
     </div>
@@ -519,40 +544,25 @@ export function TemplateOverflowMenu({
   const pageCards = cards.slice((page - 1) * CARDS_PER_PAGE, page * CARDS_PER_PAGE);
 
   return (
-    <div className="bg-white flex flex-col gap-[16px] pb-[12px] pt-[12px] relative rounded-[12px] w-full z-10">
-      <div aria-hidden="true" className="absolute border border-[#e5e5e5] border-solid inset-0 pointer-events-none rounded-[12px] shadow-[0px_0px_12px_0px_rgba(0,0,0,0.06)]" />
+    <div className="flex flex-col gap-[16px] pb-[12px] pt-[12px] relative rounded-[12px] w-full z-10" style={{ backgroundColor: "var(--color-bg-main)" }}>
+      <div aria-hidden="true" className="absolute border-solid inset-0 pointer-events-none rounded-[12px]" style={{ border: "1px solid var(--color-element-subtle)", boxShadow: "var(--shadow-xs)" }} />
 
       <div className="flex flex-col gap-[8px] px-[12px] w-full">
         <div className="flex items-center gap-[16px] p-[8px] w-full">
-          <p className="flex-1 leading-[20px] text-[#242423] text-[15px]" style={{ ...dmSans500, fontVariationSettings: "'opsz' 14" }}>{header}</p>
+          <p className="flex-1 leading-[20px] text-[15px]" style={{ ...dmSans500, color: "var(--color-text-primary)", fontVariationSettings: "'opsz' 14" }}>{header}</p>
           <div className="flex gap-[12px] items-center shrink-0">
-            {totalPages > 1 && (
-              <div className="flex gap-[4px] items-center">
-                <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="flex items-center justify-center shrink-0 size-[16px] cursor-pointer disabled:opacity-30 opacity-60 hover:opacity-100 transition-opacity">
-                  <svg width="6" height="10" viewBox="0 0 5.5 9.5" fill="none"><path d={CHEVRON_LEFT_PATH} stroke="#6E6D6A" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" /></svg>
-                </button>
-                <p className="leading-normal text-[#6e6d6a] text-[13px] whitespace-nowrap" style={dmSans400}>{page} of {totalPages}</p>
-                <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="flex items-center justify-center shrink-0 size-[16px] cursor-pointer disabled:opacity-30 opacity-60 hover:opacity-100 transition-opacity">
-                  <svg width="6" height="10" viewBox="0 0 5.5 9.5" fill="none"><path d={CHEVRON_RIGHT_PATH} stroke="#6E6D6A" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" /></svg>
-                </button>
-              </div>
-            )}
-            <button onClick={onClose} className="flex items-center justify-center shrink-0 size-[16px] cursor-pointer opacity-60 hover:opacity-100 transition-opacity">
-              <svg width="10" height="10" viewBox="0 0 9.3 9.3" fill="none">
-                <path d="M8.65 0.65L0.65 8.65" stroke="#6E6D6A" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.3" />
-                <path d="M0.65 0.65L8.65 8.65" stroke="#6E6D6A" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.3" />
-              </svg>
-            </button>
+            {totalPages > 1 && <OverflowPagination page={page} total={totalPages} onPrev={() => setPage(p => Math.max(1, p - 1))} onNext={() => setPage(p => Math.min(totalPages, p + 1))} />}
+            <OverflowCloseBtn onClose={onClose} />
           </div>
         </div>
 
         <AnimatePresence mode="wait">
           <motion.div key={page} className="grid grid-cols-2 gap-[12px] px-[8px] w-full" initial={{ opacity: 0, x: 14 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -14 }} transition={{ type: "spring", stiffness: 380, damping: 28 }}>
             {pageCards.map((item) => (
-              <motion.div key={item.num} className="relative rounded-[16px] cursor-pointer overflow-hidden" style={{ height: 224, border: "1px solid rgba(36,36,35,0.1)" }} animate={{ backgroundColor: "rgba(0,0,0,0)" }} whileHover={{ backgroundColor: "rgba(36,36,35,0.04)", borderColor: "rgba(36,36,35,0.25)" }} transition={{ duration: 0.12 }} onClick={() => onComplete(`${item.title}: "${item.front}" — ${item.insideHeading ?? ""} ${item.insideBody}`)}>
-                <div className="p-[12px] h-full overflow-hidden" style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 400, fontSize: 15, lineHeight: "20px", color: "#0a0a0a" }}>
-                  <p style={{ margin: 0 }}><span style={{ fontWeight: 600 }}>Front:</span>{` ${item.front}`}</p>
-                  <p style={{ margin: 0, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 8, WebkitBoxOrient: "vertical" as const }}><span style={{ fontWeight: 600 }}>Inside:</span>{` ${item.insideHeading ?? ""} ${item.insideBody}`}</p>
+              <motion.div key={item.num} className="relative rounded-[16px] cursor-pointer overflow-hidden" style={{ height: 224, border: "1px solid var(--color-element-subtle)" }} animate={{ backgroundColor: "rgba(0,0,0,0)" }} whileHover={{ backgroundColor: "rgba(36,36,35,0.04)", borderColor: "rgba(36,36,35,0.25)" }} transition={{ duration: 0.12 }} onClick={() => onComplete(`${item.title}: "${item.front}" — ${item.insideHeading ?? ""} ${item.insideBody}`)}>
+                <div className="p-[12px] h-full flex flex-col gap-[6px]" style={{ fontFamily: "var(--font-family-body)", fontWeight: 400, fontSize: 13, lineHeight: "18px", color: "var(--color-text-primary)" }}>
+                  <p className="shrink-0" style={{ margin: 0 }}><span style={{ fontWeight: 600 }}>Front:</span>{` ${item.front}`}</p>
+                  <p className="flex-1 overflow-hidden" style={{ margin: 0 }}><span style={{ fontWeight: 600 }}>Inside:</span>{` ${item.insideHeading ?? ""} ${item.insideBody}`}</p>
                 </div>
               </motion.div>
             ))}
@@ -561,20 +571,18 @@ export function TemplateOverflowMenu({
       </div>
 
       <div className="px-[8px] w-full">
-        <div className="rounded-[12px] flex items-center px-[12px] py-[8px]" style={{ border: "1px solid rgba(36,36,35,0.1)" }}>
+        <div className="rounded-[12px] flex items-center px-[12px] py-[8px]" style={{ border: "1px solid var(--color-element-subtle)" }}>
           <div className="flex flex-1 items-center gap-[4px] min-w-0">
-            <div className="shrink-0 size-[20px] flex items-center justify-center rounded-[4px]" style={{ backgroundColor: "rgba(36,36,35,0.06)" }}>
-              <Pencil size={14} color="#0A0A0A" strokeWidth={2.5} />
+            <div className="shrink-0 size-[20px] flex items-center justify-center rounded-[4px]" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }}>
+              <Pencil size={14} color="var(--color-text-primary)" strokeWidth={2.5} />
             </div>
-            <input type="text" value={customInput} onChange={(e) => setCustomInput(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") onComplete(customInput.trim() || "skip"); }} placeholder={inputPlaceholder ?? "Something else"} className="flex-1 bg-transparent outline-none border-none text-[#242423] text-[14px] leading-[20px] placeholder:text-[#6e6d6a] min-w-0" style={inter400} />
+            <input type="text" value={customInput} onChange={(e) => setCustomInput(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") onComplete(customInput.trim() || "skip"); }} placeholder={inputPlaceholder ?? "Something else"} className="flex-1 bg-transparent outline-none border-none text-[14px] leading-[20px] min-w-0" style={{ ...dmSans400, color: "var(--color-text-primary)" }} />
           </div>
           <div className="flex items-center gap-[8px]">
-            <button type="button" onClick={() => onComplete("skip")} className="bg-[#ededed] flex items-center px-[12px] py-[6px] rounded-[15px] shrink-0 cursor-pointer hover:bg-[#e0e0e0] transition-colors">
-              <span className="leading-[16px] text-[#737373] text-[13px]" style={inter500}>Skip</span>
-            </button>
-            <button type="button" onClick={() => onComplete(customInput.trim() || "skip")} className="bg-[#BE1D2C] hover:bg-[#d42031] flex items-center justify-center shrink-0 size-[32px] rounded-[20px] cursor-pointer transition-colors">
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d={SEND_ARROW_PATH} stroke="white" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" /></svg>
-            </button>
+            <Btn type="button" variant="outline" size="sm" onClick={() => onComplete("skip")}>Skip</Btn>
+            <Btn type="button" variant="default" size="icon-sm" onClick={() => onComplete(customInput.trim() || "skip")}>
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d={SEND_ARROW_PATH} stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" /></svg>
+            </Btn>
           </div>
         </div>
       </div>
@@ -592,47 +600,36 @@ export function ActionOverflowMenu({
   const [customInput, setCustomInput] = useState("");
 
   return (
-    <div className="bg-white flex flex-col gap-[4px] items-start pb-[12px] pt-[12px] relative rounded-[12px] w-full" style={{ boxShadow: "0px 0px 12px 0px rgba(0,0,0,0.06)", border: "1px solid #e5e5e5" }}>
-      <button className="absolute flex items-center justify-center shrink-0 size-[16px] cursor-pointer opacity-60 hover:opacity-100 transition-opacity" style={{ right: 20, top: 20 }} onClick={onClose}>
-        <svg width="9.3" height="9.3" viewBox="0 0 9.3 9.3" fill="none">
-          <path d="M8.65 0.65L0.65 8.65" stroke="#6E6D6A" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.3" />
-          <path d="M0.65 0.65L8.65 8.65" stroke="#6E6D6A" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.3" />
-        </svg>
-      </button>
+    <div className="flex flex-col gap-[4px] items-start pb-[12px] pt-[12px] relative rounded-[12px] w-full" style={{ backgroundColor: "var(--color-bg-main)", boxShadow: "var(--shadow-xs)", border: "1px solid var(--color-element-subtle)" }}>
       <div className="flex items-center gap-[16px] px-[20px] py-[8px] w-full">
         <div className="flex flex-col gap-[4px] flex-1 min-w-0">
-          <p className="leading-[20px] text-[#242423] text-[15px]" style={dmSans500}>{config.title}</p>
-          <p className="leading-[20px] text-[#6e6d6a] text-[13px]" style={dmSans400}>{config.subtitle}</p>
+          <p className="leading-[20px] text-[15px]" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{config.title}</p>
+          <p className="leading-[20px] text-[13px]" style={{ ...dmSans400, color: "var(--color-text-secondary)" }}>{config.subtitle}</p>
         </div>
-        <button className="flex-1 rounded-[25px] px-[12px] py-[8px] text-center cursor-pointer hover:opacity-90 transition-opacity" style={{ backgroundColor: "#BE1D2C", maxWidth: 163 }} onClick={onGenerate}>
-          <p className="leading-[20px] text-white text-[14px]" style={dmSans500}>{config.generateButtonLabel}</p>
-        </button>
+        <Btn onClick={onGenerate} className="shrink-0">{config.generateButtonLabel}</Btn>
+        <OverflowCloseBtn onClose={onClose} />
       </div>
-      <div className="w-full px-0"><div className="w-full h-[1px]" style={{ backgroundColor: "rgba(36,36,35,0.06)" }} /></div>
+      <div className="w-full px-0"><div className="w-full h-[1px]" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }} /></div>
       <div className="flex flex-col gap-[8px] px-[20px] py-[8px] w-full">
-        <p className="leading-[20px] text-[#242423] text-[15px]" style={dmSans500}>Or Adjust</p>
+        <p className="leading-[20px] text-[15px]" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>Or Adjust</p>
         <div className="flex gap-[16px] items-center">
           {config.adjustOptions.map((label) => (
-            <button key={label} className="rounded-[25px] px-[12px] py-[8px] cursor-pointer hover:bg-[rgba(36,36,35,0.04)] transition-colors" style={{ border: "1px solid rgba(36,36,35,0.1)" }} onClick={onClose}>
-              <p className="leading-[20px] text-[#242423] text-[14px]" style={dmSans500}>{label}</p>
-            </button>
+            <Btn key={label} variant="outline" size="sm" onClick={onClose}>{label}</Btn>
           ))}
         </div>
       </div>
-      <div className="rounded-[12px] mx-[8px] flex items-center px-[12px] py-[8px] w-[calc(100%-16px)]" style={{ outline: "1px solid rgba(36,36,35,0.1)", outlineOffset: "-1px" }}>
+      <div className="rounded-[12px] mx-[8px] flex items-center px-[12px] py-[8px] w-[calc(100%-16px)]" style={{ outline: "1px solid var(--color-element-subtle)", outlineOffset: "-1px" }}>
         <div className="flex flex-1 items-center gap-[6px] min-w-0">
-          <div className="shrink-0 size-[20px] flex items-center justify-center rounded-[4px]" style={{ backgroundColor: "rgba(36,36,35,0.06)" }}>
-            <Pencil size={14} color="#0A0A0A" strokeWidth={2.5} />
+          <div className="shrink-0 size-[20px] flex items-center justify-center rounded-[4px]" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }}>
+            <Pencil size={14} color="var(--color-text-primary)" strokeWidth={2.5} />
           </div>
-          <input type="text" value={customInput} onChange={(e) => setCustomInput(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && customInput.trim()) onClose(); }} placeholder={inputPlaceholder ?? "Something else"} className="flex-1 bg-transparent outline-none border-none text-[#242423] text-[14px] leading-[20px] placeholder:text-[#6e6d6a] min-w-0" style={inter400} />
+          <input type="text" value={customInput} onChange={(e) => setCustomInput(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && customInput.trim()) onClose(); }} placeholder={inputPlaceholder ?? "Something else"} className="flex-1 bg-transparent outline-none border-none text-[14px] leading-[20px] min-w-0" style={{ ...dmSans400, color: "var(--color-text-primary)" }} />
         </div>
         <div className="flex items-center gap-[8px]">
-          <button type="button" onClick={onClose} className="bg-[#ededed] flex items-center px-[12px] py-[6px] rounded-[15px] shrink-0 cursor-pointer hover:bg-[#e0e0e0] transition-colors">
-            <span className="leading-[16px] text-[#737373] text-[13px]" style={inter500}>Skip</span>
-          </button>
-          <button type="button" onClick={() => { if (customInput.trim()) onClose(); }} className="bg-[#BE1D2C] flex items-center justify-center rounded-[20px] size-[32px] cursor-pointer">
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M0.75 6L6 0.75M6 0.75L11.25 6M6 0.75V11.25" stroke="white" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" /></svg>
-          </button>
+          <Btn type="button" variant="outline" size="sm" onClick={onClose}>Skip</Btn>
+          <Btn type="button" variant="default" size="icon-sm" onClick={() => { if (customInput.trim()) onClose(); }}>
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d={SEND_ARROW_PATH} stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" /></svg>
+          </Btn>
         </div>
       </div>
     </div>
@@ -642,28 +639,28 @@ export function ActionOverflowMenu({
 // ── TadaBanner ─────────────────────────────────────────────────────────────
 
 const TADA_SCOPED_TOKENS = `
-  --tb-font-family: 'DM Sans', system-ui, sans-serif;
-  --tb-font-size-13: 13px;
-  --tb-font-size-12: 12px;
-  --tb-font-weight-medium: 500;
-  --tb-font-weight-bold: 700;
-  --tb-line-height-13: 17px;
-  --tb-line-height-12: 18px;
-  --tb-space-2: 8px;
-  --tb-space-3: 12px;
-  --tb-space-4: 16px;
-  --tb-space-10: 40px;
-  --tb-radius-2xl: 12px;
-  --tb-icon-size: 16px;
-  --tb-color-bg: var(--background, #ffffff);
-  --tb-color-fg: var(--foreground, #1a1a1a);
-  --tb-color-muted: var(--muted, #ececf0);
-  --tb-color-destructive: var(--destructive, #d4183d);
-  --tb-color-destructive-fg: var(--destructive-foreground, #ffffff);
-  --tb-color-brand-dim: var(--color-brand-primary-dim, rgba(190, 29, 44, 0.08));
+  --tb-font-family:          var(--font-family-body);
+  --tb-font-size-13:         var(--font-size-label-15);
+  --tb-font-size-12:         var(--font-size-body-13);
+  --tb-font-weight-medium:   400;
+  --tb-font-weight-bold:     var(--font-weight-label-sb-15);
+  --tb-line-height-13:       1.4;
+  --tb-line-height-12:       1.4;
+  --tb-space-2:              var(--space-2);
+  --tb-space-3:              var(--space-3);
+  --tb-space-4:              var(--space-4);
+  --tb-space-10:             var(--space-10);
+  --tb-radius-2xl:           var(--radius-2xl);
+  --tb-icon-size:            16px;
+  --tb-color-bg:             var(--color-bg-main);
+  --tb-color-fg:             var(--color-text-primary);
+  --tb-color-muted:          var(--color-bg-editor);
+  --tb-color-destructive:    var(--color-brand-primary);
+  --tb-color-destructive-fg: var(--color-text-on-primary);
+  --tb-color-brand-dim:      var(--color-brand-primary-dim);
 `;
 
-function TadaBanner({
+export function TadaBanner({
   loadingDuration = 10_000, loadingTitle = "Creating your card....", loadingMessage = "Initial generation might take a little longer, around 1-2 minutes. Thanks for your patience!",
   doneTitle = "Tada, Card generation is done!", doneMessage = "Your birthday card for Keith is ready! It's going to look wonderful in that Watercolor style.",
   partyPopperSrc,
@@ -681,7 +678,7 @@ function TadaBanner({
   const scopeClass = `tada-banner-${scopeId}`;
   const headerContentStyle: React.CSSProperties = { display: "flex", alignItems: "center", gap: "var(--tb-space-2)", padding: "var(--tb-space-2) var(--tb-space-4)" };
   const headerTextStyle: React.CSSProperties = { fontWeight: "var(--tb-font-weight-bold)" as unknown as number, fontSize: "var(--tb-font-size-13)", lineHeight: "var(--tb-line-height-13)", fontFamily: "var(--tb-font-family)" };
-  const bodyDivStyle: React.CSSProperties = { position: "relative", padding: "var(--tb-space-3) var(--tb-space-4)", fontSize: "var(--tb-font-size-12)", fontWeight: "var(--tb-font-weight-medium)" as unknown as number, lineHeight: "var(--tb-line-height-12)", borderRadius: "var(--tb-radius-2xl) var(--tb-radius-2xl) 11px 11px", boxShadow: "0 0 17px rgba(0, 0, 0, 0.15)", background: "var(--tb-color-bg)", color: "var(--tb-color-fg)", fontFamily: "var(--tb-font-family)", overflow: "hidden" };
+  const bodyDivStyle: React.CSSProperties = { position: "relative", padding: "var(--tb-space-3) var(--tb-space-4)", fontSize: "var(--tb-font-size-12)", fontWeight: "var(--tb-font-weight-medium)" as unknown as number, lineHeight: "var(--tb-line-height-12)", borderRadius: "var(--tb-radius-2xl) var(--tb-radius-2xl) 11px 11px", boxShadow: "var(--shadow-lg)", background: "var(--tb-color-bg)", color: "var(--tb-color-fg)", fontFamily: "var(--tb-font-family)", overflow: "hidden" };
 
   return (
     <>
@@ -736,6 +733,327 @@ function TadaBanner({
   );
 }
 
+// ── ChatHomeInput ──────────────────────────────────────────────────────────
+
+export interface ChatHomeInputProps {
+  /** Input placeholder text */
+  placeholder?: string;
+  /** Called when the user submits a message */
+  onSend?: (value: string) => void;
+}
+
+export function ChatHomeInput({
+  placeholder = "Ask, search or create your card",
+  onSend,
+}: ChatHomeInputProps) {
+  const [inputValue, setInputValue] = useState("");
+  const [isRecording, setIsRecording] = useState(false);
+
+  return (
+    <div className="bg-white border border-[rgba(36,36,35,0.1)] flex flex-col gap-[24px] pb-[8px] pt-[12px] px-[8px] rounded-[12px] shadow-[0px_2px_4px_0px_rgba(0,0,0,0.02)] shrink-0 w-full relative transition-colors duration-200">
+      <div className="flex items-center px-[6px] relative shrink-0 w-full min-h-[32px]">
+        <textarea
+          className="flex-1 w-full resize-none bg-transparent outline-none text-[#242423] text-[15px] leading-[20px]"
+          style={{ ...dmSans400, caretColor: "var(--color-text-primary)", border: "none", padding: 0, minHeight: 20, overflow: "hidden" }}
+          value={inputValue}
+          onChange={e => { setInputValue(e.target.value); e.target.style.height = "auto"; e.target.style.height = `${e.target.scrollHeight}px`; }}
+          rows={1}
+          placeholder={placeholder}
+        />
+      </div>
+      <div className="flex items-end justify-between relative shrink-0 w-full">
+        <div className="flex gap-[8px] items-end relative shrink-0">
+          <button className="bg-[rgba(36,36,35,0.06)] hover:bg-[rgba(36,36,35,0.09)] transition-colors flex gap-[6px] h-[32px] items-center px-[8px] py-[6px] relative rounded-[100px]">
+            <div className="size-[16px] relative shrink-0 flex items-center justify-center text-[#242423]"><ImagePlus size={18} strokeWidth={1.5} absoluteStrokeWidth /></div>
+            <p className="font-medium leading-[18px] text-[#242423] text-[12px] whitespace-nowrap" style={{ fontFamily: "var(--font-family-body)" }}>Add reference images</p>
+          </button>
+        </div>
+        <div className="flex gap-[4px] items-center relative shrink-0">
+          <button className={`flex items-center justify-center p-[8px] relative rounded-[20px] shrink-0 size-[32px] transition-colors ${isRecording ? "bg-red-100 text-red-500" : "hover:bg-[rgba(36,36,35,0.06)] text-[#242423]"}`} onClick={() => setIsRecording(r => !r)}>
+            <Mic size={18} strokeWidth={1.5} absoluteStrokeWidth />
+          </button>
+          <button disabled={!inputValue.trim() && !isRecording} className={`flex items-center justify-center p-[8px] relative rounded-[20px] shrink-0 size-[32px] transition-colors ${inputValue.trim() ? "bg-[#BE1D2C] hover:bg-[#d42031] text-white" : "bg-[rgba(36,36,35,0.06)] text-[#6e6d6a] cursor-not-allowed"}`} onClick={() => { if (inputValue.trim()) { onSend?.(inputValue); setInputValue(""); } }}>
+            <ArrowUp size={18} strokeWidth={1.5} absoluteStrokeWidth />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── ChatConversationInput ───────────────────────────────────────────────────
+
+export interface ChatConversationInputProps {
+  /** AI sparkle icon URL */
+  aiIconSrc: string;
+  /** Input placeholder text */
+  placeholder?: string;
+  /** Called when the user submits a message */
+  onSend?: (value: string) => void;
+}
+
+export function ChatConversationInput({
+  aiIconSrc,
+  placeholder = "Ask, search or create your card",
+  onSend,
+}: ChatConversationInputProps) {
+  const [inputValue, setInputValue] = useState("");
+  const [isFocused, setIsFocused] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+
+  return (
+    <div className="w-full bg-white">
+      {/* AI icon + textarea */}
+      <div className="flex gap-[10px] items-center px-[16px] w-full shrink-0 mt-[8px] mb-[8px]">
+        <motion.img
+          alt=""
+          className="pointer-events-none object-cover shrink-0"
+          src={aiIconSrc}
+          animate={{ scale: [13 / 16, 1, 13 / 16], opacity: isFocused || !!inputValue ? 1 : 0.5 }}
+          transition={{ repeat: Infinity, duration: 1.6, ease: "easeInOut" }}
+          style={{ width: 16, height: 16 }}
+        />
+        <textarea
+          className="flex-1 resize-none bg-transparent outline-none text-[15px] leading-[20px] min-w-0"
+          style={{ ...dmSans400, caretColor: "var(--color-text-primary)", border: "none", padding: 0, minHeight: 20, overflow: "hidden", color: isFocused || inputValue ? "var(--color-text-primary)" : "var(--color-text-secondary)" }}
+          value={inputValue}
+          placeholder={placeholder}
+          onChange={e => { setInputValue(e.target.value); e.target.style.height = "auto"; e.target.style.height = `${e.target.scrollHeight}px`; }}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          rows={1}
+        />
+      </div>
+
+      {/* Divider */}
+      <div className="relative w-full h-px shrink-0">
+        <div className="absolute inset-0">
+          <svg className="block w-full h-full" fill="none" preserveAspectRatio="none" viewBox="0 0 640 1">
+            <line stroke="#242423" strokeOpacity="0.1" x2="640" y1="0.5" y2="0.5" />
+          </svg>
+        </div>
+      </div>
+
+      {/* Bottom actions */}
+      <div className="flex gap-[8px] items-end px-[16px] py-[12px] pb-[16px] w-full">
+        <div className="flex flex-[1_0_0] gap-[8px] items-end min-w-px">
+          <button className="bg-[rgba(36,36,35,0.06)] hover:bg-[rgba(36,36,35,0.09)] transition-colors flex gap-[6px] h-[32px] items-center px-[8px] py-[6px] relative rounded-[100px]">
+            <div className="size-[16px] relative shrink-0 flex items-center justify-center text-[#242423]"><ImagePlus size={18} strokeWidth={1.5} absoluteStrokeWidth /></div>
+            <p className="font-medium leading-[18px] text-[#242423] text-[12px] whitespace-nowrap" style={{ fontFamily: "var(--font-family-body)" }}>Add reference images</p>
+          </button>
+        </div>
+        <div className="flex gap-[4px] items-center relative shrink-0">
+          <button className={`flex items-center justify-center p-[8px] relative rounded-[20px] shrink-0 size-[32px] transition-colors ${isRecording ? "bg-red-100 text-red-500" : "hover:bg-[rgba(36,36,35,0.06)] text-[#242423]"}`} onClick={() => setIsRecording(r => !r)}>
+            <Mic size={18} strokeWidth={1.5} absoluteStrokeWidth />
+          </button>
+          <button className={`flex items-center justify-center p-[8px] relative rounded-[20px] shrink-0 size-[32px] transition-colors ${inputValue.trim() ? "bg-[#BE1D2C] hover:bg-[#d42031] text-white" : "bg-[rgba(36,36,35,0.06)] text-[#6e6d6a] cursor-not-allowed"}`} onClick={() => { if (inputValue.trim()) { onSend?.(inputValue); setInputValue(""); } }}>
+            <ArrowUp size={18} strokeWidth={1.5} absoluteStrokeWidth />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── ChatHomeScreen ─────────────────────────────────────────────────────────
+
+export interface ChatHomeScreenProps {
+  /** Mascot image URL displayed to the left of the greeting */
+  mascotSrc: string;
+  /** Prompts cycled by the typewriter animation */
+  examplePrompts?: string[];
+}
+
+export function ChatHomeScreen({
+  mascotSrc,
+  examplePrompts = [
+    "I'm making a card for my girlfriend that will make her laugh",
+    "I need a heartfelt thank you card for my best friend",
+    "Help me write a funny retirement card for my dad",
+    "Something silly and warm for my mom's 60th birthday",
+  ],
+}: ChatHomeScreenProps) {
+  const { displayText, isTyping } = useTypewriter(examplePrompts);
+
+  return (
+    <div className="flex flex-col justify-between w-full bg-white" style={{ padding: "16px", gap: 16, position: "relative", overflow: "visible" }}>
+      {/* Mascot */}
+      <div className="pointer-events-none select-none" style={{ position: "absolute", top: -8, left: -80, width: 150, height: 135, zIndex: 20 }}>
+        <img alt="Stampy mascot" style={{ width: "100%", height: "100%", objectFit: "contain" }} src={mascotSrc} />
+      </div>
+
+      {/* Greeting + typewriter */}
+      <div className="flex flex-col gap-[8px] items-start w-full relative pl-[40px]">
+        <p className="font-normal leading-[28px] relative text-[#242423] text-[18px] w-full" style={{ fontFamily: "sans-serif" }}>Hi there! I'm Stampy</p>
+        <div className="relative w-full" style={{ minHeight: 20 }}>
+          <div className="pointer-events-none select-none">
+            <span className="text-[#6e6d6a] text-[15px] leading-[20px]" style={dmSans400}>
+              Try: {displayText}
+              <motion.span
+                className="inline-block w-[1.5px] h-[13px] bg-[#6e6d6a] ml-[1px] align-middle"
+                animate={{ opacity: isTyping ? [1, 1, 0, 0] : [1, 0] }}
+                transition={isTyping ? { repeat: Infinity, duration: 0.8, times: [0, 0.45, 0.5, 1] } : { repeat: Infinity, duration: 0.6 }}
+              />
+            </span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  );
+}
+
+// ── OccasionSuggestions ────────────────────────────────────────────────────
+
+export interface OccasionSuggestionsProps {
+  /** Suggestions to display. Defaults to 4 random occasions. */
+  suggestions?: string[];
+  /** Called when a suggestion item is clicked */
+  onSelect?: (item: string) => void;
+  /** Called when the close (×) button is clicked */
+  onClose?: () => void;
+}
+
+export function OccasionSuggestions({
+  suggestions = getRandomSuggestions(4),
+  onSelect,
+  onClose,
+}: OccasionSuggestionsProps) {
+  return (
+    <div className="rounded-[12px] p-[8px] w-full flex flex-col items-start" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }}>
+      <div className="flex gap-[16px] items-start justify-end p-[8px] relative shrink-0 w-full">
+        <p className="flex-1 leading-[20px] text-[15px]" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>What's the occasion?</p>
+        <button onClick={onClose} className="shrink-0 transition-colors" style={{ color: "var(--color-text-secondary)" }} onMouseEnter={e => (e.currentTarget.style.color = "var(--color-text-primary)")} onMouseLeave={e => (e.currentTarget.style.color = "var(--color-text-secondary)")} aria-label="Close suggestions">
+          <X size={16} strokeWidth={1.5} absoluteStrokeWidth />
+        </button>
+      </div>
+      <div className="flex flex-col items-start w-full">
+        {suggestions.map((item, i) => (
+          <button key={item} onClick={() => onSelect?.(item)} className="flex gap-[8px] items-center pl-[8px] pr-[8px] py-[6px] rounded-[6px] w-full transition-colors text-left" onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-state-hover)")} onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")}>
+            <div className="flex flex-col items-center justify-center rounded-[4px] shrink-0 w-[20px]" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }}>
+              <p className="leading-[20px] text-[14px] text-center w-full" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{i + 1}</p>
+            </div>
+            <p className="flex-1 leading-[20px] text-[14px]" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{item}</p>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ── ChatHeader ─────────────────────────────────────────────────────────────
+
+export interface ChatHeaderProps {
+  /** Active conversation name shown in the dropdown pill */
+  conversationName?: string;
+  /** List of conversations in the dropdown */
+  conversations?: { id: string; name: string }[];
+  /** Whether the expanded (PiP) state is active */
+  expanded?: boolean;
+  /** Open the conversation dropdown by default (useful for doc previews) */
+  defaultDropdownOpen?: boolean;
+  /** Called when the expand button is clicked */
+  onToggleExpand?: () => void;
+  /** Called when the minimize (–) button is clicked */
+  onMinimize?: () => void;
+  /** Called when a conversation is selected */
+  onSelectConversation?: (id: string) => void;
+  /** Called when "New Conversation" is clicked */
+  onNewConversation?: () => void;
+}
+
+export function ChatHeader({
+  conversationName = "Jack's Birthday Bi...",
+  conversations = [
+    { id: "1", name: "Jack's Birthday Bi..." },
+    { id: "2", name: "Lupe's Luau" },
+    { id: "3", name: "Mom's Anniversary" },
+  ],
+  expanded = false,
+  defaultDropdownOpen = false,
+  onToggleExpand,
+  onMinimize,
+  onSelectConversation,
+  onNewConversation,
+}: ChatHeaderProps) {
+  const [dropdownOpen, setDropdownOpen] = useState(defaultDropdownOpen);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setDropdownOpen(false);
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  return (
+    <div className="border-b border-solid flex items-center justify-between px-[16px] py-[12px] relative shrink-0 w-full z-30 rounded-t-[20px]" style={{ borderColor: "var(--color-element-subtle)", backgroundColor: "var(--color-bg-main)" }}>
+      {/* Left: Stampy label + conversation dropdown */}
+      <div className="flex gap-[12px] items-center relative shrink-0 min-w-0 flex-1">
+        <div className="flex flex-col justify-center leading-[0] relative shrink-0 text-[15px] whitespace-nowrap" style={{ ...dmSans500, fontWeight: 600, color: "var(--color-text-primary)" }}>
+          <p className="leading-[normal]">Stampy</p>
+        </div>
+        <div ref={ref} className="relative min-w-0">
+          <button
+            className="flex items-center gap-[8px] px-[12px] h-[32px] rounded-[30px] cursor-pointer transition-colors max-w-[180px]"
+            style={{ backgroundColor: "var(--color-brand-secondary-dim)" }}
+            onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-state-pressed)")}
+            onMouseLeave={e => (e.currentTarget.style.backgroundColor = "var(--color-brand-secondary-dim)")}
+            onClick={() => setDropdownOpen(p => !p)}
+          >
+            <span className="text-[15px] leading-[20px] truncate" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{conversationName}</span>
+            <ChevronDown size={10} strokeWidth={1.5} absoluteStrokeWidth className="shrink-0" style={{ color: "var(--color-text-primary)" }} />
+          </button>
+          <AnimatePresence>
+            {dropdownOpen && (
+              <motion.div
+                className="absolute top-[calc(100%+4px)] left-0 rounded-[12px] py-[4px] min-w-[220px] z-50"
+                style={{ backgroundColor: "var(--color-bg-main)", boxShadow: "var(--shadow-md)", border: "1px solid var(--color-element-subtle)" }}
+                initial={{ opacity: 0, y: -4, scale: 0.97 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -4, scale: 0.97 }}
+                transition={{ duration: 0.15 }}
+              >
+                <button className="flex items-center gap-[8px] w-[calc(100%-8px)] mx-[4px] px-[12px] h-[32px] text-left cursor-pointer transition-colors rounded-[6px]" onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-state-hover)")} onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")} onClick={() => { setDropdownOpen(false); onNewConversation?.(); }}>
+                  <Plus size={14} strokeWidth={1.5} className="shrink-0" style={{ color: "var(--color-text-primary)" }} />
+                  <span className="text-[15px] leading-[20px]" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>New Conversation</span>
+                </button>
+                <div className="mx-[4px] my-[4px] h-px" style={{ backgroundColor: "var(--color-element-subtle)" }} />
+                {conversations.map(c => {
+                  const isActive = c.name === conversationName;
+                  return (
+                    <div key={c.id} className="group flex items-center gap-[4px] px-[8px] mx-[4px] h-[32px] cursor-pointer transition-colors rounded-[6px]" style={isActive ? { backgroundColor: "var(--color-brand-secondary-dim)" } : {}} onMouseEnter={e => { if (!isActive) e.currentTarget.style.backgroundColor = "var(--color-state-hover)"; }} onMouseLeave={e => { e.currentTarget.style.backgroundColor = isActive ? "var(--color-brand-secondary-dim)" : "transparent"; }} onClick={() => { setDropdownOpen(false); onSelectConversation?.(c.id); }}>
+                      <span className="text-[15px] leading-[20px] truncate flex-1" style={{ ...(isActive ? dmSans500 : dmSans400), color: "var(--color-text-primary)" }}>{c.name}</span>
+                      <div className="shrink-0 flex items-center justify-center size-[24px] rounded-[4px] opacity-0 group-hover:opacity-100 transition-opacity" onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-state-hover)")} onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")}>
+                        <PencilLine size={14} strokeWidth={1.5} style={{ color: "var(--color-text-secondary)" }} />
+                      </div>
+                    </div>
+                  );
+                })}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
+
+      {/* Right: expand + minimize */}
+      <div className="flex gap-[8px] items-center relative shrink-0">
+        <div className="group flex items-center justify-center relative rounded-[25px] shrink-0 size-[32px] cursor-pointer transition-colors" onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-state-hover)")} onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")} onClick={onToggleExpand}>
+          {expanded ? (
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M19 4C20.6569 4 22 5.34315 22 7V17C22 18.6051 20.7394 19.9158 19.1543 19.9961L19 20H5L4.8457 19.9961C3.26055 19.9158 2 18.6051 2 17V7C2 5.34315 3.34315 4 5 4H19ZM5 5.5C4.17157 5.5 3.5 6.17157 3.5 7V17C3.5 17.8284 4.17157 18.5 5 18.5H19C19.8284 18.5 20.5 17.8284 20.5 17V7C20.5 6.17157 19.8284 5.5 19 5.5H5ZM18 7C18.5523 7 19 7.44772 19 8V16C19 16.5523 18.5523 17 18 17H14C13.4477 17 13 16.5523 13 16V8C13 7.44772 13.4477 7 14 7H18Z" className="fill-[var(--color-text-secondary)] group-hover:fill-[var(--color-text-primary)] transition-colors" /></svg>
+          ) : (
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M15.4883 3.33691C17.073 3.41753 18.3338 4.72826 18.334 6.33301V13.666L18.3301 13.8203C18.2525 15.3543 17.0221 16.5841 15.4883 16.6621L15.334 16.666H4.66699C3.01014 16.666 1.66699 15.3229 1.66699 13.666V6.33301C1.66717 4.6763 3.01025 3.33301 4.66699 3.33301H15.334L15.4883 3.33691ZM4.66699 4.83301C3.83867 4.83301 3.16717 5.50473 3.16699 6.33301V13.666C3.16699 14.4944 3.83857 15.166 4.66699 15.166H15.334C16.1621 15.1657 16.834 14.4942 16.834 13.666V6.33301C16.8338 5.50495 16.162 4.83336 15.334 4.83301H4.66699ZM14.833 9.16699C15.3853 9.16699 15.833 9.61471 15.833 10.167V13.167C15.8328 13.7191 15.3852 14.167 14.833 14.167H11.833C11.281 14.1668 10.8332 13.719 10.833 13.167V10.167C10.833 9.61482 11.2809 9.16717 11.833 9.16699H14.833Z" className="fill-[var(--color-text-secondary)] group-hover:fill-[var(--color-text-primary)] transition-colors" /></svg>
+          )}
+        </div>
+        <div className="group flex items-center justify-center relative rounded-[25px] shrink-0 size-[32px] cursor-pointer transition-colors" onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-state-hover)")} onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")} onClick={onMinimize}>
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4.16669 10H15.8334" className="stroke-[var(--color-text-secondary)] group-hover:stroke-[var(--color-text-primary)] transition-colors" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── BottomBar ──────────────────────────────────────────────────────────────
 
 function BottomBar({
@@ -748,7 +1066,7 @@ function BottomBar({
       <div className="flex flex-row items-end w-full">
         <div className="flex gap-[8px] items-end px-[16px] py-[12px] pb-[16px] w-full">
           <div className="flex flex-[1_0_0] gap-[8px] items-end min-w-px">
-            <motion.button className="flex gap-[6px] h-[32px] items-center px-[8px] py-[6px] rounded-[100px] shrink-0 cursor-pointer" style={{ backgroundColor: "rgba(36,36,35,0.06)" }} whileHover={{ backgroundColor: "rgba(36,36,35,0.10)" }} whileTap={{ scale: 0.93 }} transition={{ duration: 0.15 }}>
+            <motion.button className="flex gap-[6px] h-[32px] items-center px-[8px] py-[6px] rounded-[100px] shrink-0 cursor-pointer" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }} whileHover={{ backgroundColor: "var(--color-element-subtle)" }} whileTap={{ scale: 0.93 }} transition={{ duration: 0.15 }}>
               <div className="size-[16px] relative shrink-0 flex items-center justify-center text-[#242423]">
                 <ImagePlus size={18} strokeWidth={1.5} absoluteStrokeWidth />
               </div>
@@ -1018,43 +1336,43 @@ export function StampyChatbot({
 
       <AnimatePresence mode="wait">
         {!isOpen ? (
-          <motion.div key="closed" className="cursor-pointer relative z-50 flex items-center justify-center rounded-full" style={{ width: 72, height: 72, boxShadow: "0px 8px 24px 0px rgba(0,0,0,0.12)" }} initial={{ opacity: 0, scale: 0.5, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.5, y: 20 }} transition={entranceSpring} onClick={() => setIsOpen(true)} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+          <motion.div key="closed" className="cursor-pointer relative z-50 flex items-center justify-center rounded-full" style={{ width: 72, height: 72, boxShadow: "var(--shadow-lg)" }} initial={{ opacity: 0, scale: 0.5, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.5, y: 20 }} transition={entranceSpring} onClick={() => setIsOpen(true)} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <img alt="Stampy mascot" className="w-full h-full object-contain pointer-events-none" src={stampyIconSrc} />
           </motion.div>
         ) : (
           <motion.div key="opened" className="relative flex flex-col items-end gap-[8px] w-full sm:w-[540px] px-3 sm:px-0 h-full" style={{ flexShrink: 0 }} initial={false} animate={{ opacity: 1 }} exit={{ opacity: 0, y: 30 }} transition={{ duration: 0.25, ease: "easeOut" }}>
             <div className="flex items-end justify-end w-full relative flex-1">
-              <motion.div className="bg-white flex flex-col items-start w-full sm:w-[450px] overflow-hidden" style={{ marginRight: isMobile ? 0 : -5, borderRadius: 20, boxShadow: "0px 2px 8px 0px rgba(0,0,0,0.08)" }} initial={{ opacity: 0, y: 24, scale: 0.98 }} animate={{ opacity: 1, scale: 1, y: 0, height: isExpanded ? window.innerHeight - 48 : isMobile ? Math.max(420, window.innerHeight - 80) : 550 }} transition={{ opacity: { duration: 0.3, ease: "easeOut" }, y: { duration: 0.35, ease: [0.16, 1, 0.3, 1] }, scale: { duration: 0.35, ease: [0.16, 1, 0.3, 1] }, height: { duration: 0.4, ease: [0.4, 0, 0.2, 1] } }}>
+              <motion.div className="bg-white flex flex-col items-start w-full sm:w-[450px] overflow-hidden" style={{ marginRight: isMobile ? 0 : -5, borderRadius: 20, boxShadow: "var(--shadow-xs)" }} initial={{ opacity: 0, y: 24, scale: 0.98 }} animate={{ opacity: 1, scale: 1, y: 0, height: isExpanded ? window.innerHeight - 48 : isMobile ? Math.max(420, window.innerHeight - 80) : 550 }} transition={{ opacity: { duration: 0.3, ease: "easeOut" }, y: { duration: 0.35, ease: [0.16, 1, 0.3, 1] }, scale: { duration: 0.35, ease: [0.16, 1, 0.3, 1] }, height: { duration: 0.4, ease: [0.4, 0, 0.2, 1] } }}>
 
                 {/* HEADER */}
-                <div className="border-[rgba(36,36,35,0.1)] border-b border-solid flex items-center justify-between px-[16px] py-[12px] relative shrink-0 w-full z-30 bg-white rounded-t-[20px]">
+                <div className="border-b border-solid flex items-center justify-between px-[16px] py-[12px] relative shrink-0 w-full z-30 rounded-t-[20px]" style={{ borderColor: "var(--color-element-subtle)", backgroundColor: "var(--color-bg-main)" }}>
                   <div className="flex gap-[12px] items-center relative shrink-0 min-w-0 flex-1">
-                    <div className="flex flex-col justify-center leading-[0] relative shrink-0 text-[#242423] text-[15px] whitespace-nowrap" style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 600, fontVariationSettings: "'opsz' 14" }}>
+                    <div className="flex flex-col justify-center leading-[0] relative shrink-0 text-[15px] whitespace-nowrap" style={{ ...dmSans500, fontWeight: 600, color: "var(--color-text-primary)", fontVariationSettings: "'opsz' 14" }}>
                       <p className="leading-[normal]">Stampy</p>
                     </div>
                     <div ref={convoDropdownRef} className="relative min-w-0">
-                      <button className="flex items-center gap-[8px] px-[12px] h-[32px] rounded-[30px] cursor-pointer transition-colors hover:bg-black/[0.08] max-w-[180px]" style={{ backgroundColor: "rgba(36,36,35,0.06)" }} onClick={() => setIsConvoDropdownOpen(p => !p)}>
-                        <span className="text-[15px] leading-[20px] text-[#242423] truncate" style={dmSans500}>{activeConversation?.name ?? "New Conversation"}</span>
-                        <svg width="10" height="6" viewBox="0 0 10 6" fill="none" className="shrink-0"><path d="M1 1L5 5L9 1" stroke="#242423" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                      <button className="flex items-center gap-[8px] px-[12px] h-[32px] rounded-[30px] cursor-pointer transition-colors max-w-[180px]" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }} onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-state-pressed)")} onMouseLeave={e => (e.currentTarget.style.backgroundColor = "var(--color-brand-secondary-dim)")} onClick={() => setIsConvoDropdownOpen(p => !p)}>
+                        <span className="text-[15px] leading-[20px] truncate" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{activeConversation?.name ?? "New Conversation"}</span>
+                        <ChevronDown size={10} strokeWidth={1.5} className="shrink-0" style={{ color: "var(--color-text-primary)" }} />
                       </button>
                       <AnimatePresence>
                         {isConvoDropdownOpen && (
-                          <motion.div className="absolute top-[calc(100%+4px)] left-0 bg-white rounded-[12px] py-[4px] min-w-[220px] z-50" style={{ boxShadow: "0px 4px 16px rgba(0,0,0,0.12)", border: "1px solid rgba(36,36,35,0.1)" }} initial={{ opacity: 0, y: -4, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -4, scale: 0.97 }} transition={{ duration: 0.15 }}>
-                            <button className="flex items-center gap-[8px] w-[calc(100%-24px)] mx-[4px] px-[12px] h-[32px] text-left cursor-pointer hover:bg-black/5 transition-colors rounded-[6px]" onClick={handleNewConversation}>
-                              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="shrink-0"><path d="M7 2.91699V11.0837" stroke="#242423" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /><path d="M2.91669 7H11.0834" stroke="#242423" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                              <span className="text-[15px] leading-[20px] text-[#242423]" style={dmSans500}>New Conversation</span>
+                          <motion.div className="absolute top-[calc(100%+4px)] left-0 rounded-[12px] py-[4px] min-w-[220px] z-50" style={{ backgroundColor: "var(--color-bg-main)", boxShadow: "var(--shadow-md)", border: "1px solid var(--color-element-subtle)" }} initial={{ opacity: 0, y: -4, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -4, scale: 0.97 }} transition={{ duration: 0.15 }}>
+                            <button className="flex items-center gap-[8px] w-[calc(100%-24px)] mx-[4px] px-[12px] h-[32px] text-left cursor-pointer transition-colors rounded-[6px]" onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-state-hover)")} onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")} onClick={handleNewConversation}>
+                              <Plus size={14} strokeWidth={1.5} className="shrink-0" style={{ color: "var(--color-text-primary)" }} />
+                              <span className="text-[15px] leading-[20px]" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>New Conversation</span>
                             </button>
-                            <div className="mx-[4px] my-[4px] h-px" style={{ backgroundColor: "rgba(36,36,35,0.1)" }} />
+                            <div className="mx-[4px] my-[4px] h-px" style={{ backgroundColor: "var(--color-element-subtle)" }} />
                             <div className="max-h-[240px] overflow-y-auto">
                               {conversations.map(convo => (
-                                <div key={convo.id} className={`group flex items-center justify-between px-[12px] mx-[4px] h-[32px] cursor-pointer transition-colors hover:bg-black/5 rounded-[6px] ${convo.id === activeConversationId ? "bg-black/[0.04]" : ""}`} onClick={() => { if (editingConvoId !== convo.id) { setActiveConversationId(convo.id); setIsConvoDropdownOpen(false); } }}>
+                                <div key={convo.id} className="group flex items-center justify-between px-[12px] mx-[4px] h-[32px] cursor-pointer transition-colors rounded-[6px]" style={{ backgroundColor: convo.id === activeConversationId ? "var(--color-brand-secondary-dim)" : "transparent" }} onMouseEnter={e => { if (convo.id !== activeConversationId) e.currentTarget.style.backgroundColor = "var(--color-state-hover)"; }} onMouseLeave={e => { e.currentTarget.style.backgroundColor = convo.id === activeConversationId ? "var(--color-brand-secondary-dim)" : "transparent"; }} onClick={() => { if (editingConvoId !== convo.id) { setActiveConversationId(convo.id); setIsConvoDropdownOpen(false); } }}>
                                   {editingConvoId === convo.id ? (
-                                    <input className="flex-1 text-[15px] leading-[20px] text-[#242423] bg-transparent outline-none border-b border-[#242423] min-w-0" style={dmSans400} value={editingName} autoFocus onChange={e => setEditingName(e.target.value)} onKeyDown={e => { if (e.key === "Enter") handleRenameConversation(convo.id, editingName); if (e.key === "Escape") setEditingConvoId(null); }} onBlur={() => handleRenameConversation(convo.id, editingName)} onClick={e => e.stopPropagation()} />
+                                    <input className="flex-1 text-[15px] leading-[20px] bg-transparent outline-none min-w-0" style={{ ...dmSans400, color: "var(--color-text-primary)", borderBottom: "1px solid var(--color-text-primary)" }} value={editingName} autoFocus onChange={e => setEditingName(e.target.value)} onKeyDown={e => { if (e.key === "Enter") handleRenameConversation(convo.id, editingName); if (e.key === "Escape") setEditingConvoId(null); }} onBlur={() => handleRenameConversation(convo.id, editingName)} onClick={e => e.stopPropagation()} />
                                   ) : (
                                     <>
-                                      <span className="text-[15px] leading-[20px] text-[#242423] truncate" style={dmSans400}>{convo.name}</span>
-                                      <button className="opacity-0 group-hover:opacity-100 transition-opacity shrink-0 ml-[8px] p-[2px] rounded hover:bg-black/5 cursor-pointer" onClick={e => { e.stopPropagation(); setEditingConvoId(convo.id); setEditingName(convo.name); }}>
-                                        <PencilLine size={14} strokeWidth={1.5} color="#6E6D6A" />
+                                      <span className="text-[15px] leading-[20px] truncate" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{convo.name}</span>
+                                      <button className="opacity-0 group-hover:opacity-100 transition-opacity shrink-0 ml-[8px] p-[2px] rounded cursor-pointer" onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-state-hover)")} onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")} onClick={e => { e.stopPropagation(); setEditingConvoId(convo.id); setEditingName(convo.name); }}>
+                                        <PencilLine size={14} strokeWidth={1.5} style={{ color: "var(--color-text-secondary)" }} />
                                       </button>
                                     </>
                                   )}
@@ -1067,15 +1385,15 @@ export function StampyChatbot({
                     </div>
                   </div>
                   <div className="flex gap-[8px] items-center relative shrink-0">
-                    <div className="group flex items-center justify-center relative rounded-[25px] shrink-0 size-[32px] cursor-pointer hover:bg-[#242423]/[0.06] transition-colors" onClick={() => setIsExpanded(p => !p)}>
+                    <div className="group flex items-center justify-center relative rounded-[25px] shrink-0 size-[32px] cursor-pointer transition-colors" onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-state-hover)")} onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")} onClick={() => setIsExpanded(p => !p)}>
                       {isExpanded ? (
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M19 4C20.6569 4 22 5.34315 22 7V17C22 18.6051 20.7394 19.9158 19.1543 19.9961L19 20H5L4.8457 19.9961C3.26055 19.9158 2 18.6051 2 17V7C2 5.34315 3.34315 4 5 4H19ZM5 5.5C4.17157 5.5 3.5 6.17157 3.5 7V17C3.5 17.8284 4.17157 18.5 5 18.5H19C19.8284 18.5 20.5 17.8284 20.5 17V7C20.5 6.17157 19.8284 5.5 19 5.5H5ZM18 7C18.5523 7 19 7.44772 19 8V16C19 16.5523 18.5523 17 18 17H14C13.4477 17 13 16.5523 13 16V8C13 7.44772 13.4477 7 14 7H18Z" className="fill-[#6E6D6A] group-hover:fill-[#242423] transition-colors" /></svg>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M19 4C20.6569 4 22 5.34315 22 7V17C22 18.6051 20.7394 19.9158 19.1543 19.9961L19 20H5L4.8457 19.9961C3.26055 19.9158 2 18.6051 2 17V7C2 5.34315 3.34315 4 5 4H19ZM5 5.5C4.17157 5.5 3.5 6.17157 3.5 7V17C3.5 17.8284 4.17157 18.5 5 18.5H19C19.8284 18.5 20.5 17.8284 20.5 17V7C20.5 6.17157 19.8284 5.5 19 5.5H5ZM18 7C18.5523 7 19 7.44772 19 8V16C19 16.5523 18.5523 17 18 17H14C13.4477 17 13 16.5523 13 16V8C13 7.44772 13.4477 7 14 7H18Z" className="fill-[var(--color-text-secondary)] group-hover:fill-[var(--color-text-primary)] transition-colors" /></svg>
                       ) : (
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M15.4883 3.33691C17.073 3.41753 18.3338 4.72826 18.334 6.33301V13.666L18.3301 13.8203C18.2525 15.3543 17.0221 16.5841 15.4883 16.6621L15.334 16.666H4.66699C3.01014 16.666 1.66699 15.3229 1.66699 13.666V6.33301C1.66717 4.6763 3.01025 3.33301 4.66699 3.33301H15.334L15.4883 3.33691ZM4.66699 4.83301C3.83867 4.83301 3.16717 5.50473 3.16699 6.33301V13.666C3.16699 14.4944 3.83857 15.166 4.66699 15.166H15.334C16.1621 15.1657 16.834 14.4942 16.834 13.666V6.33301C16.8338 5.50495 16.162 4.83336 15.334 4.83301H4.66699ZM14.833 9.16699C15.3853 9.16699 15.833 9.61471 15.833 10.167V13.167C15.8328 13.7191 15.3852 14.167 14.833 14.167H11.833C11.281 14.1668 10.8332 13.719 10.833 13.167V10.167C10.833 9.61482 11.2809 9.16717 11.833 9.16699H14.833Z" className="fill-[#6E6D6A] group-hover:fill-[#242423] transition-colors" /></svg>
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M15.4883 3.33691C17.073 3.41753 18.3338 4.72826 18.334 6.33301V13.666L18.3301 13.8203C18.2525 15.3543 17.0221 16.5841 15.4883 16.6621L15.334 16.666H4.66699C3.01014 16.666 1.66699 15.3229 1.66699 13.666V6.33301C1.66717 4.6763 3.01025 3.33301 4.66699 3.33301H15.334L15.4883 3.33691ZM4.66699 4.83301C3.83867 4.83301 3.16717 5.50473 3.16699 6.33301V13.666C3.16699 14.4944 3.83857 15.166 4.66699 15.166H15.334C16.1621 15.1657 16.834 14.4942 16.834 13.666V6.33301C16.8338 5.50495 16.162 4.83336 15.334 4.83301H4.66699ZM14.833 9.16699C15.3853 9.16699 15.833 9.61471 15.833 10.167V13.167C15.8328 13.7191 15.3852 14.167 14.833 14.167H11.833C11.281 14.1668 10.8332 13.719 10.833 13.167V10.167C10.833 9.61482 11.2809 9.16717 11.833 9.16699H14.833Z" className="fill-[var(--color-text-secondary)] group-hover:fill-[var(--color-text-primary)] transition-colors" /></svg>
                       )}
                     </div>
-                    <div className="group flex items-center justify-center relative rounded-[25px] shrink-0 size-[32px] cursor-pointer hover:bg-[#242423]/[0.06] transition-colors" onClick={() => { setIsExpanded(false); setIsOpen(false); }}>
-                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4.16669 10H15.8334" className="stroke-[#6E6D6A] group-hover:stroke-[#242423] transition-colors" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                    <div className="group flex items-center justify-center relative rounded-[25px] shrink-0 size-[32px] cursor-pointer transition-colors" onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-state-hover)")} onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")} onClick={() => { setIsExpanded(false); setIsOpen(false); }}>
+                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4.16669 10H15.8334" className="stroke-[var(--color-text-secondary)] group-hover:stroke-[var(--color-text-primary)] transition-colors" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
                     </div>
                   </div>
                 </div>
@@ -1111,18 +1429,18 @@ export function StampyChatbot({
                         <div className="flex flex-col gap-[16px] w-full">
                           <AnimatePresence>
                             {showSuggestions && (
-                              <motion.div key="suggestions" className="bg-[rgba(36,36,35,0.06)] rounded-[12px] p-[8px] w-full flex flex-col items-start" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 6 }} transition={{ type: "spring", stiffness: 300, damping: 28 }}>
+                              <motion.div key="suggestions" className="rounded-[12px] p-[8px] w-full flex flex-col items-start" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 6 }} transition={{ type: "spring", stiffness: 300, damping: 28 }}>
                                 <div className="flex gap-[16px] items-start justify-end p-[8px] relative shrink-0 w-full">
-                                  <p className="flex-1 font-medium leading-[20px] text-[#242423] text-[15px]" style={{ fontFamily: "'DM Sans', sans-serif" }}>What's the occasion?</p>
-                                  <button onClick={() => setShowSuggestions(false)} className="text-[#6e6d6a] hover:text-[#242423] transition-colors shrink-0" aria-label="Close suggestions"><X size={16} strokeWidth={1.5} absoluteStrokeWidth /></button>
+                                  <p className="flex-1 leading-[20px] text-[15px]" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>What's the occasion?</p>
+                                  <button onClick={() => setShowSuggestions(false)} className="shrink-0 transition-colors" style={{ color: "var(--color-text-secondary)" }} onMouseEnter={e => (e.currentTarget.style.color = "var(--color-text-primary)")} onMouseLeave={e => (e.currentTarget.style.color = "var(--color-text-secondary)")} aria-label="Close suggestions"><X size={16} strokeWidth={1.5} absoluteStrokeWidth /></button>
                                 </div>
                                 <div className="flex flex-col items-start w-full">
                                   {activeSuggestions.map((item, i) => (
-                                    <button key={item} onClick={() => { setShowSuggestions(false); processMessage(item); }} className="flex gap-[8px] items-center pl-[8px] pr-[8px] py-[6px] rounded-[6px] w-full hover:bg-white/60 transition-colors text-left">
-                                      <div className="bg-[rgba(36,36,35,0.06)] flex flex-col items-center justify-center rounded-[4px] shrink-0 w-[20px]">
-                                        <p className="font-normal leading-[20px] text-[14px] text-[#0a0a0a] text-center w-full" style={inter400}>{i + 1}</p>
+                                    <button key={item} onClick={() => { setShowSuggestions(false); processMessage(item); }} className="flex gap-[8px] items-center pl-[8px] pr-[8px] py-[6px] rounded-[6px] w-full transition-colors text-left" onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-state-hover)")} onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")}>
+                                      <div className="flex flex-col items-center justify-center rounded-[4px] shrink-0 w-[20px]" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }}>
+                                        <p className="leading-[20px] text-[14px] text-center w-full" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{i + 1}</p>
                                       </div>
-                                      <p className="flex-1 font-normal leading-[20px] text-[14px] text-[#0a0a0a]" style={inter400}>{item}</p>
+                                      <p className="flex-1 leading-[20px] text-[14px]" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{item}</p>
                                     </button>
                                   ))}
                                 </div>
@@ -1133,13 +1451,13 @@ export function StampyChatbot({
                           {/* Home input box */}
                           <div className="bg-white border border-[rgba(36,36,35,0.1)] flex flex-col gap-[24px] pb-[8px] pt-[12px] px-[8px] rounded-[12px] shadow-[0px_2px_4px_0px_rgba(0,0,0,0.02)] shrink-0 w-full relative transition-colors duration-200">
                             <div className="flex items-center px-[6px] relative shrink-0 w-full min-h-[32px]">
-                              <textarea className="flex-1 w-full resize-none bg-transparent outline-none text-[#242423] text-[15px] leading-[20px]" style={{ ...dmSans400, caretColor: "#242423", border: "none", padding: 0, minHeight: 20, overflow: "hidden" }} value={inputValue} onChange={e => { setInputValue(e.target.value); e.target.style.height = "auto"; e.target.style.height = `${e.target.scrollHeight}px`; }} onFocus={() => setIsFocused(true)} onBlur={() => setIsFocused(false)} onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }} rows={1} placeholder="Ask, search or create your card" />
+                              <textarea className="flex-1 w-full resize-none bg-transparent outline-none text-[#242423] text-[15px] leading-[20px]" style={{ ...dmSans400, caretColor: "var(--color-text-primary)", border: "none", padding: 0, minHeight: 20, overflow: "hidden" }} value={inputValue} onChange={e => { setInputValue(e.target.value); e.target.style.height = "auto"; e.target.style.height = `${e.target.scrollHeight}px`; }} onFocus={() => setIsFocused(true)} onBlur={() => setIsFocused(false)} onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }} rows={1} placeholder="Ask, search or create your card" />
                             </div>
                             <div className="flex items-end justify-between relative shrink-0 w-full">
                               <div className="flex gap-[8px] items-end relative shrink-0">
                                 <button className="bg-[rgba(36,36,35,0.06)] hover:bg-[rgba(36,36,35,0.09)] transition-colors flex gap-[6px] h-[32px] items-center px-[8px] py-[6px] relative rounded-[100px]">
                                   <div className="size-[16px] relative shrink-0 flex items-center justify-center text-[#242423]"><ImagePlus size={18} strokeWidth={1.5} absoluteStrokeWidth /></div>
-                                  <p className="font-medium leading-[18px] text-[#242423] text-[12px] whitespace-nowrap" style={{ fontFamily: "'DM Sans', sans-serif" }}>Add reference images</p>
+                                  <p className="font-medium leading-[18px] text-[#242423] text-[12px] whitespace-nowrap" style={{ fontFamily: "var(--font-family-body)" }}>Add reference images</p>
                                 </button>
                               </div>
                               <div className="flex gap-[4px] items-center relative shrink-0">
@@ -1215,7 +1533,7 @@ export function StampyChatbot({
                         {/* Ask section */}
                         <motion.div className="flex gap-[10px] items-center px-[16px] w-full shrink-0 mt-[8px] mb-[8px]" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ ...entranceSpring, delay: 0.35 }}>
                           <motion.img alt="" className="pointer-events-none object-cover shrink-0" src={aiIconSrc} animate={{ scale: [13 / 16, 1, 13 / 16], opacity: isFocused || !!inputValue ? 1 : 0.5 }} transition={{ repeat: Infinity, duration: 1.6, ease: "easeInOut" }} style={{ width: 16, height: 16 }} />
-                          <textarea className="flex-1 resize-none bg-transparent outline-none text-[15px] leading-[20px] min-w-0" style={{ ...dmSans400, caretColor: "#242423", border: "none", padding: 0, minHeight: 20, overflow: "hidden", color: isFocused || inputValue ? "#242423" : "#6e6d6a" }} value={inputValue} placeholder="Ask, search or create your card" onChange={e => { setInputValue(e.target.value); e.target.style.height = "auto"; e.target.style.height = `${e.target.scrollHeight}px`; }} onFocus={() => setIsFocused(true)} onBlur={() => setIsFocused(false)} onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } if ((e.metaKey || e.ctrlKey) && e.key === "a") { e.stopPropagation(); e.currentTarget.setSelectionRange(0, e.currentTarget.value.length); } }} rows={1} />
+                          <textarea className="flex-1 resize-none bg-transparent outline-none text-[15px] leading-[20px] min-w-0" style={{ ...dmSans400, caretColor: "var(--color-text-primary)", border: "none", padding: 0, minHeight: 20, overflow: "hidden", color: isFocused || inputValue ? "var(--color-text-primary)" : "var(--color-text-secondary)" }} value={inputValue} placeholder="Ask, search or create your card" onChange={e => { setInputValue(e.target.value); e.target.style.height = "auto"; e.target.style.height = `${e.target.scrollHeight}px`; }} onFocus={() => setIsFocused(true)} onBlur={() => setIsFocused(false)} onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } if ((e.metaKey || e.ctrlKey) && e.key === "a") { e.stopPropagation(); e.currentTarget.setSelectionRange(0, e.currentTarget.value.length); } }} rows={1} />
                         </motion.div>
 
                         {/* Divider */}

@@ -87,8 +87,12 @@ export const NAV = [
   },
   {
     title: "Chatbot", items: [
-      { title: "Stampy Chatbot",  id: "stampy-chatbot",       label: "new" },
+      { title: "Stampy Chatbot",  id: "stampy-chatbot",         label: "new" },
       { title: "Overflow Menus",  id: "chatbot-overflow-menus", label: "new" },
+      { title: "Chat Header",     id: "chatbot-header",         label: "new" },
+      { title: "Home Screen",     id: "chatbot-home-screen",    label: "new" },
+      { title: "Chat Input",      id: "chatbot-input",          label: "new" },
+      { title: "Chat Bubbles",    id: "chatbot-bubbles",        label: "new" },
     ]
   },
 ];
