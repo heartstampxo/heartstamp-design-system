@@ -4274,6 +4274,27 @@ function PageChatBubbles() {
         />
       </DocSection>
 
+      <DocSection title="Bubble Button">
+        <p style={{ fontSize: 14, color: "var(--muted-fg)", marginBottom: 16 }}>
+          Inline tappable option rendered inside a Stampy bubble — a chevron + label row. Once selected (<code>isUsed=true</code>) the button dims and becomes non-interactive.
+        </p>
+        <Preview title="Bubble button — default" height={100}>
+          <div style={{ width: "100%", maxWidth: 440, padding: "8px 0" }}>
+            <BubbleButton label="What kind of vibe are you going for?" isUsed={false} />
+            <BubbleButton label="Tell me about the recipient" isUsed={true} />
+          </div>
+        </Preview>
+        <Tbl
+          columns={["Prop", "Type", "Default", "Description"]}
+          rows={[
+            ["label", "string", "(required)", "Button label text"],
+            ["isUsed", "boolean", "(required)", "When true the button is dimmed and non-interactive (already selected)"],
+            ["onClick", "() => void", "—", "Called when the user taps the button (only fires when isUsed is false)"],
+            ["delay", "number", "0", "Entry animation delay in seconds"],
+          ]}
+        />
+      </DocSection>
+
       <DocSection title="User Bubble">
         <p style={{ fontSize: 14, color: "var(--muted-fg)", marginBottom: 16 }}>
           Right-aligned message bubble for user messages. Plain text only, no buttons.
@@ -4348,7 +4369,26 @@ function PageChatHomeScreen() {
         </Preview>
       </DocSection>
 
-      <DocSection title="Props">
+      <DocSection title="Occasion Suggestions">
+        <p style={{ fontSize: 14, color: "var(--muted-fg)", marginBottom: 16 }}>
+          A numbered suggestion list shown above the input bar on the home screen. Prompts the user to pick a card occasion before typing. Dismissible via the × button.
+        </p>
+        <Preview title="Occasion suggestions" height={220}>
+          <div style={{ width: "100%", maxWidth: 420, padding: 16 }}>
+            <OccasionSuggestions />
+          </div>
+        </Preview>
+        <Tbl
+          columns={["Prop", "Type", "Default", "Description"]}
+          rows={[
+            ["suggestions", "string[]", "4 random occasions", "List of occasion strings shown as numbered rows"],
+            ["onSelect", "(s: string) => void", "—", "Called when the user taps a suggestion row"],
+            ["onClose", "() => void", "—", "Called when the user taps the × button"],
+          ]}
+        />
+      </DocSection>
+
+      <DocSection title="Props — ChatHomeScreen">
         <Tbl
           columns={["Prop", "Type", "Default", "Description"]}
           rows={[
@@ -4413,6 +4453,7 @@ function PageChatHeader() {
             ["onMinimize", "() => void", "—", "Called when the minimize (–) button is clicked"],
             ["onSelectConversation", "(id: string) => void", "—", "Called when a conversation item is selected"],
             ["onNewConversation", "() => void", "—", "Called when 'New Conversation' is clicked"],
+            ["onRename", "(id: string, newName: string) => void", "—", "Called after a conversation is renamed inline; receives the id and trimmed new name"],
           ]}
         />
       </DocSection>

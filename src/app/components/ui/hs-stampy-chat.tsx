@@ -159,7 +159,7 @@ export function WorkingSpinner({ text = "Working on your request...", delay = 0 
           <Loader2 size={14} strokeWidth={2} color="var(--color-text-primary)" />
         </motion.div>
       </div>
-      <p className="leading-[20px] text-[#242423] text-[15px]" style={dmSans400}>{text}</p>
+      <p className="leading-[20px] text-[15px]" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{text}</p>
     </motion.div>
   );
 }
@@ -175,7 +175,7 @@ export function BubbleButton({
       animate={{ opacity: 1, y: 0, backgroundColor: "rgba(0,0,0,0)" }}
       transition={{ ...bubbleSpring, delay }}
       className={`flex gap-[8px] items-center px-[4px] py-[2px] rounded-[4px] w-full text-left ${!isUsed ? "cursor-pointer" : "cursor-default"}`}
-      whileHover={!isUsed ? { backgroundColor: "rgba(36,36,35,0.08)" } : {}}
+      whileHover={!isUsed ? { backgroundColor: "var(--color-state-hover)" } : {}}
       onClick={!isUsed ? onClick : undefined}
     >
       <div className="shrink-0 size-[18px] flex items-center justify-center">
@@ -393,12 +393,11 @@ export function OverflowMenu({
           </div>
 
           {items.map((item) => (
-            <motion.div
+            <div
               key={item.num}
-              className="flex flex-col h-[36px] items-start w-full"
-              animate={{ backgroundColor: "rgba(0,0,0,0)" }}
-              whileHover={{ backgroundColor: "rgba(36,36,35,0.03)", borderRadius: 6 }}
-              transition={{ duration: 0.12 }}
+              className="flex flex-col h-[36px] items-start w-full rounded-[6px] transition-colors cursor-pointer"
+              onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-element-subtle)")}
+              onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")}
               onClick={() => handleItemClick(item)}
             >
               <div className="flex flex-row items-center size-full">
@@ -409,7 +408,7 @@ export function OverflowMenu({
                   <p className="flex-1 leading-[20px] text-[14px] truncate min-w-0" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{item.label}</p>
                 </div>
               </div>
-            </motion.div>
+            </div>
           ))}
         </motion.div>
       </AnimatePresence>
@@ -498,14 +497,14 @@ export function ChecklistOverflowMenu({
             {currentPageData.items.map((item) => {
               const checked = selected.has(item.id);
               return (
-                <motion.div key={item.id} className="relative rounded-[6px] w-full h-[36px] flex items-center cursor-pointer" animate={{ backgroundColor: "rgba(0,0,0,0)" }} whileHover={{ backgroundColor: "rgba(36,36,35,0.03)" }} transition={{ duration: 0.12 }} onClick={() => toggleItem(item.id)}>
+                <div key={item.id} className="relative rounded-[6px] w-full h-[36px] flex items-center cursor-pointer transition-colors" onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-element-subtle)")} onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")} onClick={() => toggleItem(item.id)}>
                   <div className="flex gap-[8px] items-center px-[8px] py-[6px] w-full">
                     <div className="relative rounded-[4px] shrink-0 size-[16px] flex items-center justify-center transition-colors duration-150" style={{ backgroundColor: checked ? "var(--color-brand-primary)" : "transparent", border: checked ? "1px solid var(--color-brand-primary)" : "1px solid var(--color-element-subtle)", boxShadow: "var(--shadow-xs)" }}>
-                      {checked && <svg width="10.7" height="7.75" viewBox="0 0 10.6633 7.74667" fill="none"><path d={CHECKMARK_PATH} stroke="#FAFAFA" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33" /></svg>}
+                      {checked && <svg width="10.7" height="7.75" viewBox="0 0 10.6633 7.74667" fill="none"><path d={CHECKMARK_PATH} stroke="var(--color-text-on-primary)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33" /></svg>}
                     </div>
                     <p className="flex-1 leading-[20px] text-[14px] truncate min-w-0" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{item.label}</p>
                   </div>
-                </motion.div>
+                </div>
               );
             })}
           </motion.div>
@@ -559,12 +558,16 @@ export function TemplateOverflowMenu({
         <AnimatePresence mode="wait">
           <motion.div key={page} className="grid grid-cols-2 gap-[12px] px-[8px] w-full" initial={{ opacity: 0, x: 14 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -14 }} transition={{ type: "spring", stiffness: 380, damping: 28 }}>
             {pageCards.map((item) => (
-              <motion.div key={item.num} className="relative rounded-[16px] cursor-pointer overflow-hidden" style={{ height: 224, border: "1px solid var(--color-element-subtle)" }} animate={{ backgroundColor: "rgba(0,0,0,0)" }} whileHover={{ backgroundColor: "rgba(36,36,35,0.04)", borderColor: "rgba(36,36,35,0.25)" }} transition={{ duration: 0.12 }} onClick={() => onComplete(`${item.title}: "${item.front}" — ${item.insideHeading ?? ""} ${item.insideBody}`)}>
+              <div key={item.num} className="relative rounded-[16px] cursor-pointer overflow-hidden transition-colors"
+                style={{ height: 224, border: "1px solid var(--color-element-subtle)", backgroundColor: "transparent" }}
+                onMouseEnter={e => { e.currentTarget.style.backgroundColor = "var(--color-element-subtle)"; e.currentTarget.style.borderColor = "var(--color-text-secondary)"; }}
+                onMouseLeave={e => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.borderColor = "var(--color-element-subtle)"; }}
+                onClick={() => onComplete(`${item.title}: "${item.front}" — ${item.insideHeading ?? ""} ${item.insideBody}`)}>
                 <div className="p-[12px] h-full flex flex-col gap-[6px]" style={{ fontFamily: "var(--font-family-body)", fontWeight: 400, fontSize: 13, lineHeight: "18px", color: "var(--color-text-primary)" }}>
                   <p className="shrink-0" style={{ margin: 0 }}><span style={{ fontWeight: 600 }}>Front:</span>{` ${item.front}`}</p>
                   <p className="flex-1 overflow-hidden" style={{ margin: 0 }}><span style={{ fontWeight: 600 }}>Inside:</span>{` ${item.insideHeading ?? ""} ${item.insideBody}`}</p>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </motion.div>
         </AnimatePresence>
@@ -750,11 +753,11 @@ export function ChatHomeInput({
   const [isRecording, setIsRecording] = useState(false);
 
   return (
-    <div className="bg-white border border-[rgba(36,36,35,0.1)] flex flex-col gap-[24px] pb-[8px] pt-[12px] px-[8px] rounded-[12px] shadow-[0px_2px_4px_0px_rgba(0,0,0,0.02)] shrink-0 w-full relative transition-colors duration-200">
+    <div className="flex flex-col gap-[24px] pb-[8px] pt-[12px] px-[8px] rounded-[12px] shrink-0 w-full relative transition-colors duration-200" style={{ backgroundColor: "var(--color-bg-main)", border: "1px solid var(--color-element-subtle)", boxShadow: "var(--shadow-xs)" }}>
       <div className="flex items-center px-[6px] relative shrink-0 w-full min-h-[32px]">
         <textarea
-          className="flex-1 w-full resize-none bg-transparent outline-none text-[#242423] text-[15px] leading-[20px]"
-          style={{ ...dmSans400, caretColor: "var(--color-text-primary)", border: "none", padding: 0, minHeight: 20, overflow: "hidden" }}
+          className="flex-1 w-full resize-none bg-transparent outline-none text-[15px] leading-[20px]"
+          style={{ ...dmSans400, color: "var(--color-text-primary)", caretColor: "var(--color-text-primary)", border: "none", padding: 0, minHeight: 20, overflow: "hidden" }}
           value={inputValue}
           onChange={e => { setInputValue(e.target.value); e.target.style.height = "auto"; e.target.style.height = `${e.target.scrollHeight}px`; }}
           rows={1}
@@ -763,16 +766,25 @@ export function ChatHomeInput({
       </div>
       <div className="flex items-end justify-between relative shrink-0 w-full">
         <div className="flex gap-[8px] items-end relative shrink-0">
-          <button className="bg-[rgba(36,36,35,0.06)] hover:bg-[rgba(36,36,35,0.09)] transition-colors flex gap-[6px] h-[32px] items-center px-[8px] py-[6px] relative rounded-[100px]">
-            <div className="size-[16px] relative shrink-0 flex items-center justify-center text-[#242423]"><ImagePlus size={18} strokeWidth={1.5} absoluteStrokeWidth /></div>
-            <p className="font-medium leading-[18px] text-[#242423] text-[12px] whitespace-nowrap" style={{ fontFamily: "var(--font-family-body)" }}>Add reference images</p>
+          <button className="transition-colors flex gap-[6px] h-[32px] items-center px-[8px] py-[6px] relative rounded-[100px]" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }} onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-state-hover)")} onMouseLeave={e => (e.currentTarget.style.backgroundColor = "var(--color-brand-secondary-dim)")}>
+            <div className="size-[16px] relative shrink-0 flex items-center justify-center" style={{ color: "var(--color-text-primary)" }}><ImagePlus size={18} strokeWidth={1.5} absoluteStrokeWidth /></div>
+            <p className="font-medium leading-[18px] text-[12px] whitespace-nowrap" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>Add reference images</p>
           </button>
         </div>
         <div className="flex gap-[4px] items-center relative shrink-0">
-          <button className={`flex items-center justify-center p-[8px] relative rounded-[20px] shrink-0 size-[32px] transition-colors ${isRecording ? "bg-red-100 text-red-500" : "hover:bg-[rgba(36,36,35,0.06)] text-[#242423]"}`} onClick={() => setIsRecording(r => !r)}>
+          <button
+            className={`flex items-center justify-center p-[8px] relative rounded-[20px] shrink-0 size-[32px] transition-colors ${isRecording ? "bg-red-100 text-red-500" : ""}`}
+            style={!isRecording ? { color: "var(--color-text-primary)" } : undefined}
+            onMouseEnter={!isRecording ? e => (e.currentTarget.style.backgroundColor = "var(--color-state-hover)") : undefined}
+            onMouseLeave={!isRecording ? e => (e.currentTarget.style.backgroundColor = "") : undefined}
+            onClick={() => setIsRecording(r => !r)}>
             <Mic size={18} strokeWidth={1.5} absoluteStrokeWidth />
           </button>
-          <button disabled={!inputValue.trim() && !isRecording} className={`flex items-center justify-center p-[8px] relative rounded-[20px] shrink-0 size-[32px] transition-colors ${inputValue.trim() ? "bg-[#BE1D2C] hover:bg-[#d42031] text-white" : "bg-[rgba(36,36,35,0.06)] text-[#6e6d6a] cursor-not-allowed"}`} onClick={() => { if (inputValue.trim()) { onSend?.(inputValue); setInputValue(""); } }}>
+          <button
+            disabled={!inputValue.trim() && !isRecording}
+            className={`flex items-center justify-center p-[8px] relative rounded-[20px] shrink-0 size-[32px] transition-colors ${!inputValue.trim() ? "cursor-not-allowed" : ""}`}
+            style={inputValue.trim() ? { backgroundColor: "var(--color-brand-primary)", color: "white" } : { backgroundColor: "var(--color-brand-secondary-dim)", color: "var(--color-text-secondary)" }}
+            onClick={() => { if (inputValue.trim()) { onSend?.(inputValue); setInputValue(""); } }}>
             <ArrowUp size={18} strokeWidth={1.5} absoluteStrokeWidth />
           </button>
         </div>
@@ -802,7 +814,7 @@ export function ChatConversationInput({
   const [isRecording, setIsRecording] = useState(false);
 
   return (
-    <div className="w-full bg-white">
+    <div className="w-full" style={{ backgroundColor: "var(--color-bg-main)" }}>
       {/* AI icon + textarea */}
       <div className="flex gap-[10px] items-center px-[16px] w-full shrink-0 mt-[8px] mb-[8px]">
         <motion.img
@@ -829,7 +841,7 @@ export function ChatConversationInput({
       <div className="relative w-full h-px shrink-0">
         <div className="absolute inset-0">
           <svg className="block w-full h-full" fill="none" preserveAspectRatio="none" viewBox="0 0 640 1">
-            <line stroke="#242423" strokeOpacity="0.1" x2="640" y1="0.5" y2="0.5" />
+            <line stroke="var(--color-element-subtle)" x2="640" y1="0.5" y2="0.5" />
           </svg>
         </div>
       </div>
@@ -837,16 +849,24 @@ export function ChatConversationInput({
       {/* Bottom actions */}
       <div className="flex gap-[8px] items-end px-[16px] py-[12px] pb-[16px] w-full">
         <div className="flex flex-[1_0_0] gap-[8px] items-end min-w-px">
-          <button className="bg-[rgba(36,36,35,0.06)] hover:bg-[rgba(36,36,35,0.09)] transition-colors flex gap-[6px] h-[32px] items-center px-[8px] py-[6px] relative rounded-[100px]">
-            <div className="size-[16px] relative shrink-0 flex items-center justify-center text-[#242423]"><ImagePlus size={18} strokeWidth={1.5} absoluteStrokeWidth /></div>
-            <p className="font-medium leading-[18px] text-[#242423] text-[12px] whitespace-nowrap" style={{ fontFamily: "var(--font-family-body)" }}>Add reference images</p>
+          <button className="transition-colors flex gap-[6px] h-[32px] items-center px-[8px] py-[6px] relative rounded-[100px]" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }} onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-state-hover)")} onMouseLeave={e => (e.currentTarget.style.backgroundColor = "var(--color-brand-secondary-dim)")}>
+            <div className="size-[16px] relative shrink-0 flex items-center justify-center" style={{ color: "var(--color-text-primary)" }}><ImagePlus size={18} strokeWidth={1.5} absoluteStrokeWidth /></div>
+            <p className="font-medium leading-[18px] text-[12px] whitespace-nowrap" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>Add reference images</p>
           </button>
         </div>
         <div className="flex gap-[4px] items-center relative shrink-0">
-          <button className={`flex items-center justify-center p-[8px] relative rounded-[20px] shrink-0 size-[32px] transition-colors ${isRecording ? "bg-red-100 text-red-500" : "hover:bg-[rgba(36,36,35,0.06)] text-[#242423]"}`} onClick={() => setIsRecording(r => !r)}>
+          <button
+            className={`flex items-center justify-center p-[8px] relative rounded-[20px] shrink-0 size-[32px] transition-colors ${isRecording ? "bg-red-100 text-red-500" : ""}`}
+            style={!isRecording ? { color: "var(--color-text-primary)" } : undefined}
+            onMouseEnter={!isRecording ? e => (e.currentTarget.style.backgroundColor = "var(--color-state-hover)") : undefined}
+            onMouseLeave={!isRecording ? e => (e.currentTarget.style.backgroundColor = "") : undefined}
+            onClick={() => setIsRecording(r => !r)}>
             <Mic size={18} strokeWidth={1.5} absoluteStrokeWidth />
           </button>
-          <button className={`flex items-center justify-center p-[8px] relative rounded-[20px] shrink-0 size-[32px] transition-colors ${inputValue.trim() ? "bg-[#BE1D2C] hover:bg-[#d42031] text-white" : "bg-[rgba(36,36,35,0.06)] text-[#6e6d6a] cursor-not-allowed"}`} onClick={() => { if (inputValue.trim()) { onSend?.(inputValue); setInputValue(""); } }}>
+          <button
+            className={`flex items-center justify-center p-[8px] relative rounded-[20px] shrink-0 size-[32px] transition-colors ${!inputValue.trim() ? "cursor-not-allowed" : ""}`}
+            style={inputValue.trim() ? { backgroundColor: "var(--color-brand-primary)", color: "white" } : { backgroundColor: "var(--color-brand-secondary-dim)", color: "var(--color-text-secondary)" }}
+            onClick={() => { if (inputValue.trim()) { onSend?.(inputValue); setInputValue(""); } }}>
             <ArrowUp size={18} strokeWidth={1.5} absoluteStrokeWidth />
           </button>
         </div>
@@ -876,7 +896,7 @@ export function ChatHomeScreen({
   const { displayText, isTyping } = useTypewriter(examplePrompts);
 
   return (
-    <div className="flex flex-col justify-between w-full bg-white" style={{ padding: "16px", gap: 16, position: "relative", overflow: "visible" }}>
+    <div className="flex flex-col justify-between w-full" style={{ backgroundColor: "var(--color-bg-main)", padding: "16px", gap: 16, position: "relative", overflow: "visible" }}>
       {/* Mascot */}
       <div className="pointer-events-none select-none" style={{ position: "absolute", top: -8, left: -80, width: 150, height: 135, zIndex: 20 }}>
         <img alt="Stampy mascot" style={{ width: "100%", height: "100%", objectFit: "contain" }} src={mascotSrc} />
@@ -884,13 +904,14 @@ export function ChatHomeScreen({
 
       {/* Greeting + typewriter */}
       <div className="flex flex-col gap-[8px] items-start w-full relative pl-[40px]">
-        <p className="font-normal leading-[28px] relative text-[#242423] text-[18px] w-full" style={{ fontFamily: "sans-serif" }}>Hi there! I'm Stampy</p>
+        <p className="font-normal leading-[28px] relative text-[18px] w-full" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>Hi there! I'm Stampy</p>
         <div className="relative w-full" style={{ minHeight: 20 }}>
           <div className="pointer-events-none select-none">
-            <span className="text-[#6e6d6a] text-[15px] leading-[20px]" style={dmSans400}>
+            <span className="text-[15px] leading-[20px]" style={{ ...dmSans400, color: "var(--color-text-secondary)" }}>
               Try: {displayText}
               <motion.span
-                className="inline-block w-[1.5px] h-[13px] bg-[#6e6d6a] ml-[1px] align-middle"
+                className="inline-block w-[1.5px] h-[13px] ml-[1px] align-middle"
+                style={{ backgroundColor: "var(--color-text-secondary)" }}
                 animate={{ opacity: isTyping ? [1, 1, 0, 0] : [1, 0] }}
                 transition={isTyping ? { repeat: Infinity, duration: 0.8, times: [0, 0.45, 0.5, 1] } : { repeat: Infinity, duration: 0.6 }}
               />
@@ -960,6 +981,8 @@ export interface ChatHeaderProps {
   onSelectConversation?: (id: string) => void;
   /** Called when "New Conversation" is clicked */
   onNewConversation?: () => void;
+  /** Called when a conversation is renamed; receives the id and the new name */
+  onRename?: (id: string, newName: string) => void;
 }
 
 export function ChatHeader({
@@ -975,9 +998,15 @@ export function ChatHeader({
   onMinimize,
   onSelectConversation,
   onNewConversation,
+  onRename,
 }: ChatHeaderProps) {
   const [dropdownOpen, setDropdownOpen] = useState(defaultDropdownOpen);
+  const [localConversations, setLocalConversations] = useState(conversations);
+  const [editingConvoId, setEditingConvoId] = useState<string | null>(null);
+  const [editingName, setEditingName] = useState("");
   const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => { setLocalConversations(conversations); }, [conversations]);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -986,6 +1015,14 @@ export function ChatHeader({
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  function commitRename(id: string, name: string) {
+    const trimmed = name.trim();
+    if (!trimmed) { setEditingConvoId(null); return; }
+    setLocalConversations(prev => prev.map(c => c.id === id ? { ...c, name: trimmed } : c));
+    onRename?.(id, trimmed);
+    setEditingConvoId(null);
+  }
 
   return (
     <div className="border-b border-solid flex items-center justify-between px-[16px] py-[12px] relative shrink-0 w-full z-30 rounded-t-[20px]" style={{ borderColor: "var(--color-element-subtle)", backgroundColor: "var(--color-bg-main)" }}>
@@ -1015,22 +1052,39 @@ export function ChatHeader({
                 exit={{ opacity: 0, y: -4, scale: 0.97 }}
                 transition={{ duration: 0.15 }}
               >
-                <button className="flex items-center gap-[8px] w-[calc(100%-8px)] mx-[4px] px-[12px] h-[32px] text-left cursor-pointer transition-colors rounded-[6px]" onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-state-hover)")} onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")} onClick={() => { setDropdownOpen(false); onNewConversation?.(); }}>
+                <button className="flex items-center gap-[8px] w-[calc(100%-24px)] mx-[4px] px-[12px] h-[32px] text-left cursor-pointer transition-colors rounded-[6px]" onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-state-hover)")} onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")} onClick={() => { setDropdownOpen(false); onNewConversation?.(); }}>
                   <Plus size={14} strokeWidth={1.5} className="shrink-0" style={{ color: "var(--color-text-primary)" }} />
                   <span className="text-[15px] leading-[20px]" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>New Conversation</span>
                 </button>
                 <div className="mx-[4px] my-[4px] h-px" style={{ backgroundColor: "var(--color-element-subtle)" }} />
-                {conversations.map(c => {
-                  const isActive = c.name === conversationName;
-                  return (
-                    <div key={c.id} className="group flex items-center gap-[4px] px-[8px] mx-[4px] h-[32px] cursor-pointer transition-colors rounded-[6px]" style={isActive ? { backgroundColor: "var(--color-brand-secondary-dim)" } : {}} onMouseEnter={e => { if (!isActive) e.currentTarget.style.backgroundColor = "var(--color-state-hover)"; }} onMouseLeave={e => { e.currentTarget.style.backgroundColor = isActive ? "var(--color-brand-secondary-dim)" : "transparent"; }} onClick={() => { setDropdownOpen(false); onSelectConversation?.(c.id); }}>
-                      <span className="text-[15px] leading-[20px] truncate flex-1" style={{ ...(isActive ? dmSans500 : dmSans400), color: "var(--color-text-primary)" }}>{c.name}</span>
-                      <div className="shrink-0 flex items-center justify-center size-[24px] rounded-[4px] opacity-0 group-hover:opacity-100 transition-opacity" onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-state-hover)")} onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")}>
-                        <PencilLine size={14} strokeWidth={1.5} style={{ color: "var(--color-text-secondary)" }} />
+                <div className="max-h-[240px] overflow-y-auto">
+                  {localConversations.map(c => {
+                    const isActive = c.name === conversationName;
+                    return (
+                      <div key={c.id} className="group flex items-center justify-between px-[12px] mx-[4px] h-[32px] cursor-pointer transition-colors rounded-[6px]" style={{ backgroundColor: isActive ? "var(--color-brand-secondary-dim)" : "transparent" }} onMouseEnter={e => { if (!isActive) e.currentTarget.style.backgroundColor = "var(--color-state-hover)"; }} onMouseLeave={e => { e.currentTarget.style.backgroundColor = isActive ? "var(--color-brand-secondary-dim)" : "transparent"; }} onClick={() => { if (editingConvoId !== c.id) { setDropdownOpen(false); onSelectConversation?.(c.id); } }}>
+                        {editingConvoId === c.id ? (
+                          <input
+                            className="flex-1 text-[15px] leading-[20px] bg-transparent outline-none min-w-0"
+                            style={{ ...dmSans400, color: "var(--color-text-primary)", borderBottom: "1px solid var(--color-text-primary)" }}
+                            value={editingName}
+                            autoFocus
+                            onChange={e => setEditingName(e.target.value)}
+                            onKeyDown={e => { if (e.key === "Enter") commitRename(c.id, editingName); if (e.key === "Escape") setEditingConvoId(null); }}
+                            onBlur={() => commitRename(c.id, editingName)}
+                            onClick={e => e.stopPropagation()}
+                          />
+                        ) : (
+                          <>
+                            <span className="text-[15px] leading-[20px] truncate" style={{ ...(isActive ? dmSans500 : dmSans400), color: "var(--color-text-primary)" }}>{c.name}</span>
+                            <button className="opacity-0 group-hover:opacity-100 transition-opacity shrink-0 ml-[8px] p-[2px] rounded cursor-pointer" onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-state-hover)")} onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")} onClick={e => { e.stopPropagation(); setEditingConvoId(c.id); setEditingName(c.name); }} aria-label={`Rename ${c.name}`}>
+                              <PencilLine size={14} strokeWidth={1.5} style={{ color: "var(--color-text-secondary)" }} />
+                            </button>
+                          </>
+                        )}
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
@@ -1067,18 +1121,18 @@ function BottomBar({
         <div className="flex gap-[8px] items-end px-[16px] py-[12px] pb-[16px] w-full">
           <div className="flex flex-[1_0_0] gap-[8px] items-end min-w-px">
             <motion.button className="flex gap-[6px] h-[32px] items-center px-[8px] py-[6px] rounded-[100px] shrink-0 cursor-pointer" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }} whileHover={{ backgroundColor: "var(--color-element-subtle)" }} whileTap={{ scale: 0.93 }} transition={{ duration: 0.15 }}>
-              <div className="size-[16px] relative shrink-0 flex items-center justify-center text-[#242423]">
+              <div className="size-[16px] relative shrink-0 flex items-center justify-center" style={{ color: "var(--color-text-primary)" }}>
                 <ImagePlus size={18} strokeWidth={1.5} absoluteStrokeWidth />
               </div>
-              <span className="text-[#242423] text-[12px] leading-[18px] whitespace-nowrap hidden xs:inline sm:inline" style={dmSans500}>Add reference images</span>
+              <span className="text-[12px] leading-[18px] whitespace-nowrap hidden xs:inline sm:inline" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>Add reference images</span>
             </motion.button>
           </div>
           <div className="flex gap-[4px] items-center shrink-0">
-            <motion.button className="flex items-center justify-center p-[10px] rounded-[20px] shrink-0 size-[32px] cursor-pointer transition-colors hover:bg-[rgba(36,36,35,0.06)]" animate={{ backgroundColor: isRecording ? "rgba(239, 68, 68, 0.1)" : "rgba(0,0,0,0)" }} transition={isRecording ? { repeat: Infinity, duration: 1.5 } : { duration: 0.15 }} onClick={onToggleMic}>
-              <Mic size={18} strokeWidth={1.5} color={isRecording ? "#ef4444" : "#242423"} />
+            <motion.button className="flex items-center justify-center p-[10px] rounded-[20px] shrink-0 size-[32px] cursor-pointer transition-colors" animate={{ backgroundColor: isRecording ? "rgba(239, 68, 68, 0.1)" : "rgba(0,0,0,0)" }} whileHover={!isRecording ? { backgroundColor: "var(--color-state-hover)" } : undefined} transition={isRecording ? { repeat: Infinity, duration: 1.5 } : { duration: 0.15 }} onClick={onToggleMic}>
+              <Mic size={18} strokeWidth={1.5} color={isRecording ? "#ef4444" : "var(--color-text-primary)"} />
             </motion.button>
-            <motion.button className={`flex items-center justify-center p-[10px] rounded-[20px] shrink-0 size-[32px] cursor-pointer transition-colors ${isActive ? "bg-[#BE1D2C] hover:bg-[#d42031]" : "bg-[rgba(36,36,35,0.06)]"}`} onClick={onSend}>
-              <ArrowUp size={18} strokeWidth={1.5} color={isActive ? "white" : "#B8B2AA"} />
+            <motion.button className={`flex items-center justify-center p-[10px] rounded-[20px] shrink-0 size-[32px] cursor-pointer transition-colors`} style={isActive ? { backgroundColor: "var(--color-brand-primary)" } : { backgroundColor: "var(--color-brand-secondary-dim)" }} whileHover={isActive ? { backgroundColor: "var(--color-state-pressed)" } : undefined} onClick={onSend}>
+              <ArrowUp size={18} strokeWidth={1.5} color={isActive ? "white" : "var(--color-text-secondary)"} />
             </motion.button>
           </div>
         </div>
@@ -1330,7 +1384,7 @@ export function StampyChatbot({
     <div className={`relative flex items-end justify-end pt-[24px] pb-[24px] pr-[24px] ${className}`} style={{ width: "100%", height: "100%", overflow: "hidden" }}>
       {/* Background */}
       <div aria-hidden="true" className="absolute inset-0 pointer-events-none">
-        <div className="absolute bg-[#f5f5f4] inset-0" />
+        <div className="absolute inset-0" style={{ backgroundColor: "var(--color-brand-secondary)" }} />
         <div className="absolute inset-0 mix-blend-luminosity opacity-15" style={{ backgroundImage: `url('${backgroundSrc}')`, backgroundSize: "1438px 1079px", backgroundPosition: "top left" }} />
       </div>
 
@@ -1342,7 +1396,7 @@ export function StampyChatbot({
         ) : (
           <motion.div key="opened" className="relative flex flex-col items-end gap-[8px] w-full sm:w-[540px] px-3 sm:px-0 h-full" style={{ flexShrink: 0 }} initial={false} animate={{ opacity: 1 }} exit={{ opacity: 0, y: 30 }} transition={{ duration: 0.25, ease: "easeOut" }}>
             <div className="flex items-end justify-end w-full relative flex-1">
-              <motion.div className="bg-white flex flex-col items-start w-full sm:w-[450px] overflow-hidden" style={{ marginRight: isMobile ? 0 : -5, borderRadius: 20, boxShadow: "var(--shadow-xs)" }} initial={{ opacity: 0, y: 24, scale: 0.98 }} animate={{ opacity: 1, scale: 1, y: 0, height: isExpanded ? window.innerHeight - 48 : isMobile ? Math.max(420, window.innerHeight - 80) : 550 }} transition={{ opacity: { duration: 0.3, ease: "easeOut" }, y: { duration: 0.35, ease: [0.16, 1, 0.3, 1] }, scale: { duration: 0.35, ease: [0.16, 1, 0.3, 1] }, height: { duration: 0.4, ease: [0.4, 0, 0.2, 1] } }}>
+              <motion.div className="flex flex-col items-start w-full sm:w-[450px] overflow-hidden" style={{ backgroundColor: "var(--color-bg-main)", marginRight: isMobile ? 0 : -5, borderRadius: 20, boxShadow: "var(--shadow-xs)" }} initial={{ opacity: 0, y: 24, scale: 0.98 }} animate={{ opacity: 1, scale: 1, y: 0, height: isExpanded ? window.innerHeight - 48 : isMobile ? Math.max(420, window.innerHeight - 80) : 550 }} transition={{ opacity: { duration: 0.3, ease: "easeOut" }, y: { duration: 0.35, ease: [0.16, 1, 0.3, 1] }, scale: { duration: 0.35, ease: [0.16, 1, 0.3, 1] }, height: { duration: 0.4, ease: [0.4, 0, 0.2, 1] } }}>
 
                 {/* HEADER */}
                 <div className="border-b border-solid flex items-center justify-between px-[16px] py-[12px] relative shrink-0 w-full z-30 rounded-t-[20px]" style={{ borderColor: "var(--color-element-subtle)", backgroundColor: "var(--color-bg-main)" }}>
@@ -1399,7 +1453,7 @@ export function StampyChatbot({
                 </div>
 
                 {/* CONTENT */}
-                <div className={`flex-1 w-full relative ${isWorking ? "overflow-hidden" : "overflow-visible"} flex flex-col bg-white rounded-b-[20px] min-h-0`}>
+                <div className={`flex-1 w-full relative ${isWorking ? "overflow-hidden" : "overflow-visible"} flex flex-col rounded-b-[20px] min-h-0`} style={{ backgroundColor: "var(--color-bg-main)" }}>
                   {!isMobile && (
                     <AnimatePresence>
                       {!isWorking && (
@@ -1415,12 +1469,12 @@ export function StampyChatbot({
                       /* HOME STATE */
                       <motion.div key="default" className="flex flex-col justify-between w-full flex-1 min-h-0 p-[16px] z-10 relative" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, y: -4 }} transition={{ duration: 0.15 }}>
                         <div className="flex flex-col gap-[8px] items-start w-full relative pl-[40px]">
-                          <p className="font-normal leading-[28px] relative text-[#242423] text-[18px] w-full" style={{ fontFamily: "sans-serif" }}>Hi there! I'm Stampy</p>
+                          <p className="font-normal leading-[28px] relative text-[18px] w-full" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>Hi there! I'm Stampy</p>
                           <div className="relative w-full" style={{ minHeight: 20 }}>
                             <motion.div key="placeholder" className="pointer-events-none select-none">
-                              <span className="text-[#6e6d6a] text-[15px] leading-[20px]" style={dmSans400}>
+                              <span className="text-[15px] leading-[20px]" style={{ ...dmSans400, color: "var(--color-text-secondary)" }}>
                                 Try: {displayText}
-                                <motion.span className="inline-block w-[1.5px] h-[13px] bg-[#6e6d6a] ml-[1px] align-middle" animate={{ opacity: isTyping ? [1, 1, 0, 0] : [1, 0] }} transition={isTyping ? { repeat: Infinity, duration: 0.8, times: [0, 0.45, 0.5, 1] } : { repeat: Infinity, duration: 0.6 }} />
+                                <motion.span className="inline-block w-[1.5px] h-[13px] ml-[1px] align-middle" style={{ backgroundColor: "var(--color-text-secondary)" }} animate={{ opacity: isTyping ? [1, 1, 0, 0] : [1, 0] }} transition={isTyping ? { repeat: Infinity, duration: 0.8, times: [0, 0.45, 0.5, 1] } : { repeat: Infinity, duration: 0.6 }} />
                               </span>
                             </motion.div>
                           </div>
@@ -1449,22 +1503,31 @@ export function StampyChatbot({
                           </AnimatePresence>
 
                           {/* Home input box */}
-                          <div className="bg-white border border-[rgba(36,36,35,0.1)] flex flex-col gap-[24px] pb-[8px] pt-[12px] px-[8px] rounded-[12px] shadow-[0px_2px_4px_0px_rgba(0,0,0,0.02)] shrink-0 w-full relative transition-colors duration-200">
+                          <div className="flex flex-col gap-[24px] pb-[8px] pt-[12px] px-[8px] rounded-[12px] shrink-0 w-full relative transition-colors duration-200" style={{ backgroundColor: "var(--color-bg-main)", border: "1px solid var(--color-element-subtle)", boxShadow: "var(--shadow-xs)" }}>
                             <div className="flex items-center px-[6px] relative shrink-0 w-full min-h-[32px]">
-                              <textarea className="flex-1 w-full resize-none bg-transparent outline-none text-[#242423] text-[15px] leading-[20px]" style={{ ...dmSans400, caretColor: "var(--color-text-primary)", border: "none", padding: 0, minHeight: 20, overflow: "hidden" }} value={inputValue} onChange={e => { setInputValue(e.target.value); e.target.style.height = "auto"; e.target.style.height = `${e.target.scrollHeight}px`; }} onFocus={() => setIsFocused(true)} onBlur={() => setIsFocused(false)} onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }} rows={1} placeholder="Ask, search or create your card" />
+                              <textarea className="flex-1 w-full resize-none bg-transparent outline-none text-[15px] leading-[20px]" style={{ ...dmSans400, color: "var(--color-text-primary)", caretColor: "var(--color-text-primary)", border: "none", padding: 0, minHeight: 20, overflow: "hidden" }} value={inputValue} onChange={e => { setInputValue(e.target.value); e.target.style.height = "auto"; e.target.style.height = `${e.target.scrollHeight}px`; }} onFocus={() => setIsFocused(true)} onBlur={() => setIsFocused(false)} onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }} rows={1} placeholder="Ask, search or create your card" />
                             </div>
                             <div className="flex items-end justify-between relative shrink-0 w-full">
                               <div className="flex gap-[8px] items-end relative shrink-0">
-                                <button className="bg-[rgba(36,36,35,0.06)] hover:bg-[rgba(36,36,35,0.09)] transition-colors flex gap-[6px] h-[32px] items-center px-[8px] py-[6px] relative rounded-[100px]">
-                                  <div className="size-[16px] relative shrink-0 flex items-center justify-center text-[#242423]"><ImagePlus size={18} strokeWidth={1.5} absoluteStrokeWidth /></div>
-                                  <p className="font-medium leading-[18px] text-[#242423] text-[12px] whitespace-nowrap" style={{ fontFamily: "var(--font-family-body)" }}>Add reference images</p>
+                                <button className="transition-colors flex gap-[6px] h-[32px] items-center px-[8px] py-[6px] relative rounded-[100px]" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }} onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-state-hover)")} onMouseLeave={e => (e.currentTarget.style.backgroundColor = "var(--color-brand-secondary-dim)")}>
+                                  <div className="size-[16px] relative shrink-0 flex items-center justify-center" style={{ color: "var(--color-text-primary)" }}><ImagePlus size={18} strokeWidth={1.5} absoluteStrokeWidth /></div>
+                                  <p className="font-medium leading-[18px] text-[12px] whitespace-nowrap" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>Add reference images</p>
                                 </button>
                               </div>
                               <div className="flex gap-[4px] items-center relative shrink-0">
-                                <button aria-label="Toggle Microphone" type="button" onClick={toggleMic} className={`flex items-center justify-center p-[8px] relative rounded-[20px] shrink-0 size-[32px] transition-colors ${isRecording ? "bg-red-100 text-red-500" : "hover:bg-[rgba(36,36,35,0.06)] text-[#242423]"}`}>
+                                <button
+                                  aria-label="Toggle Microphone" type="button" onClick={toggleMic}
+                                  className={`flex items-center justify-center p-[8px] relative rounded-[20px] shrink-0 size-[32px] transition-colors ${isRecording ? "bg-red-100 text-red-500" : ""}`}
+                                  style={!isRecording ? { color: "var(--color-text-primary)" } : undefined}
+                                  onMouseEnter={!isRecording ? e => (e.currentTarget.style.backgroundColor = "var(--color-state-hover)") : undefined}
+                                  onMouseLeave={!isRecording ? e => (e.currentTarget.style.backgroundColor = "") : undefined}>
                                   <Mic size={18} strokeWidth={1.5} absoluteStrokeWidth />
                                 </button>
-                                <button aria-label="Send" type="button" onClick={handleSend} disabled={!inputValue.trim() && !isRecording} className={`flex items-center justify-center p-[8px] relative rounded-[20px] shrink-0 size-[32px] transition-colors ${inputValue.trim() ? "bg-[#BE1D2C] hover:bg-[#d42031] text-white" : "bg-[rgba(36,36,35,0.06)] text-[#6e6d6a] cursor-not-allowed"}`}>
+                                <button
+                                  aria-label="Send" type="button" onClick={handleSend}
+                                  disabled={!inputValue.trim() && !isRecording}
+                                  className={`flex items-center justify-center p-[8px] relative rounded-[20px] shrink-0 size-[32px] transition-colors ${!inputValue.trim() ? "cursor-not-allowed" : ""}`}
+                                  style={inputValue.trim() ? { backgroundColor: "var(--color-brand-primary)", color: "white" } : { backgroundColor: "var(--color-brand-secondary-dim)", color: "var(--color-text-secondary)" }}>
                                   <ArrowUp size={18} strokeWidth={1.5} absoluteStrokeWidth />
                                 </button>
                               </div>
@@ -1484,7 +1547,7 @@ export function StampyChatbot({
                                 return (
                                   <motion.div key={`msg-${i}`} className="flex w-full justify-end shrink-0 pl-[56px]" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ ...bubbleSpring, delay: 0.1 }}>
                                     <div className="rounded-[12px] px-[12px] py-[8px] max-w-[85%] sm:max-w-[440px]" style={{ backgroundColor: bubbleBg }}>
-                                      <p className="leading-[20px] text-[#242423] text-[15px] whitespace-pre-wrap" style={dmSans400}>{msg.text}</p>
+                                      <p className="leading-[20px] text-[15px] whitespace-pre-wrap" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{msg.text}</p>
                                     </div>
                                   </motion.div>
                                 );
@@ -1493,7 +1556,7 @@ export function StampyChatbot({
                                   <motion.div key={`msg-${i}`} className="flex flex-col gap-[16px] w-full shrink-0" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={bubbleSpring}>
                                     <div className="flex w-full justify-start pr-[56px]">
                                       <div className="rounded-[12px] px-[12px] py-[8px] max-w-[85%] sm:max-w-[440px] flex flex-col gap-[12px]" style={{ backgroundColor: bubbleBg }}>
-                                        <p className="leading-[20px] text-[#242423] text-[15px] whitespace-pre-wrap" style={dmSans400}>{msg.text}</p>
+                                        <p className="leading-[20px] text-[15px] whitespace-pre-wrap" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{msg.text}</p>
                                         {msg.buttons?.map((label, bi) => {
                                           const isUsed = i < messages.length - 1;
                                           return <BubbleButton key={label} label={label} isUsed={isUsed} onClick={handleTriggerButton} delay={bi * 0.08} />;
@@ -1511,7 +1574,7 @@ export function StampyChatbot({
                                 <motion.div key="typing-bubble" className="flex flex-col gap-[16px] w-full shrink-0" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={bubbleSpring}>
                                   <div className="flex w-full justify-start pr-[56px]">
                                     <div className="rounded-[12px] px-[12px] py-[8px] max-w-[85%] sm:max-w-[440px]" style={{ backgroundColor: bubbleBg }}>
-                                      <p className="leading-[20px] text-[#242423] text-[15px] whitespace-pre-wrap" style={dmSans400}>{typedText}</p>
+                                      <p className="leading-[20px] text-[15px] whitespace-pre-wrap" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{typedText}</p>
                                     </div>
                                   </div>
                                 </motion.div>
@@ -1539,7 +1602,7 @@ export function StampyChatbot({
                         {/* Divider */}
                         <div className="relative w-full h-px shrink-0">
                           <div className="absolute inset-0">
-                            <svg className="block w-full h-full" fill="none" preserveAspectRatio="none" viewBox="0 0 640 1"><line stroke="#242423" strokeOpacity="0.1" x2="640" y1="0.5" y2="0.5" /></svg>
+                            <svg className="block w-full h-full" fill="none" preserveAspectRatio="none" viewBox="0 0 640 1"><line stroke="var(--color-element-subtle)" x2="640" y1="0.5" y2="0.5" /></svg>
                           </div>
                         </div>
 
