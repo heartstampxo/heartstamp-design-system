@@ -263,7 +263,21 @@ export function StyleCarousel({ themeChoice, setThemeChoice }: { themeChoice: st
 
 // ── StampyBubble / UserBubble ─────────────────────────────────────────────
 
-export function StampyBubble({ text, buttons }: { text: string; buttons?: string[] }) {
+export function StampyBubble({
+  text, buttons,
+  buttonsUsed = false,
+  onButtonClick,
+  buttonDelay = 0,
+}: {
+  text: string;
+  buttons?: string[];
+  /** Greys out buttons when a later message already exists. Defaults to false. */
+  buttonsUsed?: boolean;
+  /** Called when an active (non-used) button is clicked. */
+  onButtonClick?: () => void;
+  /** Per-button entrance stagger = index × buttonDelay (seconds). Defaults to 0. */
+  buttonDelay?: number;
+}) {
   return (
     <motion.div
       className="flex w-full justify-start shrink-0 pr-[56px]"
@@ -271,13 +285,21 @@ export function StampyBubble({ text, buttons }: { text: string; buttons?: string
       transition={bubbleSpring}
     >
       <div
-        className="rounded-[12px] px-[12px] py-[8px] max-w-[85%] sm:max-w-[440px]"
+        className="rounded-[12px] px-[12px] py-[8px] max-w-[85%] sm:max-w-[440px] flex flex-col gap-[12px]"
         style={{ backgroundColor: bubbleBg, ...dmSans400, fontSize: 14, color: "var(--color-text-primary)", lineHeight: "1.5" }}
       >
-        {text}
+        <p className="leading-[20px] text-[15px] whitespace-pre-wrap">{text}</p>
         {buttons?.length ? (
-          <div className="flex flex-col gap-[6px] mt-[8px]">
-            {buttons.map((b, i) => <BubbleButton key={i} label={b} isUsed={false} />)}
+          <div className="flex flex-col gap-[6px]">
+            {buttons.map((b, bi) => (
+              <BubbleButton
+                key={b}
+                label={b}
+                isUsed={buttonsUsed}
+                onClick={!buttonsUsed ? onButtonClick : undefined}
+                delay={bi * buttonDelay}
+              />
+            ))}
           </div>
         ) : null}
       </div>
@@ -285,18 +307,18 @@ export function StampyBubble({ text, buttons }: { text: string; buttons?: string
   );
 }
 
-export function UserBubble({ text }: { text: string }) {
+export function UserBubble({ text, delay }: { text: string; delay?: number }) {
   return (
     <motion.div
       className="flex w-full justify-end shrink-0 pl-[56px]"
       initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-      transition={bubbleSpring}
+      transition={delay !== undefined ? { ...bubbleSpring, delay } : bubbleSpring}
     >
       <div
         className="rounded-[12px] px-[12px] py-[8px] max-w-[85%] sm:max-w-[440px]"
         style={{ backgroundColor: bubbleBg, ...dmSans400, fontSize: 14, color: "var(--color-text-primary)", lineHeight: "1.5" }}
       >
-        {text}
+        <p className="leading-[20px] text-[15px] whitespace-pre-wrap">{text}</p>
       </div>
     </motion.div>
   );
@@ -739,18 +761,47 @@ export function TadaBanner({
 // ── ChatHomeInput ──────────────────────────────────────────────────────────
 
 export interface ChatHomeInputProps {
-  /** Input placeholder text */
   placeholder?: string;
-  /** Called when the user submits a message */
   onSend?: (value: string) => void;
+  /** Controlled value — when provided the component is controlled */
+  value?: string;
+  onChange?: (value: string) => void;
+  isRecording?: boolean;
+  onToggleMic?: () => void;
 }
 
 export function ChatHomeInput({
   placeholder = "Ask, search or create your card",
   onSend,
+  value: controlledValue,
+  onChange,
+  isRecording: controlledRecording,
+  onToggleMic,
 }: ChatHomeInputProps) {
-  const [inputValue, setInputValue] = useState("");
-  const [isRecording, setIsRecording] = useState(false);
+  const [localValue, setLocalValue] = useState("");
+  const [localRecording, setLocalRecording] = useState(false);
+
+  const isControlled = controlledValue !== undefined;
+  const currentValue = isControlled ? controlledValue : localValue;
+  const currentRecording = controlledRecording !== undefined ? controlledRecording : localRecording;
+
+  function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    e.target.style.height = "auto";
+    e.target.style.height = `${e.target.scrollHeight}px`;
+    if (isControlled) onChange?.(e.target.value);
+    else setLocalValue(e.target.value);
+  }
+
+  function handleSend() {
+    if (!currentValue.trim()) return;
+    onSend?.(currentValue);
+    if (!isControlled) setLocalValue("");
+  }
+
+  function handleMic() {
+    if (onToggleMic) onToggleMic();
+    else setLocalRecording(r => !r);
+  }
 
   return (
     <div className="flex flex-col gap-[24px] pb-[8px] pt-[12px] px-[8px] rounded-[12px] shrink-0 w-full relative transition-colors duration-200" style={{ backgroundColor: "var(--color-bg-main)", border: "1px solid var(--color-element-subtle)", boxShadow: "var(--shadow-xs)" }}>
@@ -758,8 +809,9 @@ export function ChatHomeInput({
         <textarea
           className="flex-1 w-full resize-none bg-transparent outline-none text-[15px] leading-[20px]"
           style={{ ...dmSans400, color: "var(--color-text-primary)", caretColor: "var(--color-text-primary)", border: "none", padding: 0, minHeight: 20, overflow: "hidden" }}
-          value={inputValue}
-          onChange={e => { setInputValue(e.target.value); e.target.style.height = "auto"; e.target.style.height = `${e.target.scrollHeight}px`; }}
+          value={currentValue}
+          onChange={handleChange}
+          onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
           rows={1}
           placeholder={placeholder}
         />
@@ -773,18 +825,18 @@ export function ChatHomeInput({
         </div>
         <div className="flex gap-[4px] items-center relative shrink-0">
           <button
-            className={`flex items-center justify-center p-[8px] relative rounded-[20px] shrink-0 size-[32px] transition-colors ${isRecording ? "bg-red-100 text-red-500" : ""}`}
-            style={!isRecording ? { color: "var(--color-text-primary)" } : undefined}
-            onMouseEnter={!isRecording ? e => (e.currentTarget.style.backgroundColor = "var(--color-state-hover)") : undefined}
-            onMouseLeave={!isRecording ? e => (e.currentTarget.style.backgroundColor = "") : undefined}
-            onClick={() => setIsRecording(r => !r)}>
+            aria-label="Toggle Microphone" type="button" onClick={handleMic}
+            className={`flex items-center justify-center p-[8px] relative rounded-[20px] shrink-0 size-[32px] transition-colors ${currentRecording ? "bg-red-100 text-red-500" : ""}`}
+            style={!currentRecording ? { color: "var(--color-text-primary)" } : undefined}
+            onMouseEnter={!currentRecording ? e => (e.currentTarget.style.backgroundColor = "var(--color-state-hover)") : undefined}
+            onMouseLeave={!currentRecording ? e => (e.currentTarget.style.backgroundColor = "") : undefined}>
             <Mic size={18} strokeWidth={1.5} absoluteStrokeWidth />
           </button>
           <button
-            disabled={!inputValue.trim() && !isRecording}
-            className={`flex items-center justify-center p-[8px] relative rounded-[20px] shrink-0 size-[32px] transition-colors ${!inputValue.trim() ? "cursor-not-allowed" : ""}`}
-            style={inputValue.trim() ? { backgroundColor: "var(--color-brand-primary)", color: "white" } : { backgroundColor: "var(--color-brand-secondary-dim)", color: "var(--color-text-secondary)" }}
-            onClick={() => { if (inputValue.trim()) { onSend?.(inputValue); setInputValue(""); } }}>
+            aria-label="Send" type="button" onClick={handleSend}
+            disabled={!currentValue.trim() && !currentRecording}
+            className={`flex items-center justify-center p-[8px] relative rounded-[20px] shrink-0 size-[32px] transition-colors ${!currentValue.trim() ? "cursor-not-allowed" : ""}`}
+            style={currentValue.trim() ? { backgroundColor: "var(--color-brand-primary)", color: "var(--color-text-on-primary)" } : { backgroundColor: "var(--color-brand-secondary-dim)", color: "var(--color-text-secondary)" }}>
             <ArrowUp size={18} strokeWidth={1.5} absoluteStrokeWidth />
           </button>
         </div>
@@ -802,16 +854,47 @@ export interface ChatConversationInputProps {
   placeholder?: string;
   /** Called when the user submits a message */
   onSend?: (value: string) => void;
+  /** Controlled value — when provided the component is controlled */
+  value?: string;
+  onChange?: (value: string) => void;
+  isRecording?: boolean;
+  onToggleMic?: () => void;
 }
 
 export function ChatConversationInput({
   aiIconSrc,
   placeholder = "Ask, search or create your card",
   onSend,
+  value: controlledValue,
+  onChange,
+  isRecording: controlledRecording,
+  onToggleMic,
 }: ChatConversationInputProps) {
-  const [inputValue, setInputValue] = useState("");
+  const [localValue, setLocalValue] = useState("");
   const [isFocused, setIsFocused] = useState(false);
-  const [isRecording, setIsRecording] = useState(false);
+  const [localRecording, setLocalRecording] = useState(false);
+
+  const isControlled = controlledValue !== undefined;
+  const currentValue = isControlled ? controlledValue : localValue;
+  const currentRecording = controlledRecording !== undefined ? controlledRecording : localRecording;
+
+  function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    e.target.style.height = "auto";
+    e.target.style.height = `${e.target.scrollHeight}px`;
+    if (isControlled) onChange?.(e.target.value);
+    else setLocalValue(e.target.value);
+  }
+
+  function handleSend() {
+    if (!currentValue.trim()) return;
+    onSend?.(currentValue);
+    if (!isControlled) setLocalValue("");
+  }
+
+  function handleMic() {
+    if (onToggleMic) onToggleMic();
+    else setLocalRecording(r => !r);
+  }
 
   return (
     <div className="w-full" style={{ backgroundColor: "var(--color-bg-main)" }}>
@@ -821,18 +904,19 @@ export function ChatConversationInput({
           alt=""
           className="pointer-events-none object-cover shrink-0"
           src={aiIconSrc}
-          animate={{ scale: [13 / 16, 1, 13 / 16], opacity: isFocused || !!inputValue ? 1 : 0.5 }}
+          animate={{ scale: [13 / 16, 1, 13 / 16], opacity: isFocused || !!currentValue ? 1 : 0.5 }}
           transition={{ repeat: Infinity, duration: 1.6, ease: "easeInOut" }}
           style={{ width: 16, height: 16 }}
         />
         <textarea
           className="flex-1 resize-none bg-transparent outline-none text-[15px] leading-[20px] min-w-0"
-          style={{ ...dmSans400, caretColor: "var(--color-text-primary)", border: "none", padding: 0, minHeight: 20, overflow: "hidden", color: isFocused || inputValue ? "var(--color-text-primary)" : "var(--color-text-secondary)" }}
-          value={inputValue}
+          style={{ ...dmSans400, caretColor: "var(--color-text-primary)", border: "none", padding: 0, minHeight: 20, overflow: "hidden", color: isFocused || currentValue ? "var(--color-text-primary)" : "var(--color-text-secondary)" }}
+          value={currentValue}
           placeholder={placeholder}
-          onChange={e => { setInputValue(e.target.value); e.target.style.height = "auto"; e.target.style.height = `${e.target.scrollHeight}px`; }}
+          onChange={handleChange}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
+          onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } if ((e.metaKey || e.ctrlKey) && e.key === "a") { e.stopPropagation(); e.currentTarget.setSelectionRange(0, e.currentTarget.value.length); } }}
           rows={1}
         />
       </div>
@@ -856,17 +940,17 @@ export function ChatConversationInput({
         </div>
         <div className="flex gap-[4px] items-center relative shrink-0">
           <button
-            className={`flex items-center justify-center p-[8px] relative rounded-[20px] shrink-0 size-[32px] transition-colors ${isRecording ? "bg-red-100 text-red-500" : ""}`}
-            style={!isRecording ? { color: "var(--color-text-primary)" } : undefined}
-            onMouseEnter={!isRecording ? e => (e.currentTarget.style.backgroundColor = "var(--color-state-hover)") : undefined}
-            onMouseLeave={!isRecording ? e => (e.currentTarget.style.backgroundColor = "") : undefined}
-            onClick={() => setIsRecording(r => !r)}>
+            className={`flex items-center justify-center p-[8px] relative rounded-[20px] shrink-0 size-[32px] transition-colors ${currentRecording ? "bg-red-100 text-red-500" : ""}`}
+            style={!currentRecording ? { color: "var(--color-text-primary)" } : undefined}
+            onMouseEnter={!currentRecording ? e => (e.currentTarget.style.backgroundColor = "var(--color-state-hover)") : undefined}
+            onMouseLeave={!currentRecording ? e => (e.currentTarget.style.backgroundColor = "") : undefined}
+            onClick={handleMic}>
             <Mic size={18} strokeWidth={1.5} absoluteStrokeWidth />
           </button>
           <button
-            className={`flex items-center justify-center p-[8px] relative rounded-[20px] shrink-0 size-[32px] transition-colors ${!inputValue.trim() ? "cursor-not-allowed" : ""}`}
-            style={inputValue.trim() ? { backgroundColor: "var(--color-brand-primary)", color: "white" } : { backgroundColor: "var(--color-brand-secondary-dim)", color: "var(--color-text-secondary)" }}
-            onClick={() => { if (inputValue.trim()) { onSend?.(inputValue); setInputValue(""); } }}>
+            className={`flex items-center justify-center p-[8px] relative rounded-[20px] shrink-0 size-[32px] transition-colors ${!currentValue.trim() ? "cursor-not-allowed" : ""}`}
+            style={currentValue.trim() ? { backgroundColor: "var(--color-brand-primary)", color: "var(--color-text-on-primary)" } : { backgroundColor: "var(--color-brand-secondary-dim)", color: "var(--color-text-secondary)" }}
+            onClick={handleSend}>
             <ArrowUp size={18} strokeWidth={1.5} absoluteStrokeWidth />
           </button>
         </div>
@@ -882,6 +966,8 @@ export interface ChatHomeScreenProps {
   mascotSrc: string;
   /** Prompts cycled by the typewriter animation */
   examplePrompts?: string[];
+  /** Whether to render the mascot (set to false on mobile). Defaults to true. */
+  showMascot?: boolean;
 }
 
 export function ChatHomeScreen({
@@ -892,15 +978,18 @@ export function ChatHomeScreen({
     "Help me write a funny retirement card for my dad",
     "Something silly and warm for my mom's 60th birthday",
   ],
+  showMascot = true,
 }: ChatHomeScreenProps) {
   const { displayText, isTyping } = useTypewriter(examplePrompts);
 
   return (
     <div className="flex flex-col justify-between w-full" style={{ backgroundColor: "var(--color-bg-main)", padding: "16px", gap: 16, position: "relative", overflow: "visible" }}>
       {/* Mascot */}
-      <div className="pointer-events-none select-none" style={{ position: "absolute", top: -8, left: -80, width: 150, height: 135, zIndex: 20 }}>
-        <img alt="Stampy mascot" style={{ width: "100%", height: "100%", objectFit: "contain" }} src={mascotSrc} />
-      </div>
+      {showMascot && (
+        <div className="pointer-events-none select-none" style={{ position: "absolute", top: -8, left: -80, width: 150, height: 135, zIndex: 20 }}>
+          <img alt="Stampy mascot" style={{ width: "100%", height: "100%", objectFit: "contain" }} src={mascotSrc} />
+        </div>
+      )}
 
       {/* Greeting + typewriter */}
       <div className="flex flex-col gap-[8px] items-start w-full relative pl-[40px]">
@@ -1108,39 +1197,6 @@ export function ChatHeader({
   );
 }
 
-// ── BottomBar ──────────────────────────────────────────────────────────────
-
-function BottomBar({
-  isActive, isRecording, onToggleMic, onSend,
-}: {
-  isActive: boolean; isRecording: boolean; onToggleMic: () => void; onSend: () => void;
-}) {
-  return (
-    <div className="relative w-full shrink-0">
-      <div className="flex flex-row items-end w-full">
-        <div className="flex gap-[8px] items-end px-[16px] py-[12px] pb-[16px] w-full">
-          <div className="flex flex-[1_0_0] gap-[8px] items-end min-w-px">
-            <motion.button className="flex gap-[6px] h-[32px] items-center px-[8px] py-[6px] rounded-[100px] shrink-0 cursor-pointer" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }} whileHover={{ backgroundColor: "var(--color-element-subtle)" }} whileTap={{ scale: 0.93 }} transition={{ duration: 0.15 }}>
-              <div className="size-[16px] relative shrink-0 flex items-center justify-center" style={{ color: "var(--color-text-primary)" }}>
-                <ImagePlus size={18} strokeWidth={1.5} absoluteStrokeWidth />
-              </div>
-              <span className="text-[12px] leading-[18px] whitespace-nowrap hidden xs:inline sm:inline" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>Add reference images</span>
-            </motion.button>
-          </div>
-          <div className="flex gap-[4px] items-center shrink-0">
-            <motion.button className="flex items-center justify-center p-[10px] rounded-[20px] shrink-0 size-[32px] cursor-pointer transition-colors" animate={{ backgroundColor: isRecording ? "rgba(239, 68, 68, 0.1)" : "rgba(0,0,0,0)" }} whileHover={!isRecording ? { backgroundColor: "var(--color-state-hover)" } : undefined} transition={isRecording ? { repeat: Infinity, duration: 1.5 } : { duration: 0.15 }} onClick={onToggleMic}>
-              <Mic size={18} strokeWidth={1.5} color={isRecording ? "#ef4444" : "var(--color-text-primary)"} />
-            </motion.button>
-            <motion.button className={`flex items-center justify-center p-[10px] rounded-[20px] shrink-0 size-[32px] cursor-pointer transition-colors`} style={isActive ? { backgroundColor: "var(--color-brand-primary)" } : { backgroundColor: "var(--color-brand-secondary-dim)" }} whileHover={isActive ? { backgroundColor: "var(--color-state-pressed)" } : undefined} onClick={onSend}>
-              <ArrowUp size={18} strokeWidth={1.5} color={isActive ? "white" : "var(--color-text-secondary)"} />
-            </motion.button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 // ═══════════════════════════════════════════════════════════════════════════
 // MAIN COMPONENT: StampyChatbot
 // ═══════════════════════════════════════════════════════════════════════════
@@ -1160,6 +1216,13 @@ export interface StampyChatbotProps {
   partyPopperSrc: string;
   /** CSS class on the root container */
   className?: string;
+  /**
+   * Override the height used when computing the expanded-panel size.
+   * Defaults to `window.innerHeight`. Pass the container's pixel height
+   * (e.g. 750) when embedding inside a fixed-height doc preview so the
+   * expanded panel doesn't overflow the container.
+   */
+  containerHeight?: number;
 }
 
 export function StampyChatbot({
@@ -1170,18 +1233,17 @@ export function StampyChatbot({
   stampyIconSrc,
   partyPopperSrc,
   className = "",
+  containerHeight,
 }: StampyChatbotProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(true);
   const [activeSuggestions, setActiveSuggestions] = useState<string[]>(() => getRandomSuggestions(4));
-  const { displayText, isTyping } = useTypewriter(chatScript.examplePrompts);
   const [inputValue, setInputValue] = useState("");
 
   useEffect(() => {
     if (isOpen) { setActiveSuggestions(getRandomSuggestions(4)); setShowSuggestions(true); }
   }, [isOpen]);
-  const [isFocused, setIsFocused] = useState(false);
 
   // Conversation management
   const [conversations, setConversations] = useState<{ id: string; name: string }[]>([
@@ -1195,21 +1257,6 @@ export function StampyChatbot({
     { id: "8", name: "Noelle's New Years" },
   ]);
   const [activeConversationId, setActiveConversationId] = useState("1");
-  const [isConvoDropdownOpen, setIsConvoDropdownOpen] = useState(false);
-  const [editingConvoId, setEditingConvoId] = useState<string | null>(null);
-  const [editingName, setEditingName] = useState("");
-  const convoDropdownRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!isConvoDropdownOpen) return;
-    const handleClick = (e: MouseEvent) => {
-      if (convoDropdownRef.current && !convoDropdownRef.current.contains(e.target as Node)) {
-        setIsConvoDropdownOpen(false); setEditingConvoId(null);
-      }
-    };
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, [isConvoDropdownOpen]);
 
   const activeConversation = conversations.find(c => c.id === activeConversationId);
 
@@ -1242,13 +1289,12 @@ export function StampyChatbot({
   const handleNewConversation = () => {
     const newId = String(Date.now());
     setConversations(prev => [{ id: newId, name: "New Conversation" }, ...prev]);
-    setActiveConversationId(newId); setIsConvoDropdownOpen(false);
+    setActiveConversationId(newId);
     setSentMessage(null); setStepIndex(-1); setMessages([]); setTypingText(null); setShowMenu(false); setShowBanner(false); setLastChoice(""); setThemeChoice(null);
   };
 
   const handleRenameConversation = (id: string, newName: string) => {
     setConversations(prev => prev.map(c => c.id === id ? { ...c, name: newName } : c));
-    setEditingConvoId(null);
   };
 
   // Step controller
@@ -1340,8 +1386,8 @@ export function StampyChatbot({
 
   function processMessage(msg: string) {
     if (!msg) return;
-    if (!sentMessage) { setSentMessage(msg); setMessages([{ role: "user", text: msg }]); setStepIndex(0); setInputValue(""); setIsFocused(false); return; }
-    setMessages(prev => [...prev, { role: "user", text: msg }]); setInputValue(""); setIsFocused(false);
+    if (!sentMessage) { setSentMessage(msg); setMessages([{ role: "user", text: msg }]); setStepIndex(0); setInputValue(""); return; }
+    setMessages(prev => [...prev, { role: "user", text: msg }]); setInputValue("");
   }
 
   function handleSend() { processMessage(inputValue.trim()); }
@@ -1384,7 +1430,7 @@ export function StampyChatbot({
     <div className={`relative flex items-end justify-end pt-[24px] pb-[24px] pr-[24px] ${className}`} style={{ width: "100%", height: "100%", overflow: "hidden" }}>
       {/* Background */}
       <div aria-hidden="true" className="absolute inset-0 pointer-events-none">
-        <div className="absolute inset-0" style={{ backgroundColor: "var(--color-brand-secondary)" }} />
+        <div className="absolute inset-0" style={{ backgroundColor: "var(--chatbot-hero-bg, var(--color-brand-secondary))" }} />
         <div className="absolute inset-0 mix-blend-luminosity opacity-15" style={{ backgroundImage: `url('${backgroundSrc}')`, backgroundSize: "1438px 1079px", backgroundPosition: "top left" }} />
       </div>
 
@@ -1396,143 +1442,54 @@ export function StampyChatbot({
         ) : (
           <motion.div key="opened" className="relative flex flex-col items-end gap-[8px] w-full sm:w-[540px] px-3 sm:px-0 h-full" style={{ flexShrink: 0 }} initial={false} animate={{ opacity: 1 }} exit={{ opacity: 0, y: 30 }} transition={{ duration: 0.25, ease: "easeOut" }}>
             <div className="flex items-end justify-end w-full relative flex-1">
-              <motion.div className="flex flex-col items-start w-full sm:w-[450px] overflow-hidden" style={{ backgroundColor: "var(--color-bg-main)", marginRight: isMobile ? 0 : -5, borderRadius: 20, boxShadow: "var(--shadow-xs)" }} initial={{ opacity: 0, y: 24, scale: 0.98 }} animate={{ opacity: 1, scale: 1, y: 0, height: isExpanded ? window.innerHeight - 48 : isMobile ? Math.max(420, window.innerHeight - 80) : 550 }} transition={{ opacity: { duration: 0.3, ease: "easeOut" }, y: { duration: 0.35, ease: [0.16, 1, 0.3, 1] }, scale: { duration: 0.35, ease: [0.16, 1, 0.3, 1] }, height: { duration: 0.4, ease: [0.4, 0, 0.2, 1] } }}>
+              <motion.div className="flex flex-col items-start w-full sm:w-[450px] overflow-hidden" style={{ backgroundColor: "var(--color-bg-main)", marginRight: isMobile ? 0 : -5, borderRadius: 20, boxShadow: "var(--shadow-xs)" }} initial={{ opacity: 0, y: 24, scale: 0.98 }} animate={{ opacity: 1, scale: 1, y: 0, height: isExpanded ? (containerHeight ?? window.innerHeight) - 48 : isMobile ? Math.max(420, (containerHeight ?? window.innerHeight) - 80) : 550 }} transition={{ opacity: { duration: 0.3, ease: "easeOut" }, y: { duration: 0.35, ease: [0.16, 1, 0.3, 1] }, scale: { duration: 0.35, ease: [0.16, 1, 0.3, 1] }, height: { duration: 0.4, ease: [0.4, 0, 0.2, 1] } }}>
 
                 {/* HEADER */}
-                <div className="border-b border-solid flex items-center justify-between px-[16px] py-[12px] relative shrink-0 w-full z-30 rounded-t-[20px]" style={{ borderColor: "var(--color-element-subtle)", backgroundColor: "var(--color-bg-main)" }}>
-                  <div className="flex gap-[12px] items-center relative shrink-0 min-w-0 flex-1">
-                    <div className="flex flex-col justify-center leading-[0] relative shrink-0 text-[15px] whitespace-nowrap" style={{ ...dmSans500, fontWeight: 600, color: "var(--color-text-primary)", fontVariationSettings: "'opsz' 14" }}>
-                      <p className="leading-[normal]">Stampy</p>
-                    </div>
-                    <div ref={convoDropdownRef} className="relative min-w-0">
-                      <button className="flex items-center gap-[8px] px-[12px] h-[32px] rounded-[30px] cursor-pointer transition-colors max-w-[180px]" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }} onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-state-pressed)")} onMouseLeave={e => (e.currentTarget.style.backgroundColor = "var(--color-brand-secondary-dim)")} onClick={() => setIsConvoDropdownOpen(p => !p)}>
-                        <span className="text-[15px] leading-[20px] truncate" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{activeConversation?.name ?? "New Conversation"}</span>
-                        <ChevronDown size={10} strokeWidth={1.5} className="shrink-0" style={{ color: "var(--color-text-primary)" }} />
-                      </button>
-                      <AnimatePresence>
-                        {isConvoDropdownOpen && (
-                          <motion.div className="absolute top-[calc(100%+4px)] left-0 rounded-[12px] py-[4px] min-w-[220px] z-50" style={{ backgroundColor: "var(--color-bg-main)", boxShadow: "var(--shadow-md)", border: "1px solid var(--color-element-subtle)" }} initial={{ opacity: 0, y: -4, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -4, scale: 0.97 }} transition={{ duration: 0.15 }}>
-                            <button className="flex items-center gap-[8px] w-[calc(100%-24px)] mx-[4px] px-[12px] h-[32px] text-left cursor-pointer transition-colors rounded-[6px]" onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-state-hover)")} onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")} onClick={handleNewConversation}>
-                              <Plus size={14} strokeWidth={1.5} className="shrink-0" style={{ color: "var(--color-text-primary)" }} />
-                              <span className="text-[15px] leading-[20px]" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>New Conversation</span>
-                            </button>
-                            <div className="mx-[4px] my-[4px] h-px" style={{ backgroundColor: "var(--color-element-subtle)" }} />
-                            <div className="max-h-[240px] overflow-y-auto">
-                              {conversations.map(convo => (
-                                <div key={convo.id} className="group flex items-center justify-between px-[12px] mx-[4px] h-[32px] cursor-pointer transition-colors rounded-[6px]" style={{ backgroundColor: convo.id === activeConversationId ? "var(--color-brand-secondary-dim)" : "transparent" }} onMouseEnter={e => { if (convo.id !== activeConversationId) e.currentTarget.style.backgroundColor = "var(--color-state-hover)"; }} onMouseLeave={e => { e.currentTarget.style.backgroundColor = convo.id === activeConversationId ? "var(--color-brand-secondary-dim)" : "transparent"; }} onClick={() => { if (editingConvoId !== convo.id) { setActiveConversationId(convo.id); setIsConvoDropdownOpen(false); } }}>
-                                  {editingConvoId === convo.id ? (
-                                    <input className="flex-1 text-[15px] leading-[20px] bg-transparent outline-none min-w-0" style={{ ...dmSans400, color: "var(--color-text-primary)", borderBottom: "1px solid var(--color-text-primary)" }} value={editingName} autoFocus onChange={e => setEditingName(e.target.value)} onKeyDown={e => { if (e.key === "Enter") handleRenameConversation(convo.id, editingName); if (e.key === "Escape") setEditingConvoId(null); }} onBlur={() => handleRenameConversation(convo.id, editingName)} onClick={e => e.stopPropagation()} />
-                                  ) : (
-                                    <>
-                                      <span className="text-[15px] leading-[20px] truncate" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{convo.name}</span>
-                                      <button className="opacity-0 group-hover:opacity-100 transition-opacity shrink-0 ml-[8px] p-[2px] rounded cursor-pointer" onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-state-hover)")} onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")} onClick={e => { e.stopPropagation(); setEditingConvoId(convo.id); setEditingName(convo.name); }}>
-                                        <PencilLine size={14} strokeWidth={1.5} style={{ color: "var(--color-text-secondary)" }} />
-                                      </button>
-                                    </>
-                                  )}
-                                </div>
-                              ))}
-                            </div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
-                  </div>
-                  <div className="flex gap-[8px] items-center relative shrink-0">
-                    <div className="group flex items-center justify-center relative rounded-[25px] shrink-0 size-[32px] cursor-pointer transition-colors" onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-state-hover)")} onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")} onClick={() => setIsExpanded(p => !p)}>
-                      {isExpanded ? (
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M19 4C20.6569 4 22 5.34315 22 7V17C22 18.6051 20.7394 19.9158 19.1543 19.9961L19 20H5L4.8457 19.9961C3.26055 19.9158 2 18.6051 2 17V7C2 5.34315 3.34315 4 5 4H19ZM5 5.5C4.17157 5.5 3.5 6.17157 3.5 7V17C3.5 17.8284 4.17157 18.5 5 18.5H19C19.8284 18.5 20.5 17.8284 20.5 17V7C20.5 6.17157 19.8284 5.5 19 5.5H5ZM18 7C18.5523 7 19 7.44772 19 8V16C19 16.5523 18.5523 17 18 17H14C13.4477 17 13 16.5523 13 16V8C13 7.44772 13.4477 7 14 7H18Z" className="fill-[var(--color-text-secondary)] group-hover:fill-[var(--color-text-primary)] transition-colors" /></svg>
-                      ) : (
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M15.4883 3.33691C17.073 3.41753 18.3338 4.72826 18.334 6.33301V13.666L18.3301 13.8203C18.2525 15.3543 17.0221 16.5841 15.4883 16.6621L15.334 16.666H4.66699C3.01014 16.666 1.66699 15.3229 1.66699 13.666V6.33301C1.66717 4.6763 3.01025 3.33301 4.66699 3.33301H15.334L15.4883 3.33691ZM4.66699 4.83301C3.83867 4.83301 3.16717 5.50473 3.16699 6.33301V13.666C3.16699 14.4944 3.83857 15.166 4.66699 15.166H15.334C16.1621 15.1657 16.834 14.4942 16.834 13.666V6.33301C16.8338 5.50495 16.162 4.83336 15.334 4.83301H4.66699ZM14.833 9.16699C15.3853 9.16699 15.833 9.61471 15.833 10.167V13.167C15.8328 13.7191 15.3852 14.167 14.833 14.167H11.833C11.281 14.1668 10.8332 13.719 10.833 13.167V10.167C10.833 9.61482 11.2809 9.16717 11.833 9.16699H14.833Z" className="fill-[var(--color-text-secondary)] group-hover:fill-[var(--color-text-primary)] transition-colors" /></svg>
-                      )}
-                    </div>
-                    <div className="group flex items-center justify-center relative rounded-[25px] shrink-0 size-[32px] cursor-pointer transition-colors" onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-state-hover)")} onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")} onClick={() => { setIsExpanded(false); setIsOpen(false); }}>
-                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4.16669 10H15.8334" className="stroke-[var(--color-text-secondary)] group-hover:stroke-[var(--color-text-primary)] transition-colors" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                    </div>
-                  </div>
-                </div>
+                <ChatHeader
+                  conversationName={activeConversation?.name ?? "New Conversation"}
+                  conversations={conversations}
+                  expanded={isExpanded}
+                  onToggleExpand={() => setIsExpanded(p => !p)}
+                  onMinimize={() => { setIsExpanded(false); setIsOpen(false); }}
+                  onSelectConversation={(id) => setActiveConversationId(id)}
+                  onNewConversation={handleNewConversation}
+                  onRename={handleRenameConversation}
+                />
 
                 {/* CONTENT */}
                 <div className={`flex-1 w-full relative ${isWorking ? "overflow-hidden" : "overflow-visible"} flex flex-col rounded-b-[20px] min-h-0`} style={{ backgroundColor: "var(--color-bg-main)" }}>
-                  {!isMobile && (
-                    <AnimatePresence>
-                      {!isWorking && (
-                        <motion.div className="absolute top-[-8px] z-20 pointer-events-none" style={{ width: 150, height: 135, left: -80 }} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} transition={{ ...entranceSpring, delay: 0.15 }}>
-                          <img alt="Stampy mascot" className="w-full h-full object-contain" src={mascotSrc} />
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  )}
-
                   <AnimatePresence mode="wait" initial={false}>
                     {!isWorking ? (
                       /* HOME STATE */
-                      <motion.div key="default" className="flex flex-col justify-between w-full flex-1 min-h-0 p-[16px] z-10 relative" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, y: -4 }} transition={{ duration: 0.15 }}>
-                        <div className="flex flex-col gap-[8px] items-start w-full relative pl-[40px]">
-                          <p className="font-normal leading-[28px] relative text-[18px] w-full" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>Hi there! I'm Stampy</p>
-                          <div className="relative w-full" style={{ minHeight: 20 }}>
-                            <motion.div key="placeholder" className="pointer-events-none select-none">
-                              <span className="text-[15px] leading-[20px]" style={{ ...dmSans400, color: "var(--color-text-secondary)" }}>
-                                Try: {displayText}
-                                <motion.span className="inline-block w-[1.5px] h-[13px] ml-[1px] align-middle" style={{ backgroundColor: "var(--color-text-secondary)" }} animate={{ opacity: isTyping ? [1, 1, 0, 0] : [1, 0] }} transition={isTyping ? { repeat: Infinity, duration: 0.8, times: [0, 0.45, 0.5, 1] } : { repeat: Infinity, duration: 0.6 }} />
-                              </span>
-                            </motion.div>
-                          </div>
-                        </div>
+                      <motion.div key="default" className="flex flex-col justify-between w-full flex-1 min-h-0 z-10 relative" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, y: -4 }} transition={{ duration: 0.15 }}>
+                        {/* Greeting + mascot */}
+                        <ChatHomeScreen
+                          mascotSrc={mascotSrc}
+                          examplePrompts={chatScript.examplePrompts}
+                          showMascot={!isMobile}
+                        />
 
-                        <div className="flex flex-col gap-[16px] w-full">
+                        {/* Suggestions + home input */}
+                        <div className="flex flex-col gap-[16px] w-full px-[16px] pb-[16px]">
                           <AnimatePresence>
                             {showSuggestions && (
-                              <motion.div key="suggestions" className="rounded-[12px] p-[8px] w-full flex flex-col items-start" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 6 }} transition={{ type: "spring", stiffness: 300, damping: 28 }}>
-                                <div className="flex gap-[16px] items-start justify-end p-[8px] relative shrink-0 w-full">
-                                  <p className="flex-1 leading-[20px] text-[15px]" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>What's the occasion?</p>
-                                  <button onClick={() => setShowSuggestions(false)} className="shrink-0 transition-colors" style={{ color: "var(--color-text-secondary)" }} onMouseEnter={e => (e.currentTarget.style.color = "var(--color-text-primary)")} onMouseLeave={e => (e.currentTarget.style.color = "var(--color-text-secondary)")} aria-label="Close suggestions"><X size={16} strokeWidth={1.5} absoluteStrokeWidth /></button>
-                                </div>
-                                <div className="flex flex-col items-start w-full">
-                                  {activeSuggestions.map((item, i) => (
-                                    <button key={item} onClick={() => { setShowSuggestions(false); processMessage(item); }} className="flex gap-[8px] items-center pl-[8px] pr-[8px] py-[6px] rounded-[6px] w-full transition-colors text-left" onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-state-hover)")} onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")}>
-                                      <div className="flex flex-col items-center justify-center rounded-[4px] shrink-0 w-[20px]" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }}>
-                                        <p className="leading-[20px] text-[14px] text-center w-full" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{i + 1}</p>
-                                      </div>
-                                      <p className="flex-1 leading-[20px] text-[14px]" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{item}</p>
-                                    </button>
-                                  ))}
-                                </div>
+                              <motion.div key="suggestions" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 6 }} transition={{ type: "spring", stiffness: 300, damping: 28 }}>
+                                <OccasionSuggestions
+                                  suggestions={activeSuggestions}
+                                  onSelect={(item) => { setShowSuggestions(false); processMessage(item); }}
+                                  onClose={() => setShowSuggestions(false)}
+                                />
                               </motion.div>
                             )}
                           </AnimatePresence>
 
-                          {/* Home input box */}
-                          <div className="flex flex-col gap-[24px] pb-[8px] pt-[12px] px-[8px] rounded-[12px] shrink-0 w-full relative transition-colors duration-200" style={{ backgroundColor: "var(--color-bg-main)", border: "1px solid var(--color-element-subtle)", boxShadow: "var(--shadow-xs)" }}>
-                            <div className="flex items-center px-[6px] relative shrink-0 w-full min-h-[32px]">
-                              <textarea className="flex-1 w-full resize-none bg-transparent outline-none text-[15px] leading-[20px]" style={{ ...dmSans400, color: "var(--color-text-primary)", caretColor: "var(--color-text-primary)", border: "none", padding: 0, minHeight: 20, overflow: "hidden" }} value={inputValue} onChange={e => { setInputValue(e.target.value); e.target.style.height = "auto"; e.target.style.height = `${e.target.scrollHeight}px`; }} onFocus={() => setIsFocused(true)} onBlur={() => setIsFocused(false)} onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }} rows={1} placeholder="Ask, search or create your card" />
-                            </div>
-                            <div className="flex items-end justify-between relative shrink-0 w-full">
-                              <div className="flex gap-[8px] items-end relative shrink-0">
-                                <button className="transition-colors flex gap-[6px] h-[32px] items-center px-[8px] py-[6px] relative rounded-[100px]" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }} onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-state-hover)")} onMouseLeave={e => (e.currentTarget.style.backgroundColor = "var(--color-brand-secondary-dim)")}>
-                                  <div className="size-[16px] relative shrink-0 flex items-center justify-center" style={{ color: "var(--color-text-primary)" }}><ImagePlus size={18} strokeWidth={1.5} absoluteStrokeWidth /></div>
-                                  <p className="font-medium leading-[18px] text-[12px] whitespace-nowrap" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>Add reference images</p>
-                                </button>
-                              </div>
-                              <div className="flex gap-[4px] items-center relative shrink-0">
-                                <button
-                                  aria-label="Toggle Microphone" type="button" onClick={toggleMic}
-                                  className={`flex items-center justify-center p-[8px] relative rounded-[20px] shrink-0 size-[32px] transition-colors ${isRecording ? "bg-red-100 text-red-500" : ""}`}
-                                  style={!isRecording ? { color: "var(--color-text-primary)" } : undefined}
-                                  onMouseEnter={!isRecording ? e => (e.currentTarget.style.backgroundColor = "var(--color-state-hover)") : undefined}
-                                  onMouseLeave={!isRecording ? e => (e.currentTarget.style.backgroundColor = "") : undefined}>
-                                  <Mic size={18} strokeWidth={1.5} absoluteStrokeWidth />
-                                </button>
-                                <button
-                                  aria-label="Send" type="button" onClick={handleSend}
-                                  disabled={!inputValue.trim() && !isRecording}
-                                  className={`flex items-center justify-center p-[8px] relative rounded-[20px] shrink-0 size-[32px] transition-colors ${!inputValue.trim() ? "cursor-not-allowed" : ""}`}
-                                  style={inputValue.trim() ? { backgroundColor: "var(--color-brand-primary)", color: "white" } : { backgroundColor: "var(--color-brand-secondary-dim)", color: "var(--color-text-secondary)" }}>
-                                  <ArrowUp size={18} strokeWidth={1.5} absoluteStrokeWidth />
-                                </button>
-                              </div>
-                            </div>
-                          </div>
+                          <ChatHomeInput
+                            value={inputValue}
+                            onChange={setInputValue}
+                            onSend={handleSend}
+                            isRecording={isRecording}
+                            onToggleMic={toggleMic}
+                          />
                         </div>
                       </motion.div>
                     ) : (
@@ -1545,39 +1502,27 @@ export function StampyChatbot({
                             {messages.map((msg, i) => {
                               if (msg.role === "user") {
                                 return (
-                                  <motion.div key={`msg-${i}`} className="flex w-full justify-end shrink-0 pl-[56px]" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ ...bubbleSpring, delay: 0.1 }}>
-                                    <div className="rounded-[12px] px-[12px] py-[8px] max-w-[85%] sm:max-w-[440px]" style={{ backgroundColor: bubbleBg }}>
-                                      <p className="leading-[20px] text-[15px] whitespace-pre-wrap" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{msg.text}</p>
-                                    </div>
-                                  </motion.div>
+                                  <UserBubble key={`msg-${i}`} text={msg.text} delay={0.1} />
                                 );
                               } else {
                                 return (
-                                  <motion.div key={`msg-${i}`} className="flex flex-col gap-[16px] w-full shrink-0" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={bubbleSpring}>
-                                    <div className="flex w-full justify-start pr-[56px]">
-                                      <div className="rounded-[12px] px-[12px] py-[8px] max-w-[85%] sm:max-w-[440px] flex flex-col gap-[12px]" style={{ backgroundColor: bubbleBg }}>
-                                        <p className="leading-[20px] text-[15px] whitespace-pre-wrap" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{msg.text}</p>
-                                        {msg.buttons?.map((label, bi) => {
-                                          const isUsed = i < messages.length - 1;
-                                          return <BubbleButton key={label} label={label} isUsed={isUsed} onClick={handleTriggerButton} delay={bi * 0.08} />;
-                                        })}
-                                      </div>
-                                    </div>
+                                  <div key={`msg-${i}`} className="flex flex-col gap-[16px] w-full shrink-0">
+                                    <StampyBubble
+                                      text={msg.text}
+                                      buttons={msg.buttons}
+                                      buttonsUsed={i < messages.length - 1}
+                                      onButtonClick={handleTriggerButton}
+                                      buttonDelay={0.08}
+                                    />
                                     {msg.showCarousel && <StyleCarousel themeChoice={themeChoice} setThemeChoice={handleStyleSelect} />}
-                                  </motion.div>
+                                  </div>
                                 );
                               }
                             })}
 
                             <AnimatePresence mode="popLayout">
                               {typingText && (
-                                <motion.div key="typing-bubble" className="flex flex-col gap-[16px] w-full shrink-0" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={bubbleSpring}>
-                                  <div className="flex w-full justify-start pr-[56px]">
-                                    <div className="rounded-[12px] px-[12px] py-[8px] max-w-[85%] sm:max-w-[440px]" style={{ backgroundColor: bubbleBg }}>
-                                      <p className="leading-[20px] text-[15px] whitespace-pre-wrap" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{typedText}</p>
-                                    </div>
-                                  </div>
-                                </motion.div>
+                                <StampyBubble key="typing-bubble" text={typedText} />
                               )}
                             </AnimatePresence>
 
@@ -1593,21 +1538,15 @@ export function StampyChatbot({
                           </div>
                         </div>
 
-                        {/* Ask section */}
-                        <motion.div className="flex gap-[10px] items-center px-[16px] w-full shrink-0 mt-[8px] mb-[8px]" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ ...entranceSpring, delay: 0.35 }}>
-                          <motion.img alt="" className="pointer-events-none object-cover shrink-0" src={aiIconSrc} animate={{ scale: [13 / 16, 1, 13 / 16], opacity: isFocused || !!inputValue ? 1 : 0.5 }} transition={{ repeat: Infinity, duration: 1.6, ease: "easeInOut" }} style={{ width: 16, height: 16 }} />
-                          <textarea className="flex-1 resize-none bg-transparent outline-none text-[15px] leading-[20px] min-w-0" style={{ ...dmSans400, caretColor: "var(--color-text-primary)", border: "none", padding: 0, minHeight: 20, overflow: "hidden", color: isFocused || inputValue ? "var(--color-text-primary)" : "var(--color-text-secondary)" }} value={inputValue} placeholder="Ask, search or create your card" onChange={e => { setInputValue(e.target.value); e.target.style.height = "auto"; e.target.style.height = `${e.target.scrollHeight}px`; }} onFocus={() => setIsFocused(true)} onBlur={() => setIsFocused(false)} onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } if ((e.metaKey || e.ctrlKey) && e.key === "a") { e.stopPropagation(); e.currentTarget.setSelectionRange(0, e.currentTarget.value.length); } }} rows={1} />
-                        </motion.div>
-
-                        {/* Divider */}
-                        <div className="relative w-full h-px shrink-0">
-                          <div className="absolute inset-0">
-                            <svg className="block w-full h-full" fill="none" preserveAspectRatio="none" viewBox="0 0 640 1"><line stroke="var(--color-element-subtle)" x2="640" y1="0.5" y2="0.5" /></svg>
-                          </div>
-                        </div>
-
-                        {/* Bottom bar */}
-                        <BottomBar isActive={!!inputValue.trim()} isRecording={isRecording} onToggleMic={toggleMic} onSend={handleSend} />
+                        {/* Conversation input + bottom bar */}
+                        <ChatConversationInput
+                          aiIconSrc={aiIconSrc}
+                          value={inputValue}
+                          onChange={setInputValue}
+                          onSend={handleSend}
+                          isRecording={isRecording}
+                          onToggleMic={toggleMic}
+                        />
 
                         {/* Overflow menus */}
                         <AnimatePresence>

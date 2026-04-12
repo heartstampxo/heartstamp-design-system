@@ -83,16 +83,13 @@ export const NAV = [
       { title: "Badge",           id: "badge",        group: "Display",           label: "new"  },
       { title: "Calendar",        id: "calendar",     group: "Display",           label: "new"  },
       { title: "Footer",          id: "footer",       group: "Display",           label: "new"  },
-    ]
-  },
-  {
-    title: "Chatbot", items: [
-      { title: "Stampy Chatbot",  id: "stampy-chatbot",         label: "new" },
-      { title: "Overflow Menus",  id: "chatbot-overflow-menus", label: "new" },
-      { title: "Chat Header",     id: "chatbot-header",         label: "new" },
-      { title: "Home Screen",     id: "chatbot-home-screen",    label: "new" },
-      { title: "Chat Input",      id: "chatbot-input",          label: "new" },
-      { title: "Chat Bubbles",    id: "chatbot-bubbles",        label: "new" },
+      /* ── Chatbot ─────────────────────────────────────── */
+      { title: "Stampy Chatbot",  id: "stampy-chatbot",         group: "Chatbot", label: "new" },
+      { title: "Overflow Menus",  id: "chatbot-overflow-menus", group: "Chatbot", label: "new" },
+      { title: "Chat Header",     id: "chatbot-header",         group: "Chatbot", label: "new" },
+      { title: "Home Screen",     id: "chatbot-home-screen",    group: "Chatbot", label: "new" },
+      { title: "Chat Input",      id: "chatbot-input",          group: "Chatbot", label: "new" },
+      { title: "Chat Bubbles",    id: "chatbot-bubbles",        group: "Chatbot", label: "new" },
     ]
   },
 ];

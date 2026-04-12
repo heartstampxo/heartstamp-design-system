@@ -213,6 +213,8 @@ export const LIGHT_THEME: Record<string, string> = {
  *  and borders invisible on the dark preview background. */
 export const PREVIEW_DARK_VARS: Record<string, string> = {
   ...DARK_THEME,
+  /** Force the chatbot hero background to black in dark preview mode */
+  "--chatbot-hero-bg": "#09090b",
 };
 
 /* ═══════════════════════════════════════════════════════════
