@@ -6,6 +6,7 @@
 import { useState, useEffect, useRef, useId } from "react";
 import { ImagePlus, Mic, ArrowUp, X, PencilLine, Pencil, CheckCheck, ChevronRight, ChevronLeft, ChevronDown, Plus, Loader2 } from "lucide-react";
 import { Btn } from "./btn";
+import { ScrollArea } from "./scroll-area";
 import { motion, AnimatePresence } from "motion/react";
 
 import {
@@ -1272,6 +1273,7 @@ export function StampyChatbot({
   const [isRecording, setIsRecording] = useState(false);
   const recognitionRef = useRef<any>(null);
   const chatsScrollRef = useRef<HTMLDivElement>(null);
+  const chatsInnerRef = useRef<HTMLDivElement>(null);
 
   const { displayed: typedText, isDone: typingDone } = useBubbleTypewriter(typingText);
   const committedRef = useRef(false);
@@ -1383,6 +1385,7 @@ export function StampyChatbot({
     mo.observe(container, { childList: true, subtree: true, attributes: true, attributeFilter: ["style"] });
     return () => { clearInterval(scrollInterval); clearTimeout(stopScrollTimer); container.removeEventListener("scroll", handleScroll); ro.disconnect(); mo.disconnect(); };
   }, [sentMessage, messages, typingText, showMenu, showBanner, stepIndex]);
+
 
   function processMessage(msg: string) {
     if (!msg) return;
@@ -1496,8 +1499,8 @@ export function StampyChatbot({
                       /* WORKING STATE */
                       <motion.div key="working" className="flex flex-col w-full flex-1 relative overflow-hidden min-h-0" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 4 }} transition={{ type: "spring", stiffness: 260, damping: 28, delay: 0.08 }}>
                         <div className="flex flex-col flex-1 overflow-hidden p-[16px] gap-[24px] min-h-0">
-                          <div ref={chatsScrollRef} className="flex flex-col gap-[16px] overflow-y-auto flex-1 min-h-0">
-                            <div className="flex-1" />
+                          <ScrollArea viewportRef={chatsScrollRef} className="flex-1 min-h-0">
+                          <div ref={chatsInnerRef} className="flex flex-col gap-[16px] justify-end flex-1">
 
                             {messages.map((msg, i) => {
                               if (msg.role === "user") {
@@ -1536,6 +1539,7 @@ export function StampyChatbot({
                               )}
                             </AnimatePresence>
                           </div>
+                          </ScrollArea>
                         </div>
 
                         {/* Conversation input + bottom bar */}
@@ -1574,13 +1578,6 @@ export function StampyChatbot({
                           {showMenu && currentStep?.type === "checklist" && (
                             <motion.div className="absolute bottom-[16px] left-[16px] right-[16px] z-20" initial={{ opacity: 0, y: 14, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 6, scale: 0.97 }} transition={{ type: "spring", stiffness: 340, damping: 18, mass: 0.8 }}>
                               <ChecklistOverflowMenu pages={currentStep.pages} inputPlaceholder={currentStep.inputPlaceholder} onClose={() => setShowMenu(false)} onComplete={(selected) => { if (selected.length === 0) handleMenuSkip(); else handleMenuComplete(selected.join(", ")); }} />
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                        <AnimatePresence>
-                          {showMenu && currentStep?.type === "style-carousel" && (
-                            <motion.div className="px-[16px] w-full shrink-0 mb-[8px]" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 6 }} transition={{ type: "spring", stiffness: 300, damping: 28 }}>
-                              <StyleCarousel themeChoice={themeChoice} setThemeChoice={handleStyleSelect} />
                             </motion.div>
                           )}
                         </AnimatePresence>
