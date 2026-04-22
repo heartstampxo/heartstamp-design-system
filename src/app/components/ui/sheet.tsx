@@ -62,7 +62,7 @@ function SheetContent({
       <DrawerPrimitive.Content
         data-slot="sheet-content"
         className={cn(
-          "group/sheet-content fixed z-50 flex flex-col bg-[var(--bg)] shadow-[var(--shadow-2xl)] outline-none",
+          "group/sheet-content fixed z-50 flex flex-col bg-background shadow-xl outline-none",
           // right
           "data-[vaul-drawer-direction=right]:inset-y-0 data-[vaul-drawer-direction=right]:right-0 data-[vaul-drawer-direction=right]:w-3/4 data-[vaul-drawer-direction=right]:sm:max-w-sm data-[vaul-drawer-direction=right]:border-l data-[vaul-drawer-direction=right]:border-[var(--border)]",
           // left
@@ -85,7 +85,7 @@ function SheetContent({
             display: "flex", alignItems: "center", justifyContent: "center",
             width: 24, height: 24, borderRadius: 4,
             background: "none", border: "none",
-            color: "var(--muted-fg)", cursor: "pointer",
+            color: "var(--muted-foreground)", cursor: "pointer",
             opacity: 0.7, transition: "opacity 0.15s",
           }}
           onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) => (e.currentTarget.style.opacity = "1")}
