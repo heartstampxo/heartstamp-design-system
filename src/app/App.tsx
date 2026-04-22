@@ -4250,6 +4250,7 @@ export default function App() {
     <div style={{ ...theme, fontFamily: "var(--font-family-body)", background: "var(--bg)", color: "var(--fg)", height: "100vh", display: "flex", flexDirection: "column", overflow: "hidden" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+        :root{${Object.entries(theme).map(([k,v])=>`${k}:${v}`).join(';')}}
         *{box-sizing:border-box;}
         ::-webkit-scrollbar{width:5px;height:5px}
         ::-webkit-scrollbar-track{background:transparent}
