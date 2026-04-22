@@ -1080,57 +1080,33 @@ function PageDialog() {
 }
 
 function PageSheet() {
-  const [snapOpen, setSnapOpen] = useState(false);
-  return <DocPage title="Sheet" subtitle="A drawer that slides in from any edge. Powered by Vaul — includes drag-to-dismiss, spring physics, and snap points." sourceSlug="sheet">
-
-    <DocSection title="Directions">
-      <Preview title="All four directions" code={`<Sheet direction="right">\n  <SheetTrigger asChild><Button variant="outline">Open Right</Button></SheetTrigger>\n  <SheetContent>\n    <SheetHeader><SheetTitle>Right Sheet</SheetTitle></SheetHeader>\n  </SheetContent>\n</Sheet>`} height={120}>
+  const [side, setSide] = useState<"right" | "left" | "bottom" | "top">("right");
+  const [open, setOpen] = useState(false);
+  return <DocPage title="Sheet" subtitle="Extends the Dialog component to display content that complements the main content of the screen." sourceSlug="sheet">
+    <DocSection title="Sides">
+      <Preview title="Sheet sides" code={`<Sheet direction="right">\n  <SheetTrigger asChild><Button variant="outline">Open Right</Button></SheetTrigger>\n  <SheetContent>\n    <SheetHeader><SheetTitle>Edit profile</SheetTitle></SheetHeader>\n  </SheetContent>\n</Sheet>`} height={120}>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center" }}>
-          {(["right", "left", "bottom", "top"] as const).map(dir => (
-            <Sheet key={dir} direction={dir}>
-              <SheetTrigger asChild>
-                <Btn variant="outline">Open {dir.charAt(0).toUpperCase() + dir.slice(1)}</Btn>
-              </SheetTrigger>
-              <SheetContent>
-                <SheetHeader>
-                  <SheetTitle>{dir.charAt(0).toUpperCase() + dir.slice(1)} Sheet</SheetTitle>
-                  <SheetDescription>Drag to dismiss or click the overlay to close.</SheetDescription>
-                </SheetHeader>
-                <div style={{ padding: "0 16px 16px" }}>
-                  <p style={{ fontSize: 14, color: "var(--muted-fg)", lineHeight: 1.6 }}>
-                    This sheet slides in from the {dir}. Drag it to dismiss — powered by Vaul's spring physics.
-                  </p>
-                  <div style={{ marginTop: 16 }}><Lbl>Name</Lbl><Inp placeholder="Your name" /></div>
-                </div>
-                <SheetFooter>
-                  <Btn>Save</Btn>
-                  <Btn variant="outline">Cancel</Btn>
-                </SheetFooter>
-              </SheetContent>
-            </Sheet>
+          {(["top", "right", "bottom", "left"] as const).map(s => (
+            <Btn key={s} variant="outline" onClick={() => { setSide(s); setOpen(true); }}>
+              Open {s.charAt(0).toUpperCase() + s.slice(1)}
+            </Btn>
           ))}
         </div>
-      </Preview>
-    </DocSection>
-
-    <DocSection title="Snap Points">
-      <Preview title="Bottom sheet with snap points" code={`<Sheet direction="bottom" snapPoints={[0.5, 1]}>\n  <SheetTrigger asChild><Button variant="outline">Open with Snap</Button></SheetTrigger>\n  <SheetContent>\n    <SheetHeader><SheetTitle>Snap Points</SheetTitle></SheetHeader>\n  </SheetContent>\n</Sheet>`} height={100}>
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <Sheet direction="bottom" snapPoints={[0.5, 1]} open={snapOpen} onOpenChange={setSnapOpen}>
-            <SheetTrigger asChild>
-              <Btn variant="outline">Open with Snap Points</Btn>
-            </SheetTrigger>
-            <SheetContent>
-              <SheetHeader>
-                <SheetTitle>Snap Points</SheetTitle>
-                <SheetDescription>Drag up to expand to full height, drag down to snap to 50%.</SheetDescription>
-              </SheetHeader>
-              <div style={{ padding: "0 16px 16px", fontSize: 14, color: "var(--muted-fg)", lineHeight: 1.6 }}>
-                This sheet snaps to 50% height first, then expands to full height on further drag. Drag below 50% to dismiss.
-              </div>
-            </SheetContent>
-          </Sheet>
-        </div>
+        <Sheet direction={side} open={open} onOpenChange={setOpen}>
+          <SheetContent>
+            <SheetHeader>
+              <SheetTitle>{side.charAt(0).toUpperCase() + side.slice(1)} Sheet</SheetTitle>
+            </SheetHeader>
+            <div style={{ padding: "0 16px" }}>
+              <p style={{ fontSize: 14, color: "var(--muted-fg)", lineHeight: 1.6 }}>This sheet slides in from the {side}. Use it for navigation drawers, filters, or forms that don't need a full dialog.</p>
+              <div style={{ marginTop: 16 }}><Lbl>Name</Lbl><Inp placeholder="Your name" /></div>
+            </div>
+            <SheetFooter>
+              <Btn onClick={() => setOpen(false)}>Save</Btn>
+              <Btn variant="outline" onClick={() => setOpen(false)}>Cancel</Btn>
+            </SheetFooter>
+          </SheetContent>
+        </Sheet>
       </Preview>
     </DocSection>
 
