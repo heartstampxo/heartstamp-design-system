@@ -122,7 +122,7 @@ function SheetTitle({
   return (
     <DrawerPrimitive.Title
       data-slot="sheet-title"
-      className={cn("text-foreground font-semibold", className)}
+      className={cn("text-[var(--color-text-primary)] font-semibold", className)}
       {...props}
     />
   );

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { Eye, Code2, Moon, Sun, Smartphone, Tablet, Monitor, Maximize2 } from "lucide-react";
 import { PREVIEW_DARK_VARS } from "../../theme";
 import { CodeBlock } from "./doc-code-block";
@@ -70,6 +70,16 @@ export function Preview({ title, code, filename, children, height = 160, fullWid
   const [vp, setVp] = useState("full");
   const [dark, setDark] = useState(false);
   const vpW = VIEWPORTS.find(v => v.id === vp)?.w || "100%";
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (dark) {
+      Object.entries(PREVIEW_DARK_VARS).forEach(([k, v]) => root.style.setProperty(k, v));
+    } else {
+      Object.keys(PREVIEW_DARK_VARS).forEach(k => root.style.removeProperty(k));
+    }
+    return () => { Object.keys(PREVIEW_DARK_VARS).forEach(k => root.style.removeProperty(k)); };
+  }, [dark]);
   const normalizedCode = useMemo(() => normalizeImports(code), [code]);
 
   /* render-prop support: children can be (vp: string) => ReactNode */
