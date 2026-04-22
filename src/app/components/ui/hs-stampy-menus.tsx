@@ -392,11 +392,13 @@ export function ActionOverflowMenuList({
                 onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")}
                 onClick={() => onComplete(item.label)}
               >
-                <div className="flex gap-[8px] items-center px-[8px] py-[6px] w-full h-full">
-                  <div className="flex items-center justify-center rounded-[4px] shrink-0 w-[20px]" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }}>
-                    <p className="leading-[20px] text-[14px] text-center w-full" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{item.num}</p>
+                <div className="flex flex-row items-center size-full">
+                  <div className="flex gap-[8px] items-center px-[8px] py-[6px] w-full cursor-pointer">
+                    <div className="flex items-center justify-center rounded-[4px] shrink-0 w-[20px]" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }}>
+                      <p className="leading-[20px] text-[14px] text-center w-full" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{item.num}</p>
+                    </div>
+                    <p className="flex-1 leading-[20px] text-[14px] truncate min-w-0" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{item.label}</p>
                   </div>
-                  <p className="flex-1 leading-[20px] text-[14px] truncate min-w-0" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{item.label}</p>
                 </div>
               </div>
             ))}
