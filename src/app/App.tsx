@@ -1079,9 +1079,17 @@ function PageDialog() {
   </DocPage>;
 }
 
+const SHEET_META: Record<"right"|"left"|"bottom"|"top", { title: string; desc: string }> = {
+  right:  { title: "Right Sheet",  desc: "Best for forms, settings panels, and detail views. Slides in from the right edge — ideal on desktop and tablet for contextual actions without navigating away from the current page." },
+  left:   { title: "Left Sheet",   desc: "Best for navigation drawers, app menus, and filter panels. Slides in from the left and pairs naturally with a fixed sidebar layout, keeping primary navigation within reach." },
+  bottom: { title: "Bottom Sheet", desc: "Best on mobile for action menus, pickers, and quick forms. Slides up from the bottom with built-in drag-to-dismiss — the most native-feeling pattern on touch devices." },
+  top:    { title: "Top Sheet",    desc: "Best for search overlays, notifications, and contextual banners. Drops down from the top of the screen — keep content brief and non-blocking so users can dismiss quickly." },
+};
+
 function PageSheet() {
   const [side, setSide] = useState<"right" | "left" | "bottom" | "top">("right");
   const [open, setOpen] = useState(false);
+  const meta = SHEET_META[side];
   return <DocPage title="Sheet" subtitle="Extends the Dialog component to display content that complements the main content of the screen." sourceSlug="sheet">
     <DocSection title="Sides">
       <Preview title="Sheet sides" code={`<Sheet direction="right">\n  <SheetTrigger asChild><Button variant="outline">Open Right</Button></SheetTrigger>\n  <SheetContent>\n    <SheetHeader><SheetTitle>Edit profile</SheetTitle></SheetHeader>\n  </SheetContent>\n</Sheet>`} height={120}>
@@ -1094,10 +1102,11 @@ function PageSheet() {
         </div>
         <Sheet direction={side} open={open} onOpenChange={setOpen}>
           <SheetContent>
-            <SheetHeader className="sr-only">
-              <SheetTitle>Edit Profile</SheetTitle>
+            <SheetHeader>
+              <SheetTitle style={{ fontSize: "var(--font-size-h4)", fontWeight: "var(--font-weight-h4)" }}>{meta.title}</SheetTitle>
+              <SheetDescription>{meta.desc}</SheetDescription>
             </SheetHeader>
-            <div style={{ flex: 1, overflowY: "auto", padding: "var(--space-6)", display: "flex", flexDirection: "column", gap: "var(--space-5)" }}>
+            <div style={{ flex: 1, overflowY: "auto", padding: "0 var(--space-6) var(--space-6)", display: "flex", flexDirection: "column", gap: "var(--space-5)" }}>
               <Inp label="Your Name" placeholder="Eftakher" />
               <Inp label="Email Address" placeholder="hello@address.com" type="email" />
               <Inp label="Phone Number" placeholder="01624995958" type="tel" />
