@@ -1106,12 +1106,12 @@ function PageSheet() {
               <SheetTitle style={{ fontSize: "var(--font-size-h4)", fontWeight: "var(--font-weight-h4)" }}>{meta.title}</SheetTitle>
               <SheetDescription>{meta.desc}</SheetDescription>
             </SheetHeader>
-            <div style={{ flex: 1, overflowY: "auto", padding: "0 var(--space-6) var(--space-6)", display: "flex", flexDirection: "column", gap: "var(--space-5)" }}>
+            <div style={{ flex: "1 1 0%", overflowY: "auto", padding: "var(--space-3) var(--space-8) var(--space-8)", display: "flex", flexDirection: "column", gap: "var(--space-5)" }}>
               <Inp label="Your Name" placeholder="Eftakher" />
               <Inp label="Email Address" placeholder="hello@address.com" type="email" />
               <Inp label="Phone Number" placeholder="01624995958" type="tel" />
             </div>
-            <SheetFooter style={{ padding: "var(--space-6)", gap: "var(--space-4)" }}>
+            <SheetFooter style={{ padding: "var(--space-4) var(--space-8)", gap: "var(--space-4)" }}>
               <Btn size="lg" style={{ width: "100%" }} onClick={() => setOpen(false)}>Save</Btn>
               <Btn size="lg" variant="outline" style={{ width: "100%" }} onClick={() => setOpen(false)}>Close</Btn>
             </SheetFooter>
