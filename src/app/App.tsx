@@ -27,6 +27,7 @@ import { Acc } from "./components/ui/hs-acc";
 import { Tip } from "./components/ui/hs-tip";
 import { Dlg } from "./components/ui/hs-dlg";
 import { Sht } from "./components/ui/hs-sht";
+import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter } from "./components/ui/sheet";
 import { DdMenu } from "./components/ui/hs-dd-menu";
 import { Ppvr } from "./components/ui/hs-ppvr";
 import { HvrCard } from "./components/ui/hs-hvr-card";
@@ -1079,33 +1080,68 @@ function PageDialog() {
 }
 
 function PageSheet() {
-  const [side, setSide] = useState("right");
-  const [open, setOpen] = useState(false);
-  return <DocPage title="Sheet" subtitle="Extends the Dialog component to display content that complements the main content of the screen." sourceSlug="sheet">
-    <DocSection title="Sides">
-      <Preview title="Sheet sides" code={`<Sheet>\n  <SheetTrigger asChild><Button variant="outline">Open Right</Button></SheetTrigger>\n  <SheetContent side="right">\n    <SheetHeader><SheetTitle>Edit profile</SheetTitle></SheetHeader>\n  </SheetContent>\n</Sheet>`} height={120}>
+  const [snapOpen, setSnapOpen] = useState(false);
+  return <DocPage title="Sheet" subtitle="A drawer that slides in from any edge. Powered by Vaul — includes drag-to-dismiss, spring physics, and snap points." sourceSlug="sheet">
+
+    <DocSection title="Directions">
+      <Preview title="All four directions" code={`<Sheet direction="right">\n  <SheetTrigger asChild><Button variant="outline">Open Right</Button></SheetTrigger>\n  <SheetContent>\n    <SheetHeader><SheetTitle>Right Sheet</SheetTitle></SheetHeader>\n  </SheetContent>\n</Sheet>`} height={120}>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center" }}>
-          {["top", "right", "bottom", "left"].map(s => (
-            <Btn key={s} variant="outline" onClick={() => { setSide(s); setOpen(true); }}>
-              Open {s.charAt(0).toUpperCase() + s.slice(1)}
-            </Btn>
+          {(["right", "left", "bottom", "top"] as const).map(dir => (
+            <Sheet key={dir} direction={dir}>
+              <SheetTrigger asChild>
+                <Btn variant="outline">Open {dir.charAt(0).toUpperCase() + dir.slice(1)}</Btn>
+              </SheetTrigger>
+              <SheetContent>
+                <SheetHeader>
+                  <SheetTitle>{dir.charAt(0).toUpperCase() + dir.slice(1)} Sheet</SheetTitle>
+                  <SheetDescription>Drag to dismiss or click the overlay to close.</SheetDescription>
+                </SheetHeader>
+                <div style={{ padding: "0 16px 16px" }}>
+                  <p style={{ fontSize: 14, color: "var(--muted-fg)", lineHeight: 1.6 }}>
+                    This sheet slides in from the {dir}. Drag it to dismiss — powered by Vaul's spring physics.
+                  </p>
+                  <div style={{ marginTop: 16 }}><Lbl>Name</Lbl><Inp placeholder="Your name" /></div>
+                </div>
+                <SheetFooter>
+                  <Btn>Save</Btn>
+                  <Btn variant="outline">Cancel</Btn>
+                </SheetFooter>
+              </SheetContent>
+            </Sheet>
           ))}
         </div>
-        <Sht open={open} onClose={() => setOpen(false)} side={side} title={`${side.charAt(0).toUpperCase() + side.slice(1)} Sheet`}>
-          <p>This sheet slides in from the {side}. Use it for navigation drawers, filters, or forms that don't need a full dialog.</p>
-          <div style={{ marginTop: 16 }}><Lbl>Name</Lbl><Inp placeholder="Your name" /></div>
-          <div style={{ marginTop: 12, display: "flex", gap: 8 }}>
-            <Btn onClick={() => setOpen(false)}>Save</Btn>
-            <Btn variant="outline" onClick={() => setOpen(false)}>Cancel</Btn>
-          </div>
-        </Sht>
       </Preview>
     </DocSection>
+
+    <DocSection title="Snap Points">
+      <Preview title="Bottom sheet with snap points" code={`<Sheet direction="bottom" snapPoints={[0.5, 1]}>\n  <SheetTrigger asChild><Button variant="outline">Open with Snap</Button></SheetTrigger>\n  <SheetContent>\n    <SheetHeader><SheetTitle>Snap Points</SheetTitle></SheetHeader>\n  </SheetContent>\n</Sheet>`} height={100}>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Sheet direction="bottom" snapPoints={[0.5, 1]} open={snapOpen} onOpenChange={setSnapOpen}>
+            <SheetTrigger asChild>
+              <Btn variant="outline">Open with Snap Points</Btn>
+            </SheetTrigger>
+            <SheetContent>
+              <SheetHeader>
+                <SheetTitle>Snap Points</SheetTitle>
+                <SheetDescription>Drag up to expand to full height, drag down to snap to 50%.</SheetDescription>
+              </SheetHeader>
+              <div style={{ padding: "0 16px 16px", fontSize: 14, color: "var(--muted-fg)", lineHeight: 1.6 }}>
+                This sheet snaps to 50% height first, then expands to full height on further drag. Drag below 50% to dismiss.
+              </div>
+            </SheetContent>
+          </Sheet>
+        </div>
+      </Preview>
+    </DocSection>
+
     <DocSection title="Props">
       <PropsTable props={[
+        { name: "direction", type: '"top"|"right"|"bottom"|"left"', def: '"right"', desc: "The edge of the screen where the sheet slides in from." },
         { name: "open", type: "boolean", desc: "Controlled open state." },
         { name: "onOpenChange", type: "(open: boolean) => void", desc: "Callback when open state changes." },
-        { name: "side", type: '"top"|"right"|"bottom"|"left"', def: '"right"', desc: "The edge of the screen where the sheet slides in from." },
+        { name: "snapPoints", type: "(number | string)[]", desc: "Array of snap points (0–1 for fractions, px strings for fixed heights). Bottom/top only." },
+        { name: "shouldScaleBackground", type: "boolean", def: "false", desc: "Scales the background page when the sheet opens." },
+        { name: "dismissible", type: "boolean", def: "true", desc: "Allow dragging to dismiss the sheet." },
       ]} />
     </DocSection>
   </DocPage>;
