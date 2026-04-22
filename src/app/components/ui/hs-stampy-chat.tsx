@@ -12,7 +12,7 @@ import type { ChatScript, ChatMessage } from "./hs-chat-types";
 import { OCCASIONS, getRandomSuggestions, bubbleSpring, entranceSpring, bubbleBg, dmSans400 } from "./hs-stampy-constants";
 import { useBubbleTypewriter } from "./hs-stampy-hooks";
 import { WorkingSpinner, StampyBubble, UserBubble, StyleCarousel } from "./hs-stampy-bubbles";
-import { OverflowMenu, ChecklistOverflowMenu, TemplateOverflowMenu, ActionOverflowMenu } from "./hs-stampy-menus";
+import { OverflowMenu, ChecklistOverflowMenu, TemplateOverflowMenu, ActionOverflowMenuList } from "./hs-stampy-menus";
 import { ChatHomeInput, ChatConversationInput, OccasionSuggestions } from "./hs-stampy-inputs";
 import { TadaBanner, ChatHomeScreen, ChatHeader } from "./hs-stampy-panels";
 
@@ -391,7 +391,7 @@ export function StampyChatbot({
                         <AnimatePresence>
                           {showMenu && currentStep?.type === "action" && (
                             <motion.div className="absolute bottom-[16px] left-[16px] right-[16px] z-20" initial={{ opacity: 0, y: 14, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 6, scale: 0.97 }} transition={{ type: "spring", stiffness: 340, damping: 18, mass: 0.8 }}>
-                              <ActionOverflowMenu config={currentStep.config} inputPlaceholder={currentStep.inputPlaceholder} onClose={() => setShowMenu(false)} onGenerate={handleActionGenerate} />
+                              <ActionOverflowMenuList config={currentStep.config} inputPlaceholder={currentStep.inputPlaceholder} onClose={() => setShowMenu(false)} onGenerate={handleActionGenerate} onComplete={handleMenuComplete} />
                             </motion.div>
                           )}
                         </AnimatePresence>
@@ -420,7 +420,7 @@ export default StampyChatbot;
 // ── Barrel re-exports for backwards compatibility ─────────────────────────
 
 export { WorkingSpinner, BubbleButton, StampyBubble, UserBubble, StyleCarousel } from "./hs-stampy-bubbles";
-export { OverflowMenu, ChecklistOverflowMenu, TemplateOverflowMenu, ActionOverflowMenu } from "./hs-stampy-menus";
+export { OverflowMenu, ChecklistOverflowMenu, TemplateOverflowMenu, ActionOverflowMenu, ActionOverflowMenuList } from "./hs-stampy-menus";
 export { ChatHomeInput, ChatConversationInput, OccasionSuggestions } from "./hs-stampy-inputs";
 export type { ChatHomeInputProps, ChatConversationInputProps, OccasionSuggestionsProps } from "./hs-stampy-inputs";
 export { TadaBanner, ChatHomeScreen, ChatHeader } from "./hs-stampy-panels";

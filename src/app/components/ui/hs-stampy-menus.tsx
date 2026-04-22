@@ -306,7 +306,7 @@ export function TemplateOverflowMenu({
   );
 }
 
-// ── ActionOverflowMenu ─────────────────────────────────────────────────────
+// ── ActionOverflowMenu (V1 — Ghost Buttons) ──────────────────────────────
 
 export function ActionOverflowMenu({
   config, inputPlaceholder, onClose, onGenerate,
@@ -329,7 +329,7 @@ export function ActionOverflowMenu({
       <div className="flex flex-col gap-[8px] px-[20px] py-[8px] w-full">
         <p className="leading-[20px] text-[15px]" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>Or Adjust</p>
         <div className="flex gap-[16px] items-center">
-          {config.adjustOptions.map((label) => (
+          {(config.adjustOptions ?? []).map((label) => (
             <Btn key={label} variant="outline" size="sm" onClick={onClose}>{label}</Btn>
           ))}
         </div>
@@ -344,6 +344,71 @@ export function ActionOverflowMenu({
         <div className="flex items-center gap-[8px]">
           <Btn type="button" variant="outline" size="sm" onClick={onClose}>Skip</Btn>
           <Btn type="button" variant="default" size="icon-sm" onClick={() => { if (customInput.trim()) onClose(); }}>
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d={SEND_ARROW_PATH} stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" /></svg>
+          </Btn>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── ActionOverflowMenuList (V2 — Numbered List) ───────────────────────────
+
+export function ActionOverflowMenuList({
+  config, inputPlaceholder, onClose, onGenerate, onComplete,
+}: {
+  config: ActionMenuConfig; inputPlaceholder?: string; onClose: () => void; onGenerate: () => void; onComplete: (label: string) => void;
+}) {
+  const [customInput, setCustomInput] = useState("");
+  const adjustHeader = config.adjustHeader ?? "Or, want to make changes?";
+  const items = config.adjustItems ?? [];
+
+  return (
+    <div className="flex flex-col gap-[4px] items-start pb-[12px] pt-[12px] relative rounded-[12px] w-full" style={{ backgroundColor: "var(--color-bg-main)", boxShadow: "var(--shadow-xs)", border: "1px solid var(--color-element-subtle)" }}>
+      {/* Div 1 — Header */}
+      <div className="flex items-center gap-[16px] px-[20px] py-[8px] w-full">
+        <div className="flex flex-col gap-[4px] flex-1 min-w-0">
+          <p className="leading-[20px] text-[15px]" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{config.title}</p>
+          <p className="leading-[20px] text-[13px]" style={{ ...dmSans400, color: "var(--color-text-secondary)" }}>{config.subtitle}</p>
+        </div>
+        <Btn onClick={onGenerate} className="shrink-0">{config.generateButtonLabel}</Btn>
+        <OverflowCloseBtn onClose={onClose} />
+      </div>
+      {/* Divider — edge-to-edge, zero padding */}
+      <div className="w-full px-0"><div className="w-full h-[1px]" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }} /></div>
+      {/* Div 2 — Content: header + numbered list */}
+      <div className="flex flex-col gap-[4px] px-[12px] py-[8px] w-full">
+        <p className="leading-[20px] text-[15px] px-[8px]" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{adjustHeader}</p>
+        {items.map((item) => (
+          <div
+            key={item.num}
+            className="flex flex-col h-[36px] items-start w-full rounded-[6px] transition-colors cursor-pointer"
+            onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-element-subtle)")}
+            onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")}
+            onClick={() => onComplete(item.label)}
+          >
+            <div className="flex flex-row items-center size-full">
+              <div className="flex gap-[8px] items-center px-[8px] py-[6px] w-full cursor-pointer">
+                <div className="flex items-center justify-center rounded-[4px] shrink-0 w-[20px]" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }}>
+                  <p className="leading-[20px] text-[14px] text-center w-full" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{item.num}</p>
+                </div>
+                <p className="flex-1 leading-[20px] text-[14px] truncate min-w-0" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{item.label}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      {/* Div 3 — Input */}
+      <div className="rounded-[12px] mx-[8px] flex items-center px-[12px] py-[8px] w-[calc(100%-16px)]" style={{ outline: "1px solid var(--color-element-subtle)", outlineOffset: "-1px" }}>
+        <div className="flex flex-1 items-center gap-[6px] min-w-0">
+          <div className="shrink-0 size-[20px] flex items-center justify-center rounded-[4px]" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }}>
+            <Pencil size={14} color="var(--color-text-primary)" strokeWidth={2.5} />
+          </div>
+          <input type="text" value={customInput} onChange={(e) => setCustomInput(e.target.value)} onKeyDown={(e) => { e.stopPropagation(); if (e.key === "Enter" && customInput.trim()) onComplete(customInput.trim()); }} placeholder={inputPlaceholder ?? "Something else"} className="flex-1 bg-transparent outline-none border-none text-[14px] leading-[20px] min-w-0" style={{ ...dmSans400, color: "var(--color-text-primary)" }} />
+        </div>
+        <div className="flex items-center gap-[8px]">
+          <Btn type="button" variant="outline" size="sm" onClick={onClose}>Skip</Btn>
+          <Btn type="button" variant="default" size="icon-sm" onClick={() => { if (customInput.trim()) onComplete(customInput.trim()); }}>
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d={SEND_ARROW_PATH} stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" /></svg>
           </Btn>
         </div>

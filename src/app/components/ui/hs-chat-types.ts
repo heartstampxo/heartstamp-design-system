@@ -24,7 +24,12 @@ export interface ActionMenuConfig {
   title: string;
   subtitle: string;
   generateButtonLabel: string;
-  adjustOptions: string[];
+  /** V1 ghost-button labels (used by ActionOverflowMenu) */
+  adjustOptions?: string[];
+  /** V2 list header text (used by ActionOverflowMenuList) */
+  adjustHeader?: string;
+  /** V2 numbered list items (used by ActionOverflowMenuList) */
+  adjustItems?: { num: string; label: string }[];
 }
 
 export interface BannerConfig {

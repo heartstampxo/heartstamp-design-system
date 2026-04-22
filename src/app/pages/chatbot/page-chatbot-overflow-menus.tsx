@@ -7,6 +7,7 @@ import {
   ChecklistOverflowMenu,
   TemplateOverflowMenu,
   ActionOverflowMenu,
+  ActionOverflowMenuList,
   OccasionSuggestions,
 } from "../../components/ui/hs-stampy-chat";
 
@@ -63,11 +64,25 @@ const TEMPLATE_CARDS = [
   { num: "4", title: "Born to Be Wild",                  front: "Born to Be Wild!",                  insideBody: "You bring energy and joy wherever you go. May this year take you to new heights!",                   giftMessage: "A little boost for your next big climb!" },
 ];
 
-const ACTION_CONFIG = {
+const ACTION_CONFIG_V1 = {
   title: "Ready to generate?",
   subtitle: "Your card concept is ready.",
   generateButtonLabel: "Generate Card",
   adjustOptions: ["Change Concept", "Start Over"],
+};
+
+const ACTION_CONFIG_V2 = {
+  title: "Ready to generate?",
+  subtitle: "Your card concept is ready.",
+  generateButtonLabel: "Generate Card",
+  adjustHeader: "Or, want to make changes?",
+  adjustItems: [
+    { num: "1", label: "Change the front artwork" },
+    { num: "2", label: "Update inside message" },
+    { num: "3", label: "Try different style" },
+    { num: "4", label: "Make the tone more sarcastic" },
+    { num: "5", label: "Looks great, I am done" },
+  ],
 };
 
 // ── Page ────────────────────────────────────────────────────────────────────
@@ -259,16 +274,15 @@ import type { TemplateCard } from '@heartstamp/design-system';
         ]} />
       </DocSection>
 
-      <DocSection title="Action — Generate &amp; Adjust">
+      <DocSection title="Action V1 — Ghost Buttons">
         <p style={DESC_STYLE}>
-          Final action panel with a generate button, "Or Adjust" secondary options, and a free-text
-          input.
+          Final action panel with a generate button, horizontal &ldquo;Or Adjust&rdquo; ghost buttons, and a
+          free-text input.
         </p>
         <Preview
-          title="Action overflow menu"
+          title="ActionOverflowMenu (V1)"
           height={240}
           code={`import { ActionOverflowMenu } from '@heartstamp/design-system';
-import type { ActionMenuConfig } from '@heartstamp/design-system';
 
 <ActionOverflowMenu
   config={{
@@ -284,7 +298,7 @@ import type { ActionMenuConfig } from '@heartstamp/design-system';
         >
           <div style={MENU_WRAPPER_STYLE}>
             <ActionOverflowMenu
-              config={ACTION_CONFIG}
+              config={ACTION_CONFIG_V1}
               inputPlaceholder="Something else"
               onClose={NOOP}
               onGenerate={NOOP}
@@ -295,6 +309,53 @@ import type { ActionMenuConfig } from '@heartstamp/design-system';
           { name: "config",           type: "ActionMenuConfig", def: "(required)", required: true, desc: "Config object: { title, subtitle, generateButtonLabel, adjustOptions: string[] }" },
           { name: "onGenerate",       type: "() => void",       def: "(required)", required: true, desc: "Called when the primary generate button is clicked" },
           { name: "onClose",          type: "() => void",       def: "(required)", required: true, desc: "Called when the × close button is tapped" },
+          { name: "inputPlaceholder", type: "string",           def: '"Something else"',           desc: "Placeholder for the free-text input at the bottom" },
+        ]} />
+      </DocSection>
+
+      <DocSection title="Action V2 — Numbered List">
+        <p style={DESC_STYLE}>
+          Final action panel with a generate button, a vertical numbered list of modification
+          options, and a free-text input.
+        </p>
+        <Preview
+          title="ActionOverflowMenuList (V2)"
+          height={420}
+          code={`import { ActionOverflowMenuList } from '@heartstamp/design-system';
+
+<ActionOverflowMenuList
+  config={{
+    title: "Ready to generate?",
+    subtitle: "Your card concept is ready.",
+    generateButtonLabel: "Generate Card",
+    adjustHeader: "Or, want to make changes?",
+    adjustItems: [
+      { num: "1", label: "Change the front artwork" },
+      { num: "2", label: "Update inside message" },
+      { num: "3", label: "Try different style" },
+    ],
+  }}
+  inputPlaceholder="Something else"
+  onClose={() => setOpen(false)}
+  onGenerate={() => generateCard()}
+  onComplete={(label) => handleChoice(label)}
+/>`}
+        >
+          <div style={MENU_WRAPPER_STYLE}>
+            <ActionOverflowMenuList
+              config={ACTION_CONFIG_V2}
+              inputPlaceholder="Something else"
+              onClose={NOOP}
+              onGenerate={NOOP}
+              onComplete={NOOP}
+            />
+          </div>
+        </Preview>
+        <PropsTable props={[
+          { name: "config",           type: "ActionMenuConfig", def: "(required)", required: true, desc: "Config object: { title, subtitle, generateButtonLabel, adjustHeader?, adjustItems: {num, label}[] }" },
+          { name: "onGenerate",       type: "() => void",       def: "(required)", required: true, desc: "Called when the primary generate button is clicked" },
+          { name: "onComplete",       type: "(label: string) => void", def: "(required)", required: true, desc: "Called when a list item or custom input is submitted" },
+          { name: "onClose",          type: "() => void",       def: "(required)", required: true, desc: "Called when the × close button or Skip is tapped" },
           { name: "inputPlaceholder", type: "string",           def: '"Something else"',           desc: "Placeholder for the free-text input at the bottom" },
         ]} />
       </DocSection>
