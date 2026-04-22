@@ -4275,7 +4275,7 @@ export default function App() {
           <span style={{
             fontSize: 10, padding: "2px 7px", borderRadius: 999, background: "var(--muted)",
             color: "var(--muted-fg)", border: "1px solid var(--border)", fontWeight: 600
-          }}>v1.4</span>
+          }}>v1.5</span>
         </div>
 
         <div style={{ flex: 1 }} />

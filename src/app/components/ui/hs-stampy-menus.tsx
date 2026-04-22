@@ -3,21 +3,23 @@
 // ═══════════════════════════════════════════════════════════════════════════
 
 import { useState, useEffect } from "react";
-import { X, Pencil, CheckCheck, ChevronRight, ChevronLeft } from "lucide-react";
+import { X, Pencil, ChevronRight, ChevronLeft } from "lucide-react";
 import { Btn } from "./btn";
 import { motion, AnimatePresence } from "motion/react";
 
 import { dmSans400, dmSans500 } from "./hs-stampy-constants";
-import {
-  SEND_ARROW_PATH, CHECKMARK_PATH,
-} from "./hs-chat-svg";
+import { SEND_ARROW_PATH, CHECKMARK_PATH } from "./hs-chat-svg";
 import type {
   OverflowPage, ChecklistPage, TemplateCard, ActionMenuConfig,
 } from "./hs-chat-types";
 
-// ── OverflowMenu ───────────────────────────────────────────────────────────
+// ── Shared primitives ──────────────────────────────────────────────────────
 
-/** Shared close (×) button used across all 4 overflow menu variants */
+const hoverItem = {
+  onMouseEnter: (e: React.MouseEvent<HTMLDivElement>) => (e.currentTarget.style.backgroundColor = "var(--color-element-subtle)"),
+  onMouseLeave: (e: React.MouseEvent<HTMLDivElement>) => (e.currentTarget.style.backgroundColor = "transparent"),
+};
+
 function OverflowCloseBtn({ onClose, className = "" }: { onClose: () => void; className?: string }) {
   return (
     <button
@@ -29,7 +31,6 @@ function OverflowCloseBtn({ onClose, className = "" }: { onClose: () => void; cl
   );
 }
 
-/** Shared page-N-of-M pagination row used across 3 overflow menu variants */
 function OverflowPagination({ page, total, onPrev, onNext }: {
   page: number; total: number; onPrev: () => void; onNext: () => void;
 }) {
@@ -45,6 +46,56 @@ function OverflowPagination({ page, total, onPrev, onNext }: {
     </div>
   );
 }
+
+/** Numbered pill badge used in OverflowMenu and ActionOverflowMenuList */
+function NumBadge({ num }: { num: string }) {
+  return (
+    <div className="flex items-center justify-center rounded-[4px] shrink-0 w-[20px]" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }}>
+      <p className="leading-[20px] text-[14px] text-center w-full" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{num}</p>
+    </div>
+  );
+}
+
+/** Pencil input + Skip + Send row shared across all 4 overflow menu variants */
+function OverflowInput({
+  value, onChange, onKeyDown, onSkip, onSend, placeholder,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  onSkip: () => void;
+  onSend: () => void;
+  placeholder: string;
+}) {
+  return (
+    <div className="rounded-[12px] flex items-center px-[12px] py-[8px] w-full" style={{ border: "1px solid var(--color-element-subtle)" }}>
+      <div className="flex flex-1 items-center gap-[4px] min-w-0">
+        <div className="shrink-0 size-[20px] flex items-center justify-center rounded-[4px]" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }}>
+          <Pencil size={14} color="var(--color-text-primary)" strokeWidth={2.5} />
+        </div>
+        <input
+          type="text"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          onKeyDown={onKeyDown}
+          placeholder={placeholder}
+          className="flex-1 bg-transparent outline-none border-none text-[14px] leading-[20px] min-w-0"
+          style={{ ...dmSans400, color: "var(--color-text-primary)" }}
+        />
+      </div>
+      <div className="flex items-center gap-[8px]">
+        <Btn type="button" variant="outline" size="sm" onClick={onSkip}>Skip</Btn>
+        <Btn type="button" variant="default" size="icon-sm" onClick={onSend}>
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <path d={SEND_ARROW_PATH} stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
+          </svg>
+        </Btn>
+      </div>
+    </div>
+  );
+}
+
+// ── OverflowMenu ───────────────────────────────────────────────────────────
 
 export function OverflowMenu({
   pages, inputPlaceholder, onClose, onComplete,
@@ -109,15 +160,12 @@ export function OverflowMenu({
             <div
               key={item.num}
               className="flex flex-col h-[36px] items-start w-full rounded-[6px] transition-colors cursor-pointer"
-              onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-element-subtle)")}
-              onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")}
+              {...hoverItem}
               onClick={() => handleItemClick(item)}
             >
               <div className="flex flex-row items-center size-full">
                 <div className="flex gap-[8px] items-center px-[8px] py-[6px] w-full cursor-pointer">
-                  <div className="flex items-center justify-center rounded-[4px] shrink-0 w-[20px]" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }}>
-                    <p className="leading-[20px] text-[14px] text-center w-full" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{item.num}</p>
-                  </div>
+                  <NumBadge num={item.num} />
                   <p className="flex-1 leading-[20px] text-[14px] truncate min-w-0" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{item.label}</p>
                 </div>
               </div>
@@ -127,8 +175,8 @@ export function OverflowMenu({
       </AnimatePresence>
 
       {/* "Something else" input */}
-      <div className="rounded-[12px] flex items-center px-[12px] py-[8px] w-full" style={{ outline: "1px solid var(--color-element-subtle)", outlineOffset: "-1px" }}>
-        <div className="flex flex-1 items-center gap-[6px] min-w-0">
+      <div className="rounded-[12px] flex items-center px-[12px] py-[8px] w-full" style={{ border: "1px solid var(--color-element-subtle)" }}>
+        <div className="flex flex-1 items-center gap-[4px] min-w-0">
           <div className="flex items-center justify-center rounded-[4px] shrink-0 size-[20px]" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }}>
             <Pencil size={14} color="var(--color-text-primary)" strokeWidth={2.5} />
           </div>
@@ -193,7 +241,7 @@ export function ChecklistOverflowMenu({
   const currentPageData = checklistPages[page];
 
   return (
-    <div className="flex flex-col gap-[4px] items-start pb-[10px] pt-[8px] px-[8px] relative rounded-[12px] w-full" style={{ backgroundColor: "var(--color-bg-main)", boxShadow: "var(--shadow-xs)", border: "1px solid var(--color-element-subtle)" }}>
+    <div className="flex flex-col gap-[4px] items-start py-[12px] px-[8px] relative rounded-[12px] w-full" style={{ backgroundColor: "var(--color-bg-main)", boxShadow: "var(--shadow-xs)", border: "1px solid var(--color-element-subtle)" }}>
       <div className="flex flex-col items-start w-full">
         <div className="flex flex-row items-center w-full">
           <div className="flex gap-[8px] items-center p-[8px] w-full">
@@ -210,7 +258,7 @@ export function ChecklistOverflowMenu({
             {currentPageData.items.map((item) => {
               const checked = selected.has(item.id);
               return (
-                <div key={item.id} className="relative rounded-[6px] w-full h-[36px] flex items-center cursor-pointer transition-colors" onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-element-subtle)")} onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")} onClick={() => toggleItem(item.id)}>
+                <div key={item.id} className="relative rounded-[6px] w-full h-[36px] flex items-center cursor-pointer transition-colors" {...hoverItem} onClick={() => toggleItem(item.id)}>
                   <div className="flex gap-[8px] items-center px-[8px] py-[6px] w-full">
                     <div className="relative rounded-[4px] shrink-0 size-[16px] flex items-center justify-center transition-colors duration-150" style={{ backgroundColor: checked ? "var(--color-brand-primary)" : "transparent", border: checked ? "1px solid var(--color-brand-primary)" : "1px solid var(--color-element-subtle)", boxShadow: "var(--shadow-xs)" }}>
                       {checked && <svg width="10.7" height="7.75" viewBox="0 0 10.6633 7.74667" fill="none"><path d={CHECKMARK_PATH} stroke="var(--color-text-on-primary)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33" /></svg>}
@@ -224,20 +272,14 @@ export function ChecklistOverflowMenu({
         </AnimatePresence>
       </div>
 
-      <div className="rounded-[12px] flex items-center px-[12px] py-[8px] w-full" style={{ outline: "1px solid var(--color-element-subtle)", outlineOffset: "-1px" }}>
-        <div className="flex flex-1 items-center gap-[6px] min-w-0">
-          <div className="flex items-center justify-center rounded-[4px] shrink-0 size-[20px]" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }}>
-            <Pencil size={14} color="var(--color-text-primary)" strokeWidth={2.5} />
-          </div>
-          <input type="text" value={inputValue} onChange={(e) => setInputValue(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") handleSend(); }} placeholder={inputPlaceholder ?? "You make the call"} className="flex-1 bg-transparent outline-none border-none text-[14px] leading-[20px] min-w-0" style={{ ...dmSans400, color: "var(--color-text-primary)" }} />
-        </div>
-        <div className="flex items-center gap-[8px]">
-          <Btn type="button" variant="outline" size="sm" onClick={() => onComplete([])}>Skip</Btn>
-          <Btn type="button" variant="default" size="icon-sm" onClick={handleSend}>
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d={SEND_ARROW_PATH} stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" /></svg>
-          </Btn>
-        </div>
-      </div>
+      <OverflowInput
+        value={inputValue}
+        onChange={setInputValue}
+        onKeyDown={(e) => { if (e.key === "Enter") handleSend(); }}
+        onSkip={() => onComplete([])}
+        onSend={handleSend}
+        placeholder={inputPlaceholder ?? "You make the call"}
+      />
     </div>
   );
 }
@@ -256,9 +298,7 @@ export function TemplateOverflowMenu({
   const pageCards = cards.slice((page - 1) * CARDS_PER_PAGE, page * CARDS_PER_PAGE);
 
   return (
-    <div className="flex flex-col gap-[16px] pb-[12px] pt-[12px] relative rounded-[12px] w-full z-10" style={{ backgroundColor: "var(--color-bg-main)" }}>
-      <div aria-hidden="true" className="absolute border-solid inset-0 pointer-events-none rounded-[12px]" style={{ border: "1px solid var(--color-element-subtle)", boxShadow: "var(--shadow-xs)" }} />
-
+    <div className="flex flex-col gap-[16px] py-[12px] relative rounded-[12px] w-full z-10" style={{ backgroundColor: "var(--color-bg-main)", boxShadow: "var(--shadow-xs)", border: "1px solid var(--color-element-subtle)" }}>
       <div className="flex flex-col gap-[8px] px-[12px] w-full">
         <div className="flex items-center gap-[16px] p-[8px] w-full">
           <p className="flex-1 leading-[20px] text-[15px]" style={{ ...dmSans500, color: "var(--color-text-primary)", fontVariationSettings: "'opsz' 14" }}>{header}</p>
@@ -271,14 +311,17 @@ export function TemplateOverflowMenu({
         <AnimatePresence mode="wait">
           <motion.div key={page} className="grid grid-cols-2 gap-[12px] px-[8px] w-full" initial={{ opacity: 0, x: 14 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -14 }} transition={{ type: "spring", stiffness: 380, damping: 28 }}>
             {pageCards.map((item) => (
-              <div key={item.num} className="relative rounded-[16px] cursor-pointer overflow-hidden transition-colors"
-                style={{ height: 224, border: "1px solid var(--color-element-subtle)", backgroundColor: "transparent" }}
+              <div
+                key={item.num}
+                className="relative rounded-[16px] cursor-pointer overflow-hidden transition-colors h-[224px]"
+                style={{ border: "1px solid var(--color-element-subtle)", backgroundColor: "transparent" }}
                 onMouseEnter={e => { e.currentTarget.style.backgroundColor = "var(--color-element-subtle)"; e.currentTarget.style.borderColor = "var(--color-text-secondary)"; }}
                 onMouseLeave={e => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.borderColor = "var(--color-element-subtle)"; }}
-                onClick={() => onComplete(`${item.title}: "${item.front}" — ${item.insideHeading ?? ""} ${item.insideBody}`)}>
-                <div className="p-[12px] h-full flex flex-col gap-[6px]" style={{ fontFamily: "var(--font-family-body)", fontWeight: 400, fontSize: 13, lineHeight: "18px", color: "var(--color-text-primary)" }}>
-                  <p className="shrink-0" style={{ margin: 0 }}><span style={{ fontWeight: 600 }}>Front:</span>{` ${item.front}`}</p>
-                  <p className="flex-1 overflow-hidden" style={{ margin: 0 }}><span style={{ fontWeight: 600 }}>Inside:</span>{` ${item.insideHeading ?? ""} ${item.insideBody}`}</p>
+                onClick={() => onComplete(`${item.title}: "${item.front}" — ${item.insideHeading ?? ""} ${item.insideBody}`)}
+              >
+                <div className="p-[12px] h-full flex flex-col gap-[6px] text-[13px] leading-[18px]" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>
+                  <p className="shrink-0"><span style={{ ...dmSans500 }}>Front:</span>{` ${item.front}`}</p>
+                  <p className="flex-1 overflow-hidden"><span style={{ ...dmSans500 }}>Inside:</span>{` ${item.insideHeading ?? ""} ${item.insideBody}`}</p>
                 </div>
               </div>
             ))}
@@ -287,26 +330,20 @@ export function TemplateOverflowMenu({
       </div>
 
       <div className="px-[8px] w-full">
-        <div className="rounded-[12px] flex items-center px-[12px] py-[8px]" style={{ border: "1px solid var(--color-element-subtle)" }}>
-          <div className="flex flex-1 items-center gap-[4px] min-w-0">
-            <div className="shrink-0 size-[20px] flex items-center justify-center rounded-[4px]" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }}>
-              <Pencil size={14} color="var(--color-text-primary)" strokeWidth={2.5} />
-            </div>
-            <input type="text" value={customInput} onChange={(e) => setCustomInput(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") onComplete(customInput.trim() || "skip"); }} placeholder={inputPlaceholder ?? "Something else"} className="flex-1 bg-transparent outline-none border-none text-[14px] leading-[20px] min-w-0" style={{ ...dmSans400, color: "var(--color-text-primary)" }} />
-          </div>
-          <div className="flex items-center gap-[8px]">
-            <Btn type="button" variant="outline" size="sm" onClick={() => onComplete("skip")}>Skip</Btn>
-            <Btn type="button" variant="default" size="icon-sm" onClick={() => onComplete(customInput.trim() || "skip")}>
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d={SEND_ARROW_PATH} stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" /></svg>
-            </Btn>
-          </div>
-        </div>
+        <OverflowInput
+          value={customInput}
+          onChange={setCustomInput}
+          onKeyDown={(e) => { if (e.key === "Enter") onComplete(customInput.trim() || "skip"); }}
+          onSkip={() => onComplete("skip")}
+          onSend={() => onComplete(customInput.trim() || "skip")}
+          placeholder={inputPlaceholder ?? "Something else"}
+        />
       </div>
     </div>
   );
 }
 
-// ── ActionOverflowMenu (V1 — Ghost Buttons) ──────────────────────────────
+// ── ActionOverflowMenu (V1 — Ghost Buttons) ────────────────────────────────
 
 export function ActionOverflowMenu({
   config, inputPlaceholder, onClose, onGenerate,
@@ -316,7 +353,7 @@ export function ActionOverflowMenu({
   const [customInput, setCustomInput] = useState("");
 
   return (
-    <div className="flex flex-col gap-[4px] items-start pb-[12px] pt-[12px] relative rounded-[12px] w-full" style={{ backgroundColor: "var(--color-bg-main)", boxShadow: "var(--shadow-xs)", border: "1px solid var(--color-element-subtle)" }}>
+    <div className="flex flex-col gap-[4px] items-start py-[12px] relative rounded-[12px] w-full" style={{ backgroundColor: "var(--color-bg-main)", boxShadow: "var(--shadow-xs)", border: "1px solid var(--color-element-subtle)" }}>
       <div className="flex items-center gap-[16px] px-[20px] py-[8px] w-full">
         <div className="flex flex-col gap-[4px] flex-1 min-w-0">
           <p className="leading-[20px] text-[15px]" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{config.title}</p>
@@ -325,7 +362,7 @@ export function ActionOverflowMenu({
         <Btn onClick={onGenerate} className="shrink-0">{config.generateButtonLabel}</Btn>
         <OverflowCloseBtn onClose={onClose} />
       </div>
-      <div className="w-full px-0"><div className="w-full h-[1px]" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }} /></div>
+      <div className="w-full h-[1px]" style={{ backgroundColor: "var(--color-element-subtle)" }} />
       <div className="flex flex-col gap-[8px] px-[20px] py-[8px] w-full">
         <p className="leading-[20px] text-[15px]" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>Or Adjust</p>
         <div className="flex gap-[16px] items-center">
@@ -334,25 +371,21 @@ export function ActionOverflowMenu({
           ))}
         </div>
       </div>
-      <div className="rounded-[12px] mx-[8px] flex items-center px-[12px] py-[8px] w-[calc(100%-16px)]" style={{ outline: "1px solid var(--color-element-subtle)", outlineOffset: "-1px" }}>
-        <div className="flex flex-1 items-center gap-[6px] min-w-0">
-          <div className="shrink-0 size-[20px] flex items-center justify-center rounded-[4px]" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }}>
-            <Pencil size={14} color="var(--color-text-primary)" strokeWidth={2.5} />
-          </div>
-          <input type="text" value={customInput} onChange={(e) => setCustomInput(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && customInput.trim()) onClose(); }} placeholder={inputPlaceholder ?? "Something else"} className="flex-1 bg-transparent outline-none border-none text-[14px] leading-[20px] min-w-0" style={{ ...dmSans400, color: "var(--color-text-primary)" }} />
-        </div>
-        <div className="flex items-center gap-[8px]">
-          <Btn type="button" variant="outline" size="sm" onClick={onClose}>Skip</Btn>
-          <Btn type="button" variant="default" size="icon-sm" onClick={() => { if (customInput.trim()) onClose(); }}>
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d={SEND_ARROW_PATH} stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" /></svg>
-          </Btn>
-        </div>
+      <div className="px-[8px] w-full">
+        <OverflowInput
+          value={customInput}
+          onChange={setCustomInput}
+          onKeyDown={(e) => { if (e.key === "Enter" && customInput.trim()) onClose(); }}
+          onSkip={onClose}
+          onSend={() => { if (customInput.trim()) onClose(); }}
+          placeholder={inputPlaceholder ?? "Something else"}
+        />
       </div>
     </div>
   );
 }
 
-// ── ActionOverflowMenuList (V2 — Numbered List) ───────────────────────────
+// ── ActionOverflowMenuList (V2 — Numbered List) ────────────────────────────
 
 export function ActionOverflowMenuList({
   config, inputPlaceholder, onClose, onGenerate, onComplete,
@@ -388,15 +421,12 @@ export function ActionOverflowMenuList({
               <div
                 key={item.num}
                 className="flex flex-col h-[36px] items-start w-full rounded-[6px] transition-colors cursor-pointer"
-                onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-element-subtle)")}
-                onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")}
+                {...hoverItem}
                 onClick={() => onComplete(item.label)}
               >
                 <div className="flex flex-row items-center size-full">
                   <div className="flex gap-[8px] items-center px-[8px] py-[6px] w-full cursor-pointer">
-                    <div className="flex items-center justify-center rounded-[4px] shrink-0 w-[20px]" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }}>
-                      <p className="leading-[20px] text-[14px] text-center w-full" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{item.num}</p>
-                    </div>
+                    <NumBadge num={item.num} />
                     <p className="flex-1 leading-[20px] text-[14px] truncate min-w-0" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{item.label}</p>
                   </div>
                 </div>
@@ -407,20 +437,14 @@ export function ActionOverflowMenuList({
       </div>
       {/* Input */}
       <div className="px-[8px] w-full">
-        <div className="rounded-[12px] flex items-center px-[12px] py-[8px] w-full" style={{ border: "1px solid var(--color-element-subtle)" }}>
-          <div className="flex flex-1 items-center gap-[4px] min-w-0">
-            <div className="shrink-0 size-[20px] flex items-center justify-center rounded-[4px]" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }}>
-              <Pencil size={14} color="var(--color-text-primary)" strokeWidth={2.5} />
-            </div>
-            <input type="text" value={customInput} onChange={(e) => setCustomInput(e.target.value)} onKeyDown={(e) => { e.stopPropagation(); if (e.key === "Enter" && customInput.trim()) onComplete(customInput.trim()); }} placeholder={inputPlaceholder ?? "Something else"} className="flex-1 bg-transparent outline-none border-none text-[14px] leading-[20px] min-w-0" style={{ ...dmSans400, color: "var(--color-text-primary)" }} />
-          </div>
-          <div className="flex items-center gap-[8px]">
-            <Btn type="button" variant="outline" size="sm" onClick={onClose}>Skip</Btn>
-            <Btn type="button" variant="default" size="icon-sm" onClick={() => { if (customInput.trim()) onComplete(customInput.trim()); }}>
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d={SEND_ARROW_PATH} stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" /></svg>
-            </Btn>
-          </div>
-        </div>
+        <OverflowInput
+          value={customInput}
+          onChange={setCustomInput}
+          onKeyDown={(e) => { e.stopPropagation(); if (e.key === "Enter" && customInput.trim()) onComplete(customInput.trim()); }}
+          onSkip={onClose}
+          onSend={() => { if (customInput.trim()) onComplete(customInput.trim()); }}
+          placeholder={inputPlaceholder ?? "Something else"}
+        />
       </div>
     </div>
   );
