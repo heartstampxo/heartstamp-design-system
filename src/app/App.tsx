@@ -2756,7 +2756,7 @@ function PageIntro() {
       </p>
       <div style={{ display: "flex", gap: "var(--space-2-5)", flexWrap: "wrap" }}>
         <Btn variant="default" onClick={() => goToPage("accordion")}><ArrowRight size={16} style={{ marginRight: "var(--space-1-5)" }} />Browse Components</Btn>
-        <Btn variant="outline" style={{ borderRadius: "999px" }} onClick={() => window.open("https://github.com/mdheartstamp/heartstamp-design-system", "_blank")}><Github size={15} style={{ marginRight: "var(--space-1-5)" }} />GitHub Repo</Btn>
+        <a href="https://github.com/mdheartstamp/heartstamp-design-system" target="_blank" rel="noopener noreferrer"><Btn variant="outline" style={{ borderRadius: "999px" }}><Github size={15} style={{ marginRight: "var(--space-1-5)" }} />GitHub Repo</Btn></a>
       </div>
     </div>
     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(210px,1fr))", gap: "var(--space-3)", marginBottom: "var(--space-9)" }}>
@@ -4304,12 +4304,12 @@ export default function App() {
         <div style={{ flex: 1 }} />
 
         <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)" }}>
-          <Btn variant="outline" size="sm" onClick={() => window.open("https://github.com/mdheartstamp/heartstamp-design-system", "_blank")}>
-            <Github size={14} />GitHub
-          </Btn>
-          <Btn variant="outline" size="sm" onClick={() => window.open("https://ui.shadcn.com", "_blank")}>
-            <ExternalLink size={12} />Shadcn
-          </Btn>
+          <a href="https://github.com/mdheartstamp/heartstamp-design-system" target="_blank" rel="noopener noreferrer">
+            <Btn variant="outline" size="sm"><Github size={14} />GitHub</Btn>
+          </a>
+          <a href="https://ui.shadcn.com" target="_blank" rel="noopener noreferrer">
+            <Btn variant="outline" size="sm"><ExternalLink size={12} />Shadcn</Btn>
+          </a>
           <Btn variant="outline" size="icon" onClick={() => setDark(d => !d)}>
             {dark ? <Sun size={14} /> : <Moon size={14} />}
           </Btn>
