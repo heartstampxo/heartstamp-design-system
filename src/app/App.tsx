@@ -1094,26 +1094,17 @@ function PageSheet() {
         </div>
         <Sheet direction={side} open={open} onOpenChange={setOpen}>
           <SheetContent>
-            <SheetHeader>
+            <SheetHeader className="sr-only">
               <SheetTitle>Edit Profile</SheetTitle>
             </SheetHeader>
-            <div style={{ flex: 1, overflowY: "auto", padding: "var(--space-2) var(--space-6) 0", display: "flex", flexDirection: "column", gap: "var(--space-5)" }}>
-              <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-2)" }}>
-                <Lbl>Your Name</Lbl>
-                <Inp placeholder="Eftakher" />
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-2)" }}>
-                <Lbl>Email Address</Lbl>
-                <Inp placeholder="hello@address.com" type="email" />
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-2)" }}>
-                <Lbl>Phone Number</Lbl>
-                <Inp placeholder="01624995958" type="tel" />
-              </div>
+            <div style={{ flex: 1, overflowY: "auto", padding: "var(--space-6)", display: "flex", flexDirection: "column", gap: "var(--space-5)" }}>
+              <Inp label="Your Name" placeholder="Eftakher" />
+              <Inp label="Email Address" placeholder="hello@address.com" type="email" />
+              <Inp label="Phone Number" placeholder="01624995958" type="tel" />
             </div>
-            <SheetFooter style={{ padding: "var(--space-6)", gap: "var(--space-3)" }}>
-              <Btn style={{ width: "100%" }} onClick={() => setOpen(false)}>Save</Btn>
-              <Btn variant="outline" style={{ width: "100%" }} onClick={() => setOpen(false)}>Close</Btn>
+            <SheetFooter style={{ padding: "var(--space-6)", gap: "var(--space-4)" }}>
+              <Btn size="lg" style={{ width: "100%" }} onClick={() => setOpen(false)}>Save</Btn>
+              <Btn size="lg" variant="outline" style={{ width: "100%" }} onClick={() => setOpen(false)}>Close</Btn>
             </SheetFooter>
           </SheetContent>
         </Sheet>
