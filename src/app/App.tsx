@@ -1095,15 +1095,25 @@ function PageSheet() {
         <Sheet direction={side} open={open} onOpenChange={setOpen}>
           <SheetContent>
             <SheetHeader>
-              <SheetTitle>{side.charAt(0).toUpperCase() + side.slice(1)} Sheet</SheetTitle>
+              <SheetTitle>Edit Profile</SheetTitle>
             </SheetHeader>
-            <div style={{ padding: "0 16px" }}>
-              <p style={{ fontSize: 14, color: "var(--muted-fg)", lineHeight: 1.6 }}>This sheet slides in from the {side}. Use it for navigation drawers, filters, or forms that don't need a full dialog.</p>
-              <div style={{ marginTop: 16 }}><Lbl>Name</Lbl><Inp placeholder="Your name" /></div>
+            <div style={{ flex: 1, overflowY: "auto", padding: "var(--space-2) var(--space-6) 0", display: "flex", flexDirection: "column", gap: "var(--space-5)" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-2)" }}>
+                <Lbl>Your Name</Lbl>
+                <Inp placeholder="Eftakher" />
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-2)" }}>
+                <Lbl>Email Address</Lbl>
+                <Inp placeholder="hello@address.com" type="email" />
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-2)" }}>
+                <Lbl>Phone Number</Lbl>
+                <Inp placeholder="01624995958" type="tel" />
+              </div>
             </div>
-            <SheetFooter>
-              <Btn onClick={() => setOpen(false)}>Save</Btn>
-              <Btn variant="outline" onClick={() => setOpen(false)}>Cancel</Btn>
+            <SheetFooter style={{ padding: "var(--space-6)", gap: "var(--space-3)" }}>
+              <Btn style={{ width: "100%" }} onClick={() => setOpen(false)}>Save</Btn>
+              <Btn variant="outline" style={{ width: "100%" }} onClick={() => setOpen(false)}>Close</Btn>
             </SheetFooter>
           </SheetContent>
         </Sheet>
