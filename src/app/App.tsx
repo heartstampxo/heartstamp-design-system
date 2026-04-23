@@ -3,6 +3,7 @@ import { motion } from "motion/react";
 import { Btn } from "./components/ui/btn";
 import { Stepper as StepperComp, HorizontalSwapStepper, type StepDef } from "./components/ui/stepper";
 import { TopNavDesktop, TopNavMobile } from "./components/ui/hs-nav";
+import { EditorTopNav } from "./components/ui/hs-editor-nav";
 import { Footer } from "./components/ui/hs-footer";
 import { HSLogo, HSEmblem, HSLockup, getSvgString, useIsDark } from "./components/ui/hs-logo";
 import { ProfileNavDesktop, ProfileNavMobile } from "./components/ui/profile-nav";
@@ -1869,6 +1870,38 @@ function PageTopNav() {
       <DocSection title="Props">
         <PropsTable props={[
           { name: "—", type: "—", desc: "TopNavDesktop and TopNavMobile take no props. State is self-contained." },
+        ]} />
+      </DocSection>
+    </DocPage>
+  );
+}
+
+function PageEditorTopNav() {
+  const closedCode =
+`import { EditorTopNav } from "@/components/ui/hs-editor-nav";
+
+<EditorTopNav />`;
+
+  return (
+    <DocPage
+      title="Editor Top Navigation"
+      subtitle="Mobile editor navigation bar with menu, undo/redo controls, preview and prepare actions, and an expandable command row toggled by a chevron tab."
+      sourceSlug="hs-editor-nav"
+    >
+      <DocSection
+        title="Default (collapsed)"
+        desc="Top bar with left-side icon controls and right-side action buttons. Tap the chevron tab to expand the command row."
+      >
+        <Preview title="Editor Top Nav" code={closedCode} height={120}>
+          <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
+            <EditorTopNav />
+          </div>
+        </Preview>
+      </DocSection>
+
+      <DocSection title="Props">
+        <PropsTable props={[
+          { name: "—", type: "—", desc: "EditorTopNav takes no props. Open/close state is self-contained." },
         ]} />
       </DocSection>
     </DocPage>
@@ -4200,6 +4233,7 @@ const PAGES: Record<string, any> = {
   "nav-menu": PageNavMenu,
   stepper: PageStepper,
   "top-nav": PageTopNav,
+  "editor-top-nav": PageEditorTopNav,
   "profile-nav": PageProfileNav,
   footer: PageFooter,
   // Chatbot
