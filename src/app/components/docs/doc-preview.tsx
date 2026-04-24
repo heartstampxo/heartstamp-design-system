@@ -21,6 +21,8 @@ interface PreviewProps {
   fullWidth?: boolean;
   /** Override the preview canvas background (light mode only). Defaults to var(--bg). */
   canvasBg?: string;
+  /** Clip overflowing content (e.g. dropdowns) to the preview boundary */
+  clipContent?: boolean;
 }
 
 /**
@@ -67,7 +69,7 @@ function normalizeImports(code: string | undefined): string {
   return result.join("\n");
 }
 
-export function Preview({ title, code, filename, children, height = 160, fullWidth = false, canvasBg }: PreviewProps) {
+export function Preview({ title, code, filename, children, height = 160, fullWidth = false, canvasBg, clipContent = false }: PreviewProps) {
   const [tab, setTab] = useState("preview");
   const [vp, setVp] = useState("full");
   const [dark, setDark] = useState(false);
@@ -137,7 +139,7 @@ export function Preview({ title, code, filename, children, height = 160, fullWid
             background: dark ? "#09090b" : (canvasBg ?? "var(--bg)"), padding: fullWidth ? 0 : 16, minHeight: height,
             display: "flex", alignItems: "center", justifyContent: "center",
             position: "relative", transition: "background .2s",
-            borderRadius: "0 0 12px 12px", overflow: "visible",
+            borderRadius: "0 0 12px 12px", overflow: clipContent ? "hidden" : "visible",
           }}>
             <div style={{
               maxWidth: vpW, width: "100%", transition: "max-width .3s",

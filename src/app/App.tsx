@@ -4,7 +4,7 @@ import { Btn } from "./components/ui/btn";
 import { Stepper as StepperComp, HorizontalSwapStepper, type StepDef } from "./components/ui/stepper";
 import { TopNavDesktop, TopNavMobile } from "./components/ui/hs-nav";
 import { EditorTopNav, EditorTopNavDesktop } from "./components/ui/hs-editor-nav";
-import { WebsiteNav } from "./components/ui/hs-website-nav";
+import { WebsiteNav, WebsiteNavMobile } from "./components/ui/hs-website-nav";
 import { Footer } from "./components/ui/hs-footer";
 import { HSLogo, HSEmblem, HSLockup, getSvgString, useIsDark } from "./components/ui/hs-logo";
 import { ProfileNavDesktop, ProfileNavMobile } from "./components/ui/profile-nav";
@@ -1965,6 +1965,7 @@ function PageEditorTopNav() {
   );
 }
 
+
 function PageWebsiteNav() {
   const [solidBg, setSolidBg] = useState(false);
   const bgVariant = solidBg ? "solid" : "default";
@@ -1976,7 +1977,7 @@ function PageWebsiteNav() {
       : `import { WebsiteNav } from "@/components/ui/hs-website-nav";\n\n<WebsiteNav${bgProp} />`;
   };
 
-  const BgToggle = () => (
+  const bgToggle = (
     <Swt
       size="sm"
       checked={solidBg}
@@ -1994,7 +1995,7 @@ function PageWebsiteNav() {
       <DocSection
         title="Logged Out"
         desc="Default state shown to unauthenticated visitors. Includes the logo, search, Invitation button, cart, and auth actions."
-        action={<BgToggle />}
+        action={bgToggle}
       >
         <Preview title="Website Nav · logged out" code={buildCode(false)} height={200} fullWidth canvasBg="var(--color-bg-editor)">
           <div style={{ width: "100%", alignSelf: "stretch" }}>
@@ -2006,16 +2007,64 @@ function PageWebsiteNav() {
       <DocSection
         title="Logged In"
         desc="Authenticated state. Replaces Log in / Sign up with Heart Credits balance, Favorites icon, and the user avatar."
-        action={<BgToggle />}
+        action={bgToggle}
       >
-        <Preview title="Website Nav · logged in" code={buildCode(true)} height={200} fullWidth canvasBg="var(--color-bg-editor)">
+        <Preview title="Website Nav · logged in" code={buildCode(true)} height={480} fullWidth canvasBg="var(--color-bg-editor)">
           <div style={{ width: "100%", alignSelf: "stretch" }}>
             <WebsiteNav bgVariant={bgVariant} isLoggedIn credits={50} cartCount={2} avatarSrc="https://i.pravatar.cc/80?img=68" avatarInitials="JS" />
           </div>
         </Preview>
       </DocSection>
 
-      <DocSection title="Props">
+      <DocSection
+        title="Mobile · Logged Out"
+        desc="Mobile navigation for unauthenticated visitors. Shows the category links, Invitation CTA, and Log in / Sign up actions. Tap the search icon to switch to the search panel."
+      >
+        <Preview
+          title="Website Nav Mobile · logged out"
+          code={`import { WebsiteNavMobile } from "@/components/ui/hs-website-nav";\n\n<WebsiteNavMobile cartCount={2} />`}
+          height={560}
+          canvasBg="var(--color-bg-editor)"
+        >
+          <div style={{ alignSelf: "flex-start", width: 393 }}>
+            <WebsiteNavMobile cartCount={2} />
+          </div>
+        </Preview>
+      </DocSection>
+
+      <DocSection
+        title="Mobile · Logged In"
+        desc="Authenticated mobile navigation. Adds a user card with avatar, name, and Heart Credits balance at the top, and replaces auth actions with Favorite Cards and Sign out."
+      >
+        <Preview
+          title="Website Nav Mobile · logged in"
+          code={`import { WebsiteNavMobile } from "@/components/ui/hs-website-nav";\n\n<WebsiteNavMobile isLoggedIn credits={50} cartCount={2} avatarSrc="https://i.pravatar.cc/80?img=68" avatarInitials="JS" userName="Jane Smith" />`}
+          height={640}
+          canvasBg="var(--color-bg-editor)"
+        >
+          <div style={{ alignSelf: "flex-start", width: 393 }}>
+            <WebsiteNavMobile isLoggedIn credits={50} cartCount={2} avatarSrc="https://i.pravatar.cc/80?img=68" avatarInitials="JS" userName="Jane Smith" />
+          </div>
+        </Preview>
+      </DocSection>
+
+      <DocSection
+        title="Mobile · Search"
+        desc="Search panel — replaces the nav when the user taps the search icon. Shows recent and trending search chips. Tap × to return to the nav panel."
+      >
+        <Preview
+          title="Website Nav Mobile · search"
+          code={`import { WebsiteNavMobile } from "@/components/ui/hs-website-nav";\n\n<WebsiteNavMobile initialView="search" />`}
+          height={360}
+          canvasBg="var(--color-bg-editor)"
+        >
+          <div style={{ alignSelf: "flex-start", width: 393 }}>
+            <WebsiteNavMobile initialView="search" />
+          </div>
+        </Preview>
+      </DocSection>
+
+      <DocSection title="Props · WebsiteNav">
         <PropsTable props={[
           { name: "bgVariant",       type: '"default" | "solid"', def: '"default"', desc: 'Background style. Use "default" (frosted glass, backdrop-blur) on the homepage where the nav overlays hero content. Use "solid" (opaque var(--color-bg-main)) on all inner pages.' },
           { name: "isLoggedIn",      type: "boolean", def: "false",  desc: "Toggles between logged-out (Log in / Sign up) and logged-in (Credits, Favorites, Avatar) right-side actions." },
@@ -2023,6 +2072,18 @@ function PageWebsiteNav() {
           { name: "cartCount",       type: "number",  def: "0",      desc: "Number of items in the cart. Shows a red numeric badge on the cart icon when greater than 0. Caps at 99+." },
           { name: "avatarSrc",       type: "string",  def: "—",      desc: "Image URL for the avatar. When provided shows the photo (Default style). Falls back to avatarInitials when omitted or image fails to load." },
           { name: "avatarInitials",  type: "string",  def: '"JS"',   desc: "Fallback initials shown in the avatar when no avatarSrc is provided. Only visible when isLoggedIn is true." },
+        ]} />
+      </DocSection>
+
+      <DocSection title="Props · WebsiteNavMobile">
+        <PropsTable props={[
+          { name: "isLoggedIn",      type: "boolean", def: "false",  desc: "Toggles between logged-out (Log in / Sign up) and logged-in (user card, Favorite Cards, Sign out) states." },
+          { name: "credits",         type: "number",  def: "50",     desc: "Heart Credits balance shown in the user card. Only visible when isLoggedIn is true." },
+          { name: "cartCount",       type: "number",  def: "0",      desc: "Number of items in the cart. Shows a red numeric badge on the cart icon when greater than 0. Caps at 99+." },
+          { name: "avatarSrc",       type: "string",  def: "—",      desc: "Image URL for the avatar shown in the user card. Falls back to avatarInitials when omitted or on error." },
+          { name: "avatarInitials",  type: "string",  def: '"JS"',   desc: "Fallback initials for the avatar. Only visible when isLoggedIn is true." },
+          { name: "userName",        type: "string",  def: '"Jane Smith"', desc: "Display name shown in the user card. Only visible when isLoggedIn is true." },
+          { name: "initialView",     type: '"nav" | "search"', def: '"nav"', desc: 'Pre-open a specific view on mount. Useful for docs demos or deep-linking into the search panel.' },
         ]} />
       </DocSection>
     </DocPage>

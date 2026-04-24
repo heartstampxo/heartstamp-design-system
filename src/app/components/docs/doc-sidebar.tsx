@@ -116,7 +116,7 @@ export function Sidebar({ active, onSelect, onClose }: SidebarProps) {
 
       {/* footer */}
       <div style={{ padding: "var(--space-2-5) var(--space-3-5)", borderTop: "1px solid var(--border)", fontSize: "var(--font-size-label-12)", color: "var(--muted-fg)" }}>
-        HeartStamp DS · v1.8.0
+        HeartStamp DS · v1.9.5
       </div>
     </nav>
   );
