@@ -1896,7 +1896,7 @@ function PageEditorTopNav() {
   const desktopCartCode =
 `import { EditorTopNavDesktop } from "@/components/ui/hs-editor-nav";
 
-<EditorTopNavDesktop cartCount={3} zoom={70} />`;
+<EditorTopNavDesktop cartCount={3} zoom={70} credits={50} />`;
 
   return (
     <DocPage
@@ -1943,7 +1943,7 @@ function PageEditorTopNav() {
       >
         <Preview title="Editor Top Nav · desktop · cart" code={desktopCartCode} height={150} fullWidth>
           <div style={{ width: "100%", background: "var(--color-bg-editor)", alignSelf: "stretch" }}>
-            <EditorTopNavDesktop cartCount={3} zoom={70} />
+            <EditorTopNavDesktop cartCount={3} zoom={70} credits={50} />
           </div>
         </Preview>
       </DocSection>
@@ -1956,8 +1956,9 @@ function PageEditorTopNav() {
 
       <DocSection title="EditorTopNavDesktop Props">
         <PropsTable props={[
-          { name: "cartCount", type: "number", def: "0", desc: "Number of items in the cart. Displays a numeric badge on the cart icon when greater than 0. Caps display at 99+." },
+          { name: "cartCount", type: "number", def: "0",  desc: "Number of items in the cart. Displays a numeric badge on the cart icon when greater than 0. Caps display at 99+." },
           { name: "zoom",      type: "number", def: "70", desc: "Current zoom level shown in the zoom pill as a percentage (e.g. 70 renders as \"70%\")." },
+          { name: "credits",   type: "number", def: "50", desc: "Heart Credits balance shown in the secondary-ghost credits button between the undo/redo controls and the more-options menu." },
         ]} />
       </DocSection>
     </DocPage>
@@ -1971,7 +1972,7 @@ function PageWebsiteNav() {
   const buildCode = (auth: boolean) => {
     const bgProp = solidBg ? ` bgVariant="solid"` : "";
     return auth
-      ? `import { WebsiteNav } from "@/components/ui/hs-website-nav";\n\n<WebsiteNav${bgProp} isLoggedIn credits={50} cartCount={2} avatarInitials="JS" />`
+      ? `import { WebsiteNav } from "@/components/ui/hs-website-nav";\n\n<WebsiteNav${bgProp} isLoggedIn credits={50} cartCount={2} avatarSrc="https://i.pravatar.cc/80?img=68" avatarInitials="JS" />`
       : `import { WebsiteNav } from "@/components/ui/hs-website-nav";\n\n<WebsiteNav${bgProp} />`;
   };
 
@@ -2009,7 +2010,7 @@ function PageWebsiteNav() {
       >
         <Preview title="Website Nav · logged in" code={buildCode(true)} height={200} fullWidth canvasBg="var(--color-bg-editor)">
           <div style={{ width: "100%", alignSelf: "stretch" }}>
-            <WebsiteNav bgVariant={bgVariant} isLoggedIn credits={50} cartCount={2} avatarInitials="JS" />
+            <WebsiteNav bgVariant={bgVariant} isLoggedIn credits={50} cartCount={2} avatarSrc="https://i.pravatar.cc/80?img=68" avatarInitials="JS" />
           </div>
         </Preview>
       </DocSection>
@@ -2020,7 +2021,8 @@ function PageWebsiteNav() {
           { name: "isLoggedIn",      type: "boolean", def: "false",  desc: "Toggles between logged-out (Log in / Sign up) and logged-in (Credits, Favorites, Avatar) right-side actions." },
           { name: "credits",         type: "number",  def: "50",     desc: "Heart Credits balance shown in the credits button. Only visible when isLoggedIn is true." },
           { name: "cartCount",       type: "number",  def: "0",      desc: "Number of items in the cart. Shows a red numeric badge on the cart icon when greater than 0. Caps at 99+." },
-          { name: "avatarInitials",  type: "string",  def: '"JS"',   desc: "Two-letter initials rendered inside the avatar circle. Only visible when isLoggedIn is true." },
+          { name: "avatarSrc",       type: "string",  def: "—",      desc: "Image URL for the avatar. When provided shows the photo (Default style). Falls back to avatarInitials when omitted or image fails to load." },
+          { name: "avatarInitials",  type: "string",  def: '"JS"',   desc: "Fallback initials shown in the avatar when no avatarSrc is provided. Only visible when isLoggedIn is true." },
         ]} />
       </DocSection>
     </DocPage>

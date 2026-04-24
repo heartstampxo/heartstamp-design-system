@@ -8,7 +8,7 @@ import {
 import { Btn } from "./btn";
 import { Bdg } from "./hs-bdg";
 import { Sep } from "./hs-sep";
-import { HSLockup } from "./hs-logo";
+import { HSLockup, HSEmblem } from "./hs-logo";
 
 /* ── Constants ───────────────────────────────────────────────── */
 
@@ -51,6 +51,7 @@ export interface EditorTopNavProps {
 export interface EditorTopNavDesktopProps {
   cartCount?: number;
   zoom?: number;
+  credits?: number;
 }
 
 /* ── Mobile ──────────────────────────────────────────────────── */
@@ -207,7 +208,7 @@ export function EditorTopNav({ cartCount = 0 }: EditorTopNavProps) {
 
 /* ── Desktop ─────────────────────────────────────────────────── */
 
-export function EditorTopNavDesktop({ cartCount = 0, zoom = 70 }: EditorTopNavDesktopProps) {
+export function EditorTopNavDesktop({ cartCount = 0, zoom = 70, credits = 50 }: EditorTopNavDesktopProps) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -236,7 +237,12 @@ export function EditorTopNavDesktop({ cartCount = 0, zoom = 70 }: EditorTopNavDe
       <HSLockup height={24} />
 
       {/* Right: controls */}
-      <div style={{ display: "flex", alignItems: "center", gap: "var(--space-1-5)" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "var(--space-4)" }}>
+
+        <Btn variant="secondary-ghost" size="sm">
+          <HSEmblem height={16} />
+          {credits} Heart Credits
+        </Btn>
 
         {/* Zoom pill */}
         <div style={{

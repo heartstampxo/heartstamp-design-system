@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Search, FileHeart, Heart, ShoppingCart } from "lucide-react";
 import { Btn } from "./btn";
 import { Sep } from "./hs-sep";
 import { HSLockup, HSEmblem } from "./hs-logo";
 import { Inp } from "./hs-inp";
+import { Avt } from "./hs-avt";
+import { ProfileNavDesktop } from "./profile-nav";
 
 /* ─────────────────────────────────────────────────────────────
    hs-website-nav — HeartStamp website top navigation
@@ -34,6 +36,7 @@ export interface WebsiteNavProps {
   isLoggedIn?:      boolean;
   credits?:         number;
   cartCount?:       number;
+  avatarSrc?:       string;
   avatarInitials?:  string;
 }
 
@@ -53,6 +56,7 @@ export function WebsiteNav({
   isLoggedIn     = false,
   credits        = 50,
   cartCount      = 0,
+  avatarSrc,
   avatarInitials = "JS",
 }: WebsiteNavProps) {
   return (
@@ -105,7 +109,7 @@ export function WebsiteNav({
 
                 <Sep orientation="vertical" style={{ height: 20 }} />
 
-                <NavAvatar initials={avatarInitials} />
+                <NavAvatar src={avatarSrc} fallback={avatarInitials} />
               </div>
             </>
           ) : (
@@ -147,25 +151,41 @@ export function WebsiteNav({
   );
 }
 
-/* ── Avatar ─────────────────────────────────────────────────── */
-function NavAvatar({ initials }: { initials: string }) {
+/* ── Avatar with ProfileNav dropdown ───────────────────────── */
+function NavAvatar({ src, fallback }: { src?: string; fallback: string }) {
+  const [open, setOpen]     = useState(false);
+  const [theme, setTheme]   = useState<"light" | "dark" | "system">("system");
+  const ref                 = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [open]);
+
   return (
-    <div
-      role="button"
-      aria-label="Account menu"
-      tabIndex={0}
-      style={{
-        marginLeft: 4,
-        width: 36, height: 36, borderRadius: "50%",
-        background: "var(--color-element-subtle)",
-        display: "flex", alignItems: "center", justifyContent: "center",
-        fontSize: "var(--font-size-label-12)" as React.CSSProperties["fontSize"],
-        fontWeight: "var(--font-weight-medium)" as React.CSSProperties["fontWeight"],
-        color: "var(--color-text-primary)",
-        flexShrink: 0, cursor: "pointer", userSelect: "none",
-      }}
-    >
-      {initials}
+    <div ref={ref} style={{ position: "relative", marginLeft: 4, flexShrink: 0 }}>
+      <div
+        role="button"
+        aria-label="Account menu"
+        aria-expanded={open}
+        aria-haspopup="menu"
+        tabIndex={0}
+        onClick={() => setOpen(o => !o)}
+        onKeyDown={e => e.key === "Enter" && setOpen(o => !o)}
+        style={{ cursor: "pointer", display: "flex", borderRadius: "50%", outline: "none" }}
+      >
+        <Avt size={36} src={src} fallback={fallback} />
+      </div>
+
+      {open && (
+        <div style={{ position: "absolute", top: "calc(100% + 8px)", right: 0, zIndex: 100 }}>
+          <ProfileNavDesktop theme={theme} setTheme={setTheme} />
+        </div>
+      )}
     </div>
   );
 }
