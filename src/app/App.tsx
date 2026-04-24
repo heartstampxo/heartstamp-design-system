@@ -3,7 +3,7 @@ import { motion } from "motion/react";
 import { Btn } from "./components/ui/btn";
 import { Stepper as StepperComp, HorizontalSwapStepper, type StepDef } from "./components/ui/stepper";
 import { TopNavDesktop, TopNavMobile } from "./components/ui/hs-nav";
-import { EditorTopNav } from "./components/ui/hs-editor-nav";
+import { EditorTopNav, EditorTopNavDesktop } from "./components/ui/hs-editor-nav";
 import { Footer } from "./components/ui/hs-footer";
 import { HSLogo, HSEmblem, HSLockup, getSvgString, useIsDark } from "./components/ui/hs-logo";
 import { ProfileNavDesktop, ProfileNavMobile } from "./components/ui/profile-nav";
@@ -1877,31 +1877,80 @@ function PageTopNav() {
 }
 
 function PageEditorTopNav() {
-  const closedCode =
+  const basicCode =
 `import { EditorTopNav } from "@/components/ui/hs-editor-nav";
 
 <EditorTopNav />`;
 
+  const cartCode =
+`import { EditorTopNav } from "@/components/ui/hs-editor-nav";
+
+<EditorTopNav cartCount={3} />`;
+
+  const desktopCode =
+`import { EditorTopNavDesktop } from "@/components/ui/hs-editor-nav";
+
+<EditorTopNavDesktop />`;
+
+  const desktopCartCode =
+`import { EditorTopNavDesktop } from "@/components/ui/hs-editor-nav";
+
+<EditorTopNavDesktop cartCount={3} zoom={70} />`;
+
   return (
     <DocPage
       title="Editor Top Navigation"
-      subtitle="Mobile editor navigation bar with menu, undo/redo controls, preview and prepare actions, and an expandable command row toggled by a chevron tab."
+      subtitle="Editor navigation bars for mobile and desktop — with undo/redo, zoom control, preview, prepare-to-cart, and an expandable command menu."
       sourceSlug="hs-editor-nav"
     >
       <DocSection
-        title="Default (collapsed)"
+        title="Mobile — Default"
         desc="Top bar with left-side icon controls and right-side action buttons. Tap the chevron tab to expand the command row."
       >
-        <Preview title="Editor Top Nav" code={closedCode} height={120}>
-          <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
+        <Preview title="Editor Top Nav · mobile" code={basicCode} height={280} fullWidth>
+          <div style={{ width: "100%", background: "var(--color-bg-editor)", display: "flex", justifyContent: "center", alignItems: "center", alignSelf: "stretch", padding: "0" }}>
             <EditorTopNav />
+          </div>
+        </Preview>
+      </DocSection>
+
+      <DocSection
+        title="Mobile — Cart counter"
+        desc="Pass cartCount to show a numeric badge on the cart icon. Caps at 99+."
+      >
+        <Preview title="Editor Top Nav · mobile · cart" code={cartCode} height={280} fullWidth>
+          <div style={{ width: "100%", background: "var(--color-bg-editor)", display: "flex", justifyContent: "center", alignItems: "center", alignSelf: "stretch", padding: "0" }}>
+            <EditorTopNav cartCount={3} />
+          </div>
+        </Preview>
+      </DocSection>
+
+      <DocSection
+        title="Desktop — Default"
+        desc="Full-width nav with HeartStamp logo, zoom control, undo/redo, a more-options dropdown, preview, prepare-to-cart, and cart. Click the ellipsis icon to open the command menu."
+      >
+        <Preview title="Editor Top Nav · desktop" code={desktopCode} height={120} fullWidth>
+          <div style={{ width: "100%", background: "var(--color-bg-editor)", alignSelf: "stretch" }}>
+            <EditorTopNavDesktop />
+          </div>
+        </Preview>
+      </DocSection>
+
+      <DocSection
+        title="Desktop — Cart counter"
+        desc="Same desktop bar with an active cart badge and a custom zoom level."
+      >
+        <Preview title="Editor Top Nav · desktop · cart" code={desktopCartCode} height={120} fullWidth>
+          <div style={{ width: "100%", background: "var(--color-bg-editor)", alignSelf: "stretch" }}>
+            <EditorTopNavDesktop cartCount={3} zoom={70} />
           </div>
         </Preview>
       </DocSection>
 
       <DocSection title="Props">
         <PropsTable props={[
-          { name: "—", type: "—", desc: "EditorTopNav takes no props. Open/close state is self-contained." },
+          { name: "cartCount", type: "number", desc: "Items in cart. Shows a primary badge on the cart icon when > 0. Defaults to 0 (hidden)." },
+          { name: "zoom", type: "number", desc: "Desktop only. Current zoom percentage shown in the zoom pill. Defaults to 70." },
         ]} />
       </DocSection>
     </DocPage>
