@@ -5,6 +5,7 @@ import { Stepper as StepperComp, HorizontalSwapStepper, type StepDef } from "./c
 import { TopNavDesktop, TopNavMobile } from "./components/ui/hs-nav";
 import { EditorTopNav, EditorTopNavDesktop } from "./components/ui/hs-editor-nav";
 import { WebsiteNav, WebsiteNavMobile } from "./components/ui/hs-website-nav";
+import { StyleSidebar } from "./components/ui/hs-style-sidebar";
 import { Footer } from "./components/ui/hs-footer";
 import { HSLogo, HSEmblem, HSLockup, getSvgString, useIsDark } from "./components/ui/hs-logo";
 import { ProfileNavDesktop, ProfileNavMobile } from "./components/ui/profile-nav";
@@ -1132,6 +1133,47 @@ function PageSheet() {
         { name: "dismissible", type: "boolean", def: "true", desc: "Allow dragging to dismiss the sheet." },
       ]} />
     </DocSection>
+  </DocPage>;
+}
+
+function PageStyleSidebar() {
+  const [styleSidebarOpen, setStyleSidebarOpen] = useState(false);
+  const [selectedStyle, setSelectedStyle] = useState<string | null>(null);
+
+  return <DocPage title="Style Sidebar" subtitle="A toolbar + slide-in panel used in editor interfaces to browse and apply art styles. Combines a vertical icon toolbar with an animated Sheet-like panel." sourceSlug="style-sidebar">
+
+    <DocSection title="Default">
+      <Preview title="Style Sidebar" height={820} fullWidth
+        code={`import { StyleSidebar } from "@heartstamp/design-system";\n\nfunction Example() {\n  const [open, setOpen] = useState(false);\n  const [selected, setSelected] = useState(null);\n\n  return (\n    <div style={{ height: 820 }}>\n      <StyleSidebar\n        open={open}\n        onOpenChange={setOpen}\n        selected={selected}\n        onSelect={setSelected}\n        onApply={(id) => {\n          setOpen(false);\n        }}\n      />\n    </div>\n  );\n}`}
+      >
+        <div style={{ width: "100%", height: 820, background: "var(--color-bg-editor)" }}>
+          <StyleSidebar
+            open={styleSidebarOpen}
+            onOpenChange={setStyleSidebarOpen}
+            selected={selectedStyle}
+            onSelect={setSelectedStyle}
+            onApply={(id) => {
+              setSelectedStyle(null);
+              setStyleSidebarOpen(false);
+            }}
+          />
+        </div>
+      </Preview>
+    </DocSection>
+
+    <DocSection title="Props">
+      <PropsTable props={[
+        { name: "open", type: "boolean", desc: "Controlled open state of the style panel." },
+        { name: "defaultOpen", type: "boolean", def: "false", desc: "Uncontrolled: panel starts open." },
+        { name: "onOpenChange", type: "(open: boolean) => void", desc: "Callback when panel open state changes." },
+        { name: "recommended", type: "StyleItem[]", desc: "Styles shown in the Recommended section. Defaults to built-in sample set." },
+        { name: "styles", type: "StyleItem[]", desc: "Styles shown in the tabbed browse section." },
+        { name: "selected", type: "string | null", desc: "Controlled selected style id." },
+        { name: "onSelect", type: "(id: string | null) => void", desc: "Fired when a style card is clicked. Pass null to deselect." },
+        { name: "onApply", type: "(id: string) => void", desc: "Fired when user clicks Apply Style." },
+      ]} />
+    </DocSection>
+
   </DocPage>;
 }
 
@@ -4397,6 +4439,7 @@ const PAGES: Record<string, any> = {
   "alert-dialog": PageAlertDialog,
   dialog: PageDialog,
   sheet: PageSheet,
+  "style-sidebar": PageStyleSidebar,
   tooltip: PageTooltip,
   popover: PagePopover,
   dropdown: PageDropdown,

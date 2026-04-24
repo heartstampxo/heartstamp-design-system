@@ -5,9 +5,10 @@ import React from "react";
 interface ScrollBoxProps {
   children: React.ReactNode;
   height?: number | string;
+  style?: React.CSSProperties;
 }
 
-export function ScrollBox({ children, height = 160 }: ScrollBoxProps) {
+export function ScrollBox({ children, height = 160, style }: ScrollBoxProps) {
   return (
     <div
       style={{
@@ -18,6 +19,7 @@ export function ScrollBox({ children, height = 160 }: ScrollBoxProps) {
         padding: "var(--space-3)",
         scrollbarWidth: "thin",
         scrollbarColor: "var(--border) transparent",
+        ...style,
       } as React.CSSProperties}
     >
       {children}

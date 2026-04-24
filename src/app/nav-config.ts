@@ -72,6 +72,7 @@ export const NAV = [
       { title: "Hover Card",      id: "hover-card",   group: "Overlays & Popups" },
       { title: "Popover",         id: "popover",      group: "Overlays & Popups" },
       { title: "Sheet",           id: "sheet",        group: "Overlays & Popups" },
+      { title: "Style Sidebar",   id: "style-sidebar", group: "Overlays & Popups", label: "new" },
       { title: "Tooltip",         id: "tooltip",      group: "Overlays & Popups" },
       /* ── Feedback & Status ──────────────────────────────── */
       { title: "Alert",           id: "alert",        group: "Feedback & Status" },
