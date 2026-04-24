@@ -15,7 +15,7 @@ import { cn } from "./utils";
 /* ── Text colour per variant (inline style — see note above) ─ */
 const COLOR_MAP: Record<string, string> = {
   default:          "var(--color-text-on-primary)",
-  secondary:        "var(--color-text-on-primary)",
+  secondary:        "var(--color-text-on-secondary)",
   outline:          "var(--color-text-primary)",
   ghost:            "var(--color-brand-primary)",
   "secondary-ghost":"var(--color-brand-secondary)",
