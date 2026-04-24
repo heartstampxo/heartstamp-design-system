@@ -19,6 +19,8 @@ interface PreviewProps {
   height?: number;
   /** Remove all padding so content stretches edge-to-edge inside the preview */
   fullWidth?: boolean;
+  /** Override the preview canvas background (light mode only). Defaults to var(--bg). */
+  canvasBg?: string;
 }
 
 /**
@@ -65,7 +67,7 @@ function normalizeImports(code: string | undefined): string {
   return result.join("\n");
 }
 
-export function Preview({ title, code, filename, children, height = 160, fullWidth = false }: PreviewProps) {
+export function Preview({ title, code, filename, children, height = 160, fullWidth = false, canvasBg }: PreviewProps) {
   const [tab, setTab] = useState("preview");
   const [vp, setVp] = useState("full");
   const [dark, setDark] = useState(false);
@@ -132,7 +134,7 @@ export function Preview({ title, code, filename, children, height = 160, fullWid
         ? (
           <div style={{
             ...(dark ? PREVIEW_DARK_VARS : {}) as React.CSSProperties,
-            background: dark ? "#09090b" : "var(--bg)", padding: fullWidth ? 0 : 16, minHeight: height,
+            background: dark ? "#09090b" : (canvasBg ?? "var(--bg)"), padding: fullWidth ? 0 : 16, minHeight: height,
             display: "flex", alignItems: "center", justifyContent: "center",
             position: "relative", transition: "background .2s",
             borderRadius: "0 0 12px 12px", overflow: "visible",

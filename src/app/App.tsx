@@ -4,6 +4,7 @@ import { Btn } from "./components/ui/btn";
 import { Stepper as StepperComp, HorizontalSwapStepper, type StepDef } from "./components/ui/stepper";
 import { TopNavDesktop, TopNavMobile } from "./components/ui/hs-nav";
 import { EditorTopNav, EditorTopNavDesktop } from "./components/ui/hs-editor-nav";
+import { WebsiteNav } from "./components/ui/hs-website-nav";
 import { Footer } from "./components/ui/hs-footer";
 import { HSLogo, HSEmblem, HSLockup, getSvgString, useIsDark } from "./components/ui/hs-logo";
 import { ProfileNavDesktop, ProfileNavMobile } from "./components/ui/profile-nav";
@@ -1929,7 +1930,7 @@ function PageEditorTopNav() {
         title="Desktop — Default"
         desc="Full-width nav with HeartStamp logo, zoom control, undo/redo, a more-options dropdown, preview, prepare-to-cart, and cart. Click the ellipsis icon to open the command menu."
       >
-        <Preview title="Editor Top Nav · desktop" code={desktopCode} height={120} fullWidth>
+        <Preview title="Editor Top Nav · desktop" code={desktopCode} height={150} fullWidth>
           <div style={{ width: "100%", background: "var(--color-bg-editor)", alignSelf: "stretch" }}>
             <EditorTopNavDesktop />
           </div>
@@ -1940,17 +1941,86 @@ function PageEditorTopNav() {
         title="Desktop — Cart counter"
         desc="Same desktop bar with an active cart badge and a custom zoom level."
       >
-        <Preview title="Editor Top Nav · desktop · cart" code={desktopCartCode} height={120} fullWidth>
+        <Preview title="Editor Top Nav · desktop · cart" code={desktopCartCode} height={150} fullWidth>
           <div style={{ width: "100%", background: "var(--color-bg-editor)", alignSelf: "stretch" }}>
             <EditorTopNavDesktop cartCount={3} zoom={70} />
           </div>
         </Preview>
       </DocSection>
 
+      <DocSection title="EditorTopNav Props">
+        <PropsTable props={[
+          { name: "cartCount", type: "number", def: "0", desc: "Number of items in the cart. Displays a numeric badge on the cart icon when greater than 0. Caps display at 99+." },
+        ]} />
+      </DocSection>
+
+      <DocSection title="EditorTopNavDesktop Props">
+        <PropsTable props={[
+          { name: "cartCount", type: "number", def: "0", desc: "Number of items in the cart. Displays a numeric badge on the cart icon when greater than 0. Caps display at 99+." },
+          { name: "zoom",      type: "number", def: "70", desc: "Current zoom level shown in the zoom pill as a percentage (e.g. 70 renders as \"70%\")." },
+        ]} />
+      </DocSection>
+    </DocPage>
+  );
+}
+
+function PageWebsiteNav() {
+  const [solidBg, setSolidBg] = useState(false);
+  const bgVariant = solidBg ? "solid" : "default";
+
+  const buildCode = (auth: boolean) => {
+    const bgProp = solidBg ? ` bgVariant="solid"` : "";
+    return auth
+      ? `import { WebsiteNav } from "@/components/ui/hs-website-nav";\n\n<WebsiteNav${bgProp} isLoggedIn credits={50} cartCount={2} avatarInitials="JS" />`
+      : `import { WebsiteNav } from "@/components/ui/hs-website-nav";\n\n<WebsiteNav${bgProp} />`;
+  };
+
+  const BgToggle = () => (
+    <Swt
+      size="sm"
+      checked={solidBg}
+      onChange={setSolidBg}
+      label={solidBg ? "Solid background" : "Frosted background"}
+    />
+  );
+
+  return (
+    <DocPage
+      title="Website Navigation"
+      subtitle={`Top navigation bar for the HeartStamp website. Adapts between a logged-out variant with Log in / Sign up actions and a logged-in variant with credits, favorites, and an avatar. Use the frosted background (bgVariant="default") on the homepage where the nav overlays hero content, and the solid background (bgVariant="solid") on all inner pages.`}
+      sourceSlug="hs-website-nav"
+    >
+      <DocSection
+        title="Logged Out"
+        desc="Default state shown to unauthenticated visitors. Includes the logo, search, Invitation button, cart, and auth actions."
+        action={<BgToggle />}
+      >
+        <Preview title="Website Nav · logged out" code={buildCode(false)} height={200} fullWidth canvasBg="var(--color-bg-editor)">
+          <div style={{ width: "100%", alignSelf: "stretch" }}>
+            <WebsiteNav bgVariant={bgVariant} />
+          </div>
+        </Preview>
+      </DocSection>
+
+      <DocSection
+        title="Logged In"
+        desc="Authenticated state. Replaces Log in / Sign up with Heart Credits balance, Favorites icon, and the user avatar."
+        action={<BgToggle />}
+      >
+        <Preview title="Website Nav · logged in" code={buildCode(true)} height={200} fullWidth canvasBg="var(--color-bg-editor)">
+          <div style={{ width: "100%", alignSelf: "stretch" }}>
+            <WebsiteNav bgVariant={bgVariant} isLoggedIn credits={50} cartCount={2} avatarInitials="JS" />
+          </div>
+        </Preview>
+      </DocSection>
+
       <DocSection title="Props">
         <PropsTable props={[
-          { name: "cartCount", type: "number", desc: "Items in cart. Shows a primary badge on the cart icon when > 0. Defaults to 0 (hidden)." },
-          { name: "zoom", type: "number", desc: "Desktop only. Current zoom percentage shown in the zoom pill. Defaults to 70." },
+          { name: "bgVariant",       type: '"default" | "solid"', def: '"default"', desc: 'Background style. Use "default" (frosted glass, backdrop-blur) on the homepage where the nav overlays hero content. Use "solid" (opaque var(--color-bg-main)) on all inner pages.' },
+          { name: "isLoggedIn",      type: "boolean", def: "false",  desc: "Toggles between logged-out (Log in / Sign up) and logged-in (Credits, Favorites, Avatar) right-side actions." },
+          { name: "credits",         type: "number",  def: "50",     desc: "Heart Credits balance shown in the credits button. Only visible when isLoggedIn is true." },
+          { name: "cartCount",       type: "number",  def: "0",      desc: "Number of items in the cart. Shows a red numeric badge on the cart icon when greater than 0. Caps at 99+." },
+          { name: "avatarInitials",  type: "string",  def: '"JS"',   desc: "Two-letter initials rendered inside the avatar circle. Only visible when isLoggedIn is true." },
         ]} />
       </DocSection>
     </DocPage>
@@ -4283,6 +4353,7 @@ const PAGES: Record<string, any> = {
   stepper: PageStepper,
   "top-nav": PageTopNav,
   "editor-top-nav": PageEditorTopNav,
+  "website-nav": PageWebsiteNav,
   "profile-nav": PageProfileNav,
   footer: PageFooter,
   // Chatbot
@@ -4434,7 +4505,7 @@ export default function App() {
 
         {/* MAIN */}
         <main style={{ flex: 1, overflowY: "auto", padding: "28px 24px", transition: "background 0.15s ease, color 0.15s ease", ...mainStyle }}>
-          <div style={{ maxWidth: page === "footer" ? 1066 : 820, margin: "0 auto" }}>
+          <div style={{ maxWidth: 1140, margin: "0 auto" }}>
             <PageComp id={page} />
           </div>
         </main>

@@ -47,7 +47,8 @@ export const NAV = [
       { title: "Pagination",      id: "pagination",   group: "Navigation" },
       { title: "Profile Nav",     id: "profile-nav",  group: "Navigation",        label: "new"  },
       { title: "Top Nav",         id: "top-nav",      group: "Navigation",        label: "new"  },
-      { title: "Editor Top Navigation", id: "editor-top-nav", group: "Navigation", label: "new"  },
+      { title: "Editor Top Navigation", id: "editor-top-nav",  group: "Navigation", label: "new"  },
+      { title: "Website Navigation",   id: "website-nav",      group: "Navigation", label: "new"  },
       /* ── Inputs & Forms ─────────────────────────────────── */
       { title: "Checkbox",        id: "checkbox",     group: "Inputs & Forms" },
       { title: "Input",           id: "input",        group: "Inputs & Forms" },
