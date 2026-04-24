@@ -438,8 +438,8 @@ function StylePanel({
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => onSearchChange(e.target.value)}
             placeholder="Search for styles here"
             style={{
-              paddingLeft: "var(--space-9)",
-              paddingRight: "var(--space-13)",
+              paddingLeft: 36,
+              paddingRight: 52,
               borderRadius: "var(--radius-full)",
             }}
           />
