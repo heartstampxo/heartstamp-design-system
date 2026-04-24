@@ -301,18 +301,23 @@ export function WebsiteNavMobile({
 
       {/* ── Top bar — stable across views ───────────────────── */}
       <div style={{
-        display: "flex", alignItems: "center",
+        display: "grid",
+        gridTemplateColumns: isSearch ? "auto 1fr auto" : "1fr auto 1fr",
+        alignItems: "center",
         height: 64, padding: "0 var(--space-4)",
         borderBottom: "1px solid var(--color-element-subtle)",
         gap: "var(--space-2)",
       }}>
 
-        <Btn variant="outline" size="icon-sm" style={{ border: "none", flexShrink: 0 }} aria-label="Menu">
-          <Menu size={20} />
-        </Btn>
+        {/* Left: menu */}
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <Btn variant="outline" size="icon-sm" style={{ border: "none" }} aria-label="Menu">
+            <Menu size={20} />
+          </Btn>
+        </div>
 
-        {/* Center slot: logo ↔ search input */}
-        <div style={{ flex: 1, position: "relative", overflow: "hidden" }}>
+        {/* Center: logo ↔ search input — always truly centered */}
+        <div style={{ position: "relative", overflow: "hidden", minWidth: 0 }}>
           <AnimatePresence initial={false} mode="wait">
             {isSearch ? (
               <motion.div
@@ -345,37 +350,38 @@ export function WebsiteNavMobile({
           </AnimatePresence>
         </div>
 
-        {/* Right slot: cart+search ↔ close */}
-        <AnimatePresence initial={false} mode="wait">
-          {isSearch ? (
-            <motion.div
-              key="close-btn"
-              initial={{ opacity: 0, scale: 0.7 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.7 }}
-              transition={{ type: "spring", stiffness: 400, damping: 28 }}
-              style={{ flexShrink: 0 }}
-            >
-              <Btn variant="outline" size="icon-sm" style={{ border: "none" }} aria-label="Close search" onClick={closeSearch}>
-                <X size={20} />
-              </Btn>
-            </motion.div>
-          ) : (
-            <motion.div
-              key="nav-icons"
-              initial={{ opacity: 0, scale: 0.7 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.7 }}
-              transition={{ type: "spring", stiffness: 400, damping: 28 }}
-              style={{ display: "flex", alignItems: "center", gap: "var(--space-1)", flexShrink: 0 }}
-            >
-              <CartButton cartCount={cartCount} />
-              <Btn variant="outline" size="icon-sm" style={{ border: "none" }} aria-label="Search" onClick={openSearch}>
-                <Search size={20} />
-              </Btn>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {/* Right: cart+search ↔ close */}
+        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+          <AnimatePresence initial={false} mode="wait">
+            {isSearch ? (
+              <motion.div
+                key="close-btn"
+                initial={{ opacity: 0, scale: 0.7 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.7 }}
+                transition={{ type: "spring", stiffness: 400, damping: 28 }}
+              >
+                <Btn variant="outline" size="icon-sm" style={{ border: "none" }} aria-label="Close search" onClick={closeSearch}>
+                  <X size={20} />
+                </Btn>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="nav-icons"
+                initial={{ opacity: 0, scale: 0.7 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.7 }}
+                transition={{ type: "spring", stiffness: 400, damping: 28 }}
+                style={{ display: "flex", alignItems: "center", gap: "var(--space-1)" }}
+              >
+                <CartButton cartCount={cartCount} />
+                <Btn variant="outline" size="icon-sm" style={{ border: "none" }} aria-label="Search" onClick={openSearch}>
+                  <Search size={20} />
+                </Btn>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
 
       {/* ── Body — animates between nav and search ───────────── */}
