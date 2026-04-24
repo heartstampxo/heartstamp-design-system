@@ -90,7 +90,7 @@ export function WebsiteNav({
 
         {/* Left: logo + search */}
         <div style={{ display: "flex", alignItems: "center", gap: "var(--space-5)", flex: 1 }}>
-          <HSLockup height={24} />
+          <HSLockup height={32} />
           <div style={{ width: 480, flexShrink: 0 }}>
             <Inp
               placeholder="Search"
