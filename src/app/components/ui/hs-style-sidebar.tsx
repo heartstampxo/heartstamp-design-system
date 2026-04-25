@@ -8,7 +8,6 @@ import {
 import { Inp } from "./hs-inp";
 import { Btn } from "./btn";
 import { Kbd } from "./hs-kbd";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "./tabs";
 import { Avt } from "./hs-avt";
 import { Tarea } from "./hs-tarea";
 import { Lbl } from "./hs-lbl";
@@ -68,10 +67,9 @@ const CARD_GRADIENTS = [
 ];
 
 const TABS = [
-  { id: "art",      label: "Art Style" },
-  { id: "trending", label: "Trending"  },
-  { id: "featured", label: "Featured"  },
-  { id: "popular",  label: "Popular"   },
+  { id: "featured", label: "Featured"      },
+  { id: "trending", label: "Trending"      },
+  { id: "popular",  label: "Most Popular"  },
 ];
 
 const FONTS: { name: string; family: string }[] = [
@@ -351,7 +349,7 @@ function NavLink({ children, onClick }: { children: React.ReactNode; onClick?: (
         background: "none",
         border: "none",
         cursor: "pointer",
-        fontSize: "var(--font-size-label-13)",
+        fontSize: "var(--font-size-body-13)",
         color: "var(--muted-fg)",
         padding: "var(--space-1) var(--space-2)",
         borderRadius: "var(--radius-md)",
@@ -583,38 +581,31 @@ function StylePanel({
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ type: "spring", stiffness: 340, damping: 26, delay: 0.38 }}
               >
-                <Tabs value={tab} onValueChange={(v) => { onTabChange(v as string); setPage(1); }}>
-                  <TabsList style={{ width: "100%", marginBottom: "var(--space-4)" }}>
-                    {TABS.map(t => (
-                      <TabsTrigger key={t.id} value={t.id} style={{ flex: 1, fontSize: 13 }}>
-                        {t.label}
-                      </TabsTrigger>
-                    ))}
-                  </TabsList>
-                  {TABS.map(t => (
-                    <TabsContent key={t.id} value={t.id} style={{ marginTop: 0 }}>
-                      <StyleGrid
-                        items={visibleStyles}
-                        startIndex={recommended.length}
-                        selected={selected}
-                        onSelect={onSelect}
-                        stagger
-                        staggerDelay={0.25}
-                      />
-                      <div ref={sentinelRef} style={{ height: 1 }} />
-                      {loading && (
-                        <div style={{
-                          display: "flex",
-                          justifyContent: "center",
-                          padding: "var(--space-4) 0",
-                          color: "var(--muted-fg)",
-                        }}>
-                          <Loader2 size={18} style={{ animation: "spin 1s linear infinite" }} />
-                        </div>
-                      )}
-                    </TabsContent>
-                  ))}
-                </Tabs>
+                <PillTabs
+                  value={tab}
+                  onValueChange={v => { onTabChange(v); setPage(1); }}
+                  tabs={TABS.map(t => ({ value: t.id, label: t.label }))}
+                  style={{ marginBottom: "var(--space-4)" }}
+                />
+                <StyleGrid
+                  items={visibleStyles}
+                  startIndex={recommended.length}
+                  selected={selected}
+                  onSelect={onSelect}
+                  stagger
+                  staggerDelay={0.25}
+                />
+                <div ref={sentinelRef} style={{ height: 1 }} />
+                {loading && (
+                  <div style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    padding: "var(--space-4) 0",
+                    color: "var(--muted-fg)",
+                  }}>
+                    <Loader2 size={18} style={{ animation: "spin 1s linear infinite" }} />
+                  </div>
+                )}
               </motion.div>
             </motion.div>
           )}
@@ -1698,7 +1689,7 @@ export function StyleSidebar({
   const [activeNav, setActiveNav]       = useState("styles");
   const [selectedState, setSelectedState] = useState<string | null>(null);
   const [search, setSearch]             = useState("");
-  const [tab, setTab]                   = useState("art");
+  const [tab, setTab]                   = useState("featured");
 
   const isOpen   = openProp   !== undefined ? openProp   : openState;
   const selected = selectedProp !== undefined ? selectedProp : selectedState;
