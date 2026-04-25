@@ -8,16 +8,24 @@ interface DdMenuItem {
   destructive?: boolean;
   disabled?: boolean;
   separator?: boolean;
+  /** Extra inline styles for the item row (e.g. custom fontFamily) */
+  style?: React.CSSProperties;
 }
 
 interface DdMenuProps {
   trigger: React.ReactNode;
   items: DdMenuItem[];
   style?: React.CSSProperties;
+  /**
+   * When true, the dropdown is rendered with position:fixed using
+   * getBoundingClientRect — escapes overflow:hidden/auto parents.
+   */
+  fixed?: boolean;
 }
 
-export function DdMenu({ trigger, items, style }: DdMenuProps) {
+export function DdMenu({ trigger, items, style, fixed }: DdMenuProps) {
   const [open, setOpen] = useState(false);
+  const [rect, setRect] = useState<DOMRect | null>(null);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -28,21 +36,38 @@ export function DdMenu({ trigger, items, style }: DdMenuProps) {
     return () => document.removeEventListener("mousedown", h);
   }, []);
 
+  function handleOpen() {
+    if (fixed && ref.current) setRect(ref.current.getBoundingClientRect());
+    setOpen(o => !o);
+  }
+
+  const dropdownStyle: React.CSSProperties = fixed && rect
+    ? {
+        position: "fixed",
+        top: rect.bottom + 4,
+        left: rect.left,
+        width: rect.width,
+        zIndex: 9999,
+      }
+    : {
+        position: "absolute",
+        top: "calc(100% + var(--space-1))",
+        left: 0,
+        zIndex: 100,
+        minWidth: "100%",
+      };
+
   return (
     <div ref={ref} style={{ position: "relative", display: "inline-block", ...style }}>
-      <div onClick={() => setOpen(o => !o)}>{trigger}</div>
+      <div onClick={handleOpen}>{trigger}</div>
       {open && (
         <div
           style={{
-            position: "absolute",
-            top: "calc(100% + var(--space-1))",
-            left: 0,
-            zIndex: 100,
+            ...dropdownStyle,
             background: "var(--bg-menus)",
             border: "1px solid var(--border)",
             borderRadius: "var(--radius-2xl)",
             boxShadow: "0 8px 24px rgba(0,0,0,.15)",
-            minWidth: "100%",
             overflow: "hidden",
             padding: "var(--space-1) 0",
           }}
@@ -73,6 +98,7 @@ export function DdMenu({ trigger, items, style }: DdMenuProps) {
                   opacity: item.disabled ? 0.5 : 1,
                   fontFamily: "inherit",
                   transition: "background 0.1s ease",
+                  ...item.style,
                 }}
                 onMouseEnter={e => { if (!item.disabled) e.currentTarget.style.background = "var(--color-state-hover)"; }}
                 onMouseLeave={e => { e.currentTarget.style.background = "none"; }}

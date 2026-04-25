@@ -6,6 +6,8 @@ import { TopNavDesktop, TopNavMobile } from "./components/ui/hs-nav";
 import { EditorTopNav, EditorTopNavDesktop } from "./components/ui/hs-editor-nav";
 import { WebsiteNav, WebsiteNavMobile } from "./components/ui/hs-website-nav";
 import { StyleSidebar } from "./components/ui/hs-style-sidebar";
+import { ColorPicker } from "./components/ui/hs-color-picker";
+import { PillTabs } from "./components/ui/hs-pill-tabs";
 import { Footer } from "./components/ui/hs-footer";
 import { HSLogo, HSEmblem, HSLockup, getSvgString, useIsDark } from "./components/ui/hs-logo";
 import { ProfileNavDesktop, ProfileNavMobile } from "./components/ui/profile-nav";
@@ -1140,10 +1142,10 @@ function PageStyleSidebar() {
   const [styleSidebarOpen, setStyleSidebarOpen] = useState(false);
   const [selectedStyle, setSelectedStyle] = useState<string | null>(null);
 
-  return <DocPage title="Style Sidebar" subtitle="A toolbar + slide-in panel used in editor interfaces to browse and apply art styles. Combines a vertical icon toolbar with an animated Sheet-like panel." sourceSlug="style-sidebar">
+  return <DocPage title="Editor Sidebar" subtitle="A toolbar + slide-in panel used in editor interfaces to browse and apply art styles. Combines a vertical icon toolbar with an animated Sheet-like panel." sourceSlug="style-sidebar">
 
     <DocSection title="Default">
-      <Preview title="Style Sidebar" height={820} fullWidth
+      <Preview title="Editor Sidebar" height={820} fullWidth
         code={`import { StyleSidebar } from "@heartstamp/design-system";\n\nfunction Example() {\n  const [open, setOpen] = useState(false);\n  const [selected, setSelected] = useState(null);\n\n  return (\n    <div style={{ height: 820 }}>\n      <StyleSidebar\n        open={open}\n        onOpenChange={setOpen}\n        selected={selected}\n        onSelect={setSelected}\n        onApply={(id) => {\n          setOpen(false);\n        }}\n      />\n    </div>\n  );\n}`}
       >
         <div style={{ width: "100%", height: 820, background: "var(--color-bg-editor)" }}>
@@ -4394,6 +4396,164 @@ import { ProfileNav } from "@/components/ui/profile-nav";
 }
 
 /* ═══════════════════════════════════════════════════════════
+   PILL TABS
+═══════════════════════════════════════════════════════════ */
+function PagePillTabs() {
+  const [tab2, setTab2] = useState("a");
+  const [tab3, setTab3] = useState("draw");
+
+  return (
+    <DocPage
+      title="Pill Tabs"
+      subtitle="A segmented pill-style tab switcher. Use for 2–4 short labels where a compact toggle is preferred over a full tab bar."
+      sourceSlug="hs-pill-tabs"
+    >
+
+      <DocSection title="Default" desc="Renders at the width of its container. Constrain with a wrapper or the style prop.">
+        <Preview
+          title="2 tabs"
+          code={`import { PillTabs } from "@heartstamp/design-system";\nimport { useState } from "react";\n\nfunction Demo() {\n  const [tab, setTab] = useState("type");\n  return (\n    <div style={{ width: 295 }}>\n      <PillTabs\n        value={tab}\n        onValueChange={setTab}\n        tabs={[\n          { value: "type",   label: "Type"   },\n          { value: "upload", label: "Upload" },\n        ]}\n      />\n    </div>\n  );\n}`}
+        >
+          <div style={{ width: 295 }}>
+            <PillTabs
+              value={tab2}
+              onValueChange={setTab2}
+              tabs={[
+                { value: "a", label: "Type"   },
+                { value: "b", label: "Upload" },
+              ]}
+            />
+          </div>
+        </Preview>
+
+        <Preview
+          title="3 tabs"
+          code={`import { PillTabs } from "@heartstamp/design-system";\nimport { useState } from "react";\n\nfunction Demo() {\n  const [tab, setTab] = useState("draw");\n  return (\n    <div style={{ width: 295 }}>\n      <PillTabs\n        value={tab}\n        onValueChange={setTab}\n        tabs={[\n          { value: "draw",   label: "Draw"   },\n          { value: "upload", label: "Upload" },\n          { value: "type",   label: "Type"   },\n        ]}\n      />\n    </div>\n  );\n}`}
+        >
+          <div style={{ width: 295 }}>
+            <PillTabs
+              value={tab3}
+              onValueChange={setTab3}
+              tabs={[
+                { value: "draw",   label: "Draw"   },
+                { value: "upload", label: "Upload" },
+                { value: "type",   label: "Type"   },
+              ]}
+            />
+          </div>
+        </Preview>
+      </DocSection>
+
+      <DocSection title="Props">
+        <PropsTable props={[
+          { name: "value",          type: "string",                       required: true, desc: "The currently active tab value." },
+          { name: "onValueChange",  type: "(value: string) => void",      required: true, desc: "Called with the new value when a tab is clicked." },
+          { name: "tabs",           type: "PillTabItem[]",                required: true, desc: "Array of tab definitions. Each item has value: string and label: string." },
+          { name: "style",          type: "React.CSSProperties",          def: "undefined", desc: "Optional inline style overrides for the container." },
+        ]} />
+      </DocSection>
+
+    </DocPage>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════
+   COLOR PICKER
+═══════════════════════════════════════════════════════════ */
+function ColorPickerPopoverDemo() {
+  const [open, setOpen] = useState(false);
+  const [popColor, setPopColor] = useState("#3A4A24");
+  const btnRef = React.useRef<HTMLButtonElement>(null);
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)" }}>
+      <button
+        ref={btnRef}
+        onClick={() => setOpen(v => !v)}
+        style={{
+          width: 36, height: 36,
+          borderRadius: "50%",
+          background: popColor,
+          border: "2px solid var(--border)",
+          cursor: "pointer",
+          flexShrink: 0,
+        }}
+      />
+      <span style={{ fontSize: "var(--font-size-body-13)", color: "var(--muted-fg)", fontFamily: "monospace" }}>
+        {popColor.toUpperCase()}
+      </span>
+      {open && (
+        <ColorPicker
+          color={popColor}
+          onChange={hex => setPopColor(hex)}
+          anchorRect={btnRef.current?.getBoundingClientRect() ?? null}
+          onClose={() => setOpen(false)}
+        />
+      )}
+    </div>
+  );
+}
+
+function PageColorPicker() {
+  const [color1, setColor1] = useState("#3A4A24");
+  const [recentColors, setRecentColors] = useState<string[]>([
+    "#242423", "#8B9E87", "#D4A574", "#3A4A24",
+  ]);
+
+  function handleChange(hex: string) {
+    setColor1(hex);
+    setRecentColors(prev => [hex, ...prev.filter(c => c !== hex)].slice(0, 12));
+  }
+
+  return (
+    <DocPage
+      title="Color Picker"
+      subtitle="A floating HSV color picker with a gradient canvas, hue slider, saturation slider, hex input, and recently used swatches."
+      sourceSlug="hs-color-picker"
+    >
+
+      <DocSection title="Default" desc="Inline (no anchor) — renders in document flow.">
+        <Preview
+          title="Inline color picker"
+          code={`import { ColorPicker } from "@heartstamp/design-system";\nimport { useState } from "react";\n\nfunction Demo() {\n  const [color, setColor] = useState("#3A4A24");\n  return <ColorPicker color={color} onChange={setColor} />;\n}`}
+        >
+          <div style={{ display: "flex", justifyContent: "center", padding: "var(--space-4) 0" }}>
+            <ColorPicker color={color1} onChange={handleChange} recentColors={recentColors} />
+          </div>
+        </Preview>
+      </DocSection>
+
+
+      <DocSection title="As Popover" desc="Pass anchorRect + onClose to position it fixed below a trigger button. Use getBoundingClientRect() on the trigger ref.">
+        <Preview
+          title="Popover usage"
+          code={`import { ColorPicker } from "@heartstamp/design-system";\nimport { useState, useRef } from "react";\n\nfunction Demo() {\n  const [open, setOpen] = useState(false);\n  const [color, setColor] = useState("#3A4A24");\n  const btnRef = useRef<HTMLButtonElement>(null);\n\n  return (\n    <>\n      <button\n        ref={btnRef}\n        onClick={() => setOpen(true)}\n        style={{ width: 32, height: 32, borderRadius: "50%", background: color, border: "1px solid var(--border)" }}\n      />\n      {open && (\n        <ColorPicker\n          color={color}\n          onChange={setColor}\n          anchorRect={btnRef.current?.getBoundingClientRect()}\n          onClose={() => setOpen(false)}\n        />\n      )}\n    </>\n  );\n}`}
+        >
+          <ColorPickerPopoverDemo />
+        </Preview>
+      </DocSection>
+
+      <DocSection title="Props">
+        <PropsTable props={[
+          { name: "color",        type: "string",                    required: true,  desc: "Current color as a 6-digit hex string (e.g. \"#3A4A24\")." },
+          { name: "onChange",     type: "(hex: string) => void",     required: true,  desc: "Called with updated hex string whenever the user picks a color." },
+          { name: "recentColors", type: "string[]",                  def: "[]",       desc: "Array of recently-used hex colors shown as swatches below the hex input." },
+          { name: "anchorRect",   type: "DOMRect | null",            def: "undefined",desc: "When provided, positions the picker fixed below this rect (use getBoundingClientRect()). Omit for inline rendering." },
+          { name: "onClose",      type: "() => void",                def: "undefined",desc: "Called when the user clicks outside. Required when using anchorRect to close the popover." },
+        ]} />
+      </DocSection>
+
+      <DocSection title="Utilities">
+        <PropsTable props={[
+          { name: "hexToHsv(hex)",     type: "[h, s, v]: [number, number, number]", desc: "Converts a 6-digit hex string to HSV. H: 0–360, S: 0–100, V: 0–100." },
+          { name: "hsvToHex(h, s, v)", type: "string",                               desc: "Converts HSV values to a 6-digit hex string. H: 0–360, S: 0–100, V: 0–100." },
+        ]} />
+      </DocSection>
+
+    </DocPage>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════
    STAMPY CHATBOT  → src/app/pages/chatbot/
 ═══════════════════════════════════════════════════════════ */
 // PageStampyChatbot, PageChatInput, PageChatBubbles,
@@ -4422,6 +4582,8 @@ const PAGES: Record<string, any> = {
   textarea: PageTextarea,
   label: PageLabel,
   select: PageSelect,
+  "pill-tabs": PagePillTabs,
+  "color-picker": PageColorPicker,
   checkbox: PageCheckbox,
   "radio-group": PageRadioGroup,
   switch: PageSwitch,

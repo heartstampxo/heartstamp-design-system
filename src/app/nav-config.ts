@@ -51,6 +51,7 @@ export const NAV = [
       { title: "Website Navigation",   id: "website-nav",      group: "Navigation", label: "new"  },
       /* ── Inputs & Forms ─────────────────────────────────── */
       { title: "Checkbox",        id: "checkbox",     group: "Inputs & Forms" },
+      { title: "Color Picker",    id: "color-picker", group: "Inputs & Forms",    label: "new"  },
       { title: "Input",           id: "input",        group: "Inputs & Forms" },
       { title: "Kbd",             id: "kbd",          group: "Inputs & Forms",    label: "new"  },
       { title: "Label",           id: "label",        group: "Inputs & Forms" },
@@ -59,6 +60,7 @@ export const NAV = [
       { title: "Slider",          id: "slider",       group: "Inputs & Forms" },
       { title: "Stepper",         id: "stepper",      group: "Inputs & Forms",    label: "new"  },
       { title: "Switch",          id: "switch",       group: "Inputs & Forms" },
+      { title: "Pill Tabs",        id: "pill-tabs",    group: "Inputs & Forms",    label: "new"  },
       { title: "Tabs",            id: "tabs",         group: "Inputs & Forms" },
       { title: "Textarea",        id: "textarea",     group: "Inputs & Forms" },
       { title: "Toggle",          id: "toggle",       group: "Inputs & Forms" },
@@ -72,7 +74,7 @@ export const NAV = [
       { title: "Hover Card",      id: "hover-card",   group: "Overlays & Popups" },
       { title: "Popover",         id: "popover",      group: "Overlays & Popups" },
       { title: "Sheet",           id: "sheet",        group: "Overlays & Popups" },
-      { title: "Style Sidebar",   id: "style-sidebar", group: "Overlays & Popups", label: "new" },
+      { title: "Editor Sidebar",  id: "style-sidebar", group: "Overlays & Popups", label: "new" },
       { title: "Tooltip",         id: "tooltip",      group: "Overlays & Popups" },
       /* ── Feedback & Status ──────────────────────────────── */
       { title: "Alert",           id: "alert",        group: "Feedback & Status" },
