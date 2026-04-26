@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Search, X } from "lucide-react";
+import { Search } from "lucide-react";
 import { NAV, ALL_ITEMS, LABEL_COLORS } from "../../nav-config";
 import { Inp } from "../ui/hs-inp";
 import { Acc } from "../ui/hs-acc";
@@ -69,25 +69,14 @@ export function Sidebar({ active, onSelect, onClose }: SidebarProps) {
   return (
     <nav style={{ display: "flex", flexDirection: "column", height: "100%", overflow: "hidden" }}>
       {/* search — using Inp component */}
-      <div style={{ padding: "var(--space-2-5) var(--space-3) var(--space-1-5)", position: "relative" }}>
-        <Search size={12} style={{
-          position: "absolute", left: "var(--space-5)", top: "50%", transform: "translateY(-50%)",
-          color: "var(--muted-fg)", pointerEvents: "none", zIndex: 1,
-        }} />
+      <div style={{ padding: "var(--space-2-5) var(--space-2) var(--space-1-5)", position: "relative" }}>
         <Inp
           value={search}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
           placeholder="Search components…"
-          style={{ paddingLeft: 28, paddingRight: search ? 28 : undefined, fontSize: "var(--font-size-label-12)" }}
+          iconLeft={<Search size={12} />}
+          style={{ fontSize: "var(--font-size-label-12)" }}
         />
-        {search && (
-          <button onClick={() => setSearch("")} style={{
-            position: "absolute", right: "var(--space-4)", top: "50%", transform: "translateY(-50%)",
-            background: "none", border: "none", cursor: "pointer", color: "var(--muted-fg)", padding: 0, display: "flex",
-          }}>
-            <X size={11} />
-          </button>
-        )}
       </div>
 
       {/* nav items — using Acc component in ghost variant */}

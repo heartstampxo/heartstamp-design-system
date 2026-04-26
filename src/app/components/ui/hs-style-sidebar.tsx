@@ -451,34 +451,21 @@ function StylePanel({
         padding: "var(--space-4) var(--space-4) var(--space-2)",
         flexShrink: 0,
       }}>
-        <div style={{ flex: 1, position: "relative" }}>
-          <Search size={14} style={{
-            position: "absolute", left: "var(--space-4)", top: "50%",
-            transform: "translateY(-50%)",
-            color: "var(--muted-fg)", pointerEvents: "none", zIndex: 1,
-          }} />
+        <div style={{ flex: 1 }}>
           <Inp
             value={search}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => onSearchChange(e.target.value)}
             placeholder="Search for styles here"
-            style={{
-              paddingLeft: 36,
-              paddingRight: 52,
-              borderRadius: "var(--radius-full)",
-            }}
+            iconLeft={<Search size={14} />}
+            kbd="⌘F"
+            style={{ borderRadius: "var(--radius-full)" }}
           />
-          <div style={{
-            position: "absolute", right: "var(--space-3)", top: "50%",
-            transform: "translateY(-50%)", pointerEvents: "none",
-          }}>
-            <Kbd>⌘F</Kbd>
-          </div>
         </div>
         <Btn
           variant="outline"
           size="icon-sm"
           onClick={onClose}
-          style={{ border: "none", flexShrink: 0, color: "var(--color-text-secondary)" }}
+          style={{ border: "none", flexShrink: 0, color: "var(--color-text-secondary)", marginRight: "var(--space-1)" }}
         >
           <X size={16} />
         </Btn>
@@ -1745,16 +1732,12 @@ function TranslatePanel({ onClose, count = 2 }: TranslatePanelProps) {
       {/* Search */}
       <motion.div {...msgItem(0.09)} style={{ padding: "var(--space-3) var(--space-4) var(--space-2)", flexShrink: 0 }}>
         <div style={{ position: "relative" }}>
-          <Search size={14} style={{
-            position: "absolute", left: "var(--space-3)", top: "50%",
-            transform: "translateY(-50%)",
-            color: "var(--muted-fg)", pointerEvents: "none", zIndex: 1,
-          }} />
           <Inp
             value={search}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
             placeholder="Search languages"
-            style={{ paddingLeft: 32, paddingRight: search ? 32 : undefined, borderRadius: "var(--radius-full)" }}
+            iconLeft={<Search size={14} />}
+            style={{ borderRadius: "var(--radius-full)", paddingRight: search ? 32 : undefined }}
           />
           {search && (
             <button
