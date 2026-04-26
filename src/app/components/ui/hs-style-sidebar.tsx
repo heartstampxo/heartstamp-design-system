@@ -18,6 +18,7 @@ import { DdMenu } from "./hs-dd-menu";
 import { ColorPicker } from "./hs-color-picker";
 import { PillTabs } from "./hs-pill-tabs";
 import { ProfileNavDesktop } from "./profile-nav";
+import { HSEmblem } from "./hs-logo";
 
 /* ─── Types ──────────────────────────────────────────────── */
 
@@ -2095,6 +2096,120 @@ export function StyleSidebar({
           </motion.div>
         )}
       </AnimatePresence>
+    </div>
+  );
+}
+
+/* ─── StyleSidebarMobile ──────────────────────────────────── */
+
+const MOBILE_NAV_ITEMS = [
+  { id: "styles",    icon: <Layers size={20} />,     label: "Card"      },
+  { id: "message",   icon: <PencilLine size={20} />, label: "Message"   },
+  { id: "signature", icon: <Signature size={20} />,  label: "Signature" },
+  { id: "envelope",  icon: <Mail size={20} />,       label: "Envelope"  },
+  { id: "translate", icon: <Languages size={20} />,  label: "Translate" },
+  { id: "stampy",    icon: <HSEmblem color="brand" height={20} />, label: "Stampy" },
+] as const;
+
+export interface StyleSidebarMobileProps {
+  activeNav?: string;
+  onNavChange?: (id: string) => void;
+}
+
+export function StyleSidebarMobile({
+  activeNav,
+  onNavChange,
+}: StyleSidebarMobileProps) {
+  const [activeState, setActiveState] = useState<string | undefined>(undefined);
+  const active = activeNav ?? activeState;
+
+  function handlePress(id: string) {
+    setActiveState(id);
+    onNavChange?.(id);
+  }
+
+  return (
+    <div style={{
+      display: "flex",
+      flexDirection: "column",
+      width: "100%",
+      background: "var(--bg)",
+      borderTop: "1px solid var(--color-element-subtle)",
+    }}>
+      {/* Nav buttons */}
+      <div style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: "0 var(--space-1)",
+      }}>
+        {MOBILE_NAV_ITEMS.map(item => {
+          const isActive = active === item.id;
+          return (
+            <button
+              key={item.id}
+              type="button"
+              onClick={() => handlePress(item.id)}
+              style={{
+                flex: 1,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "var(--space-1)",
+                height: 64,
+                padding: "var(--space-3)",
+                borderRadius: "var(--radius-lg)",
+                border: "none",
+                background: isActive ? "var(--color-state-hover)" : "none",
+                cursor: "pointer",
+                color: isActive ? "var(--color-brand-primary)" : "var(--color-text-secondary)",
+                transition: "background 0.15s, color 0.15s",
+              }}
+              onMouseEnter={e => {
+                if (!isActive) (e.currentTarget as HTMLElement).style.background = "var(--color-state-hover)";
+              }}
+              onMouseLeave={e => {
+                if (!isActive) (e.currentTarget as HTMLElement).style.background = "none";
+              }}
+            >
+              <span style={{
+                display: "flex",
+                color: isActive ? "var(--color-brand-primary)" : "var(--color-text-secondary)",
+                transition: "color 0.15s",
+                flexShrink: 0,
+              }}>
+                {item.icon}
+              </span>
+              <span style={{
+                fontSize: "var(--font-size-body-13)",
+                fontWeight: item.id === "stampy" ? 500 : 400,
+                color: isActive ? "var(--color-brand-primary)" : "var(--color-text-secondary)",
+                whiteSpace: "nowrap",
+                lineHeight: 1,
+                transition: "color 0.15s",
+              }}>
+                {item.label}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Drag handler pill */}
+      <div style={{
+        display: "flex",
+        justifyContent: "center",
+        padding: "var(--space-3) 0",
+        flexShrink: 0,
+      }}>
+        <div style={{
+          width: 120,
+          height: 6,
+          borderRadius: "var(--radius-full)",
+          background: "var(--color-element-subtle)",
+        }} />
+      </div>
     </div>
   );
 }
