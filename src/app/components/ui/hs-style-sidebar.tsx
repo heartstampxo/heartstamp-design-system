@@ -17,6 +17,7 @@ import { Tip } from "./hs-tip";
 import { DdMenu } from "./hs-dd-menu";
 import { ColorPicker } from "./hs-color-picker";
 import { PillTabs } from "./hs-pill-tabs";
+import { ProfileNavDesktop } from "./profile-nav";
 
 /* ─── Types ──────────────────────────────────────────────── */
 
@@ -1838,6 +1839,127 @@ function TranslatePanel({ onClose, count = 2 }: TranslatePanelProps) {
   );
 }
 
+/* ─── EnvelopePanel ──────────────────────────────────────── */
+
+const FLAP_STYLES: { id: string; label: string; price: string | null }[] = [
+  { id: "square",   label: "Square",   price: null      },
+  { id: "european", label: "European", price: "+$0.30"  },
+];
+
+interface EnvelopePanelProps {
+  onClose: () => void;
+  onSave?: (opts: { flapStyle: string; font: string }) => void;
+}
+
+function EnvelopePanel({ onClose, onSave }: EnvelopePanelProps) {
+  const [flapStyle, setFlapStyle] = useState("european");
+  const [font, setFont]           = useState(FONTS[0]);
+
+  const selected = FLAP_STYLES.find(f => f.id === flapStyle) ?? FLAP_STYLES[0];
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", height: "100%", background: "var(--bg)", borderRight: "1px solid var(--border)" }}>
+
+      {/* Header */}
+      <motion.div
+        {...msgItem(0.04)}
+        style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "var(--space-2) var(--space-3) var(--space-2) var(--space-4)", borderBottom: "1px solid var(--border)", flexShrink: 0 }}
+      >
+        <span style={{ fontSize: "var(--font-size-body-15)", fontWeight: 600, color: "var(--fg)" }}>Envelope</span>
+        <Btn variant="outline" size="icon-sm" onClick={onClose} style={{ border: "none", flexShrink: 0, color: "var(--color-text-secondary)" }}>
+          <X size={16} />
+        </Btn>
+      </motion.div>
+
+      {/* Content */}
+      <div style={{ flex: 1, minHeight: 0, overflowY: "auto", display: "flex", flexDirection: "column", gap: "var(--space-6)", padding: "var(--space-4) var(--space-4) var(--space-2)" }}>
+
+        {/* Flap style */}
+        <motion.div {...msgItem(0.08)} style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span style={{ fontSize: "var(--font-size-body-15)", fontWeight: 600, color: "var(--fg)" }}>Flap style</span>
+            <span style={{ fontSize: "var(--font-size-body-15)", fontWeight: 600, color: "var(--fg)" }}>
+              {selected.price ?? "+ $0.00"}
+            </span>
+          </div>
+
+          <div style={{ display: "flex", gap: "var(--space-4)" }}>
+            {FLAP_STYLES.map(s => {
+              const active = flapStyle === s.id;
+              return (
+                <button
+                  key={s.id}
+                  type="button"
+                  onClick={() => setFlapStyle(s.id)}
+                  style={{
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 0,
+                    alignItems: "stretch",
+                    padding: 0,
+                    borderRadius: "var(--radius-2xl)",
+                    border: active ? "2px solid var(--fg)" : "1px solid var(--border)",
+                    background: "var(--bg)",
+                    cursor: "pointer",
+                    overflow: "hidden",
+                  }}
+                >
+                  <div style={{ width: "100%", height: 108, background: "var(--muted)" }} />
+                  <div style={{ display: "flex", gap: "var(--space-1-5)", alignItems: "baseline", padding: "var(--space-2) var(--space-3)" }}>
+                    <span style={{ fontSize: "var(--font-size-body-15)", fontWeight: 600, color: "var(--fg)" }}>{s.label}</span>
+                    {s.price && (
+                      <span style={{ fontSize: "var(--font-size-body-13)", color: "var(--muted-fg)" }}>{s.price}</span>
+                    )}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </motion.div>
+
+        <div style={{ height: 1, background: "var(--border)", flexShrink: 0 }} />
+
+        {/* Font */}
+        <motion.div {...msgItem(0.13)}>
+          <Lbl style={{ fontSize: "var(--font-size-body-15)", marginBottom: "var(--space-2)" }}>Font</Lbl>
+          <DdMenu
+            fixed
+            style={{ width: "100%" }}
+            trigger={
+              <Btn
+                variant="outline"
+                style={{ width: "100%", borderRadius: "var(--radius-full)", justifyContent: "space-between" }}
+              >
+                <span style={{ fontFamily: font.family, fontSize: "var(--font-size-body-15)" }}>{font.name}</span>
+                <ChevronDown size={14} />
+              </Btn>
+            }
+            items={FONTS.map(f => ({
+              label: f.name,
+              style: { fontFamily: f.family, fontSize: "var(--font-size-body-15)" },
+              onClick: () => setFont(f),
+            }))}
+          />
+        </motion.div>
+      </div>
+
+      {/* Footer */}
+      <motion.div
+        {...msgItem(0.18)}
+        style={{ padding: "var(--space-4) var(--space-2)", borderTop: "1px solid var(--border)", flexShrink: 0, background: "var(--bg)" }}
+      >
+        <Btn
+          style={{ width: "100%", borderRadius: "var(--radius-full)", background: "var(--color-brand-primary)", color: "white", border: "none" }}
+          onClick={() => onSave?.({ flapStyle, font: font.name })}
+        >
+          Save
+        </Btn>
+      </motion.div>
+    </div>
+  );
+}
+
 /* ─── StyleSidebar (main export) ─────────────────────────── */
 
 export function StyleSidebar({
@@ -1855,6 +1977,21 @@ export function StyleSidebar({
   const [selectedState, setSelectedState] = useState<string | null>(null);
   const [search, setSearch]             = useState("");
   const [tab, setTab]                   = useState("featured");
+  const [profileOpen, setProfileOpen]   = useState(false);
+  const [profilePos, setProfilePos]     = useState({ bottom: 0, left: 0 });
+  const [theme, setTheme]               = useState<"light" | "dark" | "system">("system");
+  const avatarRef                       = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!profileOpen) return;
+    function handle(e: MouseEvent) {
+      if (avatarRef.current && !avatarRef.current.contains(e.target as Node)) {
+        setProfileOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handle);
+    return () => document.removeEventListener("mousedown", handle);
+  }, [profileOpen]);
 
   const isOpen   = openProp   !== undefined ? openProp   : openState;
   const selected = selectedProp !== undefined ? selectedProp : selectedState;
@@ -1906,8 +2043,27 @@ export function StyleSidebar({
           ))}
         </div>
 
-        <div style={{ alignSelf: "center" }}>
-          <Avt src="https://github.com/shadcn.png" fallback="HS" />
+        <div ref={avatarRef} style={{ alignSelf: "center", position: "relative" }}>
+          <button
+            type="button"
+            onClick={() => {
+              if (!avatarRef.current) return;
+              const rect = avatarRef.current.getBoundingClientRect();
+              setProfilePos({ bottom: window.innerHeight - rect.bottom, left: rect.right + 16 });
+              setProfileOpen(o => !o);
+            }}
+            style={{ display: "flex", border: "none", background: "none", padding: 0, cursor: "pointer", borderRadius: "var(--radius-full)" }}
+          >
+            <Avt src="https://i.pravatar.cc/80?img=68" fallback="JW" />
+          </button>
+
+          <AnimatePresence>
+            {profileOpen && (
+              <div style={{ position: "fixed", bottom: profilePos.bottom, left: profilePos.left, zIndex: 100 }}>
+                <ProfileNavDesktop theme={theme} setTheme={setTheme} />
+              </div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
 
@@ -1935,6 +2091,8 @@ export function StyleSidebar({
                 <SignaturePanel onClose={handleClose} />
               ) : activeNav === "translate" ? (
                 <TranslatePanel onClose={handleClose} />
+              ) : activeNav === "envelope" ? (
+                <EnvelopePanel onClose={handleClose} />
               ) : (
                 <StylePanel
                   recommended={recommended}
