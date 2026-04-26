@@ -18,8 +18,9 @@ export const NAV = [
   },
   {
     title: "Assets", items: [
-      { title: "Icons",    id: "icons" },
-      { title: "Branding", id: "logos", label: "new" },
+      { title: "Icons",         id: "icons" },
+      { title: "Custom Icons",  id: "custom-icons", label: "new" },
+      { title: "Branding",      id: "logos", label: "new" },
     ]
   },
   {

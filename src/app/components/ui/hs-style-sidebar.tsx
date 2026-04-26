@@ -5,6 +5,7 @@ import {
   Layers, Check, Loader2, ArrowLeft, PaintbrushIcon,
   ChevronDown, Plus, Minus, CloudUpload, Trash2,
 } from "lucide-react";
+import HeartStampSecondary01 from "../../../assets/Custom_Icons/Heart Secondary/HeartStamp-Secondary-01.svg?raw";
 import { Inp } from "./hs-inp";
 import { Btn } from "./btn";
 import { Kbd } from "./hs-kbd";
@@ -79,6 +80,13 @@ const FONTS: { name: string; family: string }[] = [
   { name: "Caveat",          family: "'Caveat', cursive"          },
   { name: "Sacramento",      family: "'Sacramento', cursive"      },
   { name: "Satisfy",         family: "'Satisfy', cursive"         },
+];
+
+const LANGUAGES = [
+  "English", "Français", "Español", "Deutsch", "中文 (简体)",
+  "русский", "日本語", "Português", "Italiano", "한국어",
+  "العربية", "हिन्दी", "Türkçe", "Polski", "Nederlands",
+  "Svenska", "Norsk", "Dansk", "Suomi", "Ελληνικά",
 ];
 
 const NAV_ITEMS = [
@@ -1673,6 +1681,163 @@ function SignaturePanel({ onClose }: SignaturePanelProps) {
   );
 }
 
+/* ─── HeartCount ─────────────────────────────────────────── */
+
+function HeartCount(_: { count: number }) {
+  return (
+    <div
+      style={{ width: 20, height: 20, flexShrink: 0 }}
+      dangerouslySetInnerHTML={{ __html: HeartStampSecondary01 }}
+    />
+  );
+}
+
+/* ─── TranslatePanel ─────────────────────────────────────── */
+
+interface TranslatePanelProps {
+  onClose: () => void;
+  count?: number;
+}
+
+function TranslatePanel({ onClose, count = 2 }: TranslatePanelProps) {
+  const [search, setSearch]     = useState("");
+  const [language, setLanguage] = useState("English");
+
+  const filtered = search.trim()
+    ? LANGUAGES.filter(l => l.toLowerCase().includes(search.toLowerCase()))
+    : LANGUAGES;
+
+  return (
+    <div style={{
+      display: "flex",
+      flexDirection: "column",
+      height: "100%",
+      background: "var(--bg)",
+      borderRight: "1px solid var(--border)",
+    }}>
+
+      {/* Header */}
+      <motion.div
+        {...msgItem(0.04)}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "var(--space-4)",
+          borderBottom: "1px solid var(--border)",
+          flexShrink: 0,
+        }}
+      >
+        <span style={{ fontSize: "var(--font-size-body-15)", fontWeight: 600, color: "var(--fg)" }}>
+          Translate
+        </span>
+        <Btn
+          variant="outline"
+          size="icon-sm"
+          onClick={onClose}
+          style={{ border: "none", flexShrink: 0, color: "var(--color-text-secondary)" }}
+        >
+          <X size={16} />
+        </Btn>
+      </motion.div>
+
+      {/* Search */}
+      <motion.div {...msgItem(0.09)} style={{ padding: "var(--space-3) var(--space-4) var(--space-2)", flexShrink: 0 }}>
+        <div style={{ position: "relative" }}>
+          <Search size={14} style={{
+            position: "absolute", left: "var(--space-3)", top: "50%",
+            transform: "translateY(-50%)",
+            color: "var(--muted-fg)", pointerEvents: "none", zIndex: 1,
+          }} />
+          <Inp
+            value={search}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
+            placeholder="Search languages"
+            style={{ paddingLeft: 32, paddingRight: search ? 32 : undefined, borderRadius: "var(--radius-full)" }}
+          />
+          {search && (
+            <button
+              type="button"
+              onClick={() => setSearch("")}
+              style={{
+                position: "absolute", right: "var(--space-2)", top: "50%",
+                transform: "translateY(-50%)", background: "none", border: "none",
+                cursor: "pointer", color: "var(--muted-fg)", padding: 0, display: "flex",
+              }}
+            >
+              <X size={12} />
+            </button>
+          )}
+        </div>
+      </motion.div>
+
+      {/* Language list */}
+      <motion.div
+        {...msgItem(0.14)}
+        style={{
+          flex: 1,
+          minHeight: 0,
+          overflowY: "auto",
+          padding: "var(--space-1) var(--space-2)",
+          scrollbarWidth: "thin",
+          scrollbarColor: "var(--border) transparent",
+        }}
+      >
+        {filtered.length > 0 ? filtered.map(lang => (
+          <button
+            key={lang}
+            type="button"
+            onClick={() => setLanguage(lang)}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "var(--space-2)",
+              width: "100%",
+              height: 36,
+              padding: "0 var(--space-3)",
+              borderRadius: "var(--radius-md)",
+              border: "none",
+              background: "none",
+              cursor: "pointer",
+              textAlign: "left",
+              fontFamily: "inherit",
+              fontSize: "var(--font-size-body-15)",
+              fontWeight: language === lang ? 500 : 400,
+              color: "var(--fg)",
+              transition: "background .1s",
+            }}
+            onMouseEnter={e => (e.currentTarget.style.background = "var(--muted)")}
+            onMouseLeave={e => (e.currentTarget.style.background = "none")}
+          >
+            <span style={{ flex: 1 }}>{lang}</span>
+            {language === lang && <Check size={14} color="var(--fg)" />}
+          </button>
+        )) : (
+          <p style={{ fontSize: "var(--font-size-body-13)", color: "var(--muted-fg)", padding: "var(--space-2) var(--space-3)", margin: 0 }}>
+            No languages found
+          </p>
+        )}
+      </motion.div>
+
+      {/* Footer — Update card button */}
+      <motion.div
+        {...msgItem(0.18)}
+        style={{
+          padding: "var(--space-4)",
+          borderTop: "1px solid var(--border)",
+          flexShrink: 0,
+          background: "var(--bg)",
+        }}
+      >
+        <Btn style={{ width: "100%", borderRadius: "var(--radius-full)" }}>
+          Update card
+          <HeartCount count={count} />
+        </Btn>
+      </motion.div>
+    </div>
+  );
+}
+
 /* ─── StyleSidebar (main export) ─────────────────────────── */
 
 export function StyleSidebar({
@@ -1768,6 +1933,8 @@ export function StyleSidebar({
                 <MessagePanel onClose={handleClose} />
               ) : activeNav === "signature" ? (
                 <SignaturePanel onClose={handleClose} />
+              ) : activeNav === "translate" ? (
+                <TranslatePanel onClose={handleClose} />
               ) : (
                 <StylePanel
                   recommended={recommended}

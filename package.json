@@ -1,6 +1,6 @@
 {
   "name": "@heartstamp/design-system",
-  "version": "1.7.2",
+  "version": "1.7.3",
   "description": "HeartStamp Design System — a React component library built on Radix UI and Tailwind CSS",
   "keywords": [
     "design-system",

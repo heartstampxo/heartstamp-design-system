@@ -68,6 +68,26 @@ import {
   AppWindow, Code2, Download, History, Lock,
 } from "lucide-react";
 import * as LucideIcons from "lucide-react";
+import HCP01 from "../assets/Custom_Icons/Heart-Credit-Icons/HeartStamp-Primary-01.svg?raw";
+import HCP02 from "../assets/Custom_Icons/Heart-Credit-Icons/HeartStamp-Primary-02.svg?raw";
+import HCP03 from "../assets/Custom_Icons/Heart-Credit-Icons/HeartStamp-Primary-03.svg?raw";
+import HCP04 from "../assets/Custom_Icons/Heart-Credit-Icons/HeartStamp-Primary-04.svg?raw";
+import HCP05 from "../assets/Custom_Icons/Heart-Credit-Icons/HeartStamp-Primary-05.svg?raw";
+import HCP06 from "../assets/Custom_Icons/Heart-Credit-Icons/HeartStamp-Primary-06.svg?raw";
+import HCP07 from "../assets/Custom_Icons/Heart-Credit-Icons/HeartStamp-Primary-07.svg?raw";
+import HCP08 from "../assets/Custom_Icons/Heart-Credit-Icons/HeartStamp-Primary-08.svg?raw";
+import HCP09 from "../assets/Custom_Icons/Heart-Credit-Icons/HeartStamp-Primary-09.svg?raw";
+import HCP10 from "../assets/Custom_Icons/Heart-Credit-Icons/HeartStamp-Primary-10.svg?raw";
+import HCS01 from "../assets/Custom_Icons/Heart Secondary/HeartStamp-Secondary-01.svg?raw";
+import HCS02 from "../assets/Custom_Icons/Heart Secondary/HeartStamp-Secondary-02.svg?raw";
+import HCS03 from "../assets/Custom_Icons/Heart Secondary/HeartStamp-Secondary-03.svg?raw";
+import HCS04 from "../assets/Custom_Icons/Heart Secondary/HeartStamp-Secondary-04.svg?raw";
+import HCS05 from "../assets/Custom_Icons/Heart Secondary/HeartStamp-Secondary-05.svg?raw";
+import HCS06 from "../assets/Custom_Icons/Heart Secondary/HeartStamp-Secondary-06.svg?raw";
+import HCS07 from "../assets/Custom_Icons/Heart Secondary/HeartStamp-Secondary-07.svg?raw";
+import HCS08 from "../assets/Custom_Icons/Heart Secondary/HeartStamp-Secondary-08.svg?raw";
+import HCS09 from "../assets/Custom_Icons/Heart Secondary/HeartStamp-Secondary-09.svg?raw";
+import HCS10 from "../assets/Custom_Icons/Heart Secondary/HeartStamp-Secondary-10.svg?raw";
 import { NAV, ALL_ITEMS, LABEL_COLORS } from "./nav-config";
 import { CodeBlock, InstallBlock } from "./components/docs/doc-code-block";
 import { Preview } from "./components/docs/doc-preview";
@@ -3431,6 +3451,145 @@ function PageIcons() {
 }
 
 /* ═══════════════════════════════════════════════════════════
+   CUSTOM ICONS PAGE
+═══════════════════════════════════════════════════════════ */
+function PageCustomIcons() {
+  const [copied, setCopied] = useState<string | null>(null);
+
+  const PRIMARY_ICONS = [
+    { name: "HeartStamp-Primary-01", raw: HCP01 },
+    { name: "HeartStamp-Primary-02", raw: HCP02 },
+    { name: "HeartStamp-Primary-03", raw: HCP03 },
+    { name: "HeartStamp-Primary-04", raw: HCP04 },
+    { name: "HeartStamp-Primary-05", raw: HCP05 },
+    { name: "HeartStamp-Primary-06", raw: HCP06 },
+    { name: "HeartStamp-Primary-07", raw: HCP07 },
+    { name: "HeartStamp-Primary-08", raw: HCP08 },
+    { name: "HeartStamp-Primary-09", raw: HCP09 },
+    { name: "HeartStamp-Primary-10", raw: HCP10 },
+  ];
+
+  const SECONDARY_ICONS = [
+    { name: "HeartStamp-Secondary-01", raw: HCS01 },
+    { name: "HeartStamp-Secondary-02", raw: HCS02 },
+    { name: "HeartStamp-Secondary-03", raw: HCS03 },
+    { name: "HeartStamp-Secondary-04", raw: HCS04 },
+    { name: "HeartStamp-Secondary-05", raw: HCS05 },
+    { name: "HeartStamp-Secondary-06", raw: HCS06 },
+    { name: "HeartStamp-Secondary-07", raw: HCS07 },
+    { name: "HeartStamp-Secondary-08", raw: HCS08 },
+    { name: "HeartStamp-Secondary-09", raw: HCS09 },
+    { name: "HeartStamp-Secondary-10", raw: HCS10 },
+  ];
+
+  const copyIcon = async (name: string, folder: string) => {
+    const text = `import ${name} from "@/assets/Custom_Icons/${folder}/${name}.svg?raw";`;
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.cssText = "position:fixed;opacity:0";
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+    }
+    setCopied(name);
+    setTimeout(() => setCopied(null), 1500);
+  };
+
+  const iconCard = (name: string, raw: string, folder: string, darkCard = false) => {
+    const isCopied = copied === name;
+    const cardBg    = darkCard ? "#242423" : "var(--bg)";
+    const cardBgHover = darkCard ? "#3a3a38" : "var(--muted)";
+    return (
+      <div
+        key={name}
+        onClick={() => copyIcon(name, folder)}
+        title={`${name} — click to copy import`}
+        style={{
+          display: "flex", flexDirection: "column",
+          alignItems: "center", justifyContent: "center",
+          gap: "var(--space-1-5)", padding: "12px var(--space-1-5)",
+          height: 80,
+          borderRadius: 8,
+          border: `1px solid ${isCopied ? "var(--color-brand-primary)" : "var(--border)"}`,
+          background: isCopied ? "var(--color-brand-primary-dim)" : cardBg,
+          color: isCopied ? "var(--color-brand-primary)" : "var(--fg)",
+          cursor: "pointer",
+          transition: "background 0.15s, border-color 0.15s, color 0.15s",
+          userSelect: "none",
+        }}
+        onMouseEnter={e => {
+          if (!isCopied) {
+            (e.currentTarget as HTMLElement).style.background = cardBgHover;
+            (e.currentTarget as HTMLElement).style.borderColor = "var(--color-brand-primary)";
+          }
+        }}
+        onMouseLeave={e => {
+          if (!isCopied) {
+            (e.currentTarget as HTMLElement).style.background = cardBg;
+            (e.currentTarget as HTMLElement).style.borderColor = "var(--border)";
+          }
+        }}
+      >
+        <div
+          style={{ width: 20, height: 20, flexShrink: 0 }}
+          dangerouslySetInnerHTML={{ __html: raw }}
+        />
+        <span style={{
+          fontSize: 10, lineHeight: 1.3, textAlign: "center",
+          wordBreak: "break-all",
+          color: isCopied ? "var(--color-brand-primary)" : darkCard ? "#888" : "var(--muted-fg)",
+        }}>
+          {isCopied ? "Copied!" : name.replace("HeartStamp-", "").replace("-", " #")}
+        </span>
+      </div>
+    );
+  };
+
+  const grid = (icons: { name: string; raw: string }[], folder: string, darkCard = false) => (
+    <div style={{
+      display: "grid",
+      gridTemplateColumns: "repeat(auto-fill, minmax(96px, 1fr))",
+      gap: 12,
+    }}>
+      {icons.map(({ name, raw }) => iconCard(name, raw, folder, darkCard))}
+    </div>
+  );
+
+  return (
+    <div>
+      <div style={{ marginBottom: 24 }}>
+        <h1 style={{ fontSize: "var(--font-size-h1)", fontWeight: "var(--font-weight-heading)", color: "var(--fg)", margin: 0 }}>
+          Custom Icons
+        </h1>
+        <p style={{ color: "var(--muted-fg)", marginTop: "var(--space-1-5)", fontSize: 14 }}>
+          HeartStamp heart-stamp icons · {PRIMARY_ICONS.length + SECONDARY_ICONS.length} total · Click to copy import · Colors use design tokens
+        </p>
+      </div>
+
+      <div style={{ marginBottom: 32 }}>
+        <h2 style={{ fontSize: 15, fontWeight: 700, color: "var(--fg)", margin: "0 0 4px" }}>Primary</h2>
+        <p style={{ color: "var(--muted-fg)", fontSize: 13, marginBottom: 12 }}>
+          Filled heart · brand color · white number
+        </p>
+        {grid(PRIMARY_ICONS, "Heart-Credit-Icons")}
+      </div>
+
+      <div>
+        <h2 style={{ fontSize: 15, fontWeight: 700, color: "var(--fg)", margin: "0 0 4px" }}>Secondary</h2>
+        <p style={{ color: "var(--muted-fg)", fontSize: 13, marginBottom: 12 }}>
+          Outlined heart · surface fill · brand number
+        </p>
+        {grid(SECONDARY_ICONS, "Heart Secondary", true)}
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════
    LOGOS PAGE
 ═══════════════════════════════════════════════════════════ */
 function PageLogos() {
@@ -4569,6 +4728,7 @@ const PAGES: Record<string, any> = {
   intro: PageIntro,
   install: PageInstallation,
   icons: PageIcons,
+  "custom-icons": PageCustomIcons,
   logos: PageLogos,
   theming: PageTheming,
   "tokens-color": PageTokensColor,
