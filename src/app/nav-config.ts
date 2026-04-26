@@ -48,7 +48,6 @@ export const NAV = [
       { title: "Pagination",      id: "pagination",   group: "Navigation" },
       { title: "Profile Nav",     id: "profile-nav",  group: "Navigation",        label: "new"  },
       { title: "Top Nav",         id: "top-nav",      group: "Navigation",        label: "new"  },
-      { title: "Editor Top Navigation", id: "editor-top-nav",  group: "Navigation", label: "new"  },
       { title: "Website Navigation",   id: "website-nav",      group: "Navigation", label: "new"  },
       /* ── Inputs & Forms ─────────────────────────────────── */
       { title: "Checkbox",        id: "checkbox",     group: "Inputs & Forms" },
@@ -75,7 +74,6 @@ export const NAV = [
       { title: "Hover Card",      id: "hover-card",   group: "Overlays & Popups" },
       { title: "Popover",         id: "popover",      group: "Overlays & Popups" },
       { title: "Sheet",           id: "sheet",        group: "Overlays & Popups" },
-      { title: "Editor Sidebar",  id: "style-sidebar", group: "Overlays & Popups", label: "new" },
       { title: "Tooltip",         id: "tooltip",      group: "Overlays & Popups" },
       /* ── Feedback & Status ──────────────────────────────── */
       { title: "Alert",           id: "alert",        group: "Feedback & Status" },
@@ -89,6 +87,9 @@ export const NAV = [
       { title: "Badge",           id: "badge",        group: "Display",           label: "new"  },
       { title: "Calendar",        id: "calendar",     group: "Display",           label: "new"  },
       { title: "Footer",          id: "footer",       group: "Display",           label: "new"  },
+      /* ── Editor ─────────────────────────────────────── */
+      { title: "Sidebar",        id: "style-sidebar",  group: "Editor", label: "new" },
+      { title: "Top Navigation", id: "editor-top-nav", group: "Editor", label: "new" },
       /* ── Chatbot ─────────────────────────────────────── */
       { title: "Stampy Chatbot",  id: "stampy-chatbot",         group: "Chatbot", label: "new" },
       { title: "Overflow Menus",  id: "chatbot-overflow-menus", group: "Chatbot", label: "new" },
