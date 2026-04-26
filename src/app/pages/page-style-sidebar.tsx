@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import { DocPage, DocSection } from "../components/docs/doc-page";
 import { Preview } from "../components/docs/doc-preview";
 import { PropsTable } from "../components/docs/doc-props-table";
-import { StyleSidebar } from "../components/ui/hs-style-sidebar";
+import { StyleSidebar, StyleSidebarMobile } from "../components/ui/hs-style-sidebar";
 
 export function PageStyleSidebar() {
-  const [open, setOpen]       = useState(false);
+  const [open, setOpen]         = useState(false);
   const [selected, setSelected] = useState<string | null>(null);
+  const [mobileNav, setMobileNav] = useState<string | undefined>(undefined);
 
   return (
     <DocPage
@@ -42,6 +43,29 @@ export function PageStyleSidebar() {
           { name: "selected",       type: "string | null",                 desc: "Controlled selected style id." },
           { name: "onSelect",       type: "(id: string | null) => void",   desc: "Fired when a style card is clicked. Pass null to deselect." },
           { name: "onApply",        type: "(id: string) => void",          desc: "Fired when user clicks Apply Style." },
+        ]} />
+      </DocSection>
+
+      <DocSection title="Mobile">
+        <Preview
+          title="Mobile Bottom Nav"
+          height={120}
+          fullWidth
+          code={`import { StyleSidebarMobile } from "@heartstamp/design-system";\n\nfunction Example() {\n  const [activeNav, setActiveNav] = useState(undefined);\n\n  return (\n    <StyleSidebarMobile\n      activeNav={activeNav}\n      onNavChange={setActiveNav}\n    />\n  );\n}`}
+        >
+          <div style={{ width: "100%", height: 120, background: "var(--color-bg-editor)", display: "flex", alignItems: "flex-end" }}>
+            <StyleSidebarMobile
+              activeNav={mobileNav}
+              onNavChange={setMobileNav}
+            />
+          </div>
+        </Preview>
+      </DocSection>
+
+      <DocSection title="Mobile Props">
+        <PropsTable props={[
+          { name: "activeNav",    type: "string",                   desc: "Controlled active nav item id." },
+          { name: "onNavChange",  type: "(id: string) => void",     desc: "Fired when a nav item is pressed." },
         ]} />
       </DocSection>
     </DocPage>
