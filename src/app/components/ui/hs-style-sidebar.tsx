@@ -1200,7 +1200,7 @@ function SignaturePanel({ onClose }: SignaturePanelProps) {
             key={c.hex}
             onClick={() => { setSigColor(c.hex); setPickerOpen(false); }}
             style={{
-              width: 24, height: 24,
+              width: "var(--space-6)", height: "var(--space-6)",
               borderRadius: "50%",
               background: c.hex,
               border: "none",
@@ -1984,6 +1984,7 @@ export function StyleSidebar({
     setActiveNav(id);
     setOpenState(willOpen);
     onOpenChange?.(willOpen);
+    setProfileOpen(false);
   }
 
   function handleClose() {

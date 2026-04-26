@@ -111,7 +111,7 @@ export function PageCustomIcons() {
         }}
       >
         <div
-          style={{ width: 20, height: 20, flexShrink: 0 }}
+          style={{ width: "var(--space-5)", height: "var(--space-5)", flexShrink: 0 }}
           dangerouslySetInnerHTML={{ __html: raw }}
         />
         <span style={{
