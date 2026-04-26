@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Search } from "lucide-react";
+import pkg from "../../../../package.json";
 import { NAV, ALL_ITEMS, LABEL_COLORS } from "../../nav-config";
 import { Inp } from "../ui/hs-inp";
 import { Acc } from "../ui/hs-acc";
@@ -105,7 +106,7 @@ export function Sidebar({ active, onSelect, onClose }: SidebarProps) {
 
       {/* footer */}
       <div style={{ padding: "var(--space-2-5) var(--space-3-5)", borderTop: "1px solid var(--border)", fontSize: "var(--font-size-label-12)", color: "var(--muted-fg)" }}>
-        HeartStamp DS · v1.11.2
+        HeartStamp DS · v{pkg.version}
       </div>
     </nav>
   );
