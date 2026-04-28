@@ -920,7 +920,7 @@ function PageScrollArea() {
   return <DocPage title="Scroll Area" subtitle="Augments native scroll functionality for custom, cross-browser styling." sourceSlug="scroll-area">
     <DocSection title="Vertical">
       <Preview title="Vertical scroll" code={`<ScrollArea className="h-[200px] w-[350px] rounded-md border p-4">\n  {items.map(tag => <div key={tag}>{tag}</div>)}\n</ScrollArea>`}>
-        <ScrollBox height={180}>
+        <ScrollBox height={180} style={{ width: "100%", maxWidth: 350 }}>
           {tags.map(t => <div key={t} style={{ padding: "var(--space-1-5) 0", borderBottom: "1px solid var(--border)", fontSize: 13, color: "var(--muted-fg)" }}>{t}</div>)}
         </ScrollBox>
       </Preview>
@@ -4360,7 +4360,7 @@ import { ProfileNav } from "@/components/ui/profile-nav";
    PILL TABS
 ═══════════════════════════════════════════════════════════ */
 function PagePillTabs() {
-  const [tab2, setTab2] = useState("a");
+  const [tab2, setTab2] = useState("type");
   const [tab3, setTab3] = useState("draw");
 
   return (
@@ -4380,8 +4380,8 @@ function PagePillTabs() {
               value={tab2}
               onValueChange={setTab2}
               tabs={[
-                { value: "a", label: "Type"   },
-                { value: "b", label: "Upload" },
+                { value: "type",   label: "Type"   },
+                { value: "upload", label: "Upload" },
               ]}
             />
           </div>
@@ -4407,10 +4407,11 @@ function PagePillTabs() {
 
       <DocSection title="Props">
         <PropsTable props={[
-          { name: "value",          type: "string",                       required: true, desc: "The currently active tab value." },
-          { name: "onValueChange",  type: "(value: string) => void",      required: true, desc: "Called with the new value when a tab is clicked." },
-          { name: "tabs",           type: "PillTabItem[]",                required: true, desc: "Array of tab definitions. Each item has value: string and label: string." },
-          { name: "style",          type: "React.CSSProperties",          def: "undefined", desc: "Optional inline style overrides for the container." },
+          { name: "value",          type: "string",                       required: true,    desc: "The currently active tab value." },
+          { name: "onValueChange",  type: "(value: string) => void",      required: true,    desc: "Called with the new value when a tab is clicked." },
+          { name: "tabs",           type: "PillTabItem[]",                required: true,    desc: "Array of tab definitions. Each item has value: string and label: string." },
+          { name: "aria-label",     type: "string",                       def: "undefined",  desc: "Accessible label for the tab group. Recommended when multiple PillTabs appear on the same page." },
+          { name: "style",          type: "React.CSSProperties",          def: "undefined",  desc: "Optional inline style overrides for the container." },
         ]} />
       </DocSection>
 
