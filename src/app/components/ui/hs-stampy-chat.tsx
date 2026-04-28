@@ -45,6 +45,14 @@ export interface StampyChatbotProps {
    * expanded panel doesn't overflow the container.
    */
   containerHeight?: number;
+  /**
+   * When true, renders the chat panel directly (no FAB toggle).
+   * isOpen is locked to true, panel fills 100% height, no shadow/radius.
+   * Used inside mobile bottom sheets.
+   */
+  embedded?: boolean;
+  /** Called when the dismiss (–) button is pressed in embedded mode */
+  onClose?: () => void;
 }
 
 export function StampyChatbot({
@@ -56,8 +64,10 @@ export function StampyChatbot({
   partyPopperSrc,
   className = "",
   containerHeight,
+  embedded = false,
+  onClose,
 }: StampyChatbotProps) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(embedded ? true : false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(true);
   const [activeSuggestions, setActiveSuggestions] = useState<string[]>(() => getRandomSuggestions(4));
@@ -249,6 +259,97 @@ export function StampyChatbot({
   const showWorkingSpinner = stepIndex >= 0 && !typingText && !showMenu && !showBanner && currentStep !== null && (currentStep.type === "stampy" || currentStep.type === "final-card");
 
   // ── RENDER ─────────────────────────────────────────────────────────────
+
+  if (embedded) {
+    return (
+      <div className={`relative flex flex-col ${className}`} style={{ width: "100%", height: "100%", overflow: "hidden", backgroundColor: "var(--color-bg-main)" }}>
+        <ChatHeader
+          embedded
+          conversationName={activeConversation?.name ?? "New Conversation"}
+          conversations={conversations}
+          expanded={false}
+          onToggleExpand={() => {}}
+          onMinimize={onClose}
+          onSelectConversation={(id) => setActiveConversationId(id)}
+          onNewConversation={handleNewConversation}
+          onRename={handleRenameConversation}
+        />
+        <AnimatePresence mode="wait" initial={false}>
+          {!isWorking ? (
+            /* ── STEP 1: Home ── */
+            <motion.div key="home" className="flex flex-col w-full h-full" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, y: -4 }} transition={{ duration: 0.15 }}>
+              <ChatHomeScreen mascotSrc={mascotSrc} examplePrompts={chatScript.examplePrompts} />
+              <div style={{ flex: 1 }} />
+              <AnimatePresence>
+                {showSuggestions && (
+                  <motion.div key="suggestions" style={{ padding: "0 16px 12px" }} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 6 }} transition={{ type: "spring", stiffness: 300, damping: 28 }}>
+                    <OccasionSuggestions suggestions={activeSuggestions} onSelect={(item) => { setShowSuggestions(false); processMessage(item); }} onClose={() => setShowSuggestions(false)} />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              <div style={{ padding: "0 16px 16px", flexShrink: 0 }}>
+                <ChatHomeInput value={inputValue} onChange={setInputValue} onSend={handleSend} isRecording={isRecording} onToggleMic={toggleMic} />
+              </div>
+            </motion.div>
+          ) : (
+            /* ── STEP 2: Conversation ── */
+            <motion.div key="conversation" className="flex flex-col w-full h-full relative overflow-hidden" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 4 }} transition={{ type: "spring", stiffness: 260, damping: 28, delay: 0.08 }}>
+              <ScrollArea viewportRef={chatsScrollRef} className="flex-1 min-h-0">
+                <div ref={chatsInnerRef} style={{ display: "flex", flexDirection: "column", gap: 20, padding: "16px 16px 12px" }}>
+                  {messages.map((msg, i) => msg.role === "user" ? (
+                    <UserBubble key={`msg-${i}`} text={msg.text} delay={0.1} />
+                  ) : (
+                    <div key={`msg-${i}`} style={{ display: "flex", flexDirection: "column", gap: 16, width: "100%", flexShrink: 0 }}>
+                      <StampyBubble text={msg.text} buttons={msg.buttons} buttonsUsed={i < messages.length - 1} onButtonClick={handleTriggerButton} buttonDelay={0.08} />
+                      {msg.showCarousel && <StyleCarousel themeChoice={themeChoice} setThemeChoice={handleStyleSelect} />}
+                    </div>
+                  ))}
+                  <AnimatePresence mode="popLayout">{typingText && <StampyBubble key="typing-bubble" text={typedText} />}</AnimatePresence>
+                  <AnimatePresence>{showWorkingSpinner && <WorkingSpinner key="step-loader" />}</AnimatePresence>
+                  <AnimatePresence>
+                    {showBanner && currentStep?.type === "banner" && (
+                      <motion.div key="generating-banner" style={{ display: "flex", width: "100%", justifyContent: "flex-start", paddingRight: 56, flexShrink: 0 }} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={bubbleSpring}>
+                        <TadaBanner loadingDuration={currentStep.config.loadingDuration} loadingTitle={currentStep.config.loadingTitle} loadingMessage={currentStep.config.loadingMessage} doneTitle={currentStep.config.doneTitle} doneMessage={currentStep.config.doneMessage} partyPopperSrc={partyPopperSrc} />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </ScrollArea>
+              <ChatConversationInput aiIconSrc={aiIconSrc} value={inputValue} onChange={setInputValue} onSend={handleSend} isRecording={isRecording} onToggleMic={toggleMic} />
+              <AnimatePresence>
+                {showMenu && currentStep?.type === "overflow" && (
+                  <motion.div style={{ position: "absolute", bottom: 90, left: 16, right: 16, zIndex: 20 }} initial={{ opacity: 0, y: 14, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 6, scale: 0.97 }} transition={{ type: "spring", stiffness: 340, damping: 18, mass: 0.8 }}>
+                    <OverflowMenu pages={currentStep.pages} inputPlaceholder={currentStep.inputPlaceholder} onClose={() => setShowMenu(false)} onComplete={handleMenuComplete} />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              <AnimatePresence>
+                {showMenu && currentStep?.type === "template" && (
+                  <motion.div style={{ position: "absolute", bottom: 90, left: 16, right: 16, zIndex: 20 }} initial={{ opacity: 0, y: 14, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 6, scale: 0.97 }} transition={{ type: "spring", stiffness: 340, damping: 18, mass: 0.8 }}>
+                    <TemplateOverflowMenu header={currentStep.header} cards={currentStep.cards} inputPlaceholder={currentStep.inputPlaceholder} onClose={() => setShowMenu(false)} onComplete={handleMenuComplete} />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              <AnimatePresence>
+                {showMenu && currentStep?.type === "action" && (
+                  <motion.div style={{ position: "absolute", bottom: 90, left: 16, right: 16, zIndex: 20 }} initial={{ opacity: 0, y: 14, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 6, scale: 0.97 }} transition={{ type: "spring", stiffness: 340, damping: 18, mass: 0.8 }}>
+                    <ActionOverflowMenuList config={currentStep.config} inputPlaceholder={currentStep.inputPlaceholder} onClose={() => setShowMenu(false)} onGenerate={handleActionGenerate} onComplete={handleMenuComplete} />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              <AnimatePresence>
+                {showMenu && currentStep?.type === "checklist" && (
+                  <motion.div style={{ position: "absolute", bottom: 90, left: 16, right: 16, zIndex: 20 }} initial={{ opacity: 0, y: 14, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 6, scale: 0.97 }} transition={{ type: "spring", stiffness: 340, damping: 18, mass: 0.8 }}>
+                    <ChecklistOverflowMenu pages={currentStep.pages} inputPlaceholder={currentStep.inputPlaceholder} onClose={() => setShowMenu(false)} onComplete={(selected) => { if (selected.length === 0) handleMenuSkip(); else handleMenuComplete(selected.join(", ")); }} />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    );
+  }
 
   return (
     <div className={`relative flex items-end justify-end pt-[24px] pb-[24px] pr-[24px] ${className}`} style={{ width: "100%", height: "100%", overflow: "hidden" }}>

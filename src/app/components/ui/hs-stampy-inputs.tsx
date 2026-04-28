@@ -181,7 +181,7 @@ export function ChatConversationInput({
       </div>
 
       {/* Bottom actions */}
-      <div className="flex gap-[8px] items-end px-[16px] py-[12px] pb-[16px] w-full">
+      <div className="flex gap-[8px] items-end px-[16px] py-[8px] w-full">
         <div className="flex flex-[1_0_0] gap-[8px] items-end min-w-px">
           <button className="transition-colors flex gap-[6px] h-[32px] items-center px-[8px] py-[6px] relative rounded-[100px]" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }} onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-state-hover)")} onMouseLeave={e => (e.currentTarget.style.backgroundColor = "var(--color-brand-secondary-dim)")}>
             <div className="size-[16px] relative shrink-0 flex items-center justify-center" style={{ color: "var(--color-text-primary)" }}><ImagePlus size={18} strokeWidth={1.5} absoluteStrokeWidth /></div>

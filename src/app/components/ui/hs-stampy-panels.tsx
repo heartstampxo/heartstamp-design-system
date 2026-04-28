@@ -93,6 +93,8 @@ export interface ChatHomeScreenProps {
   examplePrompts?: string[];
   /** Whether to render the mascot (set to false on mobile). Defaults to true. */
   showMascot?: boolean;
+  /** Compact inline layout — mascot 52px beside text, no absolute positioning */
+  compact?: boolean;
 }
 
 export function ChatHomeScreen({
@@ -104,11 +106,37 @@ export function ChatHomeScreen({
     "Something silly and warm for my mom's 60th birthday",
   ],
   showMascot = true,
+  compact = false,
 }: ChatHomeScreenProps) {
   const { displayText, isTyping } = useTypewriter(examplePrompts);
 
+  if (compact) {
+    return (
+      <div style={{ padding: "16px 16px 12px", display: "flex", alignItems: "center", gap: 12, flexShrink: 0 }}>
+        {showMascot && (
+          <img alt="Stampy mascot" src={mascotSrc} style={{ width: 52, height: 52, objectFit: "contain", flexShrink: 0 }} />
+        )}
+        <div style={{ display: "flex", flexDirection: "column", gap: 4, flex: 1, minWidth: 0 }}>
+          <p style={{ margin: 0, fontSize: 18, fontWeight: 600, lineHeight: "28px", ...dmSans500, color: "var(--color-text-primary)" }}>
+            Hi there! I'm Stampy
+          </p>
+          <div className="pointer-events-none select-none" style={{ minHeight: 20 }}>
+            <span style={{ fontSize: 15, lineHeight: "20px", ...dmSans400, color: "var(--color-text-secondary)" }}>
+              Try: {displayText}
+              <motion.span
+                style={{ display: "inline-block", width: "1.5px", height: "13px", marginLeft: "1px", verticalAlign: "middle", backgroundColor: "var(--color-text-secondary)" }}
+                animate={{ opacity: isTyping ? [1, 1, 0, 0] : [1, 0] }}
+                transition={isTyping ? { repeat: Infinity, duration: 0.8, times: [0, 0.45, 0.5, 1] } : { repeat: Infinity, duration: 0.6 }}
+              />
+            </span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-col justify-between w-full" style={{ backgroundColor: "var(--color-bg-main)", padding: "16px", gap: 16, position: "relative", overflow: "visible" }}>
+    <div className="flex flex-col justify-between w-full" style={{ backgroundColor: "var(--color-bg-main)", padding: "16px 0", gap: 16, position: "relative", overflow: "visible" }}>
       {/* Mascot */}
       {showMascot && (
         <div className="pointer-events-none select-none" style={{ position: "absolute", top: -8, left: -80, width: 150, height: 135, zIndex: 20 }}>
@@ -117,7 +145,7 @@ export function ChatHomeScreen({
       )}
 
       {/* Greeting + typewriter */}
-      <div className="flex flex-col gap-[8px] items-start w-full relative pl-[40px]">
+      <div className="flex flex-col gap-[8px] items-start w-full relative pl-[60px]">
         <p className="font-normal leading-[28px] relative text-[18px] w-full" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>Hi there! I'm Stampy</p>
         <div className="relative w-full" style={{ minHeight: 20 }}>
           <div className="pointer-events-none select-none">
@@ -159,6 +187,8 @@ export interface ChatHeaderProps {
   onNewConversation?: () => void;
   /** Called when a conversation is renamed; receives the id and the new name */
   onRename?: (id: string, newName: string) => void;
+  /** Embedded mode: hide expand/minimize icons, remove rounded-t corners */
+  embedded?: boolean;
 }
 
 export function ChatHeader({
@@ -175,6 +205,7 @@ export function ChatHeader({
   onSelectConversation,
   onNewConversation,
   onRename,
+  embedded = false,
 }: ChatHeaderProps) {
   const [dropdownOpen, setDropdownOpen] = useState(defaultDropdownOpen);
   const [localConversations, setLocalConversations] = useState(conversations);
@@ -201,9 +232,9 @@ export function ChatHeader({
   }
 
   return (
-    <div className="border-b border-solid flex items-center justify-between px-[16px] py-[12px] relative shrink-0 w-full z-30 rounded-t-[20px]" style={{ borderColor: "var(--color-element-subtle)", backgroundColor: "var(--color-bg-main)" }}>
+    <div className={`border-b border-solid flex items-center justify-between px-[16px] py-[12px] relative shrink-0 w-full z-30${embedded ? "" : " rounded-t-[20px]"}`} style={{ borderColor: "var(--color-element-subtle)", backgroundColor: "var(--color-bg-main)" }}>
       {/* Left: Stampy label + conversation dropdown */}
-      <div className="flex gap-[12px] items-center relative shrink-0 min-w-0 flex-1">
+      <div className="flex gap-[16px] items-center relative shrink-0 min-w-0 flex-1">
         <div className="flex flex-col justify-center leading-[0] relative shrink-0 text-[15px] whitespace-nowrap" style={{ ...dmSans500, fontWeight: 600, color: "var(--color-text-primary)" }}>
           <p className="leading-[normal]">Stampy</p>
         </div>
@@ -267,15 +298,15 @@ export function ChatHeader({
         </div>
       </div>
 
-      {/* Right: expand + minimize */}
+      {/* Right: expand (hidden in embedded) + minimize */}
       <div className="flex gap-[8px] items-center relative shrink-0">
-        <div className="group flex items-center justify-center relative rounded-[25px] shrink-0 size-[32px] cursor-pointer transition-colors" onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-state-hover)")} onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")} onClick={onToggleExpand}>
+        {!embedded && <div className="group flex items-center justify-center relative rounded-[25px] shrink-0 size-[32px] cursor-pointer transition-colors" onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-state-hover)")} onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")} onClick={onToggleExpand}>
           {expanded ? (
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M19 4C20.6569 4 22 5.34315 22 7V17C22 18.6051 20.7394 19.9158 19.1543 19.9961L19 20H5L4.8457 19.9961C3.26055 19.9158 2 18.6051 2 17V7C2 5.34315 3.34315 4 5 4H19ZM5 5.5C4.17157 5.5 3.5 6.17157 3.5 7V17C3.5 17.8284 4.17157 18.5 5 18.5H19C19.8284 18.5 20.5 17.8284 20.5 17V7C20.5 6.17157 19.8284 5.5 19 5.5H5ZM18 7C18.5523 7 19 7.44772 19 8V16C19 16.5523 18.5523 17 18 17H14C13.4477 17 13 16.5523 13 16V8C13 7.44772 13.4477 7 14 7H18Z" className="fill-[var(--color-text-secondary)] group-hover:fill-[var(--color-text-primary)] transition-colors" /></svg>
           ) : (
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M15.4883 3.33691C17.073 3.41753 18.3338 4.72826 18.334 6.33301V13.666L18.3301 13.8203C18.2525 15.3543 17.0221 16.5841 15.4883 16.6621L15.334 16.666H4.66699C3.01014 16.666 1.66699 15.3229 1.66699 13.666V6.33301C1.66717 4.6763 3.01025 3.33301 4.66699 3.33301H15.334L15.4883 3.33691ZM4.66699 4.83301C3.83867 4.83301 3.16717 5.50473 3.16699 6.33301V13.666C3.16699 14.4944 3.83857 15.166 4.66699 15.166H15.334C16.1621 15.1657 16.834 14.4942 16.834 13.666V6.33301C16.8338 5.50495 16.162 4.83336 15.334 4.83301H4.66699ZM14.833 9.16699C15.3853 9.16699 15.833 9.61471 15.833 10.167V13.167C15.8328 13.7191 15.3852 14.167 14.833 14.167H11.833C11.281 14.1668 10.8332 13.719 10.833 13.167V10.167C10.833 9.61482 11.2809 9.16717 11.833 9.16699H14.833Z" className="fill-[var(--color-text-secondary)] group-hover:fill-[var(--color-text-primary)] transition-colors" /></svg>
           )}
-        </div>
+        </div>}
         <div className="group flex items-center justify-center relative rounded-[25px] shrink-0 size-[32px] cursor-pointer transition-colors" onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-state-hover)")} onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")} onClick={onMinimize}>
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4.16669 10H15.8334" className="stroke-[var(--color-text-secondary)] group-hover:stroke-[var(--color-text-primary)] transition-colors" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
         </div>

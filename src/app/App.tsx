@@ -3441,7 +3441,7 @@ function PageLogos() {
     for (const { color } of LOCKUP_VARIANTS) {
       files[`lockup-${color}.svg`] = strToU8(getSvgString("lockup", color));
     }
-    triggerDownload(URL.createObjectURL(new Blob([zipSync(files)], { type: "application/zip" })), "heartstamp-logos.zip");
+    triggerDownload(URL.createObjectURL(new Blob([zipSync(files) as BlobPart], { type: "application/zip" })), "heartstamp-logos.zip");
   }
 
   // ── Pill download button ───────────────────────────────────
@@ -4061,7 +4061,7 @@ function PageTheming() {
                   </div>
                   <div style={{ fontSize: 10.5, fontWeight: 700, color: "#6e6d6a", textTransform: "uppercase" as const, letterSpacing: ".06em", marginBottom: 10 }}>Controls</div>
                   <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                    <Swt defaultChecked />
+                    <Swt checked onChange={() => {}} />
                     <Cbx defaultChecked id="th-cbx-demo" />
                     <Lbl htmlFor="th-cbx-demo" style={{ fontSize: 13 }}>Enable feature</Lbl>
                   </div>

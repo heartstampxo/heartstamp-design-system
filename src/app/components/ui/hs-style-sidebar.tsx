@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion, animate, useMotionValue, useTransform } from "motion/react";
 import {
   Search, X, Mail, Languages, PencilLine, Signature,
   Layers, Check, Loader2, ArrowLeft, PaintbrushIcon,
@@ -19,6 +19,13 @@ import { ColorPicker } from "./hs-color-picker";
 import { PillTabs } from "./hs-pill-tabs";
 import { ProfileNavDesktop } from "./profile-nav";
 import { HSEmblem } from "./hs-logo";
+import { StampyChatbot } from "./hs-stampy-chat";
+import demoChatScript from "./hs-chat-demo-script";
+import chatMascotImg    from "../../../assets/stampy/mascot.png";
+import chatAiIconImg    from "../../../assets/stampy/ai-icon.png";
+import chatHomeBgImg    from "../../../assets/stampy/home-bg.png";
+import stampyIconImg    from "../../../assets/stampy/icon.svg";
+import partyPopperImg   from "../../../assets/stampy/party-popper.gif";
 
 /* ─── Types ──────────────────────────────────────────────── */
 
@@ -2100,115 +2107,1637 @@ export function StyleSidebar({
   );
 }
 
+/* ─── StylesMobileSheet ───────────────────────────────────── */
+
+interface StylesMobileSheetProps {
+  onClose: () => void;
+  recommended?: StyleItem[];
+  styles?: StyleItem[];
+  selected?: string | null;
+  onSelect?: (id: string | null) => void;
+  onApply?: (id: string) => void;
+}
+
+const MOBILE_SHEET_TABS = [
+  { id: "recommended", label: "Recommended" },
+  { id: "trending",    label: "Trending"    },
+  { id: "featured",    label: "Featured"    },
+  { id: "popular",     label: "Popular"     },
+];
+
+function StylesMobileSheet({
+  onClose,
+  recommended = DEFAULT_RECOMMENDED,
+  styles      = DEFAULT_STYLES,
+  selected    = null,
+  onSelect,
+  onApply,
+}: StylesMobileSheetProps) {
+  const [tab, setTab]           = useState("recommended");
+  const [search, setSearch]     = useState("");
+  const [page, setPage]         = useState(1);
+  const [loading, setLoading]   = useState(false);
+  const [selectedState, setSelectedState] = useState<string | null>(null);
+  const [parentH, setParentH]   = useState(0);
+  const scrollRef               = useRef<HTMLDivElement>(null);
+  const sentinelRef             = useRef<HTMLDivElement>(null);
+  const sheetRef                = useRef<HTMLDivElement>(null);
+  const tabTrackRef             = useRef<HTMLDivElement>(null);
+  const tabContentRef           = useRef<HTMLDivElement>(null);
+  const [tabMaxDrag, setTabMaxDrag] = useState(0);
+  const tabDragX    = useMotionValue(0);
+  const tabLeftFade = useTransform(tabDragX, [-24, 0], [1, 0]);
+  const tabRightFade = useTransform(tabDragX, [0, -24], [0, 1]);
+
+  // y=0 → full screen, y=parentH*0.25 → 75% (partial), y=parentH → dismissed
+  const sheetY      = useMotionValue(2000);
+  // top radius: 0 when at y=0 (full), 25px once a few pixels below
+  const radiusTop   = useTransform(sheetY, [0, 40], [0, 25]);
+  // backdrop dims based on sheet position
+  const backdropOp  = useTransform(sheetY, [0, parentH || 600], [0.5, 0]);
+
+  // controlled/uncontrolled — mirrors desktop StyleSidebar pattern
+  const activeSelected = selected !== undefined && selected !== null
+    ? selected
+    : selectedState;
+
+  const tabItems = tab === "recommended"
+    ? cycleItems(recommended, recommended.length)
+    : cycleItems(styles, page * PAGE_SIZE);
+
+  const filtered = search.trim()
+    ? [...recommended, ...styles].filter(s =>
+        s.name.toLowerCase().includes(search.toLowerCase()))
+    : null;
+
+  // Measure parent height, animate in to 75%
+  useEffect(() => {
+    const parent = sheetRef.current?.parentElement;
+    if (!parent) return;
+    const measure = () => {
+      const h = parent.offsetHeight;
+      setParentH(h);
+      return h;
+    };
+    const h = measure();
+    animate(sheetY, h * 0.25, { type: "spring", stiffness: 320, damping: 35 });
+    const ro = new ResizeObserver(measure);
+    ro.observe(parent);
+    return () => ro.disconnect();
+  }, []);
+
+  // Tab strip overflow drag measurement
+  useEffect(() => {
+    const track   = tabTrackRef.current;
+    const content = tabContentRef.current;
+    if (!track || !content) return;
+    const update = () => setTabMaxDrag(Math.max(0, content.scrollWidth - track.offsetWidth));
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(track);
+    ro.observe(content);
+    return () => ro.disconnect();
+  }, []);
+
+  // Infinite scroll sentinel
+  useEffect(() => {
+    const sentinel  = sentinelRef.current;
+    const container = scrollRef.current;
+    if (!sentinel || !container) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !loading) {
+          setLoading(true);
+          setTimeout(() => { setPage(p => p + 1); setLoading(false); }, 700);
+        }
+      },
+      { root: container, threshold: 0.1 },
+    );
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [loading, tab]);
+
+  function dismiss() {
+    animate(sheetY, parentH * 1.2, { type: "spring", stiffness: 320, damping: 35 })
+      .then(onClose);
+  }
+
+  function handleDragEnd(_: unknown, info: { offset: { y: number }; velocity: { y: number } }) {
+    const y       = sheetY.get();
+    const partial = parentH * 0.25;
+
+    if (info.velocity.y < -400 || y < partial * 0.4) {
+      // Fast up or dragged near top → full screen
+      animate(sheetY, 0, { type: "spring", stiffness: 320, damping: 35 });
+    } else if (info.velocity.y > 400 || y > partial * 1.6) {
+      // Fast down or dragged well below partial → dismiss
+      dismiss();
+    } else {
+      // Snap back to 75%
+      animate(sheetY, partial, { type: "spring", stiffness: 320, damping: 35 });
+    }
+  }
+
+  function handleSelect(id: string) {
+    const next = activeSelected === id ? null : id;
+    setSelectedState(next);
+    onSelect?.(next);
+  }
+
+  return (
+    <>
+      {/* Backdrop — not tappable, fades with sheet */}
+      <motion.div
+        style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,1)", zIndex: 10, opacity: backdropOp }}
+      />
+
+      {/* Sheet — top:0 height:100% so y offset reveals it from top, not bottom */}
+      <motion.div
+        ref={sheetRef}
+        drag="y"
+        dragElastic={{ top: 0.08, bottom: 0.25 }}
+        onDragEnd={handleDragEnd}
+        style={{
+          position: "absolute", top: 0, left: 0, right: 0, height: "100%",
+          background: "var(--bg)",
+          borderTopLeftRadius: radiusTop,
+          borderTopRightRadius: radiusTop,
+          zIndex: 20,
+          display: "flex",
+          flexDirection: "column",
+          overflow: "hidden",
+          y: sheetY,
+        }}
+      >
+        {/* Handler pill */}
+        <div style={{ display: "flex", justifyContent: "center", padding: "var(--space-2) 0 var(--space-4)", flexShrink: 0 }}>
+          <div style={{ width: 120, height: 6, borderRadius: "var(--radius-full)", background: "var(--color-element-subtle)" }} />
+        </div>
+
+        {/* Search */}
+        <div style={{ padding: "0 var(--space-4) var(--space-4)", flexShrink: 0 }}>
+          <Inp
+            value={search}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
+            placeholder="Search for styles here"
+            iconLeft={<Search size={14} />}
+            style={{ borderRadius: "var(--radius-full)" }}
+          />
+        </div>
+
+        {/* Tabs — swipeable strip, same drag pattern as bottom nav */}
+        <div ref={tabTrackRef} style={{ overflow: "hidden", width: "100%", position: "relative", flexShrink: 0, paddingBottom: "var(--space-3)" }}>
+          <motion.div style={{
+            position: "absolute", left: 0, top: 0, bottom: 0, width: 28, zIndex: 1,
+            background: "linear-gradient(to right, var(--bg), transparent)",
+            opacity: tabLeftFade, pointerEvents: "none",
+          }} />
+          <motion.div style={{
+            position: "absolute", right: 0, top: 0, bottom: 0, width: 28, zIndex: 1,
+            background: "linear-gradient(to left, var(--bg), transparent)",
+            opacity: tabRightFade, pointerEvents: "none",
+          }} />
+          <motion.div
+            ref={tabContentRef}
+            drag="x"
+            dragConstraints={{ left: -tabMaxDrag, right: 0 }}
+            dragElastic={0.12}
+            dragTransition={{ bounceStiffness: 400, bounceDamping: 40, timeConstant: 280, power: 0.35 }}
+            style={{
+              display: "flex", alignItems: "center", gap: "var(--space-1)",
+              width: "max-content", minWidth: "100%",
+              padding: "0 var(--space-4)",
+              cursor: tabMaxDrag > 0 ? "grab" : "default",
+              x: tabDragX,
+            }}
+            whileDrag={{ scale: 0.98 }}
+            whileTap={{ cursor: "grabbing" }}
+          >
+            {MOBILE_SHEET_TABS.map(t => (
+              <button
+                key={t.id}
+                onClick={() => { setTab(t.id); setPage(1); }}
+                style={{
+                  flexShrink: 0,
+                  height: 36,
+                  padding: "0 var(--space-3)",
+                  borderRadius: "var(--radius-full)",
+                  border: `1px solid ${tab === t.id ? "var(--fg)" : "transparent"}`,
+                  background: "transparent",
+                  cursor: "pointer",
+                  fontSize: "var(--font-size-body-15)",
+                  fontWeight: tab === t.id ? 500 : 400,
+                  color: tab === t.id ? "var(--fg)" : "var(--muted-fg)",
+                  whiteSpace: "nowrap",
+                  lineHeight: 1,
+                  display: "inline-flex", alignItems: "center",
+                }}
+              >
+                {t.label}
+              </button>
+            ))}
+          </motion.div>
+        </div>
+
+        {/* Scrollable grid — same StyleCard/StyleGrid as desktop */}
+        <div
+          ref={scrollRef}
+          style={{
+            flex: 1, minHeight: 0, overflowY: "auto",
+            padding: "0 var(--space-4) 80px",
+            scrollbarWidth: "thin",
+            scrollbarColor: "var(--border) transparent",
+          }}
+        >
+          <AnimatePresence mode="wait">
+            {filtered ? (
+              <motion.div key="search" initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }} transition={viewTransition}>
+                <div style={{ fontSize: "var(--font-size-label-12)", fontWeight: 600, color: "var(--muted-fg)", textTransform: "uppercase", letterSpacing: ".05em", marginBottom: "var(--space-3)" }}>
+                  {filtered.length} result{filtered.length !== 1 ? "s" : ""}
+                </div>
+                {filtered.length > 0
+                  ? <StyleGrid items={filtered} selected={activeSelected} onSelect={handleSelect} />
+                  : <p style={{ fontSize: "var(--font-size-body-13)", color: "var(--muted-fg)" }}>No styles found</p>
+                }
+              </motion.div>
+            ) : (
+              <motion.div key={tab} initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }} transition={viewTransition}>
+                <StyleGrid items={tabItems} selected={activeSelected} onSelect={handleSelect} stagger staggerDelay={0.02} />
+                {tab !== "recommended" && (
+                  <>
+                    <div ref={sentinelRef} style={{ height: 1 }} />
+                    {loading && (
+                      <div style={{ display: "flex", justifyContent: "center", padding: "var(--space-4) 0", color: "var(--muted-fg)" }}>
+                        <Loader2 size={16} style={{ animation: "spin 1s linear infinite" }} />
+                      </div>
+                    )}
+                  </>
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+      </motion.div>
+    </>
+  );
+}
+
+/* ─── MessageMobileSheet ─────────────────────────────────── */
+
+interface MessageMobileSheetProps {
+  onClose: () => void;
+  onSaveReady?: (ready: boolean) => void;
+}
+
+function MessageMobileSheet({ onClose, onSaveReady }: MessageMobileSheetProps) {
+  const [msgTab, setMsgTab]               = useState<"type" | "upload">("type");
+  const [font, setFont]                   = useState(FONTS[0]);
+  const [size, setSize]                   = useState(20);
+  const [message, setMessage]             = useState("");
+  const [closing, setClosing]             = useState("");
+  const [uploadedUrl, setUploadedUrl]     = useState<string | null>(null);
+  const [uploading, setUploading]         = useState(false);
+  const [uploadPreview, setUploadPreview] = useState<string | null>(null);
+  const [parentH, setParentH]             = useState(0);
+  const sheetRef        = useRef<HTMLDivElement>(null);
+  const fileInputRef    = useRef<HTMLInputElement>(null);
+  const uploadedUrlRef  = useRef<string | null>(null);
+  const uploadPreviewRef = useRef<string | null>(null);
+
+  uploadedUrlRef.current   = uploadedUrl;
+  uploadPreviewRef.current = uploadPreview;
+
+  const sheetY    = useMotionValue(2000);
+  const radiusTop = useTransform(sheetY, [0, 40], [0, 25]);
+  const backdropOp = useTransform(sheetY, [0, parentH || 600], [0.5, 0]);
+
+  useEffect(() => () => {
+    if (uploadedUrlRef.current)   URL.revokeObjectURL(uploadedUrlRef.current);
+    if (uploadPreviewRef.current) URL.revokeObjectURL(uploadPreviewRef.current);
+  }, []);
+
+  useEffect(() => {
+    const parent = sheetRef.current?.parentElement;
+    if (!parent) return;
+    const measure = () => { const h = parent.offsetHeight; setParentH(h); return h; };
+    const h = measure();
+    animate(sheetY, h * 0.25, { type: "spring", stiffness: 320, damping: 35 });
+    const ro = new ResizeObserver(measure);
+    ro.observe(parent);
+    return () => ro.disconnect();
+  }, []);
+
+  useEffect(() => {
+    onSaveReady?.(msgTab === "type" || !!uploadedUrl);
+  }, [msgTab, uploadedUrl]);
+
+  function dismiss() {
+    animate(sheetY, parentH * 1.2, { type: "spring", stiffness: 320, damping: 35 }).then(onClose);
+  }
+
+  function handleDragEnd(_: unknown, info: { offset: { y: number }; velocity: { y: number } }) {
+    const y = sheetY.get();
+    const partial = parentH * 0.25;
+    const spring = { type: "spring" as const, stiffness: 320, damping: 35 };
+    if (info.velocity.y < -400 || y < partial * 0.4) {
+      animate(sheetY, 0, spring);
+    } else if (info.velocity.y > 400 || y > partial * 1.6) {
+      dismiss();
+    } else {
+      animate(sheetY, partial, spring);
+    }
+  }
+
+  function handleFiles(files: FileList | null) {
+    const file = files?.[0];
+    if (!file || !file.type.startsWith("image/")) return;
+    if (uploadedUrl)   URL.revokeObjectURL(uploadedUrl);
+    if (uploadPreview) URL.revokeObjectURL(uploadPreview);
+    const url = URL.createObjectURL(file);
+    setUploadPreview(url);
+    setUploading(true);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+    setTimeout(() => { setUploading(false); setUploadedUrl(url); setUploadPreview(null); }, 1400);
+  }
+
+  function handleRemove() {
+    if (uploadedUrl)   URL.revokeObjectURL(uploadedUrl);
+    if (uploadPreview) URL.revokeObjectURL(uploadPreview);
+    setUploadedUrl(null);
+    setUploadPreview(null);
+    setUploading(false);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  }
+
+  return (
+    <>
+      <motion.div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,1)", zIndex: 10, opacity: backdropOp }} />
+
+      <motion.div
+        ref={sheetRef}
+        drag="y"
+        dragElastic={{ top: 0.08, bottom: 0.25 }}
+        onDragEnd={handleDragEnd}
+        style={{
+          position: "absolute", top: 0, left: 0, right: 0, height: "100%",
+          background: "var(--bg)",
+          borderTopLeftRadius: radiusTop,
+          borderTopRightRadius: radiusTop,
+          zIndex: 20,
+          display: "flex",
+          flexDirection: "column",
+          overflow: "hidden",
+          y: sheetY,
+        }}
+      >
+        {/* Handler pill */}
+        <div style={{ display: "flex", justifyContent: "center", padding: "var(--space-2) 0 var(--space-4)", flexShrink: 0 }}>
+          <div style={{ width: 120, height: 6, borderRadius: "var(--radius-full)", background: "var(--color-element-subtle)" }} />
+        </div>
+
+        {/* Title */}
+        <div style={{ padding: "0 var(--space-4) var(--space-3)", flexShrink: 0 }}>
+          <span style={{ fontSize: "var(--font-size-body-15)", fontWeight: 600, color: "var(--fg)" }}>Message</span>
+        </div>
+
+        {/* Tab switcher */}
+        <div style={{ padding: "0 var(--space-4) var(--space-4)", flexShrink: 0 }}>
+          <PillTabs
+            value={msgTab}
+            onValueChange={v => setMsgTab(v as "type" | "upload")}
+            tabs={[
+              { value: "type",   label: "Type"   },
+              { value: "upload", label: "Upload" },
+            ]}
+          />
+        </div>
+
+        {/* Scrollable content */}
+        <AnimatePresence mode="wait">
+          {msgTab === "type" ? (
+            <motion.div
+              key="type"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.12 }}
+              style={{ flex: 1, minHeight: 0, overflowY: "auto" }}
+            >
+              <div style={{ padding: "0 var(--space-4) 80px", display: "flex", flexDirection: "column", gap: "var(--space-5)" }}>
+
+                {/* Font */}
+                <motion.div {...msgItem(0.06)}>
+                  <Lbl style={{ fontSize: "var(--font-size-body-15)", marginBottom: "var(--space-2)" }}>Font</Lbl>
+                  <DdMenu
+                    fixed
+                    style={{ width: "100%" }}
+                    trigger={
+                      <Btn variant="outline" style={{ width: "100%", borderRadius: "var(--radius-full)", justifyContent: "space-between" }}>
+                        <span style={{ fontFamily: font.family, fontSize: "var(--font-size-body-15)" }}>{font.name}</span>
+                        <ChevronDown size={14} />
+                      </Btn>
+                    }
+                    items={FONTS.map(f => ({
+                      label: f.name,
+                      style: { fontFamily: f.family, fontSize: "var(--font-size-body-15)" },
+                      onClick: () => setFont(f),
+                    }))}
+                  />
+                </motion.div>
+
+                {/* Size */}
+                <motion.div {...msgItem(0.10)}>
+                  <Lbl style={{ fontSize: "var(--font-size-body-15)", marginBottom: "var(--space-2)" }}>Size</Lbl>
+                  <div style={{
+                    display: "flex", alignItems: "center",
+                    height: "var(--space-10)",
+                    borderRadius: "var(--radius-full)",
+                    border: "1px solid var(--border)",
+                    background: "var(--bg)",
+                    padding: "0 var(--space-1)",
+                  }}>
+                    <Btn variant="outline" size="icon-sm" onClick={() => setSize(s => Math.max(8, s - 1))}
+                      style={{ border: "none", borderRadius: "var(--radius-full)", color: "var(--fg)", flexShrink: 0 }}>
+                      <Minus size={14} />
+                    </Btn>
+                    <Sep orientation="vertical" style={{ height: "var(--space-5)" }} />
+                    <span style={{ flex: 1, textAlign: "center", fontSize: "var(--font-size-body-15)", fontWeight: 500, color: "var(--fg)" }}>{size}</span>
+                    <Sep orientation="vertical" style={{ height: "var(--space-5)" }} />
+                    <Btn variant="outline" size="icon-sm" onClick={() => setSize(s => Math.min(120, s + 1))}
+                      style={{ border: "none", borderRadius: "var(--radius-full)", color: "var(--fg)", flexShrink: 0 }}>
+                      <Plus size={14} />
+                    </Btn>
+                  </div>
+                </motion.div>
+
+                {/* Message */}
+                <motion.div {...msgItem(0.14)}>
+                  <Lbl style={{ fontSize: "var(--font-size-body-15)", marginBottom: "var(--space-2)" }}>Message</Lbl>
+                  <Tarea
+                    placeholder="Write your message here…"
+                    rows={5}
+                    value={message}
+                    onChange={e => setMessage(e.target.value)}
+                    style={{ height: 110, resize: "none" }}
+                  />
+                </motion.div>
+
+                {/* Closing */}
+                <motion.div {...msgItem(0.18)}>
+                  <Lbl style={{ fontSize: "var(--font-size-body-15)", marginBottom: "var(--space-2)" }}>Closing</Lbl>
+                  <Inp
+                    value={closing}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setClosing(e.target.value)}
+                    placeholder="e.g. With love,"
+                    style={{ borderRadius: "var(--radius-full)" }}
+                  />
+                </motion.div>
+              </div>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="upload"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.12 }}
+              style={{ flex: 1, minHeight: 0, overflowY: "auto" }}
+            >
+              <div style={{ padding: "0 var(--space-4) 80px" }}>
+                <input ref={fileInputRef} type="file" accept="image/*" onChange={e => handleFiles(e.target.files)} style={{ display: "none" }} />
+
+                <AnimatePresence mode="wait">
+                  {uploading ? (
+                    <motion.div key="uploading"
+                      initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.97 }}
+                      transition={{ type: "spring", stiffness: 340, damping: 26 }}
+                      style={{ position: "relative", height: 320, borderRadius: "var(--radius-2xl)", border: "1.5px dashed var(--border)", background: "var(--bg-input)", overflow: "hidden" }}
+                    >
+                      {uploadPreview && <img src={uploadPreview} alt="" style={{ width: "100%", height: "100%", objectFit: "contain", padding: "var(--space-6)", opacity: 0.25 }} />}
+                      <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "var(--space-3)" }}>
+                        <Loader2 size={28} style={{ color: "var(--fg)", animation: "spin 0.9s linear infinite" }} />
+                        <span style={{ fontSize: "var(--font-size-body-13)", fontWeight: 500, color: "var(--fg)" }}>Uploading…</span>
+                      </div>
+                    </motion.div>
+                  ) : uploadedUrl ? (
+                    <motion.div key="preview"
+                      initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.97 }}
+                      transition={{ type: "spring", stiffness: 340, damping: 26 }}
+                      style={{ position: "relative", height: 320 }}
+                    >
+                      <div style={{ position: "absolute", inset: 0, borderRadius: "var(--radius-2xl)", border: "1.5px dashed var(--border)", background: "var(--bg-input)", overflow: "hidden" }}>
+                        <img src={uploadedUrl} alt="Uploaded message" style={{ width: "100%", height: "100%", objectFit: "contain", padding: "var(--space-6)" }} />
+                      </div>
+                      <div style={{ position: "absolute", top: "var(--space-2)", right: "var(--space-2)", zIndex: 1 }}>
+                        <Tip label="Remove">
+                          <Btn variant="outline" size="icon-sm" onClick={handleRemove} style={{ background: "var(--bg)", color: "var(--color-text-secondary)" }}>
+                            <Trash2 size={15} />
+                          </Btn>
+                        </Tip>
+                      </div>
+                    </motion.div>
+                  ) : (
+                    <motion.div key="dropzone"
+                      initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.97 }}
+                      transition={{ type: "spring", stiffness: 340, damping: 26, delay: 0.1 }}
+                      onClick={() => fileInputRef.current?.click()}
+                      style={{
+                        height: 320,
+                        border: "1.5px dashed var(--border)",
+                        borderRadius: "var(--radius-2xl)",
+                        display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+                        gap: "var(--space-3)", cursor: "pointer", padding: "var(--space-6)",
+                        background: "transparent",
+                      }}
+                    >
+                      <CloudUpload size={24} style={{ color: "var(--muted-fg)" }} />
+                      <div style={{ textAlign: "center", display: "flex", flexDirection: "column", gap: "var(--space-2)" }}>
+                        <p style={{ fontSize: "var(--font-size-body-13)", fontWeight: 500, color: "var(--fg)", margin: 0 }}>Upload your handwritten message</p>
+                        <p style={{ fontSize: "var(--font-size-body-13)", color: "var(--muted-fg)", margin: 0, lineHeight: 1.5 }}>Tap to upload. For best results, write on plain white paper.</p>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
+    </>
+  );
+}
+
+/* ─── SignatureMobileSheet ────────────────────────────────── */
+
+interface SignatureMobileSheetProps {
+  onClose: () => void;
+  onSaveReady?: (ready: boolean) => void;
+}
+
+function SignatureMobileSheet({ onClose, onSaveReady }: SignatureMobileSheetProps) {
+  const [sigTab, setSigTab]               = useState<"draw" | "upload" | "type">("draw");
+  const [sigText, setSigText]             = useState("");
+  const [sigColor, setSigColor]           = useState(SIG_COLORS[0].hex);
+  const [sigFont, setSigFont]             = useState(FONTS[0]);
+  const [sigSize, setSigSize]             = useState(20);
+  const [uploadedUrl, setUploadedUrl]     = useState<string | null>(null);
+  const [uploading, setUploading]         = useState(false);
+  const [uploadPreview, setUploadPreview] = useState<string | null>(null);
+  const [savedSigs, setSavedSigs]         = useState<string[]>([]);
+  const [hasDrawing, setHasDrawing]       = useState(false);
+  const [pickerOpen, setPickerOpen]       = useState(false);
+  const [recentColors, setRecentColors]   = useState<string[]>([]);
+  const [parentH, setParentH]             = useState(0);
+
+  const sheetRef        = useRef<HTMLDivElement>(null);
+  const fileInputRef    = useRef<HTMLInputElement>(null);
+  const uploadedUrlRef  = useRef<string | null>(null);
+  const uploadPreviewRef = useRef<string | null>(null);
+  const rainbowRef      = useRef<HTMLButtonElement>(null);
+  const canvasRef       = useRef<HTMLCanvasElement | null>(null);
+  const isDrawing       = useRef(false);
+  const lastPos         = useRef<{ x: number; y: number } | null>(null);
+
+  uploadedUrlRef.current   = uploadedUrl;
+  uploadPreviewRef.current = uploadPreview;
+
+  const sheetY     = useMotionValue(2000);
+  const radiusTop  = useTransform(sheetY, [0, 40], [0, 25]);
+  const backdropOp = useTransform(sheetY, [0, parentH || 600], [0.5, 0]);
+
+  useEffect(() => () => {
+    if (uploadedUrlRef.current)   URL.revokeObjectURL(uploadedUrlRef.current);
+    if (uploadPreviewRef.current) URL.revokeObjectURL(uploadPreviewRef.current);
+  }, []);
+
+  useEffect(() => {
+    const parent = sheetRef.current?.parentElement;
+    if (!parent) return;
+    const measure = () => { const h = parent.offsetHeight; setParentH(h); return h; };
+    const h = measure();
+    animate(sheetY, h * 0.25, { type: "spring", stiffness: 320, damping: 35 });
+    const ro = new ResizeObserver(measure);
+    ro.observe(parent);
+    return () => ro.disconnect();
+  }, []);
+
+  useEffect(() => {
+    onSaveReady?.(sigTab !== "upload" || !!uploadedUrl);
+  }, [sigTab, uploadedUrl]);
+
+  function dismiss() {
+    animate(sheetY, parentH * 1.2, { type: "spring", stiffness: 320, damping: 35 }).then(onClose);
+  }
+
+  function handleDragEnd(_: unknown, info: { offset: { y: number }; velocity: { y: number } }) {
+    const y = sheetY.get();
+    const partial = parentH * 0.25;
+    const spring = { type: "spring" as const, stiffness: 320, damping: 35 };
+    if (info.velocity.y < -400 || y < partial * 0.4)      animate(sheetY, 0, spring);
+    else if (info.velocity.y > 400 || y > partial * 1.6)  dismiss();
+    else                                                    animate(sheetY, partial, spring);
+  }
+
+  function handleFiles(files: FileList | null) {
+    const file = files?.[0];
+    if (!file || !file.type.startsWith("image/")) return;
+    if (uploadedUrl)   URL.revokeObjectURL(uploadedUrl);
+    if (uploadPreview) URL.revokeObjectURL(uploadPreview);
+    const url = URL.createObjectURL(file);
+    setUploadPreview(url);
+    setUploading(true);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+    setTimeout(() => { setUploading(false); setUploadedUrl(url); setUploadPreview(null); }, 1400);
+  }
+
+  function handleRemove() {
+    if (uploadedUrl)   URL.revokeObjectURL(uploadedUrl);
+    if (uploadPreview) URL.revokeObjectURL(uploadPreview);
+    setUploadedUrl(null); setUploadPreview(null); setUploading(false);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  }
+
+  const canvasCallbackRef = useCallback((canvas: HTMLCanvasElement | null) => {
+    canvasRef.current = canvas;
+    if (canvas) {
+      canvas.width  = canvas.offsetWidth  || 295;
+      canvas.height = canvas.offsetHeight || 180;
+    }
+  }, []);
+
+  function getPosFromClient(clientX: number, clientY: number) {
+    const canvas = canvasRef.current!;
+    const rect   = canvas.getBoundingClientRect();
+    return {
+      x: (clientX - rect.left) * (canvas.width  / rect.width),
+      y: (clientY - rect.top)  * (canvas.height / rect.height),
+    };
+  }
+
+  function startDraw(clientX: number, clientY: number) {
+    isDrawing.current = true;
+    lastPos.current   = getPosFromClient(clientX, clientY);
+    setHasDrawing(true);
+  }
+
+  function drawTo(clientX: number, clientY: number) {
+    if (!isDrawing.current || !canvasRef.current || !lastPos.current) return;
+    const ctx = canvasRef.current.getContext("2d");
+    if (!ctx) return;
+    const pos = getPosFromClient(clientX, clientY);
+    ctx.beginPath();
+    ctx.moveTo(lastPos.current.x, lastPos.current.y);
+    ctx.lineTo(pos.x, pos.y);
+    ctx.strokeStyle = sigColor;
+    ctx.lineWidth   = 2.5;
+    ctx.lineCap     = "round";
+    ctx.lineJoin    = "round";
+    ctx.stroke();
+    lastPos.current = pos;
+  }
+
+  function stopDraw() { isDrawing.current = false; lastPos.current = null; }
+
+  function clearCanvas() {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    canvas.getContext("2d")?.clearRect(0, 0, canvas.width, canvas.height);
+    setHasDrawing(false);
+  }
+
+  function handleSave() {
+    if (sigTab === "draw" && canvasRef.current && hasDrawing) {
+      setSavedSigs(prev => [...prev, canvasRef.current!.toDataURL()]);
+      clearCanvas();
+    }
+  }
+
+  const saveDisabled =
+    (sigTab === "draw"   && !hasDrawing) ||
+    (sigTab === "type"   && sigText.trim() === "") ||
+    (sigTab === "upload" && !uploadedUrl);
+
+  const isCustomColor     = !SIG_COLORS.some(c => c.hex === sigColor);
+  const selectedColorName = isCustomColor ? "Custom" : (SIG_COLORS.find(c => c.hex === sigColor)?.name ?? "");
+
+  function handleColorChange(hex: string) {
+    setSigColor(hex);
+    setRecentColors(prev => [hex, ...prev.filter(c => c !== hex)].slice(0, 12));
+  }
+
+  function openPicker() { setPickerOpen(true); }
+
+  const colorSection = (
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-1)" }}>
+        <span style={{ fontSize: "var(--font-size-body-15)", fontWeight: 600, color: "var(--fg)" }}>Signature color</span>
+        <span style={{ fontSize: "var(--font-size-body-15)", color: "var(--muted-fg)" }}>{selectedColorName}</span>
+      </div>
+      <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)" }}>
+        {SIG_COLORS.map(c => (
+          <button key={c.hex} onClick={() => { setSigColor(c.hex); setPickerOpen(false); }} style={{
+            width: "var(--space-6)", height: "var(--space-6)", borderRadius: "50%",
+            background: c.hex, border: "none",
+            outline: sigColor === c.hex ? "2px solid var(--fg)" : "2px solid transparent",
+            outlineOffset: 2, cursor: "pointer", flexShrink: 0, transition: "outline .12s",
+          }} />
+        ))}
+        <Sep orientation="vertical" style={{ height: "var(--space-5)", margin: "0 var(--space-1)" }} />
+        <button ref={rainbowRef} onClick={openPicker} style={{
+          width: 24, height: 24, borderRadius: "50%",
+          background: "conic-gradient(red, yellow, lime, cyan, blue, magenta, red)",
+          border: "none",
+          outline: isCustomColor ? "2px solid var(--fg)" : "2px solid transparent",
+          outlineOffset: 2, cursor: "pointer", flexShrink: 0, transition: "outline .12s", padding: 0,
+        }} />
+      </div>
+    </div>
+  );
+
+  return (
+    <>
+      <motion.div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,1)", zIndex: 10, opacity: backdropOp }} />
+
+      <motion.div
+        ref={sheetRef}
+        drag="y"
+        dragElastic={{ top: 0.08, bottom: 0.25 }}
+        onDragEnd={handleDragEnd}
+        style={{
+          position: "absolute", top: 0, left: 0, right: 0, height: "100%",
+          background: "var(--bg)",
+          borderTopLeftRadius: radiusTop,
+          borderTopRightRadius: radiusTop,
+          zIndex: 20,
+          display: "flex", flexDirection: "column",
+          overflow: "hidden",
+          y: sheetY,
+        }}
+      >
+        {/* Handler pill */}
+        <div style={{ display: "flex", justifyContent: "center", padding: "var(--space-2) 0 var(--space-4)", flexShrink: 0 }}>
+          <div style={{ width: 120, height: 6, borderRadius: "var(--radius-full)", background: "var(--color-element-subtle)" }} />
+        </div>
+
+        {/* Title */}
+        <div style={{ padding: "0 var(--space-4) var(--space-3)", flexShrink: 0 }}>
+          <span style={{ fontSize: "var(--font-size-body-15)", fontWeight: 600, color: "var(--fg)" }}>Signature</span>
+        </div>
+
+        {/* Tab switcher */}
+        <div style={{ padding: "0 var(--space-4) var(--space-4)", flexShrink: 0 }}>
+          <PillTabs
+            value={sigTab}
+            onValueChange={v => setSigTab(v as "draw" | "upload" | "type")}
+            tabs={[
+              { value: "draw",   label: "Draw"   },
+              { value: "upload", label: "Upload" },
+              { value: "type",   label: "Type"   },
+            ]}
+          />
+        </div>
+
+        {/* Tab content */}
+        <AnimatePresence mode="wait">
+          {sigTab === "draw" ? (
+            <motion.div key="sig-draw" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.12 }}
+              style={{ flex: 1, minHeight: 0, overflowY: "auto" }}
+            >
+              <div style={{ padding: "0 var(--space-4) 80px", display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+
+                {/* Canvas */}
+                <motion.div {...msgItem(0.08)}>
+                  <div style={{ position: "relative" }}>
+                    <div style={{ height: 180, border: "1px solid var(--border)", borderRadius: "var(--radius-input)", background: "var(--bg-input)", overflow: "hidden" }}>
+                      <canvas
+                        ref={canvasCallbackRef}
+                        onMouseDown={e => startDraw(e.clientX, e.clientY)}
+                        onMouseMove={e => drawTo(e.clientX, e.clientY)}
+                        onMouseUp={stopDraw}
+                        onMouseLeave={stopDraw}
+                        onTouchStart={e => { e.preventDefault(); const t = e.touches[0]; startDraw(t.clientX, t.clientY); }}
+                        onTouchMove={e => { e.preventDefault(); const t = e.touches[0]; drawTo(t.clientX, t.clientY); }}
+                        onTouchEnd={stopDraw}
+                        style={{ display: "block", cursor: "crosshair", width: "100%", height: "100%", touchAction: "none" }}
+                      />
+                    </div>
+                    {hasDrawing && (
+                      <div style={{ position: "absolute", top: "var(--space-2)", right: "var(--space-2)", zIndex: 1 }}>
+                        <Tip label="Clear">
+                          <Btn variant="outline" size="icon-sm" onClick={clearCanvas} style={{ background: "var(--bg)", color: "var(--color-text-secondary)" }}>
+                            <Trash2 size={14} />
+                          </Btn>
+                        </Tip>
+                      </div>
+                    )}
+                  </div>
+                  <p style={{ fontSize: "var(--font-size-body-13)", color: "var(--muted-fg)", textAlign: "center", margin: "var(--space-3) 0 0" }}>
+                    Use your finger to draw your signature.
+                  </p>
+                </motion.div>
+
+                {/* Color */}
+                <motion.div {...msgItem(0.12)}>{colorSection}</motion.div>
+
+                <motion.div {...msgItem(0.15)}><Sep /></motion.div>
+
+                {/* Saved sigs */}
+                {savedSigs.length > 0 && (
+                  <motion.div key="saved" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ type: "spring", stiffness: 340, damping: 26 }}
+                    style={{ display: "flex", flexDirection: "column", gap: "var(--space-2)" }}
+                  >
+                    {savedSigs.map((src, i) => (
+                      <div key={i} style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", padding: "var(--space-2)", border: "1px solid var(--border)", borderRadius: "var(--radius-xl)", background: "var(--bg)", boxShadow: "0 1px 4px rgba(0,0,0,.05)" }}>
+                        <div style={{ flex: 1, height: 52, background: "#ffffff", borderRadius: "var(--radius-lg)", border: "1px solid rgba(0,0,0,.07)", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", padding: "var(--space-2) var(--space-3)" }}>
+                          <img src={src} alt={`Signature ${i + 1}`} style={{ maxHeight: 36, width: "100%", objectFit: "contain" }} />
+                        </div>
+                        <Btn variant="outline" size="icon-sm" onClick={() => setSavedSigs(prev => prev.filter((_, j) => j !== i))}
+                          style={{ border: "none", color: "var(--muted-fg)", flexShrink: 0 }}>
+                          <Trash2 size={14} />
+                        </Btn>
+                      </div>
+                    ))}
+                  </motion.div>
+                )}
+              </div>
+            </motion.div>
+
+          ) : sigTab === "upload" ? (
+            <motion.div key="sig-upload" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.12 }}
+              style={{ flex: 1, minHeight: 0, overflowY: "auto" }}
+            >
+              <div style={{ padding: "0 var(--space-4) 80px" }}>
+                <input ref={fileInputRef} type="file" accept="image/*" onChange={e => handleFiles(e.target.files)} style={{ display: "none" }} />
+                <AnimatePresence mode="wait">
+                  {uploading ? (
+                    <motion.div key="sig-uploading" initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.97 }}
+                      transition={{ type: "spring", stiffness: 340, damping: 26 }}
+                      style={{ position: "relative", height: 220, borderRadius: "var(--radius-2xl)", border: "1.5px dashed var(--border)", background: "var(--bg-input)", overflow: "hidden" }}
+                    >
+                      {uploadPreview && <img src={uploadPreview} alt="" style={{ width: "100%", height: "100%", objectFit: "contain", padding: "var(--space-6)", opacity: 0.25 }} />}
+                      <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "var(--space-3)" }}>
+                        <Loader2 size={28} style={{ color: "var(--fg)", animation: "spin 0.9s linear infinite" }} />
+                        <span style={{ fontSize: "var(--font-size-body-13)", fontWeight: 500, color: "var(--fg)" }}>Uploading…</span>
+                      </div>
+                    </motion.div>
+                  ) : uploadedUrl ? (
+                    <motion.div key="sig-preview" initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.97 }}
+                      transition={{ type: "spring", stiffness: 340, damping: 26 }}
+                      style={{ position: "relative", height: 220 }}
+                    >
+                      <div style={{ position: "absolute", inset: 0, borderRadius: "var(--radius-2xl)", border: "1.5px dashed var(--border)", background: "var(--bg-input)", overflow: "hidden" }}>
+                        <img src={uploadedUrl} alt="Uploaded signature" style={{ width: "100%", height: "100%", objectFit: "contain", padding: "var(--space-6)" }} />
+                      </div>
+                      <div style={{ position: "absolute", top: "var(--space-2)", right: "var(--space-2)", zIndex: 1 }}>
+                        <Tip label="Remove">
+                          <Btn variant="outline" size="icon-sm" onClick={handleRemove} style={{ background: "var(--bg)", color: "var(--color-text-secondary)" }}>
+                            <Trash2 size={15} />
+                          </Btn>
+                        </Tip>
+                      </div>
+                    </motion.div>
+                  ) : (
+                    <motion.div key="sig-dropzone" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.97 }}
+                      transition={{ type: "spring", stiffness: 340, damping: 26, delay: 0.1 }}
+                      onClick={() => fileInputRef.current?.click()}
+                      style={{ height: 220, border: "1.5px dashed var(--border)", borderRadius: "var(--radius-2xl)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "var(--space-3)", cursor: "pointer", padding: "var(--space-6)" }}
+                    >
+                      <CloudUpload size={24} style={{ color: "var(--muted-fg)" }} />
+                      <div style={{ textAlign: "center", display: "flex", flexDirection: "column", gap: "var(--space-2)" }}>
+                        <p style={{ fontSize: "var(--font-size-body-13)", fontWeight: 500, color: "var(--fg)", margin: 0 }}>Upload your signature image</p>
+                        <p style={{ fontSize: "var(--font-size-body-13)", color: "var(--muted-fg)", margin: 0, lineHeight: 1.5 }}>Tap to upload. White background works best.</p>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            </motion.div>
+
+          ) : (
+            <motion.div key="sig-type" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.12 }}
+              style={{ flex: 1, minHeight: 0, overflowY: "auto" }}
+            >
+              <div style={{ padding: "0 var(--space-4) 80px", display: "flex", flexDirection: "column", gap: "var(--space-5)" }}>
+
+                {/* Signature input */}
+                <motion.div {...msgItem(0.08)}>
+                  <Lbl style={{ fontSize: "var(--font-size-body-15)", marginBottom: "var(--space-2)" }}>Type your signature here</Lbl>
+                  <input type="text" value={sigText} onChange={e => setSigText(e.target.value)} placeholder="Your signature…"
+                    style={{ width: "100%", height: "var(--space-10)", padding: "0 var(--space-3)", fontFamily: sigFont.family, fontSize: sigSize, color: sigColor, textAlign: "center", border: "1px solid var(--border)", borderRadius: "var(--radius-full)", background: "var(--bg-input)", outline: "none", boxSizing: "border-box" }}
+                  />
+                </motion.div>
+
+                {/* Font */}
+                <motion.div {...msgItem(0.12)}>
+                  <Lbl style={{ fontSize: "var(--font-size-body-15)", marginBottom: "var(--space-2)" }}>Font</Lbl>
+                  <DdMenu fixed style={{ width: "100%" }}
+                    trigger={
+                      <Btn variant="outline" style={{ width: "100%", borderRadius: "var(--radius-full)", justifyContent: "space-between" }}>
+                        <span style={{ fontFamily: sigFont.family, fontSize: "var(--font-size-body-15)" }}>{sigFont.name}</span>
+                        <ChevronDown size={14} />
+                      </Btn>
+                    }
+                    items={FONTS.map(f => ({ label: f.name, style: { fontFamily: f.family, fontSize: "var(--font-size-body-15)" }, onClick: () => setSigFont(f) }))}
+                  />
+                </motion.div>
+
+                {/* Size */}
+                <motion.div {...msgItem(0.16)}>
+                  <Lbl style={{ fontSize: "var(--font-size-body-15)", marginBottom: "var(--space-2)" }}>Size</Lbl>
+                  <div style={{ display: "flex", alignItems: "center", height: "var(--space-10)", borderRadius: "var(--radius-full)", border: "1px solid var(--border)", background: "var(--bg)", padding: "0 var(--space-1)" }}>
+                    <Btn variant="outline" size="icon-sm" onClick={() => setSigSize(s => Math.max(8, s - 1))} style={{ border: "none", borderRadius: "var(--radius-full)", color: "var(--fg)", flexShrink: 0 }}><Minus size={14} /></Btn>
+                    <Sep orientation="vertical" style={{ height: "var(--space-5)" }} />
+                    <span style={{ flex: 1, textAlign: "center", fontSize: "var(--font-size-body-15)", fontWeight: 500, color: "var(--fg)" }}>{sigSize}</span>
+                    <Sep orientation="vertical" style={{ height: "var(--space-5)" }} />
+                    <Btn variant="outline" size="icon-sm" onClick={() => setSigSize(s => Math.min(120, s + 1))} style={{ border: "none", borderRadius: "var(--radius-full)", color: "var(--fg)", flexShrink: 0 }}><Plus size={14} /></Btn>
+                  </div>
+                </motion.div>
+
+                {/* Color */}
+                <motion.div {...msgItem(0.20)}>{colorSection}</motion.div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+      </motion.div>
+
+      {/* ColorPicker — outside overflow:hidden sheet, position:absolute stays inside phone frame */}
+      {pickerOpen && (
+        <div style={{ position: "absolute", bottom: 90, left: "var(--space-4)", right: "var(--space-4)", zIndex: 50 }}>
+          <ColorPicker
+            color={sigColor}
+            onChange={handleColorChange}
+            recentColors={recentColors}
+            onClose={() => setPickerOpen(false)}
+          />
+        </div>
+      )}
+    </>
+  );
+}
+
+/* ─── EnvelopeMobileSheet ────────────────────────────────── */
+
+interface EnvelopeMobileSheetProps {
+  onClose: () => void;
+  onSave?: (opts: { flapStyle: string; font: string }) => void;
+}
+
+function EnvelopeMobileSheet({ onClose, onSave }: EnvelopeMobileSheetProps) {
+  const [flapStyle, setFlapStyle] = useState("european");
+  const [font, setFont]           = useState(FONTS[0]);
+  const [parentH, setParentH]     = useState(0);
+  const sheetRef = useRef<HTMLDivElement>(null);
+
+  const selected = FLAP_STYLES.find(f => f.id === flapStyle) ?? FLAP_STYLES[0];
+
+  const sheetY     = useMotionValue(2000);
+  const radiusTop  = useTransform(sheetY, [0, 40], [0, 25]);
+  const backdropOp = useTransform(sheetY, [0, parentH || 600], [0.5, 0]);
+
+  useEffect(() => {
+    const parent = sheetRef.current?.parentElement;
+    if (!parent) return;
+    const measure = () => { const h = parent.offsetHeight; setParentH(h); return h; };
+    const h = measure();
+    animate(sheetY, h * 0.25, { type: "spring", stiffness: 320, damping: 35 });
+    const ro = new ResizeObserver(measure);
+    ro.observe(parent);
+    return () => ro.disconnect();
+  }, []);
+
+  function dismiss() {
+    animate(sheetY, parentH * 1.2, { type: "spring", stiffness: 320, damping: 35 }).then(onClose);
+  }
+
+  function handleDragEnd(_: unknown, info: { offset: { y: number }; velocity: { y: number } }) {
+    const y = sheetY.get();
+    const partial = parentH * 0.25;
+    const spring = { type: "spring" as const, stiffness: 320, damping: 35 };
+    if (info.velocity.y < -400 || y < partial * 0.4)     animate(sheetY, 0, spring);
+    else if (info.velocity.y > 400 || y > partial * 1.6) dismiss();
+    else                                                   animate(sheetY, partial, spring);
+  }
+
+  return (
+    <>
+      <motion.div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,1)", zIndex: 10, opacity: backdropOp }} />
+
+      <motion.div
+        ref={sheetRef}
+        drag="y"
+        dragElastic={{ top: 0.08, bottom: 0.25 }}
+        onDragEnd={handleDragEnd}
+        style={{
+          position: "absolute", top: 0, left: 0, right: 0, height: "100%",
+          background: "var(--bg)",
+          borderTopLeftRadius: radiusTop,
+          borderTopRightRadius: radiusTop,
+          zIndex: 20,
+          display: "flex", flexDirection: "column",
+          overflow: "hidden",
+          y: sheetY,
+        }}
+      >
+        {/* Handler pill */}
+        <div style={{ display: "flex", justifyContent: "center", padding: "var(--space-2) 0 var(--space-4)", flexShrink: 0 }}>
+          <div style={{ width: 120, height: 6, borderRadius: "var(--radius-full)", background: "var(--color-element-subtle)" }} />
+        </div>
+
+        {/* Title */}
+        <div style={{ padding: "0 var(--space-4) var(--space-3)", flexShrink: 0 }}>
+          <span style={{ fontSize: "var(--font-size-body-15)", fontWeight: 600, color: "var(--fg)" }}>Envelope</span>
+        </div>
+
+        {/* Scrollable content */}
+        <div style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: "0 var(--space-4) 80px", display: "flex", flexDirection: "column", gap: "var(--space-6)" }}>
+
+          {/* Flap style */}
+          <motion.div {...msgItem(0.06)} style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <span style={{ fontSize: "var(--font-size-body-15)", fontWeight: 600, color: "var(--fg)" }}>Flap style</span>
+              <span style={{ fontSize: "var(--font-size-body-15)", fontWeight: 600, color: "var(--fg)" }}>{selected.price ?? "+ $0.00"}</span>
+            </div>
+
+            <div style={{ display: "flex", gap: "var(--space-4)" }}>
+              {FLAP_STYLES.map(s => {
+                const active = flapStyle === s.id;
+                return (
+                  <button
+                    key={s.id}
+                    type="button"
+                    onClick={() => setFlapStyle(s.id)}
+                    style={{
+                      flex: 1, display: "flex", flexDirection: "column", gap: 0, alignItems: "stretch",
+                      padding: 0, borderRadius: "var(--radius-2xl)",
+                      border: active ? "2px solid var(--fg)" : "1px solid var(--border)",
+                      background: "var(--bg)", cursor: "pointer", overflow: "hidden",
+                    }}
+                  >
+                    <div style={{ width: "100%", height: 108, background: "var(--muted)" }} />
+                    <div style={{ display: "flex", gap: "var(--space-1-5)", alignItems: "baseline", padding: "var(--space-2) var(--space-3)" }}>
+                      <span style={{ fontSize: "var(--font-size-body-15)", fontWeight: 600, color: "var(--fg)" }}>{s.label}</span>
+                      {s.price && <span style={{ fontSize: "var(--font-size-body-13)", color: "var(--muted-fg)" }}>{s.price}</span>}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </motion.div>
+
+          <div style={{ height: 1, background: "var(--border)", flexShrink: 0 }} />
+
+          {/* Font */}
+          <motion.div {...msgItem(0.10)}>
+            <Lbl style={{ fontSize: "var(--font-size-body-15)", marginBottom: "var(--space-2)" }}>Font</Lbl>
+            <DdMenu
+              fixed
+              style={{ width: "100%" }}
+              trigger={
+                <Btn variant="outline" style={{ width: "100%", borderRadius: "var(--radius-full)", justifyContent: "space-between" }}>
+                  <span style={{ fontFamily: font.family, fontSize: "var(--font-size-body-15)" }}>{font.name}</span>
+                  <ChevronDown size={14} />
+                </Btn>
+              }
+              items={FONTS.map(f => ({
+                label: f.name,
+                style: { fontFamily: f.family, fontSize: "var(--font-size-body-15)" },
+                onClick: () => setFont(f),
+              }))}
+            />
+          </motion.div>
+        </div>
+      </motion.div>
+
+      {/* Save btn — outside sheet */}
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 12 }}
+        transition={{ type: "spring", stiffness: 400, damping: 35, delay: 0.18 }}
+        style={{
+          position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 30,
+          padding: "var(--space-3) var(--space-4)",
+          background: "var(--bg)",
+          borderTop: "1px solid var(--border)",
+        }}
+      >
+        <Btn
+          style={{ width: "100%" }}
+          onClick={() => { onSave?.({ flapStyle, font: font.name }); onClose(); }}
+        >
+          Save
+        </Btn>
+      </motion.div>
+    </>
+  );
+}
+
+/* ─── TranslateMobileSheet ───────────────────────────────── */
+
+interface TranslateMobileSheetProps {
+  onClose: () => void;
+  count?: number;
+}
+
+function TranslateMobileSheet({ onClose, count = 2 }: TranslateMobileSheetProps) {
+  const [search, setSearch]     = useState("");
+  const [language, setLanguage] = useState("English");
+  const [parentH, setParentH]   = useState(0);
+  const sheetRef = useRef<HTMLDivElement>(null);
+
+  const filtered = search.trim()
+    ? LANGUAGES.filter(l => l.toLowerCase().includes(search.toLowerCase()))
+    : LANGUAGES;
+
+  const sheetY     = useMotionValue(2000);
+  const radiusTop  = useTransform(sheetY, [0, 40], [0, 25]);
+  const backdropOp = useTransform(sheetY, [0, parentH || 600], [0.5, 0]);
+
+  useEffect(() => {
+    const parent = sheetRef.current?.parentElement;
+    if (!parent) return;
+    const measure = () => { const h = parent.offsetHeight; setParentH(h); return h; };
+    const h = measure();
+    animate(sheetY, h * 0.25, { type: "spring", stiffness: 320, damping: 35 });
+    const ro = new ResizeObserver(measure);
+    ro.observe(parent);
+    return () => ro.disconnect();
+  }, []);
+
+  function dismiss() {
+    animate(sheetY, parentH * 1.2, { type: "spring", stiffness: 320, damping: 35 }).then(onClose);
+  }
+
+  function handleDragEnd(_: unknown, info: { offset: { y: number }; velocity: { y: number } }) {
+    const y = sheetY.get();
+    const partial = parentH * 0.25;
+    const spring = { type: "spring" as const, stiffness: 320, damping: 35 };
+    if (info.velocity.y < -400 || y < partial * 0.4)     animate(sheetY, 0, spring);
+    else if (info.velocity.y > 400 || y > partial * 1.6) dismiss();
+    else                                                   animate(sheetY, partial, spring);
+  }
+
+  return (
+    <>
+      <motion.div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,1)", zIndex: 10, opacity: backdropOp }} />
+
+      <motion.div
+        ref={sheetRef}
+        drag="y"
+        dragElastic={{ top: 0.08, bottom: 0.25 }}
+        onDragEnd={handleDragEnd}
+        style={{
+          position: "absolute", top: 0, left: 0, right: 0, height: "100%",
+          background: "var(--bg)",
+          borderTopLeftRadius: radiusTop,
+          borderTopRightRadius: radiusTop,
+          zIndex: 20,
+          display: "flex", flexDirection: "column",
+          overflow: "hidden",
+          y: sheetY,
+        }}
+      >
+        {/* Handler pill */}
+        <div style={{ display: "flex", justifyContent: "center", padding: "var(--space-2) 0 var(--space-4)", flexShrink: 0 }}>
+          <div style={{ width: 120, height: 6, borderRadius: "var(--radius-full)", background: "var(--color-element-subtle)" }} />
+        </div>
+
+        {/* Title */}
+        <div style={{ padding: "0 var(--space-4) var(--space-3)", flexShrink: 0 }}>
+          <span style={{ fontSize: "var(--font-size-body-15)", fontWeight: 600, color: "var(--fg)" }}>Translate</span>
+        </div>
+
+        {/* Search */}
+        <div style={{ padding: "0 var(--space-4) var(--space-3)", flexShrink: 0 }}>
+          <div style={{ position: "relative" }}>
+            <Inp
+              value={search}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
+              placeholder="Search languages"
+              iconLeft={<Search size={14} />}
+              style={{ borderRadius: "var(--radius-full)", paddingRight: search ? 32 : undefined }}
+            />
+            {search && (
+              <button type="button" onClick={() => setSearch("")}
+                style={{ position: "absolute", right: "var(--space-2)", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "var(--muted-fg)", padding: 0, display: "flex" }}
+              >
+                <X size={12} />
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Language list */}
+        <div style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: "var(--space-1) var(--space-2) 80px", scrollbarWidth: "thin", scrollbarColor: "var(--border) transparent" }}>
+          {filtered.length > 0 ? filtered.map(lang => (
+            <button
+              key={lang}
+              type="button"
+              onClick={() => setLanguage(lang)}
+              style={{
+                display: "flex", alignItems: "center", gap: "var(--space-2)",
+                width: "100%", height: 44,
+                padding: "0 var(--space-3)",
+                borderRadius: "var(--radius-md)",
+                border: "none", background: "none",
+                cursor: "pointer", textAlign: "left", fontFamily: "inherit",
+                fontSize: "var(--font-size-body-15)",
+                fontWeight: language === lang ? 500 : 400,
+                color: "var(--fg)", transition: "background .1s",
+              }}
+              onMouseEnter={e => (e.currentTarget.style.background = "var(--muted)")}
+              onMouseLeave={e => (e.currentTarget.style.background = "none")}
+            >
+              <span style={{ flex: 1 }}>{lang}</span>
+              {language === lang && <Check size={14} color="var(--fg)" />}
+            </button>
+          )) : (
+            <p style={{ fontSize: "var(--font-size-body-13)", color: "var(--muted-fg)", padding: "var(--space-2) var(--space-3)", margin: 0 }}>
+              No languages found
+            </p>
+          )}
+        </div>
+      </motion.div>
+
+      {/* Update card btn — outside sheet */}
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 12 }}
+        transition={{ type: "spring", stiffness: 400, damping: 35, delay: 0.14 }}
+        style={{
+          position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 30,
+          padding: "var(--space-3) var(--space-4)",
+          background: "var(--bg)",
+          borderTop: "1px solid var(--border)",
+        }}
+      >
+        <Btn style={{ width: "100%" }}>
+          Update card
+          <HeartCount count={count} />
+        </Btn>
+      </motion.div>
+    </>
+  );
+}
+
+/* ─── StampyMobileSheet ──────────────────────────────────── */
+
+interface StampyMobileSheetProps {
+  onClose: () => void;
+}
+
+function StampyMobileSheet({ onClose }: StampyMobileSheetProps) {
+  const [parentH, setParentH] = useState(0);
+  const sheetRef    = useRef<HTMLDivElement>(null);
+  const dragStartH  = useRef(0);
+
+  // Height-based animation: sheet grows from bottom so input stays visible
+  const sheetH     = useMotionValue(0);
+  const maxH       = parentH || 800;
+  const radiusTop  = useTransform(sheetH, [maxH - 40, maxH], [25, 0]);
+  const backdropOp = useTransform(sheetH, [0, maxH * 0.75], [0, 0.5]);
+
+  useEffect(() => {
+    const parent = sheetRef.current?.parentElement;
+    if (!parent) return;
+    const measure = () => { const h = parent.offsetHeight; setParentH(h); return h; };
+    const h = measure();
+    animate(sheetH, h * 0.75, { type: "spring", stiffness: 320, damping: 35 });
+    const ro = new ResizeObserver(measure);
+    ro.observe(parent);
+    return () => ro.disconnect();
+  }, []);
+
+  function dismiss() {
+    animate(sheetH, 0, { type: "spring", stiffness: 320, damping: 35 }).then(onClose);
+  }
+
+  function handlePanStart() {
+    dragStartH.current = sheetH.get();
+  }
+
+  function handlePan(_: unknown, info: { offset: { y: number } }) {
+    // Dragging up (negative offset.y) increases height; down decreases
+    const raw = dragStartH.current - info.offset.y;
+    sheetH.set(Math.max(0, Math.min(parentH, raw)));
+  }
+
+  function handlePanEnd(_: unknown, info: { velocity: { y: number } }) {
+    const h = sheetH.get();
+    const partial = parentH * 0.75;
+    const spring = { type: "spring" as const, stiffness: 320, damping: 35 };
+    if (info.velocity.y < -400 || h > partial * 1.4)    animate(sheetH, parentH, spring);
+    else if (info.velocity.y > 400 || h < partial * 0.6) dismiss();
+    else                                                   animate(sheetH, partial, spring);
+  }
+
+  return (
+    <>
+      <motion.div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,1)", zIndex: 10, opacity: backdropOp }} />
+
+      <motion.div
+        ref={sheetRef}
+        onPanStart={handlePanStart}
+        onPan={handlePan}
+        onPanEnd={handlePanEnd}
+        style={{
+          position: "absolute", bottom: 0, left: 0, right: 0,
+          height: sheetH,
+          background: "var(--color-bg-main)",
+          borderTopLeftRadius: radiusTop,
+          borderTopRightRadius: radiusTop,
+          zIndex: 20,
+          display: "flex", flexDirection: "column",
+          overflow: "hidden",
+          touchAction: "none",
+        }}
+      >
+        {/* Handler pill */}
+        <div style={{ display: "flex", justifyContent: "center", padding: "var(--space-2) 0 var(--space-4)", flexShrink: 0 }}>
+          <div style={{ width: 120, height: 6, borderRadius: "var(--radius-full)", background: "var(--color-element-subtle)" }} />
+        </div>
+
+        {/* Chatbot fills the rest */}
+        <div style={{ flex: 1, minHeight: 0, overflow: "hidden" }}>
+          <StampyChatbot
+            embedded
+            onClose={dismiss}
+            chatScript={demoChatScript}
+            mascotSrc={chatMascotImg}
+            aiIconSrc={chatAiIconImg}
+            backgroundSrc={chatHomeBgImg}
+            stampyIconSrc={stampyIconImg}
+            partyPopperSrc={partyPopperImg}
+            containerHeight={parentH}
+          />
+        </div>
+      </motion.div>
+    </>
+  );
+}
+
 /* ─── StyleSidebarMobile ──────────────────────────────────── */
 
 const MOBILE_NAV_ITEMS = [
-  { id: "styles",    icon: <Layers size={20} />,     label: "Card"      },
+  { id: "stampy",    icon: <HSEmblem color="brand" height={20} />, label: "Stampy" },
+  { id: "styles",    icon: <Layers size={20} />,     label: "Styles"    },
   { id: "message",   icon: <PencilLine size={20} />, label: "Message"   },
   { id: "signature", icon: <Signature size={20} />,  label: "Signature" },
   { id: "envelope",  icon: <Mail size={20} />,       label: "Envelope"  },
   { id: "translate", icon: <Languages size={20} />,  label: "Translate" },
-  { id: "stampy",    icon: <HSEmblem color="brand" height={20} />, label: "Stampy" },
 ] as const;
 
 export interface StyleSidebarMobileProps {
   activeNav?: string;
   onNavChange?: (id: string) => void;
+  recommended?: StyleItem[];
+  styles?: StyleItem[];
+  selected?: string | null;
+  onSelect?: (id: string | null) => void;
+  onApply?: (id: string) => void;
 }
 
 export function StyleSidebarMobile({
   activeNav,
   onNavChange,
+  recommended,
+  styles,
+  selected,
+  onSelect,
+  onApply,
 }: StyleSidebarMobileProps) {
-  const [activeState, setActiveState] = useState<string | undefined>(undefined);
-  const active = activeNav ?? activeState;
+  const [activeState, setActiveState]   = useState<string | undefined>(undefined);
+  const [sheetOpen, setSheetOpen]       = useState<string | null>(null);
+  const [localSelected, setLocalSelected] = useState<string | null>(null);
+  const [msgSaveReady, setMsgSaveReady] = useState(false);
+  const [sigSaveReady, setSigSaveReady] = useState(false);
+  const active      = activeNav ?? activeState;
+  const trackRef    = useRef<HTMLDivElement>(null);
+  const contentRef  = useRef<HTMLDivElement>(null);
+  const [maxDrag, setMaxDrag] = useState(0);
+  const dragX       = useMotionValue(0);
+  const leftFade    = useTransform(dragX, [-24, 0], [1, 0]);
+  const rightFade   = useTransform(dragX, [0, -24], [0, 1]);
+
+  useEffect(() => {
+    const track   = trackRef.current;
+    const content = contentRef.current;
+    if (!track || !content) return;
+    const update = () => setMaxDrag(Math.max(0, content.scrollWidth - track.offsetWidth));
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(track);
+    ro.observe(content);
+    return () => ro.disconnect();
+  }, []);
 
   function handlePress(id: string) {
     setActiveState(id);
     onNavChange?.(id);
+    if (["stampy","styles","message","signature","envelope","translate"].includes(id)) setSheetOpen(prev => prev === id ? null : id);
   }
 
   return (
-    <div style={{
-      display: "flex",
-      flexDirection: "column",
-      width: "100%",
-      background: "var(--bg)",
-      borderTop: "1px solid var(--color-element-subtle)",
-    }}>
-      {/* Nav buttons */}
-      <div style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: "0 var(--space-1)",
-      }}>
-        {MOBILE_NAV_ITEMS.map(item => {
-          const isActive = active === item.id;
-          return (
-            <button
-              key={item.id}
-              type="button"
-              onClick={() => handlePress(item.id)}
+    <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column" }}>
+
+      {/* Content area — sheet renders here, clips the slide-in animation */}
+      <div style={{ flex: 1, position: "relative", overflow: "hidden" }}>
+        <AnimatePresence>
+          {sheetOpen === "stampy" && (
+            <StampyMobileSheet onClose={() => setSheetOpen(null)} />
+          )}
+        </AnimatePresence>
+
+        <AnimatePresence>
+          {sheetOpen === "styles" && (
+            <StylesMobileSheet
+              onClose={() => { setSheetOpen(null); setLocalSelected(null); }}
+              recommended={recommended}
+              styles={styles}
+              selected={selected ?? localSelected}
+              onSelect={(id) => { setLocalSelected(id); onSelect?.(id); }}
+              onApply={onApply}
+            />
+          )}
+        </AnimatePresence>
+
+        <AnimatePresence>
+          {sheetOpen === "message" && (
+            <MessageMobileSheet
+              onClose={() => { setSheetOpen(null); setMsgSaveReady(false); }}
+              onSaveReady={setMsgSaveReady}
+            />
+          )}
+        </AnimatePresence>
+
+        <AnimatePresence>
+          {sheetOpen === "signature" && (
+            <SignatureMobileSheet
+              onClose={() => { setSheetOpen(null); setSigSaveReady(false); }}
+              onSaveReady={setSigSaveReady}
+            />
+          )}
+        </AnimatePresence>
+
+        {/* Save btn — signature sheet */}
+        <AnimatePresence>
+          {sheetOpen === "signature" && sigSaveReady && (
+            <motion.div
+              key="sig-save-btn"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 12 }}
+              transition={{ type: "spring", stiffness: 400, damping: 35 }}
               style={{
-                flex: 1,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "var(--space-1)",
-                height: 64,
-                padding: "var(--space-3)",
-                borderRadius: "var(--radius-lg)",
-                border: "none",
-                background: isActive ? "var(--color-state-hover)" : "none",
-                cursor: "pointer",
-                color: isActive ? "var(--color-brand-primary)" : "var(--color-text-secondary)",
-                transition: "background 0.15s, color 0.15s",
-              }}
-              onMouseEnter={e => {
-                if (!isActive) (e.currentTarget as HTMLElement).style.background = "var(--color-state-hover)";
-              }}
-              onMouseLeave={e => {
-                if (!isActive) (e.currentTarget as HTMLElement).style.background = "none";
+                position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 30,
+                padding: "var(--space-3) var(--space-4)",
+                background: "var(--bg)",
+                borderTop: "1px solid var(--border)",
               }}
             >
-              <span style={{
-                display: "flex",
-                color: isActive ? "var(--color-brand-primary)" : "var(--color-text-secondary)",
-                transition: "color 0.15s",
-                flexShrink: 0,
-              }}>
-                {item.icon}
-              </span>
-              <span style={{
-                fontSize: "var(--font-size-body-13)",
-                fontWeight: item.id === "stampy" ? 500 : 400,
-                color: isActive ? "var(--color-brand-primary)" : "var(--color-text-secondary)",
-                whiteSpace: "nowrap",
-                lineHeight: 1,
-                transition: "color 0.15s",
-              }}>
-                {item.label}
-              </span>
-            </button>
-          );
-        })}
+              <Btn style={{ width: "100%" }}>Save</Btn>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <AnimatePresence>
+          {sheetOpen === "envelope" && (
+            <EnvelopeMobileSheet
+              onClose={() => setSheetOpen(null)}
+            />
+          )}
+        </AnimatePresence>
+
+        <AnimatePresence>
+          {sheetOpen === "translate" && (
+            <TranslateMobileSheet
+              onClose={() => setSheetOpen(null)}
+            />
+          )}
+        </AnimatePresence>
+
+        {/* Save btn — message sheet */}
+        <AnimatePresence>
+          {sheetOpen === "message" && msgSaveReady && (
+            <motion.div
+              key="msg-save-btn"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 12 }}
+              transition={{ type: "spring", stiffness: 400, damping: 35 }}
+              style={{
+                position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 30,
+                padding: "var(--space-3) var(--space-4)",
+                background: "var(--bg)",
+                borderTop: "1px solid var(--border)",
+              }}
+            >
+              <Btn style={{ width: "100%" }}>Save</Btn>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Apply btn — outside the sheet so it's always in the visible viewport */}
+        <AnimatePresence>
+          {sheetOpen === "styles" && (selected ?? localSelected) && (
+            <motion.div
+              key="apply-btn"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 12 }}
+              transition={{ type: "spring", stiffness: 400, damping: 35 }}
+              style={{
+                position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 30,
+                padding: "var(--space-3) var(--space-4)",
+                background: "var(--bg)",
+                borderTop: "1px solid var(--border)",
+              }}
+            >
+              <Btn
+                onClick={() => {
+                  const id = selected ?? localSelected;
+                  if (id) { onApply?.(id); }
+                  setLocalSelected(null);
+                  setSheetOpen(null);
+                }}
+                style={{ width: "100%" }}
+              >
+                <PaintbrushIcon size={15} />
+                Apply Style
+              </Btn>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
-      {/* Drag handler pill */}
+      {/* Nav bar */}
       <div style={{
-        display: "flex",
-        justifyContent: "center",
-        padding: "var(--space-3) 0",
+        background: "var(--bg)",
+        borderTop: "1px solid var(--color-element-subtle)",
         flexShrink: 0,
       }}>
-        <div style={{
-          width: 120,
-          height: 6,
-          borderRadius: "var(--radius-full)",
-          background: "var(--color-element-subtle)",
-        }} />
+        {/* Swipeable button strip */}
+        <div ref={trackRef} style={{ overflow: "hidden", width: "100%", position: "relative" }}>
+          <motion.div style={{
+            position: "absolute", left: 0, top: 0, bottom: 0, width: 32, zIndex: 1,
+            background: "linear-gradient(to right, var(--bg), transparent)",
+            opacity: leftFade, pointerEvents: "none",
+          }} />
+          <motion.div style={{
+            position: "absolute", right: 0, top: 0, bottom: 0, width: 32, zIndex: 1,
+            background: "linear-gradient(to left, var(--bg), transparent)",
+            opacity: rightFade, pointerEvents: "none",
+          }} />
+          <motion.div
+            ref={contentRef}
+            drag="x"
+            dragConstraints={{ left: -maxDrag, right: 0 }}
+            dragElastic={0.12}
+            dragTransition={{ bounceStiffness: 400, bounceDamping: 40, timeConstant: 280, power: 0.35 }}
+            style={{
+              display: "flex", alignItems: "center",
+              width: "max-content", minWidth: "100%",
+              padding: "0 var(--space-1)",
+              cursor: maxDrag > 0 ? "grab" : "default",
+              x: dragX,
+            }}
+            whileDrag={{ scale: 0.995 }}
+            whileTap={{ cursor: "grabbing" }}
+          >
+            {MOBILE_NAV_ITEMS.map(item => (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => handlePress(item.id)}
+                style={{
+                  flexShrink: 0, flex: 1,
+                  display: "flex", flexDirection: "column",
+                  gap: "var(--space-1)", alignItems: "center", justifyContent: "center",
+                  minWidth: 72, height: 64,
+                  padding: "var(--space-3)",
+                  borderRadius: "var(--radius-lg)",
+                  background: "transparent", border: "none",
+                  cursor: "pointer",
+                  color: sheetOpen === item.id ? "var(--color-text-primary)" : "var(--muted-fg)",
+                }}
+              >
+                {item.icon}
+                <span style={{ fontSize: "var(--font-size-label-12)", fontWeight: sheetOpen === item.id ? 500 : 400, lineHeight: 1, color: "inherit", whiteSpace: "nowrap" }}>
+                  {item.label}
+                </span>
+              </button>
+            ))}
+          </motion.div>
+        </div>
+
+        {/* Handler pill */}
+        <div style={{ display: "flex", justifyContent: "center", padding: "var(--space-3) 0", flexShrink: 0 }}>
+          <div style={{ width: 120, height: 6, borderRadius: "var(--radius-full)", background: "var(--color-element-subtle)" }} />
+        </div>
       </div>
     </div>
   );

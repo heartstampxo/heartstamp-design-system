@@ -49,15 +49,13 @@ export function PageStyleSidebar() {
       <DocSection title="Mobile">
         <Preview
           title="Mobile Bottom Nav"
-          height={120}
-          fullWidth
+          height={900}
+          defaultViewport="mobile"
           code={`import { StyleSidebarMobile } from "@heartstamp/design-system";\n\nfunction Example() {\n  const [activeNav, setActiveNav] = useState(undefined);\n\n  return (\n    <StyleSidebarMobile\n      activeNav={activeNav}\n      onNavChange={setActiveNav}\n    />\n  );\n}`}
         >
-          <div style={{ width: "100%", height: 120, background: "var(--color-bg-editor)", display: "flex", alignItems: "flex-end" }}>
-            <StyleSidebarMobile
-              activeNav={mobileNav}
-              onNavChange={setMobileNav}
-            />
+          {/* iPhone 14 Pro ratio — 393 × 852pt */}
+          <div style={{ width: 393, height: 852, background: "var(--color-bg-editor)", overflow: "hidden" }}>
+            <StyleSidebarMobile activeNav={mobileNav} onNavChange={setMobileNav} />
           </div>
         </Preview>
       </DocSection>

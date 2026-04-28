@@ -144,7 +144,7 @@ function TabsTrigger({
         lineHeight: "20px",
         ...style,
       }}
-      {...props}
+      {...(props as any)}
     />
   );
 }

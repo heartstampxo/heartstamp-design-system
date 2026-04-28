@@ -17,6 +17,8 @@ interface PreviewProps {
   filename?: string;
   children: React.ReactNode | ((vp: string) => React.ReactNode);
   height?: number;
+  /** Default viewport tab: "mobile" | "tablet" | "desktop" | "full" (default: "full") */
+  defaultViewport?: "mobile" | "tablet" | "desktop" | "full";
   /** Remove all padding so content stretches edge-to-edge inside the preview */
   fullWidth?: boolean;
   /** Override the preview canvas background (light mode only). Defaults to var(--bg). */
@@ -69,9 +71,9 @@ function normalizeImports(code: string | undefined): string {
   return result.join("\n");
 }
 
-export function Preview({ title, code, filename, children, height = 160, fullWidth = false, canvasBg, clipContent = false }: PreviewProps) {
+export function Preview({ title, code, filename, children, height = 160, defaultViewport = "full", fullWidth = false, canvasBg, clipContent = false }: PreviewProps) {
   const [tab, setTab] = useState("preview");
-  const [vp, setVp] = useState("full");
+  const [vp, setVp] = useState(defaultViewport);
   const [dark, setDark] = useState(false);
   const vpW = VIEWPORTS.find(v => v.id === vp)?.w || "100%";
 
@@ -109,7 +111,7 @@ export function Preview({ title, code, filename, children, height = 160, fullWid
         </Tabs>
         <div style={{ display: "flex", alignItems: "center", gap: 2 }}>
           {VIEWPORTS.map(v => (
-            <button key={v.id} onClick={() => setVp(v.id)} title={v.w} style={{
+            <button key={v.id} onClick={() => setVp(v.id as "mobile" | "tablet" | "desktop" | "full")} title={v.w} style={{
               width: 24, height: 24, borderRadius: 5, border: "none", cursor: "pointer",
               background: vp === v.id ? "var(--bg)" : "transparent",
               color: vp === v.id ? "var(--fg)" : "var(--muted-fg)",
@@ -143,7 +145,7 @@ export function Preview({ title, code, filename, children, height = 160, fullWid
           }}>
             <div style={{
               maxWidth: vpW, width: "100%", transition: "max-width .3s",
-              border: vp !== "full" && vp !== "desktop" ? "1px dashed var(--border)" : "none", borderRadius: 8,
+              borderRadius: 8,
               overflow: "visible",
             }}>
               <div style={{

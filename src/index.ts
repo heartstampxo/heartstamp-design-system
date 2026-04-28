@@ -1,5 +1,6 @@
 import './styles/index.css';
 
+// ── Radix / shadcn primitives ────────────────────────────────────────────────
 export * from './app/components/ui/accordion';
 export * from './app/components/ui/alert-dialog';
 export * from './app/components/ui/alert';
@@ -7,7 +8,6 @@ export * from './app/components/ui/aspect-ratio';
 export * from './app/components/ui/avatar';
 export * from './app/components/ui/badge';
 export * from './app/components/ui/breadcrumb';
-export * from './app/components/ui/btn';
 export * from './app/components/ui/button';
 export * from './app/components/ui/calendar';
 export * from './app/components/ui/card';
@@ -22,6 +22,34 @@ export * from './app/components/ui/drawer';
 export * from './app/components/ui/dropdown-menu';
 export * from './app/components/ui/form';
 export * from './app/components/ui/hover-card';
+export * from './app/components/ui/input-otp';
+export * from './app/components/ui/input';
+export * from './app/components/ui/label';
+export * from './app/components/ui/menubar';
+export * from './app/components/ui/navigation-menu';
+export * from './app/components/ui/pagination';
+export * from './app/components/ui/popover';
+export * from './app/components/ui/progress';
+export * from './app/components/ui/radio-group';
+export * from './app/components/ui/resizable';
+export * from './app/components/ui/scroll-area';
+export * from './app/components/ui/select';
+export * from './app/components/ui/separator';
+export * from './app/components/ui/sheet';
+export * from './app/components/ui/sidebar';
+export * from './app/components/ui/skeleton';
+export * from './app/components/ui/slider';
+export * from './app/components/ui/sonner';
+export * from './app/components/ui/switch';
+export * from './app/components/ui/table';
+export * from './app/components/ui/tabs';
+export * from './app/components/ui/textarea';
+export * from './app/components/ui/toggle-group';
+export * from './app/components/ui/toggle';
+export * from './app/components/ui/tooltip';
+
+// ── HeartStamp components ────────────────────────────────────────────────────
+export * from './app/components/ui/btn';
 export * from './app/components/ui/hs-acc';
 export * from './app/components/ui/hs-alrt';
 export * from './app/components/ui/hs-avt';
@@ -30,14 +58,19 @@ export * from './app/components/ui/hs-brd';
 export * from './app/components/ui/hs-cal';
 export * from './app/components/ui/hs-cbx';
 export * from './app/components/ui/hs-cmd';
-export * from './app/components/ui/hs-collapsible';
+// hs-collapsible exports a simplified Collapsible that conflicts with the Radix primitive above;
+// re-export under HsCollapsible to preserve both without ambiguity.
+export { Collapsible as HsCollapsible } from './app/components/ui/hs-collapsible';
 export * from './app/components/ui/hs-color-picker';
 export * from './app/components/ui/hs-crd';
 export * from './app/components/ui/hs-ctx-menu';
 export * from './app/components/ui/hs-dd-menu';
 export * from './app/components/ui/hs-dlg';
+export * from './app/components/ui/hs-editor-nav';
+export * from './app/components/ui/hs-footer';
 export * from './app/components/ui/hs-hvr-card';
 export * from './app/components/ui/hs-inp';
+export * from './app/components/ui/hs-kbd';
 export * from './app/components/ui/hs-lbl';
 export * from './app/components/ui/hs-logo';
 export * from './app/components/ui/hs-nav';
@@ -57,30 +90,15 @@ export * from './app/components/ui/hs-tarea';
 export * from './app/components/ui/hs-tbl';
 export * from './app/components/ui/hs-tgl';
 export * from './app/components/ui/hs-tip';
-export * from './app/components/ui/input-otp';
-export * from './app/components/ui/input';
-export * from './app/components/ui/label';
-export * from './app/components/ui/menubar';
-export * from './app/components/ui/navigation-menu';
-export * from './app/components/ui/pagination';
-export * from './app/components/ui/popover';
+export * from './app/components/ui/hs-website-nav';
 export * from './app/components/ui/profile-nav';
-export * from './app/components/ui/progress';
-export * from './app/components/ui/radio-group';
-export * from './app/components/ui/resizable';
-export * from './app/components/ui/scroll-area';
-export * from './app/components/ui/select';
-export * from './app/components/ui/separator';
-export * from './app/components/ui/sheet';
-export * from './app/components/ui/sidebar';
-export * from './app/components/ui/skeleton';
-export * from './app/components/ui/slider';
-export * from './app/components/ui/sonner';
 export * from './app/components/ui/stepper';
-export * from './app/components/ui/switch';
-export * from './app/components/ui/table';
-export * from './app/components/ui/tabs';
-export * from './app/components/ui/textarea';
-export * from './app/components/ui/toggle-group';
-export * from './app/components/ui/toggle';
-export * from './app/components/ui/tooltip';
+
+// ── Stampy Chatbot ───────────────────────────────────────────────────────────
+// Public types consumed by StampyChatbot and its sub-components
+export * from './app/components/ui/hs-chat-types';
+// StampyChatbot + all sub-components (panels, inputs, bubbles, menus)
+export * from './app/components/ui/hs-stampy-chat';
+
+// ── Style Sidebar (desktop + mobile) ────────────────────────────────────────
+export * from './app/components/ui/hs-style-sidebar';
