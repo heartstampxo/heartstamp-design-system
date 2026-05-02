@@ -14,13 +14,10 @@ jobs:
   publish:
     name: Publish to GitHub Packages
     runs-on: ubuntu-latest
-    if: ${{ github.event_name != 'push' || contains(github.event.head_commit.message, '[skip ci]') == false }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node
         uses: actions/setup-node@v4
