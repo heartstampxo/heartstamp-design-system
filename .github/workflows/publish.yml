@@ -41,7 +41,8 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
       - name: Bump patch version
-        run: npm version patch -m "chore: release %s [skip ci]"
+        run: |
+          npm version patch -m "chore: release %s [skip ci]"
 
       - name: Verify package contents
         run: npm pack --dry-run
