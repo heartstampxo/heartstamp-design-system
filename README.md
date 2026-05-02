@@ -7,11 +7,11 @@ A React component library built on [shadcn/ui](https://ui.shadcn.com/) — with 
 ## Installation
 
 ```bash
-npm install @heartstamp/design-system
+npm install @heartstampxo/design-system
 # or
-pnpm add @heartstamp/design-system
+pnpm add @heartstampxo/design-system
 # or
-yarn add @heartstamp/design-system
+yarn add @heartstampxo/design-system
 ```
 
 > **Peer dependencies** — `react` and `react-dom` ≥ 18 must be installed in your project.
@@ -25,13 +25,13 @@ yarn add @heartstamp/design-system
 Import the bundled stylesheet **once** in your app entry point (e.g. `main.tsx`):
 
 ```ts
-import '@heartstamp/design-system/design-system.css';
+import '@heartstampxo/design-system/design-system.css';
 ```
 
 ### 2. Use components
 
 ```tsx
-import { Btn, Bdg, Crd, Inp } from '@heartstamp/design-system';
+import { Btn, Bdg, Crd, Inp } from '@heartstampxo/design-system';
 
 export default function App() {
   return (
@@ -170,7 +170,7 @@ npm run check:release
 
 ## Publishing
 
-This package is published to GitHub Packages as `@heartstamp/design-system`.
+This package is published to GitHub Packages as `@heartstampxo/design-system`.
 
 Publishing is automatic. Every push or merge to `main` triggers the publish workflow:
 
@@ -202,31 +202,31 @@ The `dist/` folder is what gets published. Source files and `node_modules` are e
 In the consuming repo, add this `.npmrc` file:
 
 ```ini
-@heartstamp:registry=https://npm.pkg.github.com
+@heartstampxo:registry=https://npm.pkg.github.com
 ```
 
 Install the latest released package:
 
 ```bash
-npm install @heartstamp/design-system
+npm install @heartstampxo/design-system
 ```
 
 Or install a specific released version:
 
 ```bash
-npm install @heartstamp/design-system@1.12.2
+npm install @heartstampxo/design-system@1.12.2
 ```
 
 Import the CSS once near the app root:
 
 ```ts
-import '@heartstamp/design-system/design-system.css';
+import '@heartstampxo/design-system/design-system.css';
 ```
 
 Import components from the package root:
 
 ```tsx
-import { Btn, Inp, Crd, Bdg, HSLogo } from '@heartstamp/design-system';
+import { Btn, Inp, Crd, Bdg, HSLogo } from '@heartstampxo/design-system';
 ```
 
 ---
@@ -234,7 +234,7 @@ import { Btn, Inp, Crd, Bdg, HSLogo } from '@heartstamp/design-system';
 ## Links
 
 - 📐 [Figma Library](https://www.figma.com/design/fm22sR1a5DlXgX4IkjDVXz/HeartStamp-Library?node-id=8098-7906&p=f&t=nu7E7IFzwdnrpSgV-0)
-- 📦 [npm](https://www.npmjs.com/package/@heartstamp/design-system)
+- 📦 [GitHub Packages](https://github.com/heartstampxo/heartstamp-design-system/packages)
 - 🐙 [GitHub](https://github.com/mdheartstamp/heartstamp-design-system)
 
 ---
