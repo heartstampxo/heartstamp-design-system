@@ -31,15 +31,15 @@ import '@heartstamp/design-system/design-system.css';
 ### 2. Use components
 
 ```tsx
-import { Btn, Bdg, HsCrd, HsInp } from '@heartstamp/design-system';
+import { Btn, Bdg, Crd, Inp } from '@heartstamp/design-system';
 
 export default function App() {
   return (
-    <HsCrd>
-      <HsInp placeholder="Enter your email" />
+    <Crd>
+      <Inp placeholder="Enter your email" />
       <Btn variant="default">Submit</Btn>
       <Bdg variant="default">New</Bdg>
-    </HsCrd>
+    </Crd>
   );
 }
 ```
@@ -101,9 +101,9 @@ See `src/app/theme.ts` for the full token reference.
 | Export | Component |
 |---|---|
 | `Btn` | Button |
-| `HsInp` | Input |
-| `HsCrd` | Card |
-| `HsBdg` | Badge |
+| `Inp` | Input |
+| `Crd` | Card |
+| `Bdg` | Badge |
 | `HsAvt` | Avatar |
 | `HsAcc` | Accordion |
 | `HsAlrt` | Alert |
@@ -117,8 +117,9 @@ See `src/app/theme.ts` for the full token reference.
 | `HsDlg` | Dialog |
 | `HsHvrCard` | Hover Card |
 | `HsLbl` | Label |
-| `HsLogo` | HeartStamp Logo |
-| `HsNav` | Top Navigation |
+| `HSLogo` | HeartStamp Logo |
+| `TopNavDesktop` | Desktop Top Navigation |
+| `TopNavMobile` | Mobile Top Navigation |
 | `HsPgn` | Pagination |
 | `HsPpvr` | Popover |
 | `HsPrg` | Progress |
@@ -157,19 +158,76 @@ npm run build
 
 # Type-check without emitting
 npm run typecheck
+
+# Run unit tests
+npm run test
+
+# Verify the package can be released
+npm run check:release
 ```
 
 ---
 
 ## Publishing
 
-The `prepublishOnly` script runs `npm run build` automatically before publishing:
+This package is published to GitHub Packages as `@heartstamp/design-system`.
+
+Publishing is automatic. Every push or merge to `main` triggers the publish workflow:
+
+1. GitHub Actions installs dependencies.
+2. The package release gate runs:
 
 ```bash
-npm publish --access public
+npm run typecheck
+npm run build
+npm pack --dry-run
+```
+
+3. The workflow bumps the patch version automatically, for example `1.12.1` to `1.12.2`.
+4. The workflow commits and pushes the version bump back to `main` with `[skip ci]`.
+5. The workflow publishes the new package version to GitHub Packages.
+
+Unit tests run in CI for visibility, but they do not block package publishing.
+
+To verify the same release gate locally:
+
+```bash
+npm run check:release
 ```
 
 The `dist/` folder is what gets published. Source files and `node_modules` are excluded via the `files` field in `package.json`.
+
+### Installing From Another Repo
+
+In the consuming repo, add this `.npmrc` file:
+
+```ini
+@heartstamp:registry=https://npm.pkg.github.com
+```
+
+Install the latest released package:
+
+```bash
+npm install @heartstamp/design-system
+```
+
+Or install a specific released version:
+
+```bash
+npm install @heartstamp/design-system@1.12.2
+```
+
+Import the CSS once near the app root:
+
+```ts
+import '@heartstamp/design-system/design-system.css';
+```
+
+Import components from the package root:
+
+```tsx
+import { Btn, Inp, Crd, Bdg, HSLogo } from '@heartstamp/design-system';
+```
 
 ---
 
