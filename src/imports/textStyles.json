@@ -1,0 +1,126 @@
+{
+  "fileName": "HeartStamp Library",
+  "textStyles": [
+    {
+      "name": "H1",
+      "fontFamily": "Stack Sans Text",
+      "fontWeight": "Bold",
+      "fontSize": 56,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "H2",
+      "fontFamily": "Stack Sans Text",
+      "fontWeight": "SemiBold",
+      "fontSize": 40,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "H3",
+      "fontFamily": "Stack Sans Text",
+      "fontWeight": "Regular",
+      "fontSize": 36,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": -4
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "H4",
+      "fontFamily": "Stack Sans Text",
+      "fontWeight": "Regular",
+      "fontSize": 20,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": -2
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "H5",
+      "fontFamily": "Stack Sans Text",
+      "fontWeight": "Regular",
+      "fontSize": 18,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Subheadline",
+      "fontFamily": "Stack Sans Text",
+      "fontWeight": "Light",
+      "fontSize": 24,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Body - 15",
+      "fontFamily": "DM Sans",
+      "fontWeight": "Regular",
+      "fontSize": 15,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Label - 15",
+      "fontFamily": "DM Sans",
+      "fontWeight": "Medium",
+      "fontSize": 15,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Label SB - 15",
+      "fontFamily": "DM Sans",
+      "fontWeight": "SemiBold",
+      "fontSize": 15,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Label - 12",
+      "fontFamily": "DM Sans",
+      "fontWeight": "Medium",
+      "fontSize": 12,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Body - 13",
+      "fontFamily": "DM Sans",
+      "fontWeight": "Regular",
+      "fontSize": 13,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    }
+  ]
+}
