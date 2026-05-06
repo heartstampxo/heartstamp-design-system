@@ -1,24 +1,33 @@
 import React, { useState, useRef, useEffect } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { Search, FileHeart, Heart, ShoppingCart, Menu, X, ChevronRight, LogIn } from "lucide-react";
+import { Search, FileHeart, ShoppingCart, Menu, X } from "lucide-react";
 import { Btn } from "./btn";
 import { Sep } from "./hs-sep";
 import { HSLockup, HSEmblem } from "./hs-logo";
 import { Inp } from "./hs-inp";
 import { Avt } from "./hs-avt";
-import { ProfileNavDesktop } from "./profile-nav";
+import { ProfileNavDesktop, ProfileNavMobile } from "./profile-nav";
 
-/* ─────────────────────────────────────────────────────────────
-   hs-website-nav — HeartStamp website navigation
+/*
+  hs-website-nav — HeartStamp website navigation
 
-   WebsiteNav (desktop)
-   · bgVariant "default"  frosted glass — homepage overlay
-   · bgVariant "solid"    opaque bg    — inner pages
+  WebsiteNav (desktop/tablet)
+  · bgVariant "default"  frosted glass — homepage hero overlay
+  · bgVariant "solid"    opaque bg     — inner pages
+  · ResizeObserver switches to compact (24px padding, 8px gaps) below 900px
 
-   WebsiteNavMobile
-   · view "nav"    → logged-out or logged-in sheet
-   · view "search" → search panel with recent / trending chips
-─────────────────────────────────────────────────────────────── */
+  WebsiteNavMobile
+  · Closed by default; ☰ opens the nav panel
+  · Search icon opens search view; "Close" dismisses it
+  · Avatar (logged-in) opens ProfileNavMobile overlay
+  · view "nav"    → category links + auth actions
+  · view "search" → search input + recent / trending chips
+
+  WebsiteNavResponsive
+  · Container-aware: ≥768px → WebsiteNav, <768px → WebsiteNavMobile
+*/
+
+/* ─── Data ───────────────────────────────────────────────────── */
 
 const CATEGORIES = [
   "Birthday",
@@ -33,10 +42,11 @@ const CATEGORIES = [
 const RECENT_SEARCHES   = ["Birthday cards", "Valentine's Day", "Baby shower"];
 const TRENDING_SEARCHES = ["Wedding", "Thank you cards", "Graduation", "Baby shower", "Christmas"];
 
-/* ── Shared section label style ─────────────────────────────── */
-const sectionLabelStyle: React.CSSProperties = {
+/* ─── Shared styles ──────────────────────────────────────────── */
+
+const sectionLabel: React.CSSProperties = {
   fontSize:      "var(--font-size-label-12)",
-  fontWeight:    "var(--font-weight-medium)" as React.CSSProperties["fontWeight"],
+  fontWeight:    "var(--font-weight-label-12)" as React.CSSProperties["fontWeight"],
   color:         "var(--color-text-secondary)",
   textTransform: "uppercase",
   letterSpacing: ".06em",
@@ -44,7 +54,168 @@ const sectionLabelStyle: React.CSSProperties = {
 };
 
 /* ══════════════════════════════════════════════════════════════
-   DESKTOP — WebsiteNav
+   Private sub-components
+══════════════════════════════════════════════════════════════ */
+
+/* ── Cart button with badge ─────────────────────────────────── */
+function CartButton({ cartCount, iconSize = 16 }: { cartCount: number; iconSize?: number }) {
+  return (
+    <div style={{ position: "relative", display: "inline-flex", flexShrink: 0 }}>
+      <Btn
+        variant="outline"
+        size="icon-sm"
+        style={{ border: "none" }}
+        aria-label={cartCount > 0 ? `Cart, ${cartCount} item${cartCount === 1 ? "" : "s"}` : "Cart"}
+      >
+        <ShoppingCart size={iconSize} />
+      </Btn>
+
+      {cartCount > 0 && (
+        <span
+          aria-hidden="true"
+          style={{
+            position: "absolute", top: -4, right: -4,
+            minWidth: "var(--space-4)", height: "var(--space-4)",
+            padding: "0 var(--space-1)",
+            background: "var(--color-state-error)",
+            color: "var(--color-text-on-primary)",
+            /* Badge numerals intentionally sub-label (10px) — no token at this size */
+            fontSize: 10, fontWeight: 700, lineHeight: 1,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            borderRadius: "var(--radius-full)",
+            pointerEvents: "none",
+          }}
+        >
+          {cartCount > 99 ? "99+" : cartCount}
+        </span>
+      )}
+    </div>
+  );
+}
+
+/* ── Desktop category strip item ────────────────────────────── */
+function CategoryItem({ children }: { children: React.ReactNode }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <button
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        height: "100%",
+        padding: "0 var(--space-4)",
+        display: "flex", alignItems: "center",
+        border: "none", borderRadius: 0,
+        background: "transparent",
+        cursor: "pointer",
+        fontFamily: "inherit",
+        fontSize:   "var(--font-size-body-13)" as React.CSSProperties["fontSize"],
+        fontWeight: "var(--font-weight-btn)" as React.CSSProperties["fontWeight"],
+        color: "var(--color-text-primary)",
+        textTransform: "uppercase",
+        /* Category tracking — design spec value, no system token */
+        letterSpacing: "1.04px",
+        whiteSpace: "nowrap", flexShrink: 0,
+        /* Inset shadow avoids layout shift on hover */
+        boxShadow:  hovered ? "inset 0 -2px 0 var(--color-brand-primary)" : "none",
+        transition: "box-shadow 0.15s ease",
+      }}
+    >
+      {children}
+    </button>
+  );
+}
+
+/* ── Desktop avatar with ProfileNav dropdown ────────────────── */
+function NavAvatar({ src, fallback }: { src?: string; fallback: string }) {
+  const [open, setOpen]   = useState(false);
+  const [theme, setTheme] = useState<"light" | "dark" | "system">("system");
+  const ref               = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [open]);
+
+  return (
+    <div ref={ref} style={{ position: "relative", marginLeft: "var(--space-1)", flexShrink: 0 }}>
+      <div
+        role="button"
+        tabIndex={0}
+        aria-label="Account menu"
+        aria-expanded={open}
+        aria-haspopup="menu"
+        onClick={() => setOpen(o => !o)}
+        onKeyDown={e => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), setOpen(o => !o))}
+        style={{ cursor: "pointer", display: "flex", borderRadius: "50%", outline: "none" }}
+      >
+        <Avt size={36} src={src} fallback={fallback} />
+      </div>
+
+      {open && (
+        <div style={{ position: "absolute", top: "calc(100% + var(--space-2))", right: 0, zIndex: 100 }}>
+          <ProfileNavDesktop theme={theme} setTheme={setTheme} />
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ── Mobile search input ────────────────────────────────────── */
+function MobileSearchInp({
+  value, onChange, onClear,
+}: { value: string; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void; onClear: () => void }) {
+  return (
+    <Inp
+      value={value}
+      onChange={onChange}
+      placeholder="Search"
+      iconLeft={<Search size={14} />}
+      iconRight={value ? (
+        <button
+          onClick={onClear}
+          aria-label="Clear search"
+          style={{
+            background: "none", border: "none", cursor: "pointer", padding: 0,
+            display: "flex", color: "var(--color-text-secondary)", pointerEvents: "auto",
+          }}
+        >
+          <X size={12} />
+        </button>
+      ) : undefined}
+      style={{ borderRadius: "var(--radius-full)" }}
+    />
+  );
+}
+
+/* ── Mobile category list item ──────────────────────────────── */
+function MobileCategoryLink({ children }: { children: React.ReactNode }) {
+  return (
+    <button
+      style={{
+        display: "flex", alignItems: "center",
+        /* 44px touch target — no token at this size */
+        height: 44, padding: "0 var(--space-2)",
+        background: "transparent", border: "none", borderRadius: 0,
+        cursor: "pointer", fontFamily: "inherit",
+        fontSize:   "var(--font-size-body-13)" as React.CSSProperties["fontSize"],
+        fontWeight: "var(--font-weight-btn)" as React.CSSProperties["fontWeight"],
+        color: "var(--color-text-primary)",
+        textTransform: "uppercase",
+        letterSpacing: "1.04px",
+        textAlign: "left", width: "100%",
+      }}
+    >
+      {children}
+    </button>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════
+   DESKTOP / TABLET — WebsiteNav
 ══════════════════════════════════════════════════════════════ */
 
 export type WebsiteNavBgVariant = "default" | "solid";
@@ -77,13 +248,31 @@ export function WebsiteNav({
   avatarSrc,
   avatarInitials = "JS",
 }: WebsiteNavProps) {
+  const [searchVal, setSearchVal] = useState("");
+  const containerRef              = useRef<HTMLDivElement>(null);
+  const [isCompact, setIsCompact] = useState(false);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(entries => {
+      setIsCompact(entries[0].contentRect.width < 900);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  const sidePad  = isCompact ? "var(--space-6)" : "var(--space-10)";
+  const rightGap = isCompact ? "var(--space-2)" : "var(--space-4)";
+
   return (
-    <div style={{ width: "100%", ...BG_STYLES[bgVariant] }}>
+    <div ref={containerRef} style={{ width: "100%", ...BG_STYLES[bgVariant] }}>
 
       {/* ── Top bar ─────────────────────────────────────────── */}
       <div style={{
         display: "flex", alignItems: "center", justifyContent: "space-between",
-        height: 72, padding: "0 var(--space-10)",
+        /* 72px top bar — no token at this height */
+        height: 72, padding: `0 ${sidePad}`,
         borderBottom: "1px solid var(--color-element-subtle)",
         gap: "var(--space-4)",
       }}>
@@ -91,19 +280,31 @@ export function WebsiteNav({
         {/* Left: logo + search */}
         <div style={{ display: "flex", alignItems: "center", gap: "var(--space-5)", flex: 1 }}>
           <HSLockup height={32} />
-          <div style={{ width: 480, flexShrink: 0 }}>
+          <div style={{ flex: 1, maxWidth: 480, minWidth: 120 }}>
             <Inp
+              value={searchVal}
+              onChange={e => setSearchVal(e.target.value)}
               placeholder="Search"
               iconLeft={<Search size={14} />}
-              kbd="⌘F"
+              iconRight={searchVal ? (
+                <button
+                  onClick={() => setSearchVal("")}
+                  aria-label="Clear search"
+                  style={{
+                    background: "none", border: "none", cursor: "pointer", padding: 0,
+                    display: "flex", color: "var(--color-text-secondary)", pointerEvents: "auto",
+                  }}
+                >
+                  <X size={12} />
+                </button>
+              ) : undefined}
               style={{ borderRadius: "var(--radius-full)" }}
             />
           </div>
         </div>
 
         {/* Right: actions */}
-        <div style={{ display: "flex", alignItems: "center", gap: "var(--space-4)", flexShrink: 0 }}>
-
+        <div style={{ display: "flex", alignItems: "center", gap: rightGap, flexShrink: 0 }}>
           <Btn variant="secondary" size="sm">
             <FileHeart size={16} />
             Invitation
@@ -113,14 +314,14 @@ export function WebsiteNav({
             <>
               <Btn variant="secondary-ghost" size="sm">
                 <HSEmblem height={16} />
-                {credits} Heart Credits
+                {isCompact ? credits : `${credits} Heart Credits`}
               </Btn>
 
-              {/* Icon cluster — 6px gap internally, -4px left offset keeps 12px from Credits */}
-              <div style={{ display: "flex", alignItems: "center", gap: "var(--space-1-5)", marginLeft: -4 }}>
-                <Btn variant="outline" size="icon-sm" style={{ border: "none" }} aria-label="Favorites">
-                  <Heart size={16} />
-                </Btn>
+              <div style={{
+                display: "flex", alignItems: "center",
+                gap: "var(--space-1-5)",
+                marginLeft: isCompact ? 0 : -4,
+              }}>
                 <CartButton cartCount={cartCount} />
                 <Sep orientation="vertical" style={{ height: 20 }} />
                 <NavAvatar src={avatarSrc} fallback={avatarInitials} />
@@ -132,10 +333,7 @@ export function WebsiteNav({
               <Btn variant="outline" size="sm" style={{ borderRadius: "var(--radius-full)" }}>
                 Log in
               </Btn>
-              <Btn
-                variant="default" size="sm"
-                style={{ borderRadius: "var(--radius-full)", background: "var(--color-state-error)", color: "var(--color-text-on-primary)" }}
-              >
+              <Btn variant="destructive" size="sm" style={{ borderRadius: "var(--radius-full)" }}>
                 Sign up
               </Btn>
             </>
@@ -157,107 +355,6 @@ export function WebsiteNav({
   );
 }
 
-/* ── Avatar with ProfileNav dropdown ───────────────────────── */
-function NavAvatar({ src, fallback }: { src?: string; fallback: string }) {
-  const [open, setOpen]   = useState(false);
-  const [theme, setTheme] = useState<"light" | "dark" | "system">("system");
-  const ref               = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!open) return;
-    const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, [open]);
-
-  return (
-    <div ref={ref} style={{ position: "relative", marginLeft: "var(--space-1)", flexShrink: 0 }}>
-      <div
-        role="button"
-        aria-label="Account menu"
-        aria-expanded={open}
-        aria-haspopup="menu"
-        tabIndex={0}
-        onClick={() => setOpen(o => !o)}
-        onKeyDown={e => e.key === "Enter" && setOpen(o => !o)}
-        style={{ cursor: "pointer", display: "flex", borderRadius: "50%", outline: "none" }}
-      >
-        <Avt size={36} src={src} fallback={fallback} />
-      </div>
-
-      {open && (
-        <div style={{ position: "absolute", top: "calc(100% + var(--space-2))", right: 0, zIndex: 100 }}>
-          <ProfileNavDesktop theme={theme} setTheme={setTheme} />
-        </div>
-      )}
-    </div>
-  );
-}
-
-/* ── Category nav item — bottom-stroke on hover ─────────────── */
-function CategoryItem({ children }: { children: React.ReactNode }) {
-  const [hovered, setHovered] = useState(false);
-  return (
-    <button
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{
-        height: "100%", padding: "0 var(--space-4)",
-        display: "flex", alignItems: "center",
-        border: "none", borderRadius: 0,
-        background: "transparent",
-        cursor: "pointer",
-        fontFamily: "inherit",
-        fontSize: "var(--font-size-body-13)" as React.CSSProperties["fontSize"],
-        fontWeight: "var(--font-weight-medium)" as React.CSSProperties["fontWeight"],
-        color: "var(--color-text-primary)",
-        textTransform: "uppercase",
-        letterSpacing: "1.04px",
-        whiteSpace: "nowrap", flexShrink: 0,
-        boxShadow: hovered ? "inset 0 -2px 0 var(--color-brand-primary)" : "none",
-        transition: "box-shadow 0.15s ease",
-      }}
-    >
-      {children}
-    </button>
-  );
-}
-
-/* ── Cart button with optional badge ───────────────────────── */
-function CartButton({ cartCount }: { cartCount: number }) {
-  return (
-    <div style={{ position: "relative", display: "inline-flex", flexShrink: 0 }}>
-      <Btn
-        variant="outline"
-        size="icon-sm"
-        style={{ border: "none" }}
-        aria-label={`Cart${cartCount > 0 ? `, ${cartCount} item${cartCount === 1 ? "" : "s"}` : ""}`}
-      >
-        <ShoppingCart size={16} />
-      </Btn>
-      {cartCount > 0 && (
-        <span
-          aria-hidden="true"
-          style={{
-            position: "absolute", top: -4, right: -4,
-            minWidth: "var(--space-4)", height: "var(--space-4)", padding: "0 var(--space-1)",
-            background: "var(--color-state-error)",
-            color: "var(--color-text-on-primary)",
-            fontSize: 10, fontWeight: 700, lineHeight: 1,
-            display: "flex", alignItems: "center", justifyContent: "center",
-            borderRadius: "var(--radius-full)",
-            pointerEvents: "none",
-          }}
-        >
-          {cartCount > 99 ? "99+" : cartCount}
-        </span>
-      )}
-    </div>
-  );
-}
-
 /* ══════════════════════════════════════════════════════════════
    MOBILE — WebsiteNavMobile
 ══════════════════════════════════════════════════════════════ */
@@ -268,9 +365,12 @@ export interface WebsiteNavMobileProps {
   cartCount?:      number;
   avatarSrc?:      string;
   avatarInitials?: string;
-  userName?:       string;
+  /** Pre-open the nav panel — useful for docs demos */
+  initialOpen?:    boolean;
   /** Pre-open a specific view — useful for docs demos */
   initialView?:    "nav" | "search";
+  /** Override the default 393px max-width */
+  maxWidth?:       number | string;
 }
 
 export function WebsiteNavMobile({
@@ -279,70 +379,88 @@ export function WebsiteNavMobile({
   cartCount      = 0,
   avatarSrc,
   avatarInitials = "JS",
-  userName       = "Jane Smith",
+  initialOpen    = false,
   initialView    = "nav",
+  maxWidth       = 393,
 }: WebsiteNavMobileProps) {
-  const [view, setView]           = useState<"nav" | "search">(initialView);
-  const [searchVal, setSearchVal] = useState("");
-  const [bodyMinH, setBodyMinH]   = useState(0);
-  const navBodyRef                = useRef<HTMLDivElement>(null);
+  const [navOpen, setNavOpen]         = useState(initialOpen || initialView === "search");
+  const [view, setView]               = useState<"nav" | "search">(initialView);
+  const [searchVal, setSearchVal]     = useState("");
+  const [profileOpen, setProfileOpen] = useState(false);
+  const [theme, setTheme]             = useState<"light" | "dark" | "system">("system");
 
   const isSearch = view === "search";
 
-  /* Snapshot nav height before switching so container never shrinks */
-  const openSearch = () => {
-    if (navBodyRef.current) setBodyMinH(navBodyRef.current.offsetHeight);
-    setView("search");
+  const toggleNav = () => {
+    if (navOpen && !profileOpen) { setNavOpen(false); setView("nav"); setSearchVal(""); }
+    else { setNavOpen(true); setProfileOpen(false); }
   };
+
+  const openSearch  = () => { setNavOpen(true); setView("search"); setProfileOpen(false); };
   const closeSearch = () => { setView("nav"); setSearchVal(""); };
 
-  return (
-    <div style={{ width: "100%", maxWidth: 393, background: "var(--color-bg-main)" }}>
+  /* Left ☰ icon: X when nav is open (and profile is not covering it), Menu otherwise */
+  const menuIcon = navOpen && (isLoggedIn ? !profileOpen : true)
+    ? <X size={20} />
+    : <Menu size={20} />;
 
-      {/* ── Top bar — stable across views ───────────────────── */}
+  return (
+    <div style={{
+      width: "100%", maxWidth: maxWidth,
+      background: "var(--color-bg-main)",
+      position: "relative", overflow: "hidden",
+    }}>
+
+      {/* ── Top bar ──────────────────────────────────────────── */}
       <div style={{
         display: "grid",
-        gridTemplateColumns: isSearch ? "auto 1fr auto" : "1fr auto 1fr",
+        gridTemplateColumns: isSearch && navOpen ? "1fr auto" : "auto 1fr auto",
         alignItems: "center",
+        /* 64px top bar — no token at this height */
         height: 64, padding: "0 var(--space-4)",
         borderBottom: "1px solid var(--color-element-subtle)",
         gap: "var(--space-2)",
       }}>
 
-        {/* Left: menu */}
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <Btn variant="outline" size="icon-sm" style={{ border: "none" }} aria-label="Menu">
-            <Menu size={20} />
+        {/* Left: ☰ — hidden when search is active */}
+        {!(isSearch && navOpen) && (
+          <Btn
+            variant="outline" size="icon-sm"
+            style={{ border: "none", flexShrink: 0 }}
+            aria-label={navOpen ? "Close menu" : "Open menu"}
+            aria-expanded={navOpen}
+            onClick={toggleNav}
+          >
+            {menuIcon}
           </Btn>
-        </div>
+        )}
 
-        {/* Center: logo ↔ search input — always truly centered */}
-        <div style={{ position: "relative", overflow: "hidden", minWidth: 0 }}>
-          <AnimatePresence initial={false} mode="wait">
-            {isSearch ? (
+        {/* Center: logo ↔ search input */}
+        <div style={{ minWidth: 0, display: "flex", alignItems: "center" }}>
+          <AnimatePresence mode="wait" initial={false}>
+            {isSearch && navOpen ? (
               <motion.div
                 key="search-input"
-                initial={{ opacity: 0, x: 20 }}
+                initial={{ opacity: 0, x: 12 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
+                exit={{ opacity: 0, x: 12 }}
                 transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                style={{ width: "100%" }}
               >
-                <Inp
+                <MobileSearchInp
                   value={searchVal}
                   onChange={e => setSearchVal(e.target.value)}
-                  placeholder="Search"
-                  iconLeft={<Search size={14} />}
-                  style={{ borderRadius: "var(--radius-full)" }}
+                  onClear={() => setSearchVal("")}
                 />
               </motion.div>
             ) : (
               <motion.div
                 key="logo"
-                initial={{ opacity: 0, x: -20 }}
+                initial={{ opacity: 0, x: -12 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
+                exit={{ opacity: 0, x: -12 }}
                 transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                style={{ display: "flex", justifyContent: "center" }}
+                style={{ display: "flex", alignItems: "center" }}
               >
                 <HSLockup height={26} />
               </motion.div>
@@ -350,172 +468,236 @@ export function WebsiteNavMobile({
           </AnimatePresence>
         </div>
 
-        {/* Right: cart+search ↔ close */}
-        <div style={{ display: "flex", justifyContent: "flex-end" }}>
-          <AnimatePresence initial={false} mode="wait">
-            {isSearch ? (
-              <motion.div
-                key="close-btn"
-                initial={{ opacity: 0, scale: 0.7 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.7 }}
-                transition={{ type: "spring", stiffness: 400, damping: 28 }}
+        {/* Right: context-sensitive actions */}
+        <div style={{ display: "flex", alignItems: "center", gap: "var(--space-1-5)", flexShrink: 0 }}>
+          {isSearch && navOpen ? (
+            <Btn
+              variant="outline" size="sm"
+              style={{ border: "none", fontSize: "var(--font-size-body-13)" }}
+              aria-label="Close search"
+              onClick={closeSearch}
+            >
+              Close
+            </Btn>
+          ) : isLoggedIn ? (
+            <>
+              <Btn variant="secondary-ghost" size="sm" style={{ borderRadius: "var(--radius-full)" }}>
+                <HSEmblem height={14} />
+                {credits}
+              </Btn>
+              <Btn variant="outline" size="icon-sm" style={{ border: "none" }} aria-label="Search" onClick={openSearch}>
+                <Search size={20} />
+              </Btn>
+              <CartButton cartCount={cartCount} iconSize={20} />
+              <div
+                role="button"
+                tabIndex={0}
+                aria-label={profileOpen ? "Close profile" : "Open profile"}
+                aria-expanded={profileOpen}
+                onClick={() => setProfileOpen(o => !o)}
+                onKeyDown={e => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), setProfileOpen(o => !o))}
+                style={{
+                  cursor: "pointer", display: "flex", borderRadius: "50%",
+                  outline: "none", flexShrink: 0,
+                  boxShadow: profileOpen ? "0 0 0 2px var(--color-brand-primary)" : "none",
+                  transition: "box-shadow 0.15s ease",
+                }}
               >
-                <Btn variant="outline" size="icon-sm" style={{ border: "none" }} aria-label="Close search" onClick={closeSearch}>
-                  <X size={20} />
-                </Btn>
-              </motion.div>
-            ) : (
-              <motion.div
-                key="nav-icons"
-                initial={{ opacity: 0, scale: 0.7 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.7 }}
-                transition={{ type: "spring", stiffness: 400, damping: 28 }}
-                style={{ display: "flex", alignItems: "center", gap: "var(--space-1)" }}
-              >
-                <CartButton cartCount={cartCount} />
-                <Btn variant="outline" size="icon-sm" style={{ border: "none" }} aria-label="Search" onClick={openSearch}>
-                  <Search size={20} />
-                </Btn>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                <Avt size={32} src={avatarSrc} fallback={avatarInitials} />
+              </div>
+            </>
+          ) : (
+            <>
+              <Btn variant="outline" size="icon-sm" style={{ border: "none" }} aria-label="Search" onClick={openSearch}>
+                <Search size={20} />
+              </Btn>
+              <CartButton cartCount={cartCount} iconSize={20} />
+              <Btn variant="outline" size="sm" style={{ borderRadius: "var(--radius-full)" }}>
+                Sign in
+              </Btn>
+            </>
+          )}
         </div>
       </div>
 
-      {/* ── Body — animates between nav and search ───────────── */}
-      <div style={{ minHeight: bodyMinH || undefined, overflow: "hidden" }}>
-        <AnimatePresence initial={false} mode="wait">
+      {/* ── Content area: profile panel OR nav panel ─────────── */}
+      <AnimatePresence mode="popLayout">
 
-          {isSearch ? (
-            /* ── Search panel ─────────────────────────────────── */
-            <motion.div
-              key="search-body"
-              initial={{ opacity: 0, y: -12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -12 }}
-              transition={{ type: "spring", stiffness: 340, damping: 28 }}
-              style={{ padding: "var(--space-5) var(--space-4) var(--space-6)", display: "flex", flexDirection: "column", gap: "var(--space-4)" }}
-            >
-              <div>
-                <p style={sectionLabelStyle}>Recent searches</p>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-2)" }}>
-                  {RECENT_SEARCHES.map(term => (
-                    <Btn key={term} variant="outline" size="sm" style={{ borderRadius: "var(--radius-full)", height: "var(--space-8)", fontSize: "var(--font-size-label-13)" }}>
-                      {term}
-                    </Btn>
-                  ))}
-                </div>
-              </div>
+        {profileOpen ? (
+          <motion.div
+            key="profile-panel"
+            layout
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 8 }}
+            transition={{ type: "spring", stiffness: 340, damping: 28 }}
+          >
+            <ProfileNavMobile
+              theme={theme}
+              setTheme={setTheme}
+              onClose={() => setProfileOpen(false)}
+            />
+          </motion.div>
 
-              <Sep orientation="horizontal" />
+        ) : navOpen ? (
+          <motion.div
+            key="nav-panel"
+            layout
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 8 }}
+            transition={{ type: "spring", stiffness: 340, damping: 28 }}
+          >
+            <AnimatePresence mode="wait" initial={false}>
 
-              <div>
-                <p style={sectionLabelStyle}>Trending searches 🔥</p>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-2)" }}>
-                  {TRENDING_SEARCHES.map(term => (
-                    <Btn key={term} variant="outline" size="sm" style={{ borderRadius: "var(--radius-full)", height: "var(--space-8)", fontSize: "var(--font-size-label-13)" }}>
-                      {term}
-                    </Btn>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-
-          ) : (
-            /* ── Nav panel ────────────────────────────────────── */
-            <motion.div
-              key="nav-body"
-              ref={navBodyRef}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 8 }}
-              transition={{ type: "spring", stiffness: 340, damping: 28 }}
-              style={{ padding: "var(--space-4) var(--space-4) var(--space-6)", display: "flex", flexDirection: "column", gap: "var(--space-3)" }}
-            >
-              {/* Auth: user card + Invitation */}
-              {isLoggedIn && (
-                <>
-                  <button style={{
-                    display: "flex", alignItems: "center", gap: "var(--space-3)",
-                    padding: "var(--space-3)",
-                    background: "var(--color-brand-secondary-dim)",
-                    border: "none", borderRadius: "var(--radius-2xl)",
-                    cursor: "pointer", textAlign: "left", width: "100%",
-                  }}>
-                    <Avt size={36} src={avatarSrc} fallback={avatarInitials} />
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <p style={{ fontSize: "var(--font-size-label-15)", fontWeight: "var(--font-weight-medium)" as React.CSSProperties["fontWeight"], color: "var(--color-text-primary)", margin: 0, lineHeight: "1.3" }}>
-                        {userName}
-                      </p>
-                      <p style={{ fontSize: "var(--font-size-label-12)", color: "var(--color-text-secondary)", margin: 0, display: "flex", alignItems: "center", gap: "var(--space-1)" }}>
-                        <HSEmblem height={12} />
-                        {credits} Heart Credits
-                      </p>
+              {isSearch ? (
+                <motion.div
+                  key="search-body"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.15 }}
+                  style={{
+                    padding: "var(--space-5) var(--space-4) var(--space-6)",
+                    display: "flex", flexDirection: "column", gap: "var(--space-4)",
+                  }}
+                >
+                  <div>
+                    <p style={sectionLabel}>Recent searches</p>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-2)" }}>
+                      {RECENT_SEARCHES.map(term => (
+                        <Btn
+                          key={term}
+                          variant="outline" size="sm"
+                          onClick={closeSearch}
+                          style={{ borderRadius: "var(--radius-full)", fontSize: "var(--font-size-body-13)" }}
+                        >
+                          {term}
+                        </Btn>
+                      ))}
                     </div>
-                    <ChevronRight size={16} style={{ color: "var(--color-text-secondary)", flexShrink: 0 }} />
-                  </button>
+                  </div>
 
-                  <Btn variant="secondary" size="sm" style={{ borderRadius: "var(--radius-full)", width: "100%" }}>
-                    <FileHeart size={16} />
-                    Invitation
-                  </Btn>
-                </>
-              )}
+                  <Sep orientation="horizontal" />
 
-              {/* Category links */}
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                {CATEGORIES.map(cat => (
-                  <button key={cat} style={{
-                    display: "flex", alignItems: "center",
-                    height: 44, padding: "0 var(--space-2)",
-                    background: "transparent", border: "none", borderRadius: 0,
-                    cursor: "pointer", fontFamily: "inherit",
-                    fontSize: "var(--font-size-body-13)" as React.CSSProperties["fontSize"],
-                    fontWeight: "var(--font-weight-medium)" as React.CSSProperties["fontWeight"],
-                    color: "var(--color-text-primary)",
-                    textTransform: "uppercase", letterSpacing: "1.04px",
-                    textAlign: "left",
-                  }}>
-                    {cat}
-                  </button>
-                ))}
-              </div>
+                  <div>
+                    <p style={sectionLabel}>Trending searches 🔥</p>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-2)" }}>
+                      {TRENDING_SEARCHES.map(term => (
+                        <Btn
+                          key={term}
+                          variant="outline" size="sm"
+                          onClick={closeSearch}
+                          style={{ borderRadius: "var(--radius-full)", fontSize: "var(--font-size-body-13)" }}
+                        >
+                          {term}
+                        </Btn>
+                      ))}
+                    </div>
+                  </div>
+                </motion.div>
 
-              <Sep orientation="horizontal" />
-
-              {isLoggedIn ? (
-                <>
-                  <Btn variant="secondary-ghost" size="sm" style={{ borderRadius: "var(--radius-full)", width: "100%" }}>
-                    <Heart size={16} />
-                    Favorite Cards
-                  </Btn>
-                  <Btn variant="ghost" size="sm" style={{ borderRadius: "var(--radius-full)", width: "100%" }}>
-                    <LogIn size={16} />
-                    Sign out
-                  </Btn>
-                </>
               ) : (
-                <>
+                <motion.div
+                  key="nav-body"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.15 }}
+                  style={{
+                    padding: "var(--space-4) var(--space-4) var(--space-6)",
+                    display: "flex", flexDirection: "column", gap: "var(--space-3)",
+                  }}
+                >
+                  <div style={{ display: "flex", flexDirection: "column" }}>
+                    {CATEGORIES.map(cat => (
+                      <MobileCategoryLink key={cat}>{cat}</MobileCategoryLink>
+                    ))}
+                  </div>
+
+                  <Sep orientation="horizontal" />
+
                   <Btn variant="secondary" size="sm" style={{ borderRadius: "var(--radius-full)", width: "100%" }}>
                     <FileHeart size={16} />
                     Invitation
                   </Btn>
-                  <Btn variant="outline" size="sm" style={{ borderRadius: "var(--radius-full)", width: "100%" }}>
-                    Log in
-                  </Btn>
-                  <Btn variant="default" size="sm" style={{ borderRadius: "var(--radius-full)", width: "100%", background: "var(--color-state-error)", color: "var(--color-text-on-primary)" }}>
-                    Sign up
-                  </Btn>
-                </>
+
+                  {!isLoggedIn && (
+                    <Btn variant="destructive" size="sm" style={{ borderRadius: "var(--radius-full)", width: "100%" }}>
+                      Sign up
+                    </Btn>
+                  )}
+                </motion.div>
               )}
-            </motion.div>
-          )}
 
-        </AnimatePresence>
-      </div>
+            </AnimatePresence>
+          </motion.div>
 
+        ) : null}
+
+      </AnimatePresence>
+
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════
+   RESPONSIVE — WebsiteNavResponsive
+   ≥768px → WebsiteNav  (desktop + tablet)
+   <768px → WebsiteNavMobile
+══════════════════════════════════════════════════════════════ */
+
+export interface WebsiteNavResponsiveProps {
+  bgVariant?:      WebsiteNavBgVariant;
+  isLoggedIn?:     boolean;
+  credits?:        number;
+  cartCount?:      number;
+  avatarSrc?:      string;
+  avatarInitials?: string;
+}
+
+export function WebsiteNavResponsive({
+  bgVariant      = "default",
+  isLoggedIn     = false,
+  credits        = 50,
+  cartCount      = 0,
+  avatarSrc,
+  avatarInitials = "JS",
+}: WebsiteNavResponsiveProps) {
+  const containerRef          = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(entries => {
+      setIsMobile(entries[0].contentRect.width < 768);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  return (
+    <div ref={containerRef} style={{ width: "100%" }}>
+      {isMobile ? (
+        <WebsiteNavMobile
+          isLoggedIn={isLoggedIn}
+          credits={credits}
+          cartCount={cartCount}
+          avatarSrc={avatarSrc}
+          avatarInitials={avatarInitials}
+          maxWidth="100%"
+        />
+      ) : (
+        <WebsiteNav
+          bgVariant={bgVariant}
+          isLoggedIn={isLoggedIn}
+          credits={credits}
+          cartCount={cartCount}
+          avatarSrc={avatarSrc}
+          avatarInitials={avatarInitials}
+        />
+      )}
     </div>
   );
 }

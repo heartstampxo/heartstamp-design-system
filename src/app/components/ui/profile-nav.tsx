@@ -2,12 +2,11 @@ import React from "react";
 import { motion } from "motion/react";
 import {
   Palette, Settings, Bell, Lock, AtSign, Calendar, CalendarCheck,
-  History, Home, Wallet, Sun, Moon, Monitor, X, Search, LogOut,
+  History, Home, Wallet, Sun, Moon, Monitor, X, LogOut,
 } from "lucide-react";
 import { Avt } from "./hs-avt";
 import { HSLockup, useIsDark } from "./hs-logo";
 import { DARK_THEME, LIGHT_THEME } from "../../theme";
-import lockupDark from "../../../assets/type=Lockup, color=brand, Theme=Dark.svg?url";
 
 /* ── Shared styles ─────────────────────────────────────────────────────── */
 const pnItemStyle: React.CSSProperties = {
@@ -166,30 +165,12 @@ export function ProfileNavDesktop({ theme, setTheme }: { theme: Theme; setTheme:
   );
 }
 
-export function ProfileNavMobile({ theme, setTheme }: { theme: Theme; setTheme: (t: Theme) => void }) {
+export function ProfileNavMobile({ theme, setTheme, onClose }: { theme: Theme; setTheme: (t: Theme) => void; onClose?: () => void }) {
   const sysIsDark = useIsDark();
   const themeVars: React.CSSProperties = theme === "dark" ? DARK_THEME : theme === "light" ? LIGHT_THEME : (sysIsDark ? DARK_THEME : LIGHT_THEME);
-  const isDarkMode = theme === "dark" || (theme === "system" && sysIsDark);
   return (
     <div style={themeVars}>
-    <motion.div
-      style={{ ...pnCardStyle, width: 393, borderRadius: "var(--radius-none)", boxShadow: "none" }}
-      initial={{ opacity: 0, x: -16 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.25, ease: [0.32, 0.72, 0, 1] }}
-    >
-      <div style={{ padding: "0 var(--space-4)", height: 52, display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid var(--color-element-subtle)" }}>
-        <button style={{ width: "var(--space-6)", height: "var(--space-6)", display: "flex", alignItems: "center", justifyContent: "center", background: "none", border: "none", cursor: "pointer", color: "var(--color-text-secondary)", borderRadius: "var(--radius-sm)", flexShrink: 0 }}>
-          <X size={18} />
-        </button>
-        {isDarkMode
-          ? <img src={lockupDark} height={26} width={104} alt="HeartStamp" style={{ display: "block" }} />
-          : <HSLockup color="brand" height={26} />
-        }
-        <button style={{ width: "var(--space-6)", height: "var(--space-6)", display: "flex", alignItems: "center", justifyContent: "center", background: "none", border: "none", cursor: "pointer", color: "var(--color-text-secondary)", borderRadius: "var(--radius-sm)", flexShrink: 0 }}>
-          <Search size={18} />
-        </button>
-      </div>
+    <div style={{ ...pnCardStyle, width: 393, borderRadius: "var(--radius-none)", boxShadow: "none" }}>
       <PnUserHeader />
       <div style={{ borderTop: "1px solid var(--color-element-subtle)" }}>
         <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-1-5)", padding: "var(--space-3) 0" }}>
@@ -208,7 +189,7 @@ export function ProfileNavMobile({ theme, setTheme }: { theme: Theme; setTheme: 
           <PnSignOutRow />
         </div>
       </div>
-    </motion.div>
+    </div>
     </div>
   );
 }

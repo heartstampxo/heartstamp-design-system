@@ -2003,9 +2003,14 @@ function PageWebsiteNav() {
         action={bgToggle}
       >
         <Preview title="Website Nav · logged out" code={buildCode(false)} height={200} fullWidth canvasBg="var(--color-bg-editor)">
-          <div style={{ width: "100%", alignSelf: "stretch" }}>
-            <WebsiteNav bgVariant={bgVariant} />
-          </div>
+          {(vp: string) => (
+            <div style={{ width: "100%", alignSelf: "stretch" }}>
+              {vp === "mobile"
+                ? <WebsiteNavMobile cartCount={0} />
+                : <WebsiteNav bgVariant={bgVariant} />
+              }
+            </div>
+          )}
         </Preview>
       </DocSection>
 
@@ -2015,9 +2020,14 @@ function PageWebsiteNav() {
         action={bgToggle}
       >
         <Preview title="Website Nav · logged in" code={buildCode(true)} height={480} fullWidth canvasBg="var(--color-bg-editor)">
-          <div style={{ width: "100%", alignSelf: "stretch" }}>
-            <WebsiteNav bgVariant={bgVariant} isLoggedIn credits={50} cartCount={2} avatarSrc="https://i.pravatar.cc/80?img=68" avatarInitials="JS" />
-          </div>
+          {(vp: string) => (
+            <div style={{ width: "100%", alignSelf: "stretch" }}>
+              {vp === "mobile"
+                ? <WebsiteNavMobile isLoggedIn credits={50} cartCount={2} avatarSrc="https://i.pravatar.cc/80?img=68" avatarInitials="JS" />
+                : <WebsiteNav bgVariant={bgVariant} isLoggedIn credits={50} cartCount={2} avatarSrc="https://i.pravatar.cc/80?img=68" avatarInitials="JS" />
+              }
+            </div>
+          )}
         </Preview>
       </DocSection>
 
@@ -2032,7 +2042,7 @@ function PageWebsiteNav() {
           canvasBg="var(--color-bg-editor)"
         >
           <div style={{ alignSelf: "flex-start", width: 393 }}>
-            <WebsiteNavMobile cartCount={2} />
+            <WebsiteNavMobile cartCount={2} initialOpen />
           </div>
         </Preview>
       </DocSection>
@@ -2048,7 +2058,7 @@ function PageWebsiteNav() {
           canvasBg="var(--color-bg-editor)"
         >
           <div style={{ alignSelf: "flex-start", width: 393 }}>
-            <WebsiteNavMobile isLoggedIn credits={50} cartCount={2} avatarSrc="https://i.pravatar.cc/80?img=68" avatarInitials="JS" userName="Jane Smith" />
+            <WebsiteNavMobile isLoggedIn credits={50} cartCount={2} avatarSrc="https://i.pravatar.cc/80?img=68" avatarInitials="JS" initialOpen />
           </div>
         </Preview>
       </DocSection>
