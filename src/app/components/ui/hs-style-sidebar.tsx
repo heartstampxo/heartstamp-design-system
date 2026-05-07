@@ -15,7 +15,7 @@ import { Lbl } from "./hs-lbl";
 import { Sep } from "./hs-sep";
 import { Tip } from "./hs-tip";
 import { DdMenu } from "./hs-dd-menu";
-import { ColorPicker } from "./hs-color-picker";
+import { ColorPicker, addRecentColor } from "./hs-color-picker";
 import { PillTabs } from "./hs-pill-tabs";
 import { ProfileNavDesktop } from "./profile-nav";
 import { HSEmblem } from "./hs-logo";
@@ -1071,7 +1071,6 @@ function SignaturePanel({ onClose }: SignaturePanelProps) {
   const [hasDrawing, setHasDrawing]       = useState(false);
   const [pickerOpen, setPickerOpen]       = useState(false);
   const [pickerAnchor, setPickerAnchor]   = useState<DOMRect | null>(null);
-  const [recentColors, setRecentColors]   = useState<string[]>([]);
   const rainbowRef                        = useRef<HTMLButtonElement>(null);
   const canvasRef                         = useRef<HTMLCanvasElement | null>(null);
   const isDrawing                   = useRef(false);
@@ -1181,7 +1180,10 @@ function SignaturePanel({ onClose }: SignaturePanelProps) {
 
   function handleColorChange(hex: string) {
     setSigColor(hex);
-    setRecentColors(prev => [hex, ...prev.filter(c => c !== hex)].slice(0, 12));
+  }
+
+  function handleColorCommit(hex: string) {
+    addRecentColor(hex);
   }
 
   function openPicker() {
@@ -1206,7 +1208,7 @@ function SignaturePanel({ onClose }: SignaturePanelProps) {
         {SIG_COLORS.map(c => (
           <button
             key={c.hex}
-            onClick={() => { setSigColor(c.hex); setPickerOpen(false); }}
+            onClick={() => { setSigColor(c.hex); handleColorCommit(c.hex); setPickerOpen(false); }}
             style={{
               width: "var(--space-6)", height: "var(--space-6)",
               borderRadius: "50%",
@@ -1668,7 +1670,6 @@ function SignaturePanel({ onClose }: SignaturePanelProps) {
         <ColorPicker
           color={sigColor}
           onChange={handleColorChange}
-          recentColors={recentColors}
           anchorRect={pickerAnchor}
           onClose={() => setPickerOpen(false)}
         />
@@ -2687,7 +2688,6 @@ function SignatureMobileSheet({ onClose, onSaveReady }: SignatureMobileSheetProp
   const [savedSigs, setSavedSigs]         = useState<string[]>([]);
   const [hasDrawing, setHasDrawing]       = useState(false);
   const [pickerOpen, setPickerOpen]       = useState(false);
-  const [recentColors, setRecentColors]   = useState<string[]>([]);
   const [parentH, setParentH]             = useState(0);
 
   const sheetRef        = useRef<HTMLDivElement>(null);
@@ -2823,7 +2823,10 @@ function SignatureMobileSheet({ onClose, onSaveReady }: SignatureMobileSheetProp
 
   function handleColorChange(hex: string) {
     setSigColor(hex);
-    setRecentColors(prev => [hex, ...prev.filter(c => c !== hex)].slice(0, 12));
+  }
+
+  function handleColorCommit(hex: string) {
+    addRecentColor(hex);
   }
 
   function openPicker() { setPickerOpen(true); }
@@ -2836,7 +2839,7 @@ function SignatureMobileSheet({ onClose, onSaveReady }: SignatureMobileSheetProp
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)" }}>
         {SIG_COLORS.map(c => (
-          <button key={c.hex} onClick={() => { setSigColor(c.hex); setPickerOpen(false); }} style={{
+          <button key={c.hex} onClick={() => { setSigColor(c.hex); handleColorCommit(c.hex); setPickerOpen(false); }} style={{
             width: "var(--space-6)", height: "var(--space-6)", borderRadius: "50%",
             background: c.hex, border: "none",
             outline: sigColor === c.hex ? "2px solid var(--fg)" : "2px solid transparent",
@@ -3069,7 +3072,6 @@ function SignatureMobileSheet({ onClose, onSaveReady }: SignatureMobileSheetProp
           <ColorPicker
             color={sigColor}
             onChange={handleColorChange}
-            recentColors={recentColors}
             onClose={() => setPickerOpen(false)}
           />
         </div>

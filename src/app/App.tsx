@@ -4445,12 +4445,12 @@ function ColorPickerPopoverDemo() {
           width: 36, height: 36,
           borderRadius: "50%",
           background: popColor,
-          border: "2px solid var(--border)",
+          border: "2px solid var(--color-element-subtle)",
           cursor: "pointer",
           flexShrink: 0,
         }}
       />
-      <span style={{ fontSize: "var(--font-size-body-13)", color: "var(--muted-fg)", fontFamily: "monospace" }}>
+      <span style={{ fontSize: "var(--font-size-body-13)", color: "var(--color-text-secondary)", fontFamily: "monospace" }}>
         {popColor.toUpperCase()}
       </span>
       {open && (
@@ -4466,34 +4466,12 @@ function ColorPickerPopoverDemo() {
 }
 
 function PageColorPicker() {
-  const [color1, setColor1] = useState("#3A4A24");
-  const [recentColors, setRecentColors] = useState<string[]>([
-    "#242423", "#8B9E87", "#D4A574", "#3A4A24",
-  ]);
-
-  function handleChange(hex: string) {
-    setColor1(hex);
-    setRecentColors(prev => [hex, ...prev.filter(c => c !== hex)].slice(0, 12));
-  }
-
   return (
     <DocPage
       title="Color Picker"
       subtitle="A floating HSV color picker with a gradient canvas, hue slider, saturation slider, hex input, and recently used swatches."
       sourceSlug="hs-color-picker"
     >
-
-      <DocSection title="Default" desc="Inline (no anchor) — renders in document flow.">
-        <Preview
-          title="Inline color picker"
-          code={`import { ColorPicker } from "@heartstamp/design-system";\nimport { useState } from "react";\n\nfunction Demo() {\n  const [color, setColor] = useState("#3A4A24");\n  return <ColorPicker color={color} onChange={setColor} />;\n}`}
-        >
-          <div style={{ display: "flex", justifyContent: "center", padding: "var(--space-4) 0" }}>
-            <ColorPicker color={color1} onChange={handleChange} recentColors={recentColors} />
-          </div>
-        </Preview>
-      </DocSection>
-
 
       <DocSection title="As Popover" desc="Pass anchorRect + onClose to position it fixed below a trigger button. Use getBoundingClientRect() on the trigger ref.">
         <Preview
@@ -4506,11 +4484,10 @@ function PageColorPicker() {
 
       <DocSection title="Props">
         <PropsTable props={[
-          { name: "color",        type: "string",                    required: true,  desc: "Current color as a 6-digit hex string (e.g. \"#3A4A24\")." },
-          { name: "onChange",     type: "(hex: string) => void",     required: true,  desc: "Called with updated hex string whenever the user picks a color." },
-          { name: "recentColors", type: "string[]",                  def: "[]",       desc: "Array of recently-used hex colors shown as swatches below the hex input." },
-          { name: "anchorRect",   type: "DOMRect | null",            def: "undefined",desc: "When provided, positions the picker fixed below this rect (use getBoundingClientRect()). Omit for inline rendering." },
-          { name: "onClose",      type: "() => void",                def: "undefined",desc: "Called when the user clicks outside. Required when using anchorRect to close the popover." },
+          { name: "color",      type: "string",                  required: true,  desc: "Current color as a 6-digit hex string (e.g. \"#3A4A24\")." },
+          { name: "onChange",   type: "(hex: string) => void",   required: true,  desc: "Called with updated hex string whenever the user picks a color." },
+          { name: "anchorRect", type: "DOMRect | null",          def: "undefined",desc: "Positions the picker fixed below this rect. Omit for inline rendering." },
+          { name: "onClose",    type: "() => void",              def: "undefined",desc: "Called when the user clicks outside. Closing the picker auto-saves to recents." },
         ]} />
       </DocSection>
 

@@ -31,12 +31,54 @@ export function hsvToHex(h: number, s: number, v: number): string {
   return `#${toH(f(5))}${toH(f(3))}${toH(f(1))}`;
 }
 
+/* ─── Module-level recent colors ──────────────────────────── */
+
+let _recent: string[] = [];
+
+/** Push a color into the shared recent-colors list (capped at 12, deduplicated). */
+export function addRecentColor(hex: string): void {
+  _recent = [hex, ..._recent.filter(c => c !== hex)].slice(0, 12);
+}
+
+/* ─── Drag utility — mouse + touch ────────────────────────── */
+
+type MoveHandler = (clientX: number, clientY: number) => void;
+
+function makeDragHandlers(onMove: MoveHandler) {
+  return {
+    onMouseDown(e: React.MouseEvent) {
+      e.preventDefault();
+      const move = (ev: MouseEvent) => onMove(ev.clientX, ev.clientY);
+      const up = () => {
+        document.removeEventListener("mousemove", move);
+        document.removeEventListener("mouseup", up);
+      };
+      document.addEventListener("mousemove", move);
+      document.addEventListener("mouseup", up);
+      onMove(e.clientX, e.clientY);
+    },
+    onTouchStart(e: React.TouchEvent) {
+      const t = e.touches[0];
+      if (!t) return;
+      const move = (ev: TouchEvent) => {
+        if (ev.touches[0]) onMove(ev.touches[0].clientX, ev.touches[0].clientY);
+      };
+      const end = () => {
+        document.removeEventListener("touchmove", move as EventListener);
+        document.removeEventListener("touchend", end);
+      };
+      document.addEventListener("touchmove", move as EventListener, { passive: false });
+      document.addEventListener("touchend", end);
+      onMove(t.clientX, t.clientY);
+    },
+  };
+}
+
 /* ─── ColorPicker ─────────────────────────────────────────── */
 
 export interface ColorPickerProps {
   color: string;
   onChange: (hex: string) => void;
-  recentColors?: string[];
   anchorRect?: DOMRect | null;
   onClose?: () => void;
 }
@@ -44,7 +86,6 @@ export interface ColorPickerProps {
 export function ColorPicker({
   color,
   onChange,
-  recentColors = [],
   anchorRect,
   onClose,
 }: ColorPickerProps) {
@@ -52,18 +93,22 @@ export function ColorPicker({
   const [sat, setSat] = useState(() => hexToHsv(color)[1]);
   const [val, setVal] = useState(() => hexToHsv(color)[2]);
   const [hexInput, setHexInput] = useState(color.toUpperCase());
+  const [recentColors] = useState<string[]>(() => [..._recent]);
 
-  const pickerRef    = useRef<HTMLDivElement>(null);
-  const svRef        = useRef<HTMLDivElement>(null);
-  const hueRef       = useRef<HTMLDivElement>(null);
-  const satRef       = useRef<HTMLDivElement>(null);
-  // Tracks whether the last color change originated from inside this component.
-  // Used to skip syncing internal state when the parent echoes back our own onChange.
-  const internalRef  = useRef(false);
+  const pickerRef     = useRef<HTMLDivElement>(null);
+  const svRef         = useRef<HTMLDivElement>(null);
+  const hueRef        = useRef<HTMLDivElement>(null);
+  const satRef        = useRef<HTMLDivElement>(null);
+  // Prevents syncing internal state when parent echoes back our own onChange value.
+  const internalRef   = useRef(false);
+  const onCloseRef    = useRef(onClose);
+  const currentHexRef = useRef(color);
+  onCloseRef.current  = onClose;
 
   const currentHex = hsvToHex(hue, sat, val);
+  currentHexRef.current = currentHex;
 
-  // Sync when color prop changes from outside (e.g. preset swatch selected by parent)
+  // Sync when color prop changes from outside (e.g. preset swatch selected by parent).
   useEffect(() => {
     if (internalRef.current) {
       internalRef.current = false;
@@ -74,59 +119,48 @@ export function ColorPicker({
     setHexInput(color.toUpperCase());
   }, [color]);
 
-  // Close on outside click
+  // Registered once — auto-saves to recents and calls onClose when user clicks outside.
   useEffect(() => {
-    if (!onClose) return;
     function handle(e: MouseEvent) {
-      if (pickerRef.current && !pickerRef.current.contains(e.target as Node)) onClose?.();
+      if (pickerRef.current && !pickerRef.current.contains(e.target as Node)) {
+        addRecentColor(currentHexRef.current);
+        onCloseRef.current?.();
+      }
     }
     document.addEventListener("mousedown", handle);
     return () => document.removeEventListener("mousedown", handle);
-  }, [onClose]);
+  }, []);
 
   function emit(hex: string) {
     internalRef.current = true;
     onChange(hex);
   }
 
-  function makeDragger(onMove: (ev: MouseEvent) => void) {
-    return (e: React.MouseEvent) => {
-      e.preventDefault();
-      const up = () => {
-        document.removeEventListener("mousemove", onMove);
-        document.removeEventListener("mouseup", up);
-      };
-      document.addEventListener("mousemove", onMove);
-      document.addEventListener("mouseup", up);
-      onMove(e.nativeEvent);
-    };
-  }
-
-  const dragSv = makeDragger((ev) => {
+  const svHandlers = makeDragHandlers((clientX, clientY) => {
     if (!svRef.current) return;
     const rect = svRef.current.getBoundingClientRect();
-    const s2 = Math.round(Math.max(0, Math.min(1, (ev.clientX - rect.left) / rect.width)) * 100);
-    const v2 = Math.round(Math.max(0, Math.min(1, 1 - (ev.clientY - rect.top) / rect.height)) * 100);
+    const s2 = Math.round(Math.max(0, Math.min(1, (clientX - rect.left) / rect.width)) * 100);
+    const v2 = Math.round(Math.max(0, Math.min(1, 1 - (clientY - rect.top) / rect.height)) * 100);
     setSat(s2); setVal(v2);
     const hex = hsvToHex(hue, s2, v2);
     setHexInput(hex.toUpperCase());
     emit(hex);
   });
 
-  const dragHue = makeDragger((ev) => {
+  const hueHandlers = makeDragHandlers((clientX) => {
     if (!hueRef.current) return;
     const rect = hueRef.current.getBoundingClientRect();
-    const h2 = Math.round(Math.max(0, Math.min(1, (ev.clientX - rect.left) / rect.width)) * 360);
+    const h2 = Math.round(Math.max(0, Math.min(1, (clientX - rect.left) / rect.width)) * 360);
     setHue(h2);
     const hex = hsvToHex(h2, sat, val);
     setHexInput(hex.toUpperCase());
     emit(hex);
   });
 
-  const dragSat = makeDragger((ev) => {
+  const satHandlers = makeDragHandlers((clientX) => {
     if (!satRef.current) return;
     const rect = satRef.current.getBoundingClientRect();
-    const s2 = Math.round(Math.max(0, Math.min(1, (ev.clientX - rect.left) / rect.width)) * 100);
+    const s2 = Math.round(Math.max(0, Math.min(1, (clientX - rect.left) / rect.width)) * 100);
     setSat(s2);
     const hex = hsvToHex(hue, s2, val);
     setHexInput(hex.toUpperCase());
@@ -150,7 +184,7 @@ export function ColorPicker({
     emit(c);
   }
 
-  // Position fixed below anchor, right-aligned to avoid viewport overflow
+  // Position fixed below anchor, right-aligned to avoid viewport overflow.
   const posStyle: React.CSSProperties = anchorRect
     ? {
         position: "fixed",
@@ -158,7 +192,7 @@ export function ColorPicker({
         left: Math.min(anchorRect.right - 280, window.innerWidth - 296),
         zIndex: 9999,
       }
-    : { position: "relative" };
+    : {};
 
   return (
     <div
@@ -166,10 +200,10 @@ export function ColorPicker({
       style={{
         ...posStyle,
         width: 280,
-        background: "var(--bg)",
-        border: "1px solid var(--border)",
+        background: "var(--color-bg-main)",
+        border: "1px solid var(--color-element-subtle)",
         borderRadius: "var(--radius-lg)",
-        boxShadow: "var(--shadow-lg, 0 12px 24px rgba(5,32,81,.12), 0 4px 8px rgba(5,32,81,.06))",
+        boxShadow: "var(--shadow-lg)",
         padding: "var(--space-4)",
         display: "flex",
         flexDirection: "column",
@@ -179,7 +213,7 @@ export function ColorPicker({
       {/* SV gradient canvas */}
       <div
         ref={svRef}
-        onMouseDown={dragSv}
+        {...svHandlers}
         style={{
           height: 180,
           borderRadius: "var(--radius-md)",
@@ -188,12 +222,13 @@ export function ColorPicker({
           overflow: "hidden",
           flexShrink: 0,
           userSelect: "none",
+          touchAction: "none",
         }}
       >
         <div style={{ position: "absolute", inset: 0, background: `hsl(${hue}, 100%, 50%)` }} />
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, #fff, transparent)" }} />
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, transparent, #000)" }} />
-        {/* Handle */}
+        {/* Crosshair handle */}
         <div style={{
           position: "absolute",
           left: `${sat}%`,
@@ -211,7 +246,7 @@ export function ColorPicker({
       {/* Hue slider */}
       <div
         ref={hueRef}
-        onMouseDown={dragHue}
+        {...hueHandlers}
         style={{
           height: 12,
           borderRadius: "var(--radius-full)",
@@ -219,6 +254,7 @@ export function ColorPicker({
           cursor: "pointer",
           flexShrink: 0,
           userSelect: "none",
+          touchAction: "none",
           background: "linear-gradient(to right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00)",
         }}
       >
@@ -239,7 +275,7 @@ export function ColorPicker({
       {/* Saturation slider */}
       <div
         ref={satRef}
-        onMouseDown={dragSat}
+        {...satHandlers}
         style={{
           height: 12,
           borderRadius: "var(--radius-full)",
@@ -247,6 +283,7 @@ export function ColorPicker({
           cursor: "pointer",
           flexShrink: 0,
           userSelect: "none",
+          touchAction: "none",
           background: `linear-gradient(to right, ${hsvToHex(hue, 0, val)}, ${hsvToHex(hue, 100, val)})`,
         }}
       >
@@ -268,12 +305,12 @@ export function ColorPicker({
       <div style={{ display: "flex", gap: "var(--space-2)", alignItems: "center" }}>
         <div style={{
           padding: "var(--space-2) var(--space-3)",
-          border: "1px solid var(--border)",
+          border: "1px solid var(--color-element-subtle)",
           borderRadius: "var(--radius-md)",
           fontSize: "var(--font-size-body-13)",
           fontWeight: 500,
-          color: "var(--fg)",
-          background: "var(--bg-input)",
+          color: "var(--color-text-primary)",
+          background: "var(--color-bg-input)",
           flexShrink: 0,
           userSelect: "none",
           whiteSpace: "nowrap",
@@ -289,7 +326,7 @@ export function ColorPicker({
           width: 28, height: 28,
           borderRadius: "var(--radius-sm)",
           background: currentHex,
-          border: "1px solid var(--border)",
+          border: "1px solid var(--color-element-subtle)",
           flexShrink: 0,
         }} />
       </div>
@@ -302,7 +339,7 @@ export function ColorPicker({
             <p style={{
               fontSize: "var(--font-size-body-13)",
               fontWeight: 600,
-              color: "var(--muted-fg)",
+              color: "var(--color-text-secondary)",
               margin: "0 0 var(--space-3)",
             }}>
               Recently used colors
@@ -319,8 +356,8 @@ export function ColorPicker({
                     borderRadius: "var(--radius-sm)",
                     background: c,
                     border: c.toLowerCase() === currentHex.toLowerCase()
-                      ? "2px solid var(--fg)"
-                      : "1px solid var(--border)",
+                      ? "2px solid var(--color-text-primary)"
+                      : "1px solid var(--color-element-subtle)",
                     cursor: "pointer",
                     flexShrink: 0,
                     padding: 0,
