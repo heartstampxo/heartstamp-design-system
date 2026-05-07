@@ -221,12 +221,14 @@ function MobileCategoryLink({ children }: { children: React.ReactNode }) {
 export type WebsiteNavBgVariant = "default" | "solid";
 
 export interface WebsiteNavProps {
-  bgVariant?:      WebsiteNavBgVariant;
-  isLoggedIn?:     boolean;
-  credits?:        number;
-  cartCount?:      number;
-  avatarSrc?:      string;
-  avatarInitials?: string;
+  bgVariant?:         WebsiteNavBgVariant;
+  isLoggedIn?:        boolean;
+  credits?:           number;
+  cartCount?:         number;
+  avatarSrc?:         string;
+  avatarInitials?:    string;
+  /** Show or hide the category nav strip below the top bar. Defaults to true. */
+  showCategoryStrip?: boolean;
 }
 
 const BG_STYLES: Record<WebsiteNavBgVariant, React.CSSProperties> = {
@@ -241,12 +243,13 @@ const BG_STYLES: Record<WebsiteNavBgVariant, React.CSSProperties> = {
 };
 
 export function WebsiteNav({
-  bgVariant      = "default",
-  isLoggedIn     = false,
-  credits        = 50,
-  cartCount      = 0,
+  bgVariant          = "default",
+  isLoggedIn         = false,
+  credits            = 50,
+  cartCount          = 0,
   avatarSrc,
-  avatarInitials = "JS",
+  avatarInitials     = "JS",
+  showCategoryStrip  = true,
 }: WebsiteNavProps) {
   const [searchVal, setSearchVal] = useState("");
   const containerRef              = useRef<HTMLDivElement>(null);
@@ -342,14 +345,16 @@ export function WebsiteNav({
       </div>
 
       {/* ── Category strip ──────────────────────────────────── */}
-      <div style={{
-        display: "flex", alignItems: "stretch",
-        height: "var(--space-12)", padding: "0 var(--space-6)",
-        gap: "var(--space-1)",
-        overflowX: "auto", scrollbarWidth: "none",
-      }}>
-        {CATEGORIES.map(cat => <CategoryItem key={cat}>{cat}</CategoryItem>)}
-      </div>
+      {showCategoryStrip && (
+        <div style={{
+          display: "flex", alignItems: "stretch",
+          height: "var(--space-12)", padding: "0 var(--space-6)",
+          gap: "var(--space-1)",
+          overflowX: "auto", scrollbarWidth: "none",
+        }}>
+          {CATEGORIES.map(cat => <CategoryItem key={cat}>{cat}</CategoryItem>)}
+        </div>
+      )}
 
     </div>
   );

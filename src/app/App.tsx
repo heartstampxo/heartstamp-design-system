@@ -2034,23 +2034,33 @@ function PageEditorTopNav() {
 
 
 function PageWebsiteNav() {
-  const [solidBg, setSolidBg] = useState(false);
+  const [solidBg,          setSolidBg]          = useState(false);
+  const [showCategoryStrip, setShowCategoryStrip] = useState(true);
   const bgVariant = solidBg ? "solid" : "default";
 
   const buildCode = (auth: boolean) => {
-    const bgProp = solidBg ? ` bgVariant="solid"` : "";
+    const bgProp    = solidBg          ? ` bgVariant="solid"` : "";
+    const stripProp = !showCategoryStrip ? ` showCategoryStrip={false}` : "";
     return auth
-      ? `import { WebsiteNav } from "@/components/ui/hs-website-nav";\n\n<WebsiteNav${bgProp} isLoggedIn credits={50} cartCount={2} avatarSrc="https://i.pravatar.cc/80?img=68" avatarInitials="JS" />`
-      : `import { WebsiteNav } from "@/components/ui/hs-website-nav";\n\n<WebsiteNav${bgProp} />`;
+      ? `import { WebsiteNav } from "@/components/ui/hs-website-nav";\n\n<WebsiteNav${bgProp}${stripProp} isLoggedIn credits={50} cartCount={2} avatarSrc="https://i.pravatar.cc/80?img=68" avatarInitials="JS" />`
+      : `import { WebsiteNav } from "@/components/ui/hs-website-nav";\n\n<WebsiteNav${bgProp}${stripProp} />`;
   };
 
   const bgToggle = (
-    <Swt
-      size="sm"
-      checked={solidBg}
-      onChange={setSolidBg}
-      label={solidBg ? "Solid background" : "Frosted background"}
-    />
+    <div style={{ display: "flex", alignItems: "center", gap: "var(--space-5)" }}>
+      <Swt
+        size="sm"
+        checked={solidBg}
+        onChange={setSolidBg}
+        label={solidBg ? "Solid background" : "Frosted background"}
+      />
+      <Swt
+        size="sm"
+        checked={showCategoryStrip}
+        onChange={setShowCategoryStrip}
+        label="Nav links"
+      />
+    </div>
   );
 
   return (
@@ -2069,7 +2079,7 @@ function PageWebsiteNav() {
             <div style={{ width: "100%", alignSelf: "stretch" }}>
               {vp === "mobile"
                 ? <WebsiteNavMobile cartCount={0} />
-                : <WebsiteNav bgVariant={bgVariant} />
+                : <WebsiteNav bgVariant={bgVariant} showCategoryStrip={showCategoryStrip} />
               }
             </div>
           )}
@@ -2086,7 +2096,7 @@ function PageWebsiteNav() {
             <div style={{ width: "100%", alignSelf: "stretch" }}>
               {vp === "mobile"
                 ? <WebsiteNavMobile isLoggedIn credits={50} cartCount={2} avatarSrc="https://i.pravatar.cc/80?img=68" avatarInitials="JS" />
-                : <WebsiteNav bgVariant={bgVariant} isLoggedIn credits={50} cartCount={2} avatarSrc="https://i.pravatar.cc/80?img=68" avatarInitials="JS" />
+                : <WebsiteNav bgVariant={bgVariant} showCategoryStrip={showCategoryStrip} isLoggedIn credits={50} cartCount={2} avatarSrc="https://i.pravatar.cc/80?img=68" avatarInitials="JS" />
               }
             </div>
           )}
@@ -2143,12 +2153,13 @@ function PageWebsiteNav() {
 
       <DocSection title="Props · WebsiteNav">
         <PropsTable props={[
-          { name: "bgVariant",       type: '"default" | "solid"', def: '"default"', desc: 'Background style. Use "default" (frosted glass, backdrop-blur) on the homepage where the nav overlays hero content. Use "solid" (opaque var(--color-bg-main)) on all inner pages.' },
-          { name: "isLoggedIn",      type: "boolean", def: "false",  desc: "Toggles between logged-out (Log in / Sign up) and logged-in (Credits, Favorites, Avatar) right-side actions." },
-          { name: "credits",         type: "number",  def: "50",     desc: "Heart Credits balance shown in the credits button. Only visible when isLoggedIn is true." },
-          { name: "cartCount",       type: "number",  def: "0",      desc: "Number of items in the cart. Shows a red numeric badge on the cart icon when greater than 0. Caps at 99+." },
-          { name: "avatarSrc",       type: "string",  def: "—",      desc: "Image URL for the avatar. When provided shows the photo (Default style). Falls back to avatarInitials when omitted or image fails to load." },
-          { name: "avatarInitials",  type: "string",  def: '"JS"',   desc: "Fallback initials shown in the avatar when no avatarSrc is provided. Only visible when isLoggedIn is true." },
+          { name: "bgVariant",          type: '"default" | "solid"', def: '"default"', desc: 'Background style. Use "default" (frosted glass, backdrop-blur) on the homepage where the nav overlays hero content. Use "solid" (opaque var(--color-bg-main)) on all inner pages.' },
+          { name: "showCategoryStrip", type: "boolean", def: "true",   desc: "Show or hide the category nav strip below the top bar. Set to false on pages where the category links are not needed." },
+          { name: "isLoggedIn",        type: "boolean", def: "false",  desc: "Toggles between logged-out (Log in / Sign up) and logged-in (Credits, Favorites, Avatar) right-side actions." },
+          { name: "credits",           type: "number",  def: "50",     desc: "Heart Credits balance shown in the credits button. Only visible when isLoggedIn is true." },
+          { name: "cartCount",         type: "number",  def: "0",      desc: "Number of items in the cart. Shows a red numeric badge on the cart icon when greater than 0. Caps at 99+." },
+          { name: "avatarSrc",         type: "string",  def: "—",      desc: "Image URL for the avatar. When provided shows the photo (Default style). Falls back to avatarInitials when omitted or image fails to load." },
+          { name: "avatarInitials",    type: "string",  def: '"JS"',   desc: "Fallback initials shown in the avatar when no avatarSrc is provided. Only visible when isLoggedIn is true." },
         ]} />
       </DocSection>
 
