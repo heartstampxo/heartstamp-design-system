@@ -15,7 +15,7 @@ export interface WalletCreditItem {
   heartFill: string;
   /** Numeric credit balance. Values ≥ 1000 are formatted as `Xk`. */
   count: number;
-  /** Credit type label shown below the count. e.g. `"HeartStamp Credits"` */
+  /** Credit type label shown below the count. e.g. `"Heart Credits"` */
   label: string;
   /** Secondary line below the label. e.g. `"Renew in 28 days"` */
   subtitle: string;
@@ -48,7 +48,7 @@ const DEFAULT_CREDITS: WalletCreditItem[] = [
   {
     heartFill: "var(--color-brand-primary)",
     count: 200,
-    label: "HeartStamp Credits",
+    label: "Heart Credits",
     subtitle: "Renew in 28 days",
     badge: "Plus",
   },

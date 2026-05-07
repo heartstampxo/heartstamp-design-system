@@ -874,7 +874,7 @@ function PageCard() {
   const [showSilver, setShowSilver] = useState(true);
 
   const walletCredits = [
-    { heartFill: "var(--color-brand-primary)", count: 200, label: "HeartStamp Credits", subtitle: "Renew in 28 days",      badge: "Plus"    },
+    { heartFill: "var(--color-brand-primary)", count: 200, label: "Heart Credits", subtitle: "Renew in 28 days",      badge: "Plus"    },
     ...(showGold   ? [{ heartFill: "#C4890A", count: 123,  label: "Gold Credits",        subtitle: "Never expire",          badge: "Lifetime"  }] : []),
     ...(showSilver ? [{ heartFill: "#9B9996", count: 1000, label: "Silver Credits",      subtitle: "Expiring in 150 days",  badge: "Promotional" }] : []),
   ];
@@ -884,7 +884,7 @@ function PageCard() {
     : [
         `<WalletCard`,
         `  credits={[`,
-        `    { heartFill: "var(--color-brand-primary)", count: 200, label: "HeartStamp Credits", subtitle: "Renew in 28 days", badge: "Plus" },`,
+        `    { heartFill: "var(--color-brand-primary)", count: 200, label: "Heart Credits", subtitle: "Renew in 28 days", badge: "Plus" },`,
         showGold   ? `    { heartFill: "#C4890A", count: 123,  label: "Gold Credits",   subtitle: "Never expire",         badge: "Lifetime"  },` : null,
         showSilver ? `    { heartFill: "#9B9996", count: 1000, label: "Silver Credits", subtitle: "Expiring in 150 days", badge: "Promotional" },` : null,
         `  ]}`,
