@@ -86,10 +86,12 @@ const btnVariants = cva(
         default: "h-[40px] px-[16px] text-[var(--font-size-btn)]",
         sm:      "h-[36px] px-[12px] text-[var(--font-size-btn-sm)]",
         lg:      "h-[44px] px-[20px] text-[var(--font-size-btn-lg)]",
+        xl:      "h-[48px] px-[24px] text-[var(--font-size-btn-lg)]",
         /* icon-only: square at target size, no padding needed */
         "icon-sm": "h-[36px] w-[36px]",
         icon:      "h-[40px] w-[40px]",
         "icon-lg": "h-[44px] w-[44px]",
+        "icon-xl": "h-[48px] w-[48px]",
       },
     },
     compoundVariants: [

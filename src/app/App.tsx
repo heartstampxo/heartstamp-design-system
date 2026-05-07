@@ -26,6 +26,9 @@ import { Prg } from "./components/ui/hs-prg";
 import { Skl } from "./components/ui/hs-skl";
 import { Alrt } from "./components/ui/hs-alrt";
 import { Crd, CrdHeader, CrdBody, CrdFooter, CrdTitle, CrdDesc } from "./components/ui/hs-crd";
+import { WalletCard, WalletPromoCard } from "./components/ui/hs-wallet";
+import { ReferralCard } from "./components/ui/hs-referral-card";
+import { ContentCard } from "./components/ui/hs-content-card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "./components/ui/tabs";
 import { Acc } from "./components/ui/hs-acc";
 import { Tip } from "./components/ui/hs-tip";
@@ -845,39 +848,98 @@ function PageAvatar() {
 }
 
 function PageCard() {
+  const [showGold,   setShowGold]   = useState(true);
+  const [showSilver, setShowSilver] = useState(true);
+
+  const walletCredits = [
+    { heartFill: "var(--color-brand-primary)", count: 200, label: "HeartStamp Credits", subtitle: "Renew in 28 days",      badge: "Plus"    },
+    ...(showGold   ? [{ heartFill: "#C4890A", count: 123,  label: "Gold Credits",        subtitle: "Never expire",          badge: "Lifetime"  }] : []),
+    ...(showSilver ? [{ heartFill: "#9B9996", count: 1000, label: "Silver Credits",      subtitle: "Expiring in 150 days",  badge: "Promotional" }] : []),
+  ];
+
+  const walletCode = (showGold && showSilver)
+    ? `<WalletCard />`
+    : [
+        `<WalletCard`,
+        `  credits={[`,
+        `    { heartFill: "var(--color-brand-primary)", count: 200, label: "HeartStamp Credits", subtitle: "Renew in 28 days", badge: "Plus" },`,
+        showGold   ? `    { heartFill: "#C4890A", count: 123,  label: "Gold Credits",   subtitle: "Never expire",         badge: "Lifetime"  },` : null,
+        showSilver ? `    { heartFill: "#9B9996", count: 1000, label: "Silver Credits", subtitle: "Expiring in 150 days", badge: "Promotional" },` : null,
+        `  ]}`,
+        `/>`,
+      ].filter(Boolean).join("\n");
+
+  const walletHeight = walletCredits.length === 3 ? 520 : walletCredits.length === 2 ? 440 : 360;
+
   return <DocPage title="Card" subtitle="Displays a card with header, content, and footer." sourceSlug="card">
-    <DocSection title="Default">
-      <Preview title="Basic card" code={`<Card>\n  <CardHeader>\n    <CardTitle>Card Title</CardTitle>\n    <CardDescription>Card description goes here.</CardDescription>\n  </CardHeader>\n  <CardContent><p>Card content</p></CardContent>\n  <CardFooter><Button>Action</Button></CardFooter>\n</Card>`} height={220}>
-        <Crd style={{ width: "100%", maxWidth: 340, overflow: "visible" }}>
-          <CrdHeader><CrdTitle>Create project</CrdTitle><CrdDesc>Deploy your new project in one-click.</CrdDesc></CrdHeader>
-          <CrdBody>
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              <div><Lbl>Name</Lbl><Inp placeholder="Project name" /></div>
-              <div><Lbl>Framework</Lbl><Sel options={[{ value: "next", label: "Next.js" }, { value: "vite", label: "Vite" }, { value: "remix", label: "Remix" }]} placeholder="Select framework" value="" onChange={() => { }} /></div>
-            </div>
-          </CrdBody>
-          <CrdFooter><div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}><Btn variant="outline">Cancel</Btn><Btn>Deploy</Btn></div></CrdFooter>
-        </Crd>
-      </Preview>
-    </DocSection>
-    <DocSection title="Simple">
-      <Preview title="Simple card" code={`<Card className="p-4"><CardTitle>Notifications</CardTitle></Card>`} height={140}>
-        <Crd style={{ width: "100%", maxWidth: 340, padding: 16 }}>
-          <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
-            <IcoLink name="Bell"><Bell size={18} style={{ color: "var(--accent)", marginTop: 2 }} /></IcoLink>
-            <div>
-              <CrdTitle>Push Notifications</CrdTitle>
-              <CrdDesc>Send notifications to device.</CrdDesc>
-            </div>
-            <Swt checked={true} onChange={() => { }} />
+    <DocSection
+      title="Wallet"
+      desc="A wallet card showing credit balances, a usage report link, and card voucher counts."
+      action={
+        <div style={{ display: "flex", gap: "var(--space-5)", alignItems: "center" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
+            <Swt size="sm" checked={showGold} onChange={setShowGold} />
+            <span style={{ fontSize: "var(--font-size-label-15)", fontWeight: "var(--font-weight-label-15)" as React.CSSProperties["fontWeight"], color: "var(--color-text-primary)" }}>Gold Credits</span>
           </div>
-        </Crd>
+          <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
+            <Swt size="sm" checked={showSilver} onChange={setShowSilver} />
+            <span style={{ fontSize: "var(--font-size-label-15)", fontWeight: "var(--font-weight-label-15)" as React.CSSProperties["fontWeight"], color: "var(--color-text-primary)" }}>Silver Credits</span>
+          </div>
+        </div>
+      }
+    >
+      <Preview title="Wallet card" code={walletCode} height={walletHeight}>
+        <WalletCard credits={walletCredits} style={{ width: 488 }} />
       </Preview>
-    </DocSection>
-    <DocSection title="Props">
       <PropsTable props={[
-        { name: "className", type: "string", desc: "Additional Tailwind classes applied to the card root." },
-        { name: "children", type: "ReactNode", required: true, desc: "Card content — use CardHeader, CardContent, CardFooter." },
+        { name: "credits",           type: "WalletCreditItem[]",  def: "3 default rows", desc: "Credit rows (heart fill colour, count, label, subtitle, badge)." },
+        { name: "voucherLabel",      type: "string",              def: '"Card Vouchers"', desc: "Section header above the voucher list." },
+        { name: "vouchers",          type: "WalletVoucherItem[]", def: "2 default rows", desc: "Voucher rows (label + count)." },
+        { name: "onViewUsageReport", type: "() => void",          def: "—",              desc: "Called when the user taps \"View Usage Report\"." },
+        { name: "style",             type: "CSSProperties",       def: "—",              desc: "Inline styles applied to the card root." },
+        { name: "className",         type: "string",              def: "—",              desc: "Extra class names applied to the card root." },
+      ]} />
+    </DocSection>
+    <DocSection title="Wallet Promo Card" desc="A promotional card for upselling wallet credit packages, with title, description, feature list, price, and a buy CTA.">
+      <Preview title="Wallet promo card" code={`<WalletPromoCard />`} height={440}>
+        <WalletPromoCard style={{ width: 488 }} />
+      </Preview>
+      <PropsTable props={[
+        { name: "title",       type: "string",        def: '"Supercards"',    desc: "Card heading." },
+        { name: "description", type: "string",        def: "Built-in copy",   desc: "Body copy below the title." },
+        { name: "features",    type: "string[]",      def: "3 default items", desc: "Bullet list of included features." },
+        { name: "price",       type: "string",        def: '"$11.99"',        desc: "Price string shown in the CTA row." },
+        { name: "priceLabel",  type: "string",        def: '"Starting from"', desc: "Label above the price." },
+        { name: "badge",       type: "string",        def: '"Recommended"',   desc: "Corner badge text. Pass an empty string to hide." },
+        { name: "onBuyNow",    type: "() => void",    def: "—",              desc: "Called when the user taps \"Buy Now\"." },
+        { name: "style",       type: "CSSProperties", def: "—",              desc: "Inline styles applied to the card root." },
+        { name: "className",   type: "string",        def: "—",              desc: "Extra class names applied to the card root." },
+      ]} />
+    </DocSection>
+    <DocSection title="Referral Card" desc="Encourages users to share their referral link. Shows a hero with decorative coins, body copy, and a one-tap copy-to-clipboard link row.">
+      <Preview title="Referral card" code={`<ReferralCard referralCode="ABC123" />`} height={400}>
+        <ReferralCard referralCode="ABC123" style={{ width: 488 }} />
+      </Preview>
+      <PropsTable props={[
+        { name: "title",        type: "string",        def: '"Share the love"', desc: "Card heading." },
+        { name: "description",  type: "string",        def: "Built-in copy",    desc: "Body copy below the title." },
+        { name: "referralCode", type: "string",        def: '"YOUR_CODE"',      desc: "Unique referral code; rendered as hsxo.ai/r/{code}." },
+        { name: "onCopyLink",   type: "() => void",    def: "—",               desc: "Called after the referral link is copied to the clipboard." },
+        { name: "style",        type: "CSSProperties", def: "—",               desc: "Inline styles applied to the card root." },
+        { name: "className",    type: "string",        def: "—",               desc: "Extra class names applied to the card root." },
+      ]} />
+    </DocSection>
+    <DocSection title="Content Card" desc="Explains the referral programme steps and shows the user's referral stats with animated count-up metrics.">
+      <Preview title="Content card" code={`<ContentCard />`} height={400}>
+        <ContentCard style={{ width: 488 }} />
+      </Preview>
+      <PropsTable props={[
+        { name: "howItWorksTitle",       type: "string",              def: '"How it works"',    desc: "Section heading for the steps list." },
+        { name: "steps",                 type: "ContentCardStep[]",   def: "3 default steps",   desc: "Numbered step list (each item has a text string)." },
+        { name: "referralsSectionTitle", type: "string",              def: '"Your referrals"',  desc: "Section heading for the metrics row." },
+        { name: "metrics",               type: "ContentCardMetric[]", def: "3 default metrics", desc: "Stat boxes with animated count-up (value + label)." },
+        { name: "style",                 type: "CSSProperties",       def: "—",                 desc: "Inline styles applied to the card root." },
+        { name: "className",             type: "string",              def: "—",                 desc: "Extra class names applied to the card root." },
       ]} />
     </DocSection>
   </DocPage>;

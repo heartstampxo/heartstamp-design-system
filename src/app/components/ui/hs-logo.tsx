@@ -407,6 +407,76 @@ export function HSLockup(props: Omit<HSLogoProps, "type">) {
   return <HSLogo {...props} type="lockup" />;
 }
 
+/* ── HSHeartIcon — standalone coloured heart + H mark ──────── */
+export interface HSHeartIconProps {
+  /** Fill colour for the heart shape. Accepts any CSS colour or var(). */
+  heartFill?: string;
+  /** Rendered size in px (square). */
+  size?: number;
+  style?: React.CSSProperties;
+  className?: string;
+}
+
+export function HSHeartIcon({
+  heartFill = "#BE1D2C",
+  size = 32,
+  style,
+  className,
+}: HSHeartIconProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 240 241"
+      fill="none"
+      aria-hidden="true"
+      style={style}
+      className={className}
+    >
+      <path d={HEART_240} fill={heartFill} />
+      <path d={H_BRAND} fill="#FFFFFF" />
+    </svg>
+  );
+}
+
+/* ── HSSymbolOutlineIcon — outline heart + H mark (24×24) ───── */
+export interface HSSymbolOutlineIconProps {
+  size?: number;
+  style?: React.CSSProperties;
+  className?: string;
+}
+
+export function HSSymbolOutlineIcon({ size = 24, style, className }: HSSymbolOutlineIconProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+      style={style}
+      className={className}
+    >
+      <g clipPath="url(#hs-sym-clip)">
+        <path
+          d="M17.3643 1C18.8732 1 20.1351 1.5295 21.1992 2.62891L21.4102 2.85645C22.4701 4.08214 23 5.51887 23 7.21191C22.9999 9.86809 22.2151 12.5652 20.5957 15.3154L20.5938 15.3193C19.0333 17.9967 17.0856 20.0892 14.7559 21.6211L14.7539 21.6221C14.4567 21.8186 13.9767 22.0968 13.2959 22.46C12.9179 22.6554 12.5704 22.8004 12.3047 22.8936C12.175 22.939 12.0719 22.969 12 22.9873C11.9281 22.969 11.825 22.939 11.6953 22.8936C11.496 22.8236 11.2502 22.7251 10.9805 22.5977L10.7041 22.46C10.0233 22.0968 9.54335 21.8186 9.24609 21.6221L9.24414 21.6211L8.81152 21.3271C6.67225 19.8252 4.86918 17.8294 3.40625 15.3193L3.4043 15.3154L3.11035 14.8008C1.68964 12.2285 1.00005 9.70216 1 7.21191C1 5.51887 1.52991 4.08214 2.58984 2.85645C3.69713 1.60223 5.02602 1 6.63574 1C8.19104 1.00011 9.68436 1.73267 11.1309 3.4209L11.1426 3.43457L11.1553 3.44824L11.2646 3.56641L12 4.36523L12.7354 3.56641L12.8447 3.44824L12.8574 3.43457L12.8691 3.4209C14.3156 1.73267 15.809 1.00011 17.3643 1Z"
+          stroke="currentColor"
+          strokeWidth="2"
+        />
+        <path
+          d="M16.5975 5.77062H14.9413C14.8867 5.77062 14.8425 5.81461 14.8425 5.8689V10.6433C14.8425 10.6704 14.8314 10.695 14.8136 10.7128C14.7853 10.7409 14.7503 10.7416 14.7437 10.7416C13.6054 11.2216 12.5929 11.2962 12.0001 11.2962C10.7867 11.2962 9.83899 10.9838 9.28829 10.7547C9.28884 10.754 9.29002 10.7528 9.28993 10.7527C9.25171 10.7354 9.21502 10.7173 9.1777 10.6995C9.16602 10.6834 9.15775 10.6647 9.15775 10.6433V5.76034H9.15581C9.11617 3.76557 7.20383 3.53853 6.05281 3.83373C4.63975 4.19615 3.46143 6.0332 4.21563 7.97439C4.21566 7.97439 4.21566 7.97437 4.21566 7.97436L4.21563 7.97439C4.40662 8.52366 4.79147 9.40611 5.56771 10.2792C6.1597 10.9451 6.78905 11.3916 7.304 11.6855V17.9681C7.304 18.0224 7.34824 18.0664 7.4028 18.0664H9.05896C9.11352 18.0664 9.15775 18.0224 9.15775 17.9681V12.6843C9.15775 12.6571 9.16884 12.6325 9.1867 12.6148C9.21497 12.5866 9.24993 12.586 9.25655 12.586C9.79254 12.817 10.7064 13.1311 11.8778 13.1517C13.1792 13.1747 14.1894 12.8248 14.7438 12.586C14.7984 12.586 14.8425 12.63 14.8425 12.6843V17.9681C14.8425 18.0224 14.8868 18.0664 14.9413 18.0664H16.5975C16.6521 18.0664 16.6963 18.0224 16.6963 17.9681V5.8689C16.6963 5.81461 16.6521 5.77062 16.5975 5.77062H16.5975Z"
+          fill="currentColor"
+        />
+      </g>
+      <defs>
+        <clipPath id="hs-sym-clip">
+          <rect width="24" height="24" fill="white" />
+        </clipPath>
+      </defs>
+    </svg>
+  );
+}
+
 /* ── SVG string export (for downloads) ─────────────────────── */
 // Hard-coded fills match Figma source (no CSS vars — safe for export)
 const EMBLEM_BRAND_FILLS  = { heart: "#BE1D2C", h: "#FFFFFF" };

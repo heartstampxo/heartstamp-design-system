@@ -13,7 +13,7 @@ export function Sep({ orientation = "horizontal", style }: SepProps) {
       style={{
         [orientation === "horizontal" ? "height" : "width"]: 1,
         [orientation === "horizontal" ? "width" : "height"]: "100%",
-        background: "var(--border)",
+        background: "var(--color-element-subtle)",
         ...style,
       }}
     />
