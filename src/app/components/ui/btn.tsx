@@ -117,6 +117,7 @@ export interface BtnProps
 export function Btn({
   variant = "default",
   size    = "default",
+  type    = "button",
   className,
   style,
   children,
@@ -128,6 +129,7 @@ export function Btn({
 
   return (
     <button
+      type={type}
       className={cn(btnVariants({ variant, size }), className)}
       style={{ color: textColor, ...style }}
       {...props}
