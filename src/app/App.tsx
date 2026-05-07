@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { motion } from "motion/react";
 import { Btn } from "./components/ui/btn";
+import { AppleBtn, GoogleBtn, AmazonBtn, LinkBtn } from "./components/ui/hs-brand-btn";
 import { Stepper as StepperComp, HorizontalSwapStepper, type StepDef } from "./components/ui/stepper";
 import { TopNavDesktop, TopNavMobile } from "./components/ui/hs-nav";
 import { EditorTopNav, EditorTopNavDesktop } from "./components/ui/hs-editor-nav";
@@ -221,6 +222,27 @@ function PageButton() {
         );
       })}
     </DocSection>
+    <DocSection title="Brand Buttons" desc="Pre-styled lg buttons for third-party sign-in and sharing flows. Each ships with its own brand colour, hover state, and logo — drop them in without any extra configuration.">
+      <Preview
+        title="Brand buttons"
+        code={`import { AppleBtn, GoogleBtn, AmazonBtn, LinkBtn } from "@/components/ui/hs-brand-btn";\n\n{/* Payment / auth row */}\n<div style={{ display: "flex", gap: 12 }}>\n  <AppleBtn />\n  <GoogleBtn />\n</div>\n\n{/* Additional brand buttons */}\n<AmazonBtn />\n<LinkBtn />`}
+        height={220}
+      >
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-3)" }}>
+          <AppleBtn />
+          <GoogleBtn />
+          <AmazonBtn />
+          <LinkBtn />
+        </div>
+      </Preview>
+      <PropsTable props={[
+        { name: "label",    type: "string",        def: "Brand default", desc: "Override the button label text." },
+        { name: "onClick",  type: "() => void",    def: "—",             desc: "Click handler." },
+        { name: "disabled", type: "boolean",       def: "false",         desc: "Disables interaction and reduces opacity to 0.5." },
+        { name: "style",    type: "CSSProperties", def: "—",             desc: "Inline style overrides applied to the root button." },
+      ]} />
+    </DocSection>
+
     <DocSection title="Props">
       <PropsTable props={[
         { name: "variant", type: '"default"|"secondary"|"ghost"|"secondary-ghost"|"outline"|"link"|"destructive"', def: '"default"', desc: 'Visual style of the button. Colors sourced from --accent, --secondary, --accent-subtle, --secondary-subtle, and --border tokens.' },
