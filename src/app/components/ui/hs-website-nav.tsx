@@ -98,6 +98,7 @@ function CategoryItem({ children }: { children: React.ReactNode }) {
   const [hovered, setHovered] = useState(false);
   return (
     <button
+      type="button"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
@@ -127,17 +128,26 @@ function CategoryItem({ children }: { children: React.ReactNode }) {
 
 /* ── Desktop avatar with ProfileNav dropdown ────────────────── */
 function NavAvatar({ src, fallback }: { src?: string; fallback: string }) {
-  const [open, setOpen]   = useState(false);
-  const [theme, setTheme] = useState<"light" | "dark" | "system">("system");
-  const ref               = useRef<HTMLDivElement>(null);
+  const [open, setOpen]               = useState(false);
+  const [theme, setTheme]             = useState<"light" | "dark" | "system">("system");
+  const [focusVisible, setFocusVisible] = useState(false);
+  const pointerDown                   = useRef(false);
+  const ref                           = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!open) return;
-    const handler = (e: MouseEvent) => {
+    const onMouse = (e: MouseEvent) => {
       if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
     };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("mousedown", onMouse);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onMouse);
+      document.removeEventListener("keydown", onKey);
+    };
   }, [open]);
 
   return (
@@ -150,7 +160,14 @@ function NavAvatar({ src, fallback }: { src?: string; fallback: string }) {
         aria-haspopup="menu"
         onClick={() => setOpen(o => !o)}
         onKeyDown={e => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), setOpen(o => !o))}
-        style={{ cursor: "pointer", display: "flex", borderRadius: "50%", outline: "none" }}
+        onPointerDown={() => { pointerDown.current = true; }}
+        onFocus={() => { if (!pointerDown.current) setFocusVisible(true); }}
+        onBlur={() => { setFocusVisible(false); pointerDown.current = false; }}
+        style={{
+          cursor: "pointer", display: "flex", borderRadius: "50%", outline: "none",
+          boxShadow: focusVisible ? "0 0 0 2px var(--color-ring)" : "none",
+          transition: "box-shadow 0.15s ease",
+        }}
       >
         <Avt size={36} src={src} fallback={fallback} />
       </div>
@@ -164,6 +181,23 @@ function NavAvatar({ src, fallback }: { src?: string; fallback: string }) {
   );
 }
 
+/* ── Shared search clear button ─────────────────────────────── */
+function SearchClearBtn({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label="Clear search"
+      style={{
+        background: "none", border: "none", cursor: "pointer", padding: 0,
+        display: "flex", color: "var(--color-text-secondary)", pointerEvents: "auto",
+      }}
+    >
+      <X size={12} />
+    </button>
+  );
+}
+
 /* ── Mobile search input ────────────────────────────────────── */
 function MobileSearchInp({
   value, onChange, onClear,
@@ -174,18 +208,7 @@ function MobileSearchInp({
       onChange={onChange}
       placeholder="Search"
       iconLeft={<Search size={14} />}
-      iconRight={value ? (
-        <button
-          onClick={onClear}
-          aria-label="Clear search"
-          style={{
-            background: "none", border: "none", cursor: "pointer", padding: 0,
-            display: "flex", color: "var(--color-text-secondary)", pointerEvents: "auto",
-          }}
-        >
-          <X size={12} />
-        </button>
-      ) : undefined}
+      iconRight={value ? <SearchClearBtn onClick={onClear} /> : undefined}
       style={{ borderRadius: "var(--radius-full)" }}
     />
   );
@@ -195,6 +218,7 @@ function MobileSearchInp({
 function MobileCategoryLink({ children }: { children: React.ReactNode }) {
   return (
     <button
+      type="button"
       style={{
         display: "flex", alignItems: "center",
         /* 44px touch target — no token at this size */
@@ -229,6 +253,8 @@ export interface WebsiteNavProps {
   avatarInitials?:    string;
   /** Show or hide the category nav strip below the top bar. Defaults to true. */
   showCategoryStrip?: boolean;
+  /** Show or hide the Invitation button. Defaults to true. */
+  showInvitationBtn?: boolean;
 }
 
 const BG_STYLES: Record<WebsiteNavBgVariant, React.CSSProperties> = {
@@ -250,6 +276,7 @@ export function WebsiteNav({
   avatarSrc,
   avatarInitials     = "JS",
   showCategoryStrip  = true,
+  showInvitationBtn  = true,
 }: WebsiteNavProps) {
   const [searchVal, setSearchVal] = useState("");
   const containerRef              = useRef<HTMLDivElement>(null);
@@ -289,18 +316,7 @@ export function WebsiteNav({
               onChange={e => setSearchVal(e.target.value)}
               placeholder="Search"
               iconLeft={<Search size={14} />}
-              iconRight={searchVal ? (
-                <button
-                  onClick={() => setSearchVal("")}
-                  aria-label="Clear search"
-                  style={{
-                    background: "none", border: "none", cursor: "pointer", padding: 0,
-                    display: "flex", color: "var(--color-text-secondary)", pointerEvents: "auto",
-                  }}
-                >
-                  <X size={12} />
-                </button>
-              ) : undefined}
+              iconRight={searchVal ? <SearchClearBtn onClick={() => setSearchVal("")} /> : undefined}
               style={{ borderRadius: "var(--radius-full)" }}
             />
           </div>
@@ -308,10 +324,12 @@ export function WebsiteNav({
 
         {/* Right: actions */}
         <div style={{ display: "flex", alignItems: "center", gap: rightGap, flexShrink: 0 }}>
-          <Btn variant="secondary" size="sm">
-            <FileHeart size={16} />
-            Invitation
-          </Btn>
+          {showInvitationBtn && (
+            <Btn variant="secondary" size="sm">
+              <FileHeart size={16} />
+              Invitation
+            </Btn>
+          )}
 
           {isLoggedIn ? (
             <>
@@ -376,6 +394,10 @@ export interface WebsiteNavMobileProps {
   initialView?:    "nav" | "search";
   /** Override the default 393px max-width */
   maxWidth?:       number | string;
+  /** Show or hide the Invitation button. Defaults to true. */
+  showInvitationBtn?: boolean;
+  /** Frosted glass (default) or solid background */
+  bgVariant?:      WebsiteNavBgVariant;
 }
 
 export function WebsiteNavMobile({
@@ -384,9 +406,11 @@ export function WebsiteNavMobile({
   cartCount      = 0,
   avatarSrc,
   avatarInitials = "JS",
-  initialOpen    = false,
-  initialView    = "nav",
-  maxWidth       = 393,
+  initialOpen       = false,
+  initialView       = "nav",
+  maxWidth          = 393,
+  showInvitationBtn = true,
+  bgVariant         = "default",
 }: WebsiteNavMobileProps) {
   const [navOpen, setNavOpen]         = useState(initialOpen || initialView === "search");
   const [view, setView]               = useState<"nav" | "search">(initialView);
@@ -412,7 +436,7 @@ export function WebsiteNavMobile({
   return (
     <div style={{
       width: "100%", maxWidth: maxWidth,
-      background: "var(--color-bg-main)",
+      ...BG_STYLES[bgVariant],
       position: "relative", overflow: "hidden",
     }}>
 
@@ -620,12 +644,14 @@ export function WebsiteNavMobile({
                     ))}
                   </div>
 
-                  <Sep orientation="horizontal" />
+                  {(showInvitationBtn || !isLoggedIn) && <Sep orientation="horizontal" />}
 
-                  <Btn variant="secondary" size="sm" style={{ borderRadius: "var(--radius-full)", width: "100%" }}>
-                    <FileHeart size={16} />
-                    Invitation
-                  </Btn>
+                  {showInvitationBtn && (
+                    <Btn variant="secondary" size="sm" style={{ borderRadius: "var(--radius-full)", width: "100%" }}>
+                      <FileHeart size={16} />
+                      Invitation
+                    </Btn>
+                  )}
 
                   {!isLoggedIn && (
                     <Btn variant="destructive" size="sm" style={{ borderRadius: "var(--radius-full)", width: "100%" }}>
@@ -653,23 +679,27 @@ export function WebsiteNavMobile({
 ══════════════════════════════════════════════════════════════ */
 
 export interface WebsiteNavResponsiveProps {
-  bgVariant?:      WebsiteNavBgVariant;
-  isLoggedIn?:     boolean;
-  credits?:        number;
-  cartCount?:      number;
-  avatarSrc?:      string;
-  avatarInitials?: string;
+  bgVariant?:         WebsiteNavBgVariant;
+  isLoggedIn?:        boolean;
+  credits?:           number;
+  cartCount?:         number;
+  avatarSrc?:         string;
+  avatarInitials?:    string;
+  showCategoryStrip?: boolean;
+  showInvitationBtn?: boolean;
 }
 
 export function WebsiteNavResponsive({
-  bgVariant      = "default",
-  isLoggedIn     = false,
-  credits        = 50,
-  cartCount      = 0,
+  bgVariant         = "default",
+  isLoggedIn        = false,
+  credits           = 50,
+  cartCount         = 0,
   avatarSrc,
-  avatarInitials = "JS",
+  avatarInitials    = "JS",
+  showCategoryStrip = true,
+  showInvitationBtn = true,
 }: WebsiteNavResponsiveProps) {
-  const containerRef          = useRef<HTMLDivElement>(null);
+  const containerRef            = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -691,6 +721,8 @@ export function WebsiteNavResponsive({
           cartCount={cartCount}
           avatarSrc={avatarSrc}
           avatarInitials={avatarInitials}
+          bgVariant={bgVariant}
+          showInvitationBtn={showInvitationBtn}
           maxWidth="100%"
         />
       ) : (
@@ -701,6 +733,8 @@ export function WebsiteNavResponsive({
           cartCount={cartCount}
           avatarSrc={avatarSrc}
           avatarInitials={avatarInitials}
+          showCategoryStrip={showCategoryStrip}
+          showInvitationBtn={showInvitationBtn}
         />
       )}
     </div>

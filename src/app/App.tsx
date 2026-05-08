@@ -2056,16 +2056,18 @@ function PageEditorTopNav() {
 
 
 function PageWebsiteNav() {
-  const [solidBg,          setSolidBg]          = useState(false);
-  const [showCategoryStrip, setShowCategoryStrip] = useState(true);
+  const [solidBg,           setSolidBg]           = useState(false);
+  const [showCategoryStrip, setShowCategoryStrip]  = useState(true);
+  const [showInvitationBtn, setShowInvitationBtn]  = useState(true);
   const bgVariant = solidBg ? "solid" : "default";
 
   const buildCode = (auth: boolean) => {
-    const bgProp    = solidBg          ? ` bgVariant="solid"` : "";
-    const stripProp = !showCategoryStrip ? ` showCategoryStrip={false}` : "";
+    const bgProp         = solidBg           ? ` bgVariant="solid"` : "";
+    const stripProp      = !showCategoryStrip ? ` showCategoryStrip={false}` : "";
+    const invitationProp = !showInvitationBtn ? ` showInvitationBtn={false}` : "";
     return auth
-      ? `import { WebsiteNav } from "@/components/ui/hs-website-nav";\n\n<WebsiteNav${bgProp}${stripProp} isLoggedIn credits={50} cartCount={2} avatarSrc="https://i.pravatar.cc/80?img=68" avatarInitials="JS" />`
-      : `import { WebsiteNav } from "@/components/ui/hs-website-nav";\n\n<WebsiteNav${bgProp}${stripProp} />`;
+      ? `import { WebsiteNav } from "@/components/ui/hs-website-nav";\n\n<WebsiteNav${bgProp}${stripProp}${invitationProp} isLoggedIn credits={50} cartCount={2} avatarSrc="https://i.pravatar.cc/80?img=68" avatarInitials="JS" />`
+      : `import { WebsiteNav } from "@/components/ui/hs-website-nav";\n\n<WebsiteNav${bgProp}${stripProp}${invitationProp} />`;
   };
 
   const bgToggle = (
@@ -2074,13 +2076,19 @@ function PageWebsiteNav() {
         size="sm"
         checked={solidBg}
         onChange={setSolidBg}
-        label={solidBg ? "Solid background" : "Frosted background"}
+        label={solidBg ? "Solid BG" : "Frosted BG"}
       />
       <Swt
         size="sm"
         checked={showCategoryStrip}
         onChange={setShowCategoryStrip}
         label="Nav links"
+      />
+      <Swt
+        size="sm"
+        checked={showInvitationBtn}
+        onChange={setShowInvitationBtn}
+        label="Invitation btn"
       />
     </div>
   );
@@ -2100,8 +2108,8 @@ function PageWebsiteNav() {
           {(vp: string) => (
             <div style={{ width: "100%", alignSelf: "stretch" }}>
               {vp === "mobile"
-                ? <WebsiteNavMobile cartCount={0} />
-                : <WebsiteNav bgVariant={bgVariant} showCategoryStrip={showCategoryStrip} />
+                ? <WebsiteNavMobile cartCount={0} showInvitationBtn={showInvitationBtn} />
+                : <WebsiteNav bgVariant={bgVariant} showCategoryStrip={showCategoryStrip} showInvitationBtn={showInvitationBtn} />
               }
             </div>
           )}
@@ -2117,8 +2125,8 @@ function PageWebsiteNav() {
           {(vp: string) => (
             <div style={{ width: "100%", alignSelf: "stretch" }}>
               {vp === "mobile"
-                ? <WebsiteNavMobile isLoggedIn credits={50} cartCount={2} avatarSrc="https://i.pravatar.cc/80?img=68" avatarInitials="JS" />
-                : <WebsiteNav bgVariant={bgVariant} showCategoryStrip={showCategoryStrip} isLoggedIn credits={50} cartCount={2} avatarSrc="https://i.pravatar.cc/80?img=68" avatarInitials="JS" />
+                ? <WebsiteNavMobile isLoggedIn credits={50} cartCount={2} avatarSrc="https://i.pravatar.cc/80?img=68" avatarInitials="JS" showInvitationBtn={showInvitationBtn} />
+                : <WebsiteNav bgVariant={bgVariant} showCategoryStrip={showCategoryStrip} isLoggedIn credits={50} cartCount={2} avatarSrc="https://i.pravatar.cc/80?img=68" avatarInitials="JS" showInvitationBtn={showInvitationBtn} />
               }
             </div>
           )}
@@ -2128,15 +2136,21 @@ function PageWebsiteNav() {
       <DocSection
         title="Mobile · Logged Out"
         desc="Mobile navigation for unauthenticated visitors. Shows the category links, Invitation CTA, and Log in / Sign up actions. Tap the search icon to switch to the search panel."
+        action={
+          <div style={{ display: "flex", alignItems: "center", gap: "var(--space-5)" }}>
+            <Swt size="sm" checked={solidBg} onChange={setSolidBg} label={solidBg ? "Solid BG" : "Frosted BG"} />
+            <Swt size="sm" checked={showInvitationBtn} onChange={setShowInvitationBtn} label="Invitation btn" />
+          </div>
+        }
       >
         <Preview
           title="Website Nav Mobile · logged out"
-          code={`import { WebsiteNavMobile } from "@/components/ui/hs-website-nav";\n\n<WebsiteNavMobile cartCount={2} />`}
+          code={`import { WebsiteNavMobile } from "@/components/ui/hs-website-nav";\n\n<WebsiteNavMobile cartCount={2}${solidBg ? ` bgVariant="solid"` : ""}${!showInvitationBtn ? " showInvitationBtn={false}" : ""} />`}
           height={560}
           canvasBg="var(--color-bg-editor)"
         >
           <div style={{ alignSelf: "flex-start", width: 393 }}>
-            <WebsiteNavMobile cartCount={2} initialOpen />
+            <WebsiteNavMobile cartCount={2} initialOpen bgVariant={bgVariant} showInvitationBtn={showInvitationBtn} />
           </div>
         </Preview>
       </DocSection>
@@ -2144,15 +2158,21 @@ function PageWebsiteNav() {
       <DocSection
         title="Mobile · Logged In"
         desc="Authenticated mobile navigation. Adds a user card with avatar, name, and Heart Credits balance at the top, and replaces auth actions with Favorite Cards and Sign out."
+        action={
+          <div style={{ display: "flex", alignItems: "center", gap: "var(--space-5)" }}>
+            <Swt size="sm" checked={solidBg} onChange={setSolidBg} label={solidBg ? "Solid BG" : "Frosted BG"} />
+            <Swt size="sm" checked={showInvitationBtn} onChange={setShowInvitationBtn} label="Invitation btn" />
+          </div>
+        }
       >
         <Preview
           title="Website Nav Mobile · logged in"
-          code={`import { WebsiteNavMobile } from "@/components/ui/hs-website-nav";\n\n<WebsiteNavMobile isLoggedIn credits={50} cartCount={2} avatarSrc="https://i.pravatar.cc/80?img=68" avatarInitials="JS" userName="Jane Smith" />`}
+          code={`import { WebsiteNavMobile } from "@/components/ui/hs-website-nav";\n\n<WebsiteNavMobile isLoggedIn credits={50} cartCount={2} avatarSrc="https://i.pravatar.cc/80?img=68" avatarInitials="JS"${solidBg ? ` bgVariant="solid"` : ""}${!showInvitationBtn ? " showInvitationBtn={false}" : ""} />`}
           height={640}
           canvasBg="var(--color-bg-editor)"
         >
           <div style={{ alignSelf: "flex-start", width: 393 }}>
-            <WebsiteNavMobile isLoggedIn credits={50} cartCount={2} avatarSrc="https://i.pravatar.cc/80?img=68" avatarInitials="JS" initialOpen />
+            <WebsiteNavMobile isLoggedIn credits={50} cartCount={2} avatarSrc="https://i.pravatar.cc/80?img=68" avatarInitials="JS" initialOpen bgVariant={bgVariant} showInvitationBtn={showInvitationBtn} />
           </div>
         </Preview>
       </DocSection>
@@ -2176,7 +2196,8 @@ function PageWebsiteNav() {
       <DocSection title="Props · WebsiteNav">
         <PropsTable props={[
           { name: "bgVariant",          type: '"default" | "solid"', def: '"default"', desc: 'Background style. Use "default" (frosted glass, backdrop-blur) on the homepage where the nav overlays hero content. Use "solid" (opaque var(--color-bg-main)) on all inner pages.' },
-          { name: "showCategoryStrip", type: "boolean", def: "true",   desc: "Show or hide the category nav strip below the top bar. Set to false on pages where the category links are not needed." },
+          { name: "showCategoryStrip",  type: "boolean", def: "true",   desc: "Show or hide the category nav strip below the top bar. Set to false on pages where the category links are not needed." },
+          { name: "showInvitationBtn", type: "boolean", def: "true",   desc: "Show or hide the Invitation button in the top bar." },
           { name: "isLoggedIn",        type: "boolean", def: "false",  desc: "Toggles between logged-out (Log in / Sign up) and logged-in (Credits, Favorites, Avatar) right-side actions." },
           { name: "credits",           type: "number",  def: "50",     desc: "Heart Credits balance shown in the credits button. Only visible when isLoggedIn is true." },
           { name: "cartCount",         type: "number",  def: "0",      desc: "Number of items in the cart. Shows a red numeric badge on the cart icon when greater than 0. Caps at 99+." },
@@ -2191,9 +2212,10 @@ function PageWebsiteNav() {
           { name: "credits",         type: "number",  def: "50",     desc: "Heart Credits balance shown in the user card. Only visible when isLoggedIn is true." },
           { name: "cartCount",       type: "number",  def: "0",      desc: "Number of items in the cart. Shows a red numeric badge on the cart icon when greater than 0. Caps at 99+." },
           { name: "avatarSrc",       type: "string",  def: "—",      desc: "Image URL for the avatar shown in the user card. Falls back to avatarInitials when omitted or on error." },
-          { name: "avatarInitials",  type: "string",  def: '"JS"',   desc: "Fallback initials for the avatar. Only visible when isLoggedIn is true." },
-          { name: "userName",        type: "string",  def: '"Jane Smith"', desc: "Display name shown in the user card. Only visible when isLoggedIn is true." },
-          { name: "initialView",     type: '"nav" | "search"', def: '"nav"', desc: 'Pre-open a specific view on mount. Useful for docs demos or deep-linking into the search panel.' },
+          { name: "avatarInitials",    type: "string",          def: '"JS"',   desc: "Fallback initials for the avatar. Only visible when isLoggedIn is true." },
+          { name: "bgVariant",         type: '"default" | "solid"', def: '"default"', desc: 'Background style. "default" = frosted glass; "solid" = opaque var(--color-bg-main).' },
+          { name: "initialView",       type: '"nav" | "search"', def: '"nav"', desc: 'Pre-open a specific view on mount. Useful for docs demos or deep-linking into the search panel.' },
+          { name: "showInvitationBtn", type: "boolean",          def: "true",  desc: "Show or hide the Invitation button in the nav panel." },
         ]} />
       </DocSection>
     </DocPage>
