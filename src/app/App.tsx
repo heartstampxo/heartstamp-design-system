@@ -4887,26 +4887,29 @@ export default function App() {
   const [dark, setDark] = useState(false);
   const [mainStyle, setMainStyle] = useState<React.CSSProperties | null>(null);
   const [page, setPage] = useState(() => {
-    const hash = typeof window !== "undefined" ? window.location.hash.slice(1) : "";
-    return hash && PAGES[hash] ? hash : "intro";
+    const path = typeof window !== "undefined" ? window.location.pathname.slice(1) : "";
+    return path && PAGES[path] ? path : "intro";
   });
   const [windowWidth, setWindowWidth] = useState(typeof window !== "undefined" ? window.innerWidth : 1200);
   const [sidebarOpen, setSidebarOpen] = useState(windowWidth >= 768);
   const [iconSearch, setIconSearch] = useState("");
 
-  // Sync URL hash whenever the page changes
+  // Sync URL path whenever the page changes
   useEffect(() => {
-    window.location.hash = page;
+    const target = page === "intro" ? "/" : `/${page}`;
+    if (window.location.pathname !== target) {
+      window.history.pushState(null, "", target);
+    }
   }, [page]);
 
   // Support browser back / forward navigation
   useEffect(() => {
-    const onHashChange = () => {
-      const hash = window.location.hash.slice(1);
-      if (hash && PAGES[hash]) setPage(hash);
+    const onPopState = () => {
+      const path = window.location.pathname.slice(1);
+      setPage(path && PAGES[path] ? path : "intro");
     };
-    window.addEventListener("hashchange", onHashChange);
-    return () => window.removeEventListener("hashchange", onHashChange);
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
   }, []);
 
   useEffect(() => {
@@ -4914,6 +4917,16 @@ export default function App() {
     window.addEventListener("resize", handler);
     return () => window.removeEventListener("resize", handler);
   }, []);
+
+  // Scroll to section anchor after the page content renders
+  useEffect(() => {
+    const id = window.location.hash.slice(1);
+    if (!id) return;
+    const raf = requestAnimationFrame(() => {
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    return () => cancelAnimationFrame(raf);
+  }, [page]);
 
   const isMobile = windowWidth < 768;
 
