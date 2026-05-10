@@ -90,7 +90,10 @@ export function CopySectionLinkButton({ sectionId }: { sectionId: string }) {
       title="Copy section link"
       label="Copy link"
       copiedLabel="Copied!"
-      getUrl={() => `${window.location.origin}${window.location.pathname}#${sectionId}`}
+      getUrl={() => {
+        const currentPage = window.location.hash.slice(1).split("/")[0] || "intro";
+        return `${window.location.origin}/#${currentPage}/${sectionId}`;
+      }}
     />
   );
 }

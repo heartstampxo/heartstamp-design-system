@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { motion } from "motion/react";
 import { Btn } from "./components/ui/btn";
 import { AppleBtn, GoogleBtn, AmazonBtn, LinkBtn } from "./components/ui/hs-brand-btn";
@@ -4887,29 +4887,30 @@ export default function App() {
   const [dark, setDark] = useState(false);
   const [mainStyle, setMainStyle] = useState<React.CSSProperties | null>(null);
   const [page, setPage] = useState(() => {
-    const path = typeof window !== "undefined" ? window.location.pathname.slice(1) : "";
-    return path && PAGES[path] ? path : "intro";
+    const hash = typeof window !== "undefined" ? window.location.hash.slice(1) : "";
+    const pageKey = hash.split("/")[0];
+    return pageKey && PAGES[pageKey] ? pageKey : "intro";
   });
   const [windowWidth, setWindowWidth] = useState(typeof window !== "undefined" ? window.innerWidth : 1200);
   const [sidebarOpen, setSidebarOpen] = useState(windowWidth >= 768);
   const [iconSearch, setIconSearch] = useState("");
+  const firstRender = useRef(true);
 
-  // Sync URL path whenever the page changes
+  // Sync URL hash whenever the page changes.
+  // Skip the first render so the original #page/section hash is preserved for the scroll effect.
   useEffect(() => {
-    const target = page === "intro" ? "/" : `/${page}`;
-    if (window.location.pathname !== target) {
-      window.history.pushState(null, "", target);
-    }
+    if (firstRender.current) { firstRender.current = false; return; }
+    window.location.hash = page;
   }, [page]);
 
   // Support browser back / forward navigation
   useEffect(() => {
-    const onPopState = () => {
-      const path = window.location.pathname.slice(1);
-      setPage(path && PAGES[path] ? path : "intro");
+    const onHashChange = () => {
+      const pageKey = window.location.hash.slice(1).split("/")[0];
+      if (pageKey && PAGES[pageKey]) setPage(pageKey);
     };
-    window.addEventListener("popstate", onPopState);
-    return () => window.removeEventListener("popstate", onPopState);
+    window.addEventListener("hashchange", onHashChange);
+    return () => window.removeEventListener("hashchange", onHashChange);
   }, []);
 
   useEffect(() => {
@@ -4918,12 +4919,12 @@ export default function App() {
     return () => window.removeEventListener("resize", handler);
   }, []);
 
-  // Scroll to section anchor after the page content renders
+  // Scroll to section after page content renders (hash format: #page/section)
   useEffect(() => {
-    const id = window.location.hash.slice(1);
-    if (!id) return;
+    const section = window.location.hash.slice(1).split("/")[1];
+    if (!section) return;
     const raf = requestAnimationFrame(() => {
-      document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+      document.getElementById(section)?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
     return () => cancelAnimationFrame(raf);
   }, [page]);
