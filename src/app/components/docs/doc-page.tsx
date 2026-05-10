@@ -1,5 +1,5 @@
 import React from "react";
-import { CopyLinkButton } from "./doc-copy-link";
+import { CopyLinkButton, CopySectionLinkButton } from "./doc-copy-link";
 
 interface DocPageProps {
   title: string;
@@ -14,7 +14,6 @@ export function DocPage({ title, subtitle, sourceSlug, children, style }: DocPag
     <div style={{ transition: "background 0.15s ease, color 0.15s ease", ...style }}>
       <div style={{ marginBottom: 28 }}>
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, marginBottom: "var(--space-1-5)" }}>
-          {/* Title + copy link */}
           <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
             <h1 style={{ margin: 0, fontSize: 26, fontWeight: 800, color: "var(--fg)", letterSpacing: "-.02em" }}>{title}</h1>
             <CopyLinkButton />
@@ -48,12 +47,20 @@ interface DocSectionProps {
   children: React.ReactNode;
 }
 
+function slugify(title: string) {
+  return title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
+
 export function DocSection({ title, desc, action, children }: DocSectionProps) {
+  const id = slugify(title);
   return (
-    <section style={{ marginBottom: "var(--space-12)", display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+    <section id={id} style={{ marginBottom: "var(--space-12)", display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
         <div>
-          <h2 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: "var(--fg)" }}>{title}</h2>
+          <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
+            <h2 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: "var(--fg)" }}>{title}</h2>
+            <CopySectionLinkButton sectionId={id} />
+          </div>
           {desc && <p style={{ margin: "4px 0 0", fontSize: 13, color: "var(--muted-fg)" }}>{desc}</p>}
         </div>
         {action && <div style={{ flexShrink: 0 }}>{action}</div>}
