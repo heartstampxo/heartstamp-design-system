@@ -437,7 +437,7 @@ export function WebsiteNavMobile({
     <div style={{
       width: "100%", maxWidth: maxWidth,
       ...BG_STYLES[bgVariant],
-      position: "relative", overflow: "hidden",
+      position: "relative",
     }}>
 
       {/* ── Top bar ──────────────────────────────────────────── */}
@@ -550,6 +550,8 @@ export function WebsiteNavMobile({
       </div>
 
       {/* ── Content area: profile panel OR nav panel ─────────── */}
+      {/* overflow:hidden here — not on root — so top-bar badges are never clipped */}
+      <div style={{ overflow: "hidden" }}>
       <AnimatePresence mode="popLayout">
 
         {profileOpen ? (
@@ -667,6 +669,7 @@ export function WebsiteNavMobile({
         ) : null}
 
       </AnimatePresence>
+      </div>
 
     </div>
   );
@@ -713,7 +716,7 @@ export function WebsiteNavResponsive({
   }, []);
 
   return (
-    <div ref={containerRef} style={{ width: "100%" }}>
+    <div ref={containerRef} style={{ display: "block", width: "100%", boxSizing: "border-box" }}>
       {isMobile ? (
         <WebsiteNavMobile
           isLoggedIn={isLoggedIn}

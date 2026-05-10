@@ -28,6 +28,10 @@ import { Skl } from "./components/ui/hs-skl";
 import { Alrt } from "./components/ui/hs-alrt";
 import { Crd, CrdHeader, CrdBody, CrdFooter, CrdTitle, CrdDesc } from "./components/ui/hs-crd";
 import { WalletCard, WalletPromoCard } from "./components/ui/hs-wallet";
+import { PaymentMethodCard } from "./components/ui/hs-payment-method-card";
+import { ShippingMethodCard } from "./components/ui/hs-shipping-method-card";
+import { CheckoutUpsellCard } from "./components/ui/hs-checkout-upsell-card";
+import { OrderSummaryCard } from "./components/ui/hs-order-summary-card";
 import { ReferralCard } from "./components/ui/hs-referral-card";
 import { ContentCard } from "./components/ui/hs-content-card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "./components/ui/tabs";
@@ -870,8 +874,10 @@ function PageAvatar() {
 }
 
 function PageCard() {
-  const [showGold,   setShowGold]   = useState(true);
-  const [showSilver, setShowSilver] = useState(true);
+  const [showGold,          setShowGold]          = useState(true);
+  const [showSilver,        setShowSilver]         = useState(true);
+  const [selectedPayment,   setSelectedPayment]    = useState<string | null>("visa-6754");
+  const [selectedShipping,  setSelectedShipping]   = useState<string | null>("economy");
 
   const walletCredits = [
     { heartFill: "var(--color-brand-primary)", count: 200, label: "Heart Credits", subtitle: "Renew in 28 days",      badge: "Plus"    },
@@ -962,6 +968,180 @@ function PageCard() {
         { name: "metrics",               type: "ContentCardMetric[]", def: "3 default metrics", desc: "Stat boxes with animated count-up (value + label)." },
         { name: "style",                 type: "CSSProperties",       def: "—",                 desc: "Inline styles applied to the card root." },
         { name: "className",             type: "string",              def: "—",                 desc: "Extra class names applied to the card root." },
+      ]} />
+    </DocSection>
+
+    <DocSection
+      title="Payment Method Card"
+      desc="A selectable row representing a saved payment method. Shows the card network brand logo, card type, masked card number, and expiry date. Click any card to select it."
+    >
+      <Preview
+        title="Payment method card"
+        code={`import { PaymentMethodCard } from "@/components/ui/hs-payment-method-card";\n\n<PaymentMethodCard brand="visa"       type="Credit" lastFour="6754" expiry="05/2027" selected />\n<PaymentMethodCard brand="visa"       type="Debit"  lastFour="5644" expiry="09/2026" />\n<PaymentMethodCard brand="mastercard" type="Credit" lastFour="1234" expiry="11/2028" />\n<PaymentMethodCard brand="amex"       type="Credit" lastFour="5678" expiry="03/2026" />\n<PaymentMethodCard brand="discover"   type="Debit"  lastFour="9012" expiry="08/2027" />\n<PaymentMethodCard brand="unionpay"   type="Credit" lastFour="3456" expiry="06/2029" />`}
+        height={520}
+      >
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)", width: "100%" }}>
+          {([
+            { id: "visa-6754",    brand: "visa",       type: "Credit", lastFour: "6754", expiry: "05/2027" },
+            { id: "visa-5644",    brand: "visa",       type: "Debit",  lastFour: "5644", expiry: "09/2026" },
+            { id: "mc-1234",      brand: "mastercard", type: "Credit", lastFour: "1234", expiry: "11/2028" },
+            { id: "amex-5678",    brand: "amex",       type: "Credit", lastFour: "5678", expiry: "03/2026" },
+            { id: "disc-9012",    brand: "discover",   type: "Debit",  lastFour: "9012", expiry: "08/2027" },
+            { id: "up-3456",      brand: "unionpay",   type: "Credit", lastFour: "3456", expiry: "06/2029" },
+          ] as const).map(card => (
+            <PaymentMethodCard
+              key={card.id}
+              brand={card.brand}
+              type={card.type}
+              lastFour={card.lastFour}
+              expiry={card.expiry}
+              selected={selectedPayment === card.id}
+              onChange={() => setSelectedPayment(card.id)}
+            />
+          ))}
+        </div>
+      </Preview>
+      <PropsTable props={[
+        { name: "brand",      type: '"visa" | "mastercard" | "amex" | "discover" | "unionpay"', def: "—", desc: "Card network. Determines the logo and auto-formats the card title." },
+        { name: "logo",       type: "ReactNode",    def: "—",        desc: "Custom logo node. Overrides the built-in brand logo when provided." },
+        { name: "type",       type: "string",       def: '"Credit"', desc: 'Card type label shown below the logo. e.g. "Credit" or "Debit".' },
+        { name: "lastFour",   type: "string",       def: "—",        desc: "Last 4 digits of the card. Shown as **** {lastFour} in the card title." },
+        { name: "expiry",     type: "string",       def: "—",        desc: 'Expiry in MM/YYYY format. Displayed as "Exp. {expiry}".' },
+        { name: "cardTitle",  type: "string",       def: "auto",     desc: 'Overrides the auto-generated title (e.g. "VISA ENDING IN **** 6754").' },
+        { name: "selected",   type: "boolean",      def: "false",    desc: "Whether this card row is currently selected (checkbox checked)." },
+        { name: "onChange",   type: "(selected: boolean) => void", def: "—", desc: "Called when the user clicks or presses the card row." },
+        { name: "style",      type: "CSSProperties", def: "—",       desc: "Inline styles applied to the card root." },
+        { name: "className",  type: "string",        def: "—",       desc: "Extra class names applied to the card root." },
+      ]} />
+    </DocSection>
+
+    <DocSection
+      title="Shipping Method Card"
+      desc="A selectable row representing a shipping option. Shows an optional method tag, name, arrival estimate, and price. Click any row to select it."
+    >
+      <Preview
+        title="Shipping method card"
+        code={`import { ShippingMethodCard } from "@/components/ui/hs-shipping-method-card";\n\n<ShippingMethodCard tag="Economy"  name="Standard Shipping"  estimate="Arrives Oct 15–17" price="Free"  selected />\n<ShippingMethodCard tag="Standard" name="Express Shipping"  estimate="Arrives Oct 12–13" price="$4.99" />\n<ShippingMethodCard tag="Rush"     name="Overnight Shipping" estimate="Arrives Oct 11"    price="$9.99" />`}
+        height={420}
+      >
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)", width: "100%" }}>
+          {([
+            { id: "economy",   tag: "Economy",  name: "Standard Shipping",  estimate: "Arrives Oct 15–17", price: "Free"  },
+            { id: "standard",  tag: "Standard", name: "Express Shipping",   estimate: "Arrives Oct 12–13", price: "$4.99" },
+            { id: "rush",      tag: "Rush",     name: "Overnight Shipping",  estimate: "Arrives Oct 11",    price: "$9.99" },
+          ]).map(method => (
+            <ShippingMethodCard
+              key={method.id}
+              tag={method.tag}
+              name={method.name}
+              estimate={method.estimate}
+              price={method.price}
+              selected={selectedShipping === method.id}
+              onChange={() => setSelectedShipping(method.id)}
+            />
+          ))}
+        </div>
+      </Preview>
+      <PropsTable props={[
+        { name: "tag",      type: "string",       def: "—",       desc: 'Optional tag pill label shown above the method name (e.g. "Economy", "Rush").' },
+        { name: "name",     type: "string",       def: "—",       desc: "Shipping method name (e.g. \"Standard Shipping\")." },
+        { name: "estimate", type: "string",       def: "—",       desc: "Arrival estimate text (e.g. \"Arrives Oct 15–17\")." },
+        { name: "price",    type: "string",       def: "—",       desc: "Price string (e.g. \"Free\" or \"$4.99\")." },
+        { name: "selected", type: "boolean",      def: "false",   desc: "Whether this method row is currently selected (checkbox checked)." },
+        { name: "onChange", type: "(selected: boolean) => void", def: "—", desc: "Called when the user clicks or presses the card row." },
+        { name: "style",    type: "CSSProperties", def: "—",      desc: "Inline styles applied to the card root." },
+        { name: "className", type: "string",      def: "—",       desc: "Extra class names applied to the card root." },
+      ]} />
+    </DocSection>
+
+    <DocSection
+      title="Checkout Upsell Card"
+      desc="A promotional upsell card shown at checkout. Red brand background, left promotional copy with CTA buttons, right white order panel with a quantity stepper, and Stampy peeking from behind the panel."
+    >
+      <Preview
+        title="Checkout upsell card"
+        code={`import { CheckoutUpsellCard } from "@/components/ui/hs-checkout-upsell-card";\n\n<CheckoutUpsellCard\n  onAdd={(qty) => console.log("add", qty)}\n  onDismiss={() => console.log("dismissed")}\n/>`}
+        height={260}
+      >
+        <CheckoutUpsellCard
+          onAdd={(qty) => console.log("Add", qty, "supercard(s)")}
+          onDismiss={() => console.log("Dismissed")}
+          style={{ width: "100%" }}
+        />
+      </Preview>
+      <PropsTable props={[
+        { name: "badge",            type: "string",                          def: '"Special Deal!"',                  desc: "Pill label above the description." },
+        { name: "description",      type: "ReactNode",                       def: "Built-in copy",                   desc: "Promotional body text. Supports JSX for inline bold/emphasis." },
+        { name: "ctaLabel",         type: "string | ((qty: number) => string)", def: '"Add {n} Supercard +${n*3}"', desc: "Primary CTA label. Pass a function to vary with the selected quantity." },
+        { name: "onAdd",            type: "(qty: number) => void",           def: "—",                               desc: "Called with the chosen quantity when the user clicks the CTA." },
+        { name: "dismissLabel",     type: "string",                          def: '"No, thanks"',                    desc: "Dismiss button label." },
+        { name: "onDismiss",        type: "() => void",                      def: "—",                               desc: "Called when the user clicks the dismiss button." },
+        { name: "orderTitle",       type: "string",                          def: '"Add Supercard to your order"',   desc: "Right panel heading." },
+        { name: "orderSubtitle",    type: "string",                          def: '"Max 3 (matches eligible card in cart)"', desc: "Right panel sub-label." },
+        { name: "minQty",           type: "number",                          def: "1",                               desc: "Minimum selectable quantity." },
+        { name: "maxQty",           type: "number",                          def: "3",                               desc: "Maximum selectable quantity." },
+        { name: "defaultQty",       type: "number",                          def: "1",                               desc: "Starting quantity." },
+        { name: "orderSummaryText", type: "string",                          def: '"Card + 1,000"',                  desc: "Text before the emblem + credits label in the summary row." },
+        { name: "orderCreditsText", type: "string",                          def: '"Credits"',                       desc: "Text after the emblem in the summary row." },
+        { name: "style",            type: "CSSProperties",                   def: "—",                               desc: "Inline styles applied to the card root." },
+        { name: "className",        type: "string",                          def: "—",                               desc: "Extra class names applied to the card root." },
+      ]} />
+    </DocSection>
+
+    <DocSection title="Order summary card">
+      <Preview
+        title="Order summary card"
+        code={`import { OrderSummaryCard } from "@/components/ui/hs-order-summary-card";\n\n<OrderSummaryCard\n  shippingPrice="$3.50"\n  onChangeAddress={() => {}}\n  onChangeShipping={() => {}}\n  lineItems={[\n    { label: "1x Cards", price: "$6.99" },\n    { label: "1x Super Card", price: "$3.00" },\n    { label: "Shipping", price: "$3.45" },\n  ]}\n  subtotal="$13.44"\n  taxes="$0.00"\n  total="$13.44"\n/>`}
+        height={600}
+        contentAlign="start"
+      >
+        <div style={{ width: "100%" }}>
+          <OrderSummaryCard
+            mobileSummary={[
+              { label: "30x Cards", value: "$104.70" },
+              { label: "Shipping",  value: "$3.45"   },
+              { label: "Subtotal",  value: "$108.15"  },
+              { label: "Taxes",     value: "$9.16"    },
+            ]}
+            cardSummaryText="$3.45x30 cards printing (6 different cards)"
+            cardItems={[
+              { type: "Printed", name: "Anniversary Card",       quantity: "5 Cards", price: "$3.45x5" },
+              { type: "Printed", name: "Party Card for Birthday", quantity: "1 Card",  price: "$3.45x1" },
+              { type: "Printed", name: "Birthday Wish Card",     quantity: "4 Cards", price: "$3.45x4" },
+              { type: "Printed", name: "Father's day Card",      quantity: "5 Cards", price: "$3.45x5" },
+            ]}
+            shippingPrice="$3.50"
+            onChangeAddress={() => console.log("Change address")}
+            onChangeShipping={() => console.log("Change shipping")}
+            lineItems={[
+              { label: "1x Cards",      price: "$6.99" },
+              { label: "1x Super Card", price: "$3.00" },
+              { label: "Shipping",      price: "$3.45" },
+            ]}
+            subtotal="$13.44"
+            taxes="$0.00"
+            total="$13.44"
+          />
+        </div>
+      </Preview>
+      <PropsTable props={[
+        { name: "cardSectionLabel", type: "string",                          def: '"Cards"',             desc: "Label above the card-items trigger." },
+        { name: "cardSummaryText",  type: "string",                          def: '""',                  desc: "Pill trigger summary text (e.g. price × count)." },
+        { name: "cardItems",        type: "CardItem[]",                      def: "—",                   desc: "When provided, renders an expandable card-items dropdown at the top." },
+        { name: "shippingTitle",    type: "string",                          def: '"Shipping Address"',  desc: "Shipping section heading." },
+        { name: "shippingPrice",    type: "string",                          def: "—",                   desc: "Price shown beside the shipping heading (e.g. \"$3.50\")." },
+        { name: "addressLines",     type: "string[]",                        def: "Sample address",      desc: "Address lines rendered top-to-bottom (name, street, city/state/zip)." },
+        { name: "shippingMethod",   type: "string",                          def: '"Economy shipping…"', desc: "Shipping method name." },
+        { name: "shippingEstimate", type: "string",                          def: '"Mon 2/1 – 2/5"',     desc: "Estimated delivery window." },
+        { name: "onChangeAddress",  type: "() => void",                      def: "—",                   desc: 'Shows a "Change" link beside the address when provided.' },
+        { name: "onChangeShipping", type: "() => void",                      def: "—",                   desc: 'Shows a "Change" link beside the shipping method when provided.' },
+        { name: "sectionLabel",     type: "string",                          def: '"CURRENT"',           desc: "Label above the order line items." },
+        { name: "lineItems",        type: "Array<{ label: string; price: string }>", def: "Sample items", desc: "Line items above the subtotal separator." },
+        { name: "subtotal",         type: "string",                          def: '"$13.44"',            desc: "Subtotal string." },
+        { name: "taxes",            type: "string",                          def: '"$0.00"',             desc: "Taxes string." },
+        { name: "total",            type: "string",                          def: '"$13.44"',            desc: "Total shown at H5 size." },
+        { name: "style",            type: "CSSProperties",                   def: "—",                   desc: "Inline styles applied to the root wrapper." },
+        { name: "className",        type: "string",                          def: "—",                   desc: "Extra class names applied to the root wrapper." },
       ]} />
     </DocSection>
   </DocPage>;

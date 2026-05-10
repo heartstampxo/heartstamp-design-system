@@ -6,9 +6,13 @@ interface PpvrProps {
   trigger: React.ReactNode;
   children: React.ReactNode;
   title?: string;
+  /** Inline styles applied to the root wrapper (e.g. `{ width: "100%" }`). */
+  style?: React.CSSProperties;
+  /** Inline styles applied to the floating panel (overrides defaults). */
+  contentStyle?: React.CSSProperties;
 }
 
-export function Ppvr({ trigger, children, title }: PpvrProps) {
+export function Ppvr({ trigger, children, title, style, contentStyle }: PpvrProps) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -21,7 +25,7 @@ export function Ppvr({ trigger, children, title }: PpvrProps) {
   }, []);
 
   return (
-    <div ref={ref} style={{ position: "relative", display: "inline-block" }}>
+    <div ref={ref} style={{ position: "relative", display: "inline-block", ...style }}>
       <div onClick={() => setOpen(o => !o)}>{trigger}</div>
       {open && (
         <div
@@ -36,6 +40,7 @@ export function Ppvr({ trigger, children, title }: PpvrProps) {
             boxShadow: "0 8px 32px rgba(0,0,0,.15)",
             padding: "var(--space-4)",
             minWidth: 220,
+            ...contentStyle,
           }}
         >
           {title && (

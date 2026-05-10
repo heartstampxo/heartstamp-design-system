@@ -25,6 +25,8 @@ interface PreviewProps {
   canvasBg?: string;
   /** Clip overflowing content (e.g. dropdowns) to the preview boundary */
   clipContent?: boolean;
+  /** Vertical + horizontal alignment of content inside the canvas. Defaults to "center". */
+  contentAlign?: "center" | "start";
 }
 
 /**
@@ -71,7 +73,7 @@ function normalizeImports(code: string | undefined): string {
   return result.join("\n");
 }
 
-export function Preview({ title, code, filename, children, height = 160, defaultViewport = "full", fullWidth = false, canvasBg, clipContent = false }: PreviewProps) {
+export function Preview({ title, code, filename, children, height = 160, defaultViewport = "full", fullWidth = false, canvasBg, clipContent = false, contentAlign = "center" }: PreviewProps) {
   const [tab, setTab] = useState("preview");
   const [vp, setVp] = useState(defaultViewport);
   const [dark, setDark] = useState(false);
@@ -149,7 +151,10 @@ export function Preview({ title, code, filename, children, height = 160, default
               overflow: "visible",
             }}>
               <div style={{
-                display: "flex", alignItems: "center", justifyContent: "center", flexWrap: "wrap",
+                display: "flex",
+                alignItems: contentAlign === "start" ? "flex-start" : "center",
+                justifyContent: contentAlign === "start" ? "flex-start" : "center",
+                flexWrap: "wrap",
                 gap: fullWidth ? 0 : 10, padding: fullWidth ? 0 : "16px", minHeight: height, overflow: "visible",
               }}>
                 {renderedChildren}
