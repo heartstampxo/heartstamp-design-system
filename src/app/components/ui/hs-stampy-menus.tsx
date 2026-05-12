@@ -545,7 +545,7 @@ function AuthFooter({ onSignIn, onBack, backLabel = "Back to sign up", loading, 
           {backLabel}
         </Btn>
       )}
-      <p className="leading-[17px] text-[var(--font-size-body-13)] text-center px-[var(--space-8)]" style={{ ...dmSans400, color: "var(--color-text-secondary)" }}>
+      <p className="leading-[17px] text-[var(--font-size-body-13)] text-center px-[var(--space-4)]" style={{ ...dmSans400, color: "var(--color-text-secondary)" }}>
         By proceeding, you accept our{" "}
         <Btn variant="link" size="sm" className="no-underline inline-flex h-auto text-[var(--font-size-body-13)]" style={{ color: "var(--color-text-primary)" }} onClick={onTerms}>Terms of Use</Btn>
         {" "}and{" "}
@@ -620,10 +620,15 @@ export function SignupOverflowMenu({
                 />
                 <Btn
                   variant="default"
-                  size="xl"
-                  className="w-full rounded-full"
-                  disabled={!email.trim() || loading}
-                  onClick={() => email.trim() && onEmail?.(email.trim())}
+                  size="lg"
+                  className="w-full"
+                  disabled={!email.trim()}
+                  loading={loading}
+                  onClick={() => {
+                    if (!email.trim()) return;
+                    setLoading(true);
+                    onEmail?.(email.trim());
+                  }}
                 >
                   Claim Free Credits
                 </Btn>
@@ -672,8 +677,8 @@ export function SignupOverflowMenu({
               >
                 <Btn
                   variant="default"
-                  size="xl"
-                  className="w-full rounded-full"
+                  size="lg"
+                  className="w-full"
                   disabled={loading}
                   onClick={isSignIn ? onSignIn : () => transition("email")}
                 >
@@ -698,6 +703,7 @@ export function SignupOverflowMenu({
           ) : mode === "signup" ? (
             <motion.div
               key="footer"
+              className="px-[var(--space-5)] w-full"
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 6 }}
@@ -725,6 +731,7 @@ export function OTPOverflowMenu({
   onSignIn,
   onTerms,
   onPrivacy,
+  loading,
 }: {
   title?: string;
   subtitle?: string;
@@ -736,8 +743,10 @@ export function OTPOverflowMenu({
   onSignIn?: () => void;
   onTerms?: () => void;
   onPrivacy?: () => void;
+  loading?: boolean;
 }) {
   const [code, setCode] = useState("");
+  const [verifying, setVerifying] = useState(false);
 
   return (
     <div className={SIGNUP_SHELL} style={SIGNUP_SHELL_STYLE}>
@@ -773,7 +782,8 @@ export function OTPOverflowMenu({
             size="xl"
             className="w-full rounded-full"
             disabled={code.length < 6}
-            onClick={() => onVerify(code)}
+            loading={loading || verifying}
+            onClick={() => { setVerifying(true); onVerify(code); }}
           >
             {buttonLabel}
           </Btn>

@@ -1,6 +1,8 @@
 import React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
+import { Loader2 } from "lucide-react";
 import { cn } from "./utils";
+import { Tip } from "./hs-tip";
 
 /* ─────────────────────────────────────────────────────────────
    Btn — HeartStamp primary button primitive
@@ -31,7 +33,7 @@ const btnVariants = cva(
     "font-[var(--font-weight-btn)] gap-[var(--btn-gap)]",
     "transition-all duration-150 ease-in-out cursor-pointer",
     "outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2",
-    "disabled:opacity-50 disabled:pointer-events-none",
+    "disabled:opacity-20 disabled:pointer-events-none",
   ].join(" "),
   {
     variants: {
@@ -111,7 +113,12 @@ export type BtnSize    = NonNullable<VariantProps<typeof btnVariants>["size"]>;
 
 export interface BtnProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof btnVariants> {}
+    VariantProps<typeof btnVariants> {
+  /** Tooltip shown on hover when the button is disabled. Defaults to "Disabled". */
+  disabledTooltip?: string;
+  /** Shows a spinner and disables interaction. Does not show the disabled tooltip. */
+  loading?: boolean;
+}
 
 /* ── Component ───────────────────────────────────────────────── */
 export function Btn({
@@ -121,20 +128,32 @@ export function Btn({
   className,
   style,
   children,
+  disabledTooltip = "Disabled",
+  loading,
   ...props
 }: BtnProps) {
-  const textColor = props.disabled
-    ? "var(--color-text-disabled)"
-    : COLOR_MAP[variant ?? "default"];
+  const textColor = COLOR_MAP[variant ?? "default"];
 
-  return (
+  const button = (
     <button
       type={type}
       className={cn(btnVariants({ variant, size }), className)}
       style={{ color: textColor, ...style }}
+      disabled={props.disabled || loading}
       {...props}
     >
-      {children}
+      {loading ? (
+        <>
+          <Loader2 size={15} className="animate-spin shrink-0" />
+          {children}
+        </>
+      ) : children}
     </button>
   );
+
+  if (props.disabled) {
+    return <Tip label={disabledTooltip}>{button}</Tip>;
+  }
+
+  return button;
 }
