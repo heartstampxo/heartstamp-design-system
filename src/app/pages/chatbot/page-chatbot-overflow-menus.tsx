@@ -9,9 +9,11 @@ import {
   ActionOverflowMenu,
   ActionOverflowMenuList,
   OccasionSuggestions,
+  SignupOverflowMenu,
+  OTPOverflowMenu,
 } from "../../components/ui/hs-stampy-chat";
 
-const DESC_STYLE: React.CSSProperties = { fontSize: 14, color: "var(--muted-fg)", marginBottom: 16 };
+const DESC_STYLE: React.CSSProperties = { fontSize: 14, color: "var(--color-text-secondary)", marginBottom: 16 };
 const MENU_WRAPPER_STYLE: React.CSSProperties = { width: "100%", maxWidth: 400 };
 const NOOP = () => {};
 
@@ -357,6 +359,98 @@ import type { TemplateCard } from '@heartstamp/design-system';
           { name: "onComplete",       type: "(label: string) => void", def: "(required)", required: true, desc: "Called when a list item or custom input is submitted" },
           { name: "onClose",          type: "() => void",       def: "(required)", required: true, desc: "Called when the × close button or Skip is tapped" },
           { name: "inputPlaceholder", type: "string",           def: '"Something else"',           desc: "Placeholder for the free-text input at the bottom" },
+        ]} />
+      </DocSection>
+
+      <DocSection title="Signup — Social + Email">
+        <p style={DESC_STYLE}>
+          Sign-up panel with Apple, Google, and Facebook OAuth buttons plus an email CTA. Shown when
+          the user triggers account creation from the chatbot flow.
+        </p>
+        <Preview
+          title="SignupOverflowMenu"
+          height={500}
+          code={`import { SignupOverflowMenu } from '@heartstamp/design-system';
+
+<SignupOverflowMenu
+  onClose={() => setOpen(false)}
+  onApple={() => signUpWith("apple")}
+  onGoogle={() => signUpWith("google")}
+  onFacebook={() => signUpWith("facebook")}
+  onEmail={() => goToEmailSignup()}
+  onSignIn={() => goToSignIn()}
+  onTerms={() => openTerms()}
+  onPrivacy={() => openPrivacy()}
+/>`}
+        >
+          <div style={MENU_WRAPPER_STYLE}>
+            <SignupOverflowMenu
+              onClose={NOOP}
+              onApple={NOOP}
+              onGoogle={NOOP}
+              onFacebook={NOOP}
+              onEmail={NOOP}
+              onSignIn={NOOP}
+              onTerms={NOOP}
+              onPrivacy={NOOP}
+            />
+          </div>
+        </Preview>
+        <PropsTable props={[
+          { name: "title",       type: "string",      def: '"Create your free account"',                                      desc: "Heading text" },
+          { name: "subtitle",    type: "string",      def: '"Sign up for free..."',                                           desc: "Sub-heading below the title" },
+          { name: "onClose",     type: "() => void",  def: "(required)", required: true,                                      desc: "Called when the × close button is tapped" },
+          { name: "onApple",     type: "() => void",  def: "—",                                                              desc: "Called when the Sign in with Apple button is clicked" },
+          { name: "onGoogle",    type: "() => void",  def: "—",                                                              desc: "Called when the Sign in with Google button is clicked" },
+          { name: "onFacebook",  type: "() => void",  def: "—",                                                              desc: "Called when the Sign in with Facebook button is clicked" },
+          { name: "onEmail",     type: "() => void",  def: "—",                                                              desc: "Called when the Sign in with email CTA is clicked" },
+          { name: "onSignIn",    type: "() => void",  def: "—",                                                              desc: "Called when the 'Sign in' link in the footer is clicked" },
+          { name: "onTerms",     type: "() => void",  def: "—",                                                              desc: "Called when the Terms of Use link is clicked" },
+          { name: "onPrivacy",   type: "() => void",  def: "—",                                                              desc: "Called when the Privacy Policy link is clicked" },
+        ]} />
+      </DocSection>
+
+      <DocSection title="OTP — Code Verification">
+        <p style={DESC_STYLE}>
+          Verification step shown after the user enters their email. Accepts a numeric OTP code and
+          exposes a resend handler.
+        </p>
+        <Preview
+          title="OTPOverflowMenu"
+          height={460}
+          code={`import { OTPOverflowMenu } from '@heartstamp/design-system';
+
+<OTPOverflowMenu
+  buttonLabel="Verify"
+  onClose={() => setOpen(false)}
+  onVerify={(code) => verifyOTP(code)}
+  onResend={() => resendCode()}
+  onSignIn={() => goToSignIn()}
+  onTerms={() => openTerms()}
+  onPrivacy={() => openPrivacy()}
+/>`}
+        >
+          <div style={MENU_WRAPPER_STYLE}>
+            <OTPOverflowMenu
+              onClose={NOOP}
+              onVerify={NOOP}
+              onResend={NOOP}
+              onSignIn={NOOP}
+              onTerms={NOOP}
+              onPrivacy={NOOP}
+            />
+          </div>
+        </Preview>
+        <PropsTable props={[
+          { name: "title",       type: "string",                 def: '"Create your free account"', desc: "Heading text" },
+          { name: "subtitle",    type: "string",                 def: '"Sign up for free..."',       desc: "Sub-heading below the title" },
+          { name: "buttonLabel", type: "string",                 def: '"Verify"',                   desc: "Label for the primary action button" },
+          { name: "onClose",     type: "() => void",             def: "(required)", required: true,  desc: "Called when the × close button is tapped" },
+          { name: "onVerify",    type: "(code: string) => void", def: "(required)", required: true,  desc: "Called with the entered code when the user taps Verify or presses Enter" },
+          { name: "onResend",    type: "() => void",             def: "—",                          desc: "Called when the Resend link is clicked" },
+          { name: "onSignIn",    type: "() => void",             def: "—",                          desc: "Called when the 'Sign in' link in the footer is clicked" },
+          { name: "onTerms",     type: "() => void",             def: "—",                          desc: "Called when the Terms of Use link is clicked" },
+          { name: "onPrivacy",   type: "() => void",             def: "—",                          desc: "Called when the Privacy Policy link is clicked" },
         ]} />
       </DocSection>
 

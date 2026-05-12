@@ -236,7 +236,7 @@ export function OccasionSuggestions({
       <div className="flex flex-col items-start w-full">
         {suggestions.map((item, i) => (
           <button key={item} onClick={() => onSelect?.(item)} className="flex gap-[8px] items-center pl-[8px] pr-[8px] py-[6px] rounded-[6px] w-full transition-colors text-left" onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-state-hover)")} onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")}>
-            <div className="flex flex-col items-center justify-center rounded-[4px] shrink-0 w-[20px]" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }}>
+            <div className="flex flex-col items-center justify-center rounded-[4px] shrink-0 w-[20px]" style={{ backgroundColor: "var(--color-element-subtle)" }}>
               <p className="leading-[20px] text-[14px] text-center w-full" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{i + 1}</p>
             </div>
             <p className="flex-1 leading-[20px] text-[14px]" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{item}</p>

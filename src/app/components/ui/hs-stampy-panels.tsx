@@ -171,6 +171,8 @@ export function ChatHomeScreen({
 export interface ChatHeaderProps {
   /** Active conversation name shown in the dropdown pill */
   conversationName?: string;
+  /** ID of the active conversation — used for accurate active-item highlighting */
+  activeConversationId?: string;
   /** List of conversations in the dropdown */
   conversations?: { id: string; name: string }[];
   /** Whether the expanded (PiP) state is active */
@@ -193,6 +195,7 @@ export interface ChatHeaderProps {
 
 export function ChatHeader({
   conversationName = "Jack's Birthday Bi...",
+  activeConversationId,
   conversations = [
     { id: "1", name: "Jack's Birthday Bi..." },
     { id: "2", name: "Lupe's Luau" },
@@ -266,7 +269,7 @@ export function ChatHeader({
                 <div className="mx-[4px] my-[4px] h-px" style={{ backgroundColor: "var(--color-element-subtle)" }} />
                 <div className="max-h-[240px] overflow-y-auto">
                   {localConversations.map(c => {
-                    const isActive = c.name === conversationName;
+                    const isActive = activeConversationId ? c.id === activeConversationId : c.name === conversationName;
                     return (
                       <div key={c.id} className="group flex items-center justify-between px-[12px] mx-[4px] h-[32px] cursor-pointer transition-colors rounded-[6px]" style={{ backgroundColor: isActive ? "var(--color-brand-secondary-dim)" : "transparent" }} onMouseEnter={e => { if (!isActive) e.currentTarget.style.backgroundColor = "var(--color-state-hover)"; }} onMouseLeave={e => { e.currentTarget.style.backgroundColor = isActive ? "var(--color-brand-secondary-dim)" : "transparent"; }} onClick={() => { if (editingConvoId !== c.id) { setDropdownOpen(false); onSelectConversation?.(c.id); } }}>
                         {editingConvoId === c.id ? (

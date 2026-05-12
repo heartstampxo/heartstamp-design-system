@@ -2,9 +2,13 @@
 // StampyChatbot — Overflow menu components
 // ═══════════════════════════════════════════════════════════════════════════
 
-import { useState, useEffect } from "react";
-import { X, Pencil, ChevronRight, ChevronLeft } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { X, Pencil, ChevronRight, ChevronLeft, Mail } from "lucide-react";
+import { cn } from "./utils";
 import { Btn } from "./btn";
+import { Sep } from "./hs-sep";
+import { Lbl } from "./hs-lbl";
+import { Inp } from "./hs-inp";
 import { motion, AnimatePresence } from "motion/react";
 
 import { dmSans400, dmSans500 } from "./hs-stampy-constants";
@@ -159,16 +163,12 @@ export function OverflowMenu({
           {items.map((item) => (
             <div
               key={item.num}
-              className="flex flex-col h-[36px] items-start w-full rounded-[6px] transition-colors cursor-pointer"
+              className="flex gap-[8px] items-center h-[36px] px-[8px] py-[6px] w-full rounded-[6px] transition-colors cursor-pointer"
               {...hoverItem}
               onClick={() => handleItemClick(item)}
             >
-              <div className="flex flex-row items-center size-full">
-                <div className="flex gap-[8px] items-center px-[8px] py-[6px] w-full cursor-pointer">
-                  <NumBadge num={item.num} />
-                  <p className="flex-1 leading-[20px] text-[14px] truncate min-w-0" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{item.label}</p>
-                </div>
-              </div>
+              <NumBadge num={item.num} />
+              <p className="flex-1 leading-[20px] text-[14px] truncate min-w-0" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{item.label}</p>
             </div>
           ))}
         </motion.div>
@@ -258,13 +258,11 @@ export function ChecklistOverflowMenu({
             {currentPageData.items.map((item) => {
               const checked = selected.has(item.id);
               return (
-                <div key={item.id} className="relative rounded-[6px] w-full h-[36px] flex items-center cursor-pointer transition-colors" {...hoverItem} onClick={() => toggleItem(item.id)}>
-                  <div className="flex gap-[8px] items-center px-[8px] py-[6px] w-full">
-                    <div className="relative rounded-[4px] shrink-0 size-[16px] flex items-center justify-center transition-colors duration-150" style={{ backgroundColor: checked ? "var(--color-brand-primary)" : "transparent", border: checked ? "1px solid var(--color-brand-primary)" : "1px solid var(--color-element-subtle)", boxShadow: "var(--shadow-xs)" }}>
-                      {checked && <svg width="10.7" height="7.75" viewBox="0 0 10.6633 7.74667" fill="none"><path d={CHECKMARK_PATH} stroke="var(--color-text-on-primary)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33" /></svg>}
-                    </div>
-                    <p className="flex-1 leading-[20px] text-[14px] truncate min-w-0" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{item.label}</p>
+                <div key={item.id} className="flex gap-[8px] items-center h-[36px] px-[8px] py-[6px] rounded-[6px] w-full cursor-pointer transition-colors" {...hoverItem} onClick={() => toggleItem(item.id)}>
+                  <div className="relative rounded-[4px] shrink-0 size-[16px] flex items-center justify-center transition-colors duration-150" style={{ backgroundColor: checked ? "var(--color-brand-primary)" : "transparent", border: checked ? "1px solid var(--color-brand-primary)" : "1px solid var(--color-element-subtle)", boxShadow: "var(--shadow-xs)" }}>
+                    {checked && <svg width="10.7" height="7.75" viewBox="0 0 10.6633 7.74667" fill="none"><path d={CHECKMARK_PATH} stroke="var(--color-text-on-primary)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33" /></svg>}
                   </div>
+                  <p className="flex-1 leading-[20px] text-[14px] truncate min-w-0" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{item.label}</p>
                 </div>
               );
             })}
@@ -420,16 +418,12 @@ export function ActionOverflowMenuList({
             {items.map((item) => (
               <div
                 key={item.num}
-                className="flex flex-col h-[36px] items-start w-full rounded-[6px] transition-colors cursor-pointer"
+                className="flex gap-[8px] items-center h-[36px] px-[8px] py-[6px] w-full rounded-[6px] transition-colors cursor-pointer"
                 {...hoverItem}
                 onClick={() => onComplete(item.label)}
               >
-                <div className="flex flex-row items-center size-full">
-                  <div className="flex gap-[8px] items-center px-[8px] py-[6px] w-full cursor-pointer">
-                    <NumBadge num={item.num} />
-                    <p className="flex-1 leading-[20px] text-[14px] truncate min-w-0" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{item.label}</p>
-                  </div>
-                </div>
+                <NumBadge num={item.num} />
+                <p className="flex-1 leading-[20px] text-[14px] truncate min-w-0" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{item.label}</p>
               </div>
             ))}
           </div>
@@ -445,6 +439,346 @@ export function ActionOverflowMenuList({
           onSend={() => { if (customInput.trim()) onComplete(customInput.trim()); }}
           placeholder={inputPlaceholder ?? "Something else"}
         />
+      </div>
+    </div>
+  );
+}
+
+// ── Signup / OTP shared ────────────────────────────────────────────────────
+
+const signupHeading = {
+  fontFamily: "var(--font-family-heading)",
+  fontWeight: "var(--font-weight-subheadline)" as React.CSSProperties["fontWeight"],
+};
+
+const SIGNUP_SHELL = "flex flex-col items-start pt-[var(--space-3)] pb-[var(--space-5)] relative rounded-[var(--radius-2xl)] w-full overflow-hidden";
+const SIGNUP_SHELL_STYLE = { backgroundColor: "var(--color-bg-main)", boxShadow: "var(--shadow-xs)", border: "1px solid var(--color-element-subtle)" } as const;
+
+const CONTENT_SPRING = { type: "spring", stiffness: 380, damping: 28 } as const;
+const FOOTER_SPRING  = { type: "spring", stiffness: 340, damping: 26 } as const;
+const FADE_TRANSITION = { duration: 0.15 } as const;
+const TRANSITION_MS = 420;
+
+// ── Social brand icons ─────────────────────────────────────────────────────
+
+function AppleIcon() {
+  return (
+    <svg width="16" height="20" viewBox="0 0 16 20" fill="currentColor" aria-hidden="true" style={{ flexShrink: 0 }}>
+      <path d="M13.173 10.29c-.022-2.298 1.87-3.404 1.956-3.46-1.065-1.556-2.72-1.77-3.31-1.797-1.41-.142-2.746.838-3.46.838-.713 0-1.822-.815-2.995-.792-1.538.023-2.956.897-3.749 2.278-1.6 2.776-.412 6.893 1.151 9.147.762 1.107 1.666 2.353 2.86 2.307 1.148-.046 1.582-.74 2.97-.74 1.387 0 1.787.74 3.004.716 1.24-.023 2.022-1.136 2.774-2.25.878-1.287 1.237-2.534 1.26-2.599-.028-.012-2.435-.937-2.461-3.648zm-2.307-6.697c.634-.766 1.062-1.826.944-2.893-.912.038-2.022.608-2.676 1.372-.589.678-1.104 1.763-.913 2.803.02.004.04.007.06.007.926 0 1.876-.564 2.585-1.289z" />
+    </svg>
+  );
+}
+
+function GoogleIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true" style={{ flexShrink: 0 }}>
+      <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908C16.658 14.13 17.64 11.822 17.64 9.2z" fill="#4285F4" />
+      <path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853" />
+      <path d="M3.964 10.712A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.712V4.956H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.044l3.007-2.332z" fill="#FBBC05" />
+      <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.956L3.964 7.288C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335" />
+    </svg>
+  );
+}
+
+function FacebookIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" style={{ flexShrink: 0 }}>
+      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" fill="#1877F2" />
+    </svg>
+  );
+}
+
+// ── Shared sub-components ──────────────────────────────────────────────────
+
+function SignupHeader({ title, subtitle, onClose }: { title: string; subtitle: string; onClose: () => void }) {
+  return (
+    <div className="flex gap-[var(--space-4)] items-start px-[var(--space-5)] py-[var(--space-2)] w-full">
+      <div className="flex flex-col gap-[var(--space-2)] flex-1 min-w-0">
+        <h2 className="m-0" style={{ ...signupHeading, fontSize: "var(--font-size-h5)", lineHeight: "28px", color: "var(--color-text-primary)" }}>{title}</h2>
+        <p className="leading-[20px] text-[var(--font-size-body-15)]" style={{ ...dmSans400, color: "var(--color-text-secondary)" }}>{subtitle}</p>
+      </div>
+      <OverflowCloseBtn onClose={onClose} className="mt-[var(--space-2)] shrink-0" />
+    </div>
+  );
+}
+
+// Handles all three footer variants:
+//   onSignIn only  → "Already have an account? Sign in" + Terms
+//   onBack only    → back button + Terms
+//   both           → "Already have an account? Sign in" + back button + Terms
+interface AuthFooterProps {
+  onSignIn?: () => void;
+  onBack?: () => void;
+  backLabel?: string;
+  loading?: boolean;
+  onTerms?: () => void;
+  onPrivacy?: () => void;
+}
+
+function AuthFooter({ onSignIn, onBack, backLabel = "Back to sign up", loading, onTerms, onPrivacy }: AuthFooterProps) {
+  return (
+    <div className="flex flex-col gap-[var(--space-3)] items-center w-full">
+      {onSignIn && (
+        <p className="leading-[20px] text-[var(--font-size-body-15)] text-center" style={{ ...dmSans400, color: "var(--color-text-secondary)" }}>
+          Already have an account?{" "}
+          <Btn
+            variant="link"
+            size="sm"
+            className="no-underline inline-flex h-auto"
+            style={{ color: "var(--color-brand-primary)", fontWeight: "var(--font-weight-label-sb-15)" as React.CSSProperties["fontWeight"] }}
+            onClick={onSignIn}
+          >
+            Sign in
+          </Btn>
+        </p>
+      )}
+      {onBack && (
+        <Btn
+          variant="link"
+          size="sm"
+          className={cn("no-underline gap-[var(--space-1-5)] h-auto", onSignIn && "mt-[var(--space-2)]")}
+          style={{ color: "var(--color-text-secondary)" }}
+          disabled={loading}
+          onClick={onBack}
+        >
+          <ChevronLeft size={16} strokeWidth={2} />
+          {backLabel}
+        </Btn>
+      )}
+      <p className="leading-[17px] text-[var(--font-size-body-13)] text-center px-[var(--space-8)]" style={{ ...dmSans400, color: "var(--color-text-secondary)" }}>
+        By proceeding, you accept our{" "}
+        <Btn variant="link" size="sm" className="no-underline inline-flex h-auto text-[var(--font-size-body-13)]" style={{ color: "var(--color-text-primary)" }} onClick={onTerms}>Terms of Use</Btn>
+        {" "}and{" "}
+        <Btn variant="link" size="sm" className="no-underline inline-flex h-auto text-[var(--font-size-body-13)]" style={{ color: "var(--color-text-primary)" }} onClick={onPrivacy}>Privacy Policy</Btn>.
+      </p>
+    </div>
+  );
+}
+
+// ── SignupOverflowMenu ─────────────────────────────────────────────────────
+
+export function SignupOverflowMenu({
+  title = "Create your free account",
+  subtitle = "Sign up for free and grab your heart credits to personalize your greeting cards!",
+  onClose,
+  onApple,
+  onGoogle,
+  onFacebook,
+  onEmail,
+  onSignIn,
+  onTerms,
+  onPrivacy,
+}: {
+  title?: string;
+  subtitle?: string;
+  onClose: () => void;
+  onApple?: () => void;
+  onGoogle?: () => void;
+  onFacebook?: () => void;
+  onEmail?: (email: string) => void;
+  onSignIn?: () => void;
+  onTerms?: () => void;
+  onPrivacy?: () => void;
+}) {
+  const [mode, setMode] = useState<"signup" | "signin" | "email">("signup");
+  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const isSignIn = mode === "signin";
+
+  function transition(next: "signup" | "signin" | "email") {
+    setLoading(true);
+    setTimeout(() => { setLoading(false); setMode(next); }, TRANSITION_MS);
+  }
+
+  return (
+    <div className={SIGNUP_SHELL} style={SIGNUP_SHELL_STYLE}>
+      <div className="flex flex-col gap-[var(--space-5)] w-full">
+        <SignupHeader title={title} subtitle={subtitle} onClose={onClose} />
+        <Sep />
+        <AnimatePresence mode="wait">
+          {mode === "email" ? (
+            <motion.div
+              key="email"
+              className="flex flex-col gap-[var(--space-3)] px-[var(--space-5)] w-full"
+              initial={{ opacity: 0, x: 14 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 14 }}
+              transition={CONTENT_SPRING}
+            >
+              <motion.div
+                className="flex flex-col gap-[var(--space-3)] w-full"
+                animate={{ opacity: loading ? 0.4 : 1 }}
+                transition={FADE_TRANSITION}
+              >
+                <Inp
+                  type="email"
+                  label="Email address"
+                  placeholder="john@address.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  iconLeft={<Mail size={16} strokeWidth={2} />}
+                />
+                <Btn
+                  variant="default"
+                  size="xl"
+                  className="w-full rounded-full"
+                  disabled={!email.trim() || loading}
+                  onClick={() => email.trim() && onEmail?.(email.trim())}
+                >
+                  Claim Free Credits
+                </Btn>
+              </motion.div>
+              <AuthFooter
+                onSignIn={() => transition("signin")}
+                onBack={() => transition("signup")}
+                loading={loading}
+                onTerms={onTerms}
+                onPrivacy={onPrivacy}
+              />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="social"
+              className="flex flex-col gap-[var(--space-6)] px-[var(--space-5)] w-full"
+              initial={{ opacity: 0, x: -14 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -14 }}
+              transition={CONTENT_SPRING}
+            >
+              <motion.div
+                className="flex flex-col gap-[var(--space-3)] w-full"
+                animate={{ opacity: loading ? 0.4 : 1 }}
+                transition={FADE_TRANSITION}
+              >
+                <Btn variant="outline" size="lg" className="w-full gap-[var(--space-2-5)]" disabled={loading} onClick={onApple}>
+                  <AppleIcon /><span>{isSignIn ? "Sign in with Apple" : "Sign up with Apple"}</span>
+                </Btn>
+                <Btn variant="outline" size="lg" className="w-full gap-[var(--space-2-5)]" disabled={loading} onClick={onGoogle}>
+                  <GoogleIcon /><span>{isSignIn ? "Sign in with Google" : "Sign up with Google"}</span>
+                </Btn>
+                <Btn variant="outline" size="lg" className="w-full gap-[var(--space-2-5)]" disabled={loading} onClick={onFacebook}>
+                  <FacebookIcon /><span>{isSignIn ? "Sign in with Facebook" : "Sign up with Facebook"}</span>
+                </Btn>
+              </motion.div>
+              <div className="flex items-center gap-[var(--space-3)] w-full">
+                <Sep style={{ flex: 1, width: "auto" }} />
+                <p className="text-[var(--font-size-body-13)] leading-[20px]" style={{ ...dmSans400, color: "var(--color-text-secondary)" }}>OR</p>
+                <Sep style={{ flex: 1, width: "auto" }} />
+              </div>
+              <motion.div
+                className="flex flex-col gap-[var(--space-2-5)] w-full"
+                animate={{ opacity: loading ? 0.4 : 1 }}
+                transition={FADE_TRANSITION}
+              >
+                <Btn
+                  variant="default"
+                  size="xl"
+                  className="w-full rounded-full"
+                  disabled={loading}
+                  onClick={isSignIn ? onSignIn : () => transition("email")}
+                >
+                  {isSignIn ? "Sign in with email" : "Sign up with email"}
+                </Btn>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+        <AnimatePresence mode="wait">
+          {mode === "signin" ? (
+            <motion.div
+              key="back"
+              className="px-[var(--space-5)] w-full"
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 6 }}
+              transition={FOOTER_SPRING}
+            >
+              <AuthFooter onBack={() => transition("signup")} loading={loading} onTerms={onTerms} onPrivacy={onPrivacy} />
+            </motion.div>
+          ) : mode === "signup" ? (
+            <motion.div
+              key="footer"
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 6 }}
+              transition={FOOTER_SPRING}
+            >
+              <AuthFooter onSignIn={() => transition("signin")} onTerms={onTerms} onPrivacy={onPrivacy} />
+            </motion.div>
+          ) : null}
+        </AnimatePresence>
+      </div>
+    </div>
+  );
+}
+
+// ── OTPOverflowMenu ────────────────────────────────────────────────────────
+
+export function OTPOverflowMenu({
+  title = "Create your free account",
+  subtitle = "Sign up for free and grab your heart credits to personalize your greeting cards!",
+  buttonLabel = "Verify",
+  onClose,
+  onVerify,
+  onResend,
+  onBack,
+  onSignIn,
+  onTerms,
+  onPrivacy,
+}: {
+  title?: string;
+  subtitle?: string;
+  buttonLabel?: string;
+  onClose: () => void;
+  onVerify: (code: string) => void;
+  onResend?: () => void;
+  onBack?: () => void;
+  onSignIn?: () => void;
+  onTerms?: () => void;
+  onPrivacy?: () => void;
+}) {
+  const [code, setCode] = useState("");
+
+  return (
+    <div className={SIGNUP_SHELL} style={SIGNUP_SHELL_STYLE}>
+      <div className="flex flex-col gap-[var(--space-5)] w-full">
+        <SignupHeader title={title} subtitle={subtitle} onClose={onClose} />
+        <Sep />
+        <div className="flex flex-col gap-[var(--space-5)] px-[var(--space-5)] w-full">
+          <div className="flex flex-col gap-[var(--space-4)] w-full">
+            <div className="flex items-center w-full">
+              <Lbl
+                style={{
+                  flex: 1,
+                  fontSize: "var(--font-size-label-sb-15)",
+                  fontWeight: "var(--font-weight-label-sb-15)" as React.CSSProperties["fontWeight"],
+                  marginBottom: 0,
+                }}
+              >
+                Verification Code
+              </Lbl>
+              <Btn variant="link" size="sm" className="no-underline h-auto" style={{ color: "var(--color-text-primary)" }} onClick={onResend}>
+                Resend
+              </Btn>
+            </div>
+            <Inp
+              type="text"
+              placeholder="Enter your code"
+              value={code}
+              onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+            />
+          </div>
+          <Btn
+            variant="default"
+            size="xl"
+            className="w-full rounded-full"
+            disabled={code.length < 6}
+            onClick={() => onVerify(code)}
+          >
+            {buttonLabel}
+          </Btn>
+          <AuthFooter onSignIn={onSignIn} onBack={onBack} backLabel="Back" onTerms={onTerms} onPrivacy={onPrivacy} />
+        </div>
       </div>
     </div>
   );

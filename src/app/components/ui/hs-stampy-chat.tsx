@@ -260,12 +260,55 @@ export function StampyChatbot({
 
   // ── RENDER ─────────────────────────────────────────────────────────────
 
+  const MENU_MOTION = {
+    initial: { opacity: 0, y: 14, scale: 0.96 },
+    animate: { opacity: 1, y: 0, scale: 1 },
+    exit: { opacity: 0, y: 6, scale: 0.97 },
+    transition: { type: "spring", stiffness: 340, damping: 18, mass: 0.8 },
+  } as const;
+
+  function renderOverlayMenus(bottom: number) {
+    return (
+      <>
+        <AnimatePresence>
+          {showMenu && currentStep?.type === "overflow" && (
+            <motion.div style={{ position: "absolute", bottom, left: 16, right: 16, zIndex: 20 }} {...MENU_MOTION}>
+              <OverflowMenu pages={currentStep.pages} inputPlaceholder={currentStep.inputPlaceholder} onClose={() => setShowMenu(false)} onComplete={handleMenuComplete} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+        <AnimatePresence>
+          {showMenu && currentStep?.type === "template" && (
+            <motion.div style={{ position: "absolute", bottom, left: 16, right: 16, zIndex: 20 }} {...MENU_MOTION}>
+              <TemplateOverflowMenu header={currentStep.header} cards={currentStep.cards} inputPlaceholder={currentStep.inputPlaceholder} onClose={() => setShowMenu(false)} onComplete={handleMenuComplete} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+        <AnimatePresence>
+          {showMenu && currentStep?.type === "action" && (
+            <motion.div style={{ position: "absolute", bottom, left: 16, right: 16, zIndex: 20 }} {...MENU_MOTION}>
+              <ActionOverflowMenuList config={currentStep.config} inputPlaceholder={currentStep.inputPlaceholder} onClose={() => setShowMenu(false)} onGenerate={handleActionGenerate} onComplete={handleMenuComplete} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+        <AnimatePresence>
+          {showMenu && currentStep?.type === "checklist" && (
+            <motion.div style={{ position: "absolute", bottom, left: 16, right: 16, zIndex: 20 }} {...MENU_MOTION}>
+              <ChecklistOverflowMenu pages={currentStep.pages} inputPlaceholder={currentStep.inputPlaceholder} onClose={() => setShowMenu(false)} onComplete={(selected) => { if (selected.length === 0) handleMenuSkip(); else handleMenuComplete(selected.join(", ")); }} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </>
+    );
+  }
+
   if (embedded) {
     return (
       <div className={`relative flex flex-col ${className}`} style={{ width: "100%", height: "100%", overflow: "hidden", backgroundColor: "var(--color-bg-main)" }}>
         <ChatHeader
           embedded
           conversationName={activeConversation?.name ?? "New Conversation"}
+          activeConversationId={activeConversationId}
           conversations={conversations}
           expanded={false}
           onToggleExpand={() => {}}
@@ -316,34 +359,7 @@ export function StampyChatbot({
                 </div>
               </ScrollArea>
               <ChatConversationInput aiIconSrc={aiIconSrc} value={inputValue} onChange={setInputValue} onSend={handleSend} isRecording={isRecording} onToggleMic={toggleMic} />
-              <AnimatePresence>
-                {showMenu && currentStep?.type === "overflow" && (
-                  <motion.div style={{ position: "absolute", bottom: 90, left: 16, right: 16, zIndex: 20 }} initial={{ opacity: 0, y: 14, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 6, scale: 0.97 }} transition={{ type: "spring", stiffness: 340, damping: 18, mass: 0.8 }}>
-                    <OverflowMenu pages={currentStep.pages} inputPlaceholder={currentStep.inputPlaceholder} onClose={() => setShowMenu(false)} onComplete={handleMenuComplete} />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-              <AnimatePresence>
-                {showMenu && currentStep?.type === "template" && (
-                  <motion.div style={{ position: "absolute", bottom: 90, left: 16, right: 16, zIndex: 20 }} initial={{ opacity: 0, y: 14, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 6, scale: 0.97 }} transition={{ type: "spring", stiffness: 340, damping: 18, mass: 0.8 }}>
-                    <TemplateOverflowMenu header={currentStep.header} cards={currentStep.cards} inputPlaceholder={currentStep.inputPlaceholder} onClose={() => setShowMenu(false)} onComplete={handleMenuComplete} />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-              <AnimatePresence>
-                {showMenu && currentStep?.type === "action" && (
-                  <motion.div style={{ position: "absolute", bottom: 90, left: 16, right: 16, zIndex: 20 }} initial={{ opacity: 0, y: 14, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 6, scale: 0.97 }} transition={{ type: "spring", stiffness: 340, damping: 18, mass: 0.8 }}>
-                    <ActionOverflowMenuList config={currentStep.config} inputPlaceholder={currentStep.inputPlaceholder} onClose={() => setShowMenu(false)} onGenerate={handleActionGenerate} onComplete={handleMenuComplete} />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-              <AnimatePresence>
-                {showMenu && currentStep?.type === "checklist" && (
-                  <motion.div style={{ position: "absolute", bottom: 90, left: 16, right: 16, zIndex: 20 }} initial={{ opacity: 0, y: 14, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 6, scale: 0.97 }} transition={{ type: "spring", stiffness: 340, damping: 18, mass: 0.8 }}>
-                    <ChecklistOverflowMenu pages={currentStep.pages} inputPlaceholder={currentStep.inputPlaceholder} onClose={() => setShowMenu(false)} onComplete={(selected) => { if (selected.length === 0) handleMenuSkip(); else handleMenuComplete(selected.join(", ")); }} />
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              {renderOverlayMenus(90)}
             </motion.div>
           )}
         </AnimatePresence>
@@ -372,6 +388,7 @@ export function StampyChatbot({
                 {/* HEADER */}
                 <ChatHeader
                   conversationName={activeConversation?.name ?? "New Conversation"}
+                  activeConversationId={activeConversationId}
                   conversations={conversations}
                   expanded={isExpanded}
                   onToggleExpand={() => setIsExpanded(p => !p)}
@@ -475,34 +492,7 @@ export function StampyChatbot({
                         />
 
                         {/* Overflow menus */}
-                        <AnimatePresence>
-                          {showMenu && currentStep?.type === "overflow" && (
-                            <motion.div className="absolute bottom-[16px] left-[16px] right-[16px] z-20" initial={{ opacity: 0, y: 14, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 6, scale: 0.97 }} transition={{ type: "spring", stiffness: 340, damping: 18, mass: 0.8 }}>
-                              <OverflowMenu pages={currentStep.pages} inputPlaceholder={currentStep.inputPlaceholder} onClose={() => setShowMenu(false)} onComplete={handleMenuComplete} />
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                        <AnimatePresence>
-                          {showMenu && currentStep?.type === "template" && (
-                            <motion.div className="absolute bottom-[16px] left-[16px] right-[16px] z-20" initial={{ opacity: 0, y: 14, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 6, scale: 0.97 }} transition={{ type: "spring", stiffness: 340, damping: 18, mass: 0.8 }}>
-                              <TemplateOverflowMenu header={currentStep.header} cards={currentStep.cards} inputPlaceholder={currentStep.inputPlaceholder} onClose={() => setShowMenu(false)} onComplete={handleMenuComplete} />
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                        <AnimatePresence>
-                          {showMenu && currentStep?.type === "action" && (
-                            <motion.div className="absolute bottom-[16px] left-[16px] right-[16px] z-20" initial={{ opacity: 0, y: 14, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 6, scale: 0.97 }} transition={{ type: "spring", stiffness: 340, damping: 18, mass: 0.8 }}>
-                              <ActionOverflowMenuList config={currentStep.config} inputPlaceholder={currentStep.inputPlaceholder} onClose={() => setShowMenu(false)} onGenerate={handleActionGenerate} onComplete={handleMenuComplete} />
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                        <AnimatePresence>
-                          {showMenu && currentStep?.type === "checklist" && (
-                            <motion.div className="absolute bottom-[16px] left-[16px] right-[16px] z-20" initial={{ opacity: 0, y: 14, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 6, scale: 0.97 }} transition={{ type: "spring", stiffness: 340, damping: 18, mass: 0.8 }}>
-                              <ChecklistOverflowMenu pages={currentStep.pages} inputPlaceholder={currentStep.inputPlaceholder} onClose={() => setShowMenu(false)} onComplete={(selected) => { if (selected.length === 0) handleMenuSkip(); else handleMenuComplete(selected.join(", ")); }} />
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
+                        {renderOverlayMenus(16)}
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -521,7 +511,7 @@ export default StampyChatbot;
 // ── Barrel re-exports for backwards compatibility ─────────────────────────
 
 export { WorkingSpinner, BubbleButton, StampyBubble, UserBubble, StyleCarousel } from "./hs-stampy-bubbles";
-export { OverflowMenu, ChecklistOverflowMenu, TemplateOverflowMenu, ActionOverflowMenu, ActionOverflowMenuList } from "./hs-stampy-menus";
+export { OverflowMenu, ChecklistOverflowMenu, TemplateOverflowMenu, ActionOverflowMenu, ActionOverflowMenuList, SignupOverflowMenu, OTPOverflowMenu } from "./hs-stampy-menus";
 export { ChatHomeInput, ChatConversationInput, OccasionSuggestions } from "./hs-stampy-inputs";
 export type { ChatHomeInputProps, ChatConversationInputProps, OccasionSuggestionsProps } from "./hs-stampy-inputs";
 export { TadaBanner, ChatHomeScreen, ChatHeader } from "./hs-stampy-panels";
