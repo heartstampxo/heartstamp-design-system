@@ -4669,6 +4669,9 @@ import { ProfileNav } from "@/components/ui/profile-nav";
 function PagePillTabs() {
   const [tab2, setTab2] = useState("type");
   const [tab3, setTab3] = useState("draw");
+  const [tabCount, setTabCount] = useState("all");
+  const [tabBadge, setTabBadge] = useState("all");
+  const [tabIcon,  setTabIcon]  = useState("all");
 
   return (
     <DocPage
@@ -4712,13 +4715,68 @@ function PagePillTabs() {
         </Preview>
       </DocSection>
 
+      <DocSection title="Icon" desc='variant="icon" — content-sized tabs with a Lucide icon on the left. Pass any ReactNode as icon on each tab item.'>
+        <Preview
+          title="3 tabs with icons"
+          code={`import { PillTabs } from "@heartstamp/design-system";\nimport { Box, FileText, PackageCheck } from "lucide-react";\nimport { useState } from "react";\n\nfunction Demo() {\n  const [tab, setTab] = useState("all");\n  return (\n    <PillTabs\n      variant="icon"\n      value={tab}\n      onValueChange={setTab}\n      tabs={[\n        { value: "all",       label: "All",             icon: <Box size={16} strokeWidth={1.5} /> },\n        { value: "drafts",    label: "My Drafts",       icon: <FileText size={16} strokeWidth={1.5} /> },\n        { value: "completed", label: "Order Completed", icon: <PackageCheck size={16} strokeWidth={1.5} /> },\n      ]}\n    />\n  );\n}`}
+        >
+          <PillTabs
+            variant="icon"
+            value={tabIcon}
+            onValueChange={setTabIcon}
+            tabs={[
+              { value: "all",       label: "All",             icon: <LucideIcons.Box size={16} strokeWidth={1.5} /> },
+              { value: "drafts",    label: "My Drafts",       icon: <LucideIcons.FileText size={16} strokeWidth={1.5} /> },
+              { value: "completed", label: "Order Completed", icon: <LucideIcons.PackageCheck size={16} strokeWidth={1.5} /> },
+            ]}
+          />
+        </Preview>
+      </DocSection>
+
+      <DocSection title="Badge" desc='variant="badge" — content-sized tabs with a filled square badge on the left. Active tab shows a primary-coloured badge; inactive tabs show a subtle badge.'>
+        <Preview
+          title="3 tabs with badge"
+          code={`import { PillTabs } from "@heartstamp/design-system";\nimport { useState } from "react";\n\nfunction Demo() {\n  const [tab, setTab] = useState("all");\n  return (\n    <PillTabs\n      variant="badge"\n      value={tab}\n      onValueChange={setTab}\n      tabs={[\n        { value: "all",       label: "All",             count: 2  },\n        { value: "drafts",    label: "My Drafts",       count: 4  },\n        { value: "completed", label: "Order Completed", count: 12 },\n      ]}\n    />\n  );\n}`}
+        >
+          <PillTabs
+            variant="badge"
+            value={tabBadge}
+            onValueChange={setTabBadge}
+            tabs={[
+              { value: "all",       label: "All",             count: 2  },
+              { value: "drafts",    label: "My Drafts",       count: 4  },
+              { value: "completed", label: "Order Completed", count: 12 },
+            ]}
+          />
+        </Preview>
+      </DocSection>
+
+      <DocSection title="Count" desc='variant="count" — content-sized tabs with an inline count badge. Use for lists filtered by category where the item count adds context.'>
+        <Preview
+          title="3 tabs with counts"
+          code={`import { PillTabs } from "@heartstamp/design-system";\nimport { useState } from "react";\n\nfunction Demo() {\n  const [tab, setTab] = useState("all");\n  return (\n    <PillTabs\n      variant="count"\n      value={tab}\n      onValueChange={setTab}\n      tabs={[\n        { value: "all",       label: "All",             count: 30 },\n        { value: "drafts",    label: "My Drafts",       count: 8  },\n        { value: "completed", label: "Order Completed", count: 6  },\n      ]}\n    />\n  );\n}`}
+        >
+          <PillTabs
+            variant="count"
+            value={tabCount}
+            onValueChange={setTabCount}
+            tabs={[
+              { value: "all",       label: "All",             count: 30 },
+              { value: "drafts",    label: "My Drafts",       count: 8  },
+              { value: "completed", label: "Order Completed", count: 6  },
+            ]}
+          />
+        </Preview>
+      </DocSection>
+
       <DocSection title="Props">
         <PropsTable props={[
-          { name: "value",          type: "string",                       required: true,    desc: "The currently active tab value." },
-          { name: "onValueChange",  type: "(value: string) => void",      required: true,    desc: "Called with the new value when a tab is clicked." },
-          { name: "tabs",           type: "PillTabItem[]",                required: true,    desc: "Array of tab definitions. Each item has value: string and label: string." },
-          { name: "aria-label",     type: "string",                       def: "undefined",  desc: "Accessible label for the tab group. Recommended when multiple PillTabs appear on the same page." },
-          { name: "style",          type: "React.CSSProperties",          def: "undefined",  desc: "Optional inline style overrides for the container." },
+          { name: "value",          type: "string",                         required: true,       desc: "The currently active tab value." },
+          { name: "onValueChange",  type: "(value: string) => void",        required: true,       desc: "Called with the new value when a tab is clicked." },
+          { name: "tabs",           type: "PillTabItem[]",                  required: true,       desc: 'Array of tab definitions. Each item has value: string, label: string, optional count: number (used by count + badge variants), and optional icon: ReactNode (used by icon variant).' },
+          { name: "variant",        type: '"default" | "count" | "badge" | "icon"', def: '"default"', desc: 'default — equal-width tabs. count — pill badge on right. badge — filled square badge on left (primary/subtle by active state). icon — icon on left.' },
+          { name: "aria-label",     type: "string",                         def: "undefined",     desc: "Accessible label for the tab group. Recommended when multiple PillTabs appear on the same page." },
+          { name: "style",          type: "React.CSSProperties",            def: "undefined",     desc: "Optional inline style overrides for the container." },
         ]} />
       </DocSection>
 
