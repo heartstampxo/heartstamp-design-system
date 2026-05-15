@@ -2751,14 +2751,17 @@ function PageTokensTypography() {
     { name: "H3",          sToken: "--font-size-h3",          wToken: "--font-weight-h3",          lsToken: "--letter-spacing-h3",          size: 36, weight: 400, ls: "-0.04em",  figmaWeight: "Regular" },
     { name: "H4",          sToken: "--font-size-h4",          wToken: "--font-weight-h4",          lsToken: "--letter-spacing-h4",          size: 20, weight: 400, ls: "-0.02em",  figmaWeight: "Regular" },
     { name: "H5",          sToken: "--font-size-h5",          wToken: "--font-weight-h5",          lsToken: "--letter-spacing-h5",          size: 18, weight: 400, ls: "0em",      figmaWeight: "Regular" },
-    { name: "Subheadline", sToken: "--font-size-subheadline", wToken: "--font-weight-subheadline", lsToken: "--letter-spacing-subheadline", size: 24, weight: 300, ls: "0em",      figmaWeight: "Light" },
+    { name: "Subheadline",    sToken: "--font-size-subheadline",    wToken: "--font-weight-subheadline",    lsToken: "--letter-spacing-subheadline",    size: 24, weight: 300, ls: "0em", figmaWeight: "Light"   },
+    { name: "Subheadline MD", sToken: "--font-size-subheadline-md", wToken: "--font-weight-subheadline-md", lsToken: "--letter-spacing-subheadline-md", size: 24, weight: 500, ls: "0em", figmaWeight: "Medium"  },
   ];
   const bodyStyles = [
     { name: "Body · 15",     sToken: "--font-size-body-15",     wToken: "--font-weight-body-15",     size: 15, weight: 400, figmaWeight: "Regular",  usage: "Paragraphs, descriptions" },
     { name: "Label · 15",    sToken: "--font-size-label-15",    wToken: "--font-weight-label-15",    size: 15, weight: 500, figmaWeight: "Medium",   usage: "Form labels, nav items" },
     { name: "Label SB · 15", sToken: "--font-size-label-sb-15", wToken: "--font-weight-label-sb-15", size: 15, weight: 600, figmaWeight: "SemiBold", usage: "Strong labels, section titles" },
-    { name: "Label · 12",    sToken: "--font-size-label-12",    wToken: "--font-weight-label-12",    size: 12, weight: 500, figmaWeight: "Medium",   usage: "Captions, badges, metadata" },
-    { name: "Body · 13",     sToken: "--font-size-body-13",     wToken: "--font-weight-body-13",     size: 13, weight: 400, figmaWeight: "Regular",  usage: "Secondary body, helper text" },
+    { name: "Label · 12",      sToken: "--font-size-label-12",    wToken: "--font-weight-label-12",    size: 12, weight: 500, figmaWeight: "Medium",   usage: "Captions, badges, metadata" },
+    { name: "Label · 12 Bold", sToken: "--font-size-label-12-bd", wToken: "--font-weight-label-12-bd", size: 12, weight: 700, figmaWeight: "Bold",     usage: "Bold captions, emphasis badges" },
+    { name: "Body · 13",       sToken: "--font-size-body-13",     wToken: "--font-weight-body-13",     size: 13, weight: 400, figmaWeight: "Regular",  usage: "Secondary body, helper text" },
+    { name: "Body · 13 Bold",  sToken: "--font-size-body-13-bd",  wToken: "--font-weight-body-13-bd",  size: 13, weight: 700, figmaWeight: "Bold",     usage: "Bold secondary text, emphasis" },
   ];
   const headingFF = { fontFamily: "var(--font-family-heading)" };
   const bodyFF    = { fontFamily: "var(--font-family-body)" };
@@ -2787,6 +2790,14 @@ function PageTokensTypography() {
               Once upon a time, in a far-off land, there was a very lazy king who spent all day lounging on his throne. One day, his advisors came to him with a problem: the kingdom was running out of money.
             </p>
             <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "rgba(190,29,44,0.08)", color: "#be1d2c", padding: "2px 7px", borderRadius: 99, letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>Subheadline · 24px · Light</span>
+          </div>
+
+          {/* Subheadline MD */}
+          <div style={{ display: "flex", alignItems: "flex-start", gap: 16, marginBottom: 28 }}>
+            <p style={{ ...headingFF, flex: 1, fontSize: "var(--font-size-subheadline-md)", fontWeight: "var(--font-weight-subheadline-md)" as any, letterSpacing: "var(--letter-spacing-subheadline-md)", color: "var(--muted-fg)", lineHeight: 1.45, margin: 0 }}>
+              Once upon a time, in a far-off land, there was a very lazy king who spent all day lounging on his throne. One day, his advisors came to him with a problem: the kingdom was running out of money.
+            </p>
+            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "rgba(190,29,44,0.08)", color: "#be1d2c", padding: "2px 7px", borderRadius: 99, letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>Subheadline MD · 24px · Medium</span>
           </div>
 
           <div style={{ height: 1, background: "var(--border)", margin: "0 0 24px" }} />
@@ -2874,8 +2885,16 @@ function PageTokensTypography() {
             <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "rgba(190,29,44,0.08)", color: "#be1d2c", padding: "2px 7px", borderRadius: 99, letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>Body · 13 · --font-size-body-13 · 400</span>
           </div>
 
+          {/* Body 13 Bold */}
+          <div style={{ display: "flex", alignItems: "flex-start", gap: 16, marginBottom: 24 }}>
+            <p style={{ ...bodyFF, flex: 1, fontSize: "var(--font-size-body-13-bd)", fontWeight: "var(--font-weight-body-13-bd)" as any, color: "var(--muted-fg)", lineHeight: 1.65, margin: 0 }}>
+              The king was furious, but he couldn't seem to stop Jokester. And so, in the end, the joke tax was repealed, and the kingdom lived happily ever after — at least until the next royal decree.
+            </p>
+            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "rgba(190,29,44,0.08)", color: "#be1d2c", padding: "2px 7px", borderRadius: 99, letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>Body · 13 Bold · --font-size-body-13-bd · 700</span>
+          </div>
+
           {/* Label 12 — tag row */}
-          <div style={{ display: "flex", alignItems: "center", gap: 16, paddingTop: 16, borderTop: "1px solid var(--border)" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 16, paddingTop: 16, borderTop: "1px solid var(--border)" }}>
             <div style={{ flex: 1, display: "flex", gap: 8, flexWrap: "wrap" as const }}>
               {["HeartStamp DS", "Typography", "Figma Library", "textStyles.json"].map(tag => (
                 <span key={tag} style={{ ...bodyFF, fontSize: "var(--font-size-label-12)", fontWeight: "var(--font-weight-label-12)" as any, color: "var(--muted-fg)", background: "var(--muted)", padding: "3px 10px", borderRadius: 99, border: "1px solid var(--border)" }}>
@@ -2884,6 +2903,18 @@ function PageTokensTypography() {
               ))}
             </div>
             <span style={{ flexShrink: 0, fontSize: 9.5, fontFamily: "monospace", background: "rgba(190,29,44,0.08)", color: "#be1d2c", padding: "2px 7px", borderRadius: 99, letterSpacing: ".02em", whiteSpace: "nowrap" }}>Label · 12 · --font-size-label-12 · 500</span>
+          </div>
+
+          {/* Label 12 Bold — tag row */}
+          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+            <div style={{ flex: 1, display: "flex", gap: 8, flexWrap: "wrap" as const }}>
+              {["HeartStamp DS", "Typography", "Figma Library", "textStyles.json"].map(tag => (
+                <span key={tag} style={{ ...bodyFF, fontSize: "var(--font-size-label-12-bd)", fontWeight: "var(--font-weight-label-12-bd)" as any, color: "var(--muted-fg)", background: "var(--muted)", padding: "3px 10px", borderRadius: 99, border: "1px solid var(--border)" }}>
+                  {tag}
+                </span>
+              ))}
+            </div>
+            <span style={{ flexShrink: 0, fontSize: 9.5, fontFamily: "monospace", background: "rgba(190,29,44,0.08)", color: "#be1d2c", padding: "2px 7px", borderRadius: 99, letterSpacing: ".02em", whiteSpace: "nowrap" }}>Label · 12 Bold · --font-size-label-12-bd · 700</span>
           </div>
 
         </div>
@@ -3017,9 +3048,12 @@ function PageTokensTypography() {
           { token: "--font-size-h5",               value: "18px",    category: "Heading Size",   usage: "H5 — Card titles, minor headings" },
           { token: "--font-weight-h5",             value: "400",     category: "Heading Weight", usage: "H5 — Regular (Figma)" },
           { token: "--letter-spacing-h5",          value: "0em",     category: "Tracking",       usage: "H5 — Figma: 0%" },
-          { token: "--font-size-subheadline",      value: "24px",    category: "Heading Size",   usage: "Subheadline — Light intro text" },
-          { token: "--font-weight-subheadline",    value: "300",     category: "Heading Weight", usage: "Subheadline — Light (Figma)" },
-          { token: "--letter-spacing-subheadline", value: "0em",     category: "Tracking",       usage: "Subheadline — Figma: 0%" },
+          { token: "--font-size-subheadline",        value: "24px",    category: "Heading Size",   usage: "Subheadline — Light intro text" },
+          { token: "--font-weight-subheadline",      value: "300",     category: "Heading Weight", usage: "Subheadline — Light (Figma)" },
+          { token: "--letter-spacing-subheadline",   value: "0em",     category: "Tracking",       usage: "Subheadline — Figma: 0%" },
+          { token: "--font-size-subheadline-md",     value: "24px",    category: "Heading Size",   usage: "Subheadline MD — Medium weight variant" },
+          { token: "--font-weight-subheadline-md",   value: "500",     category: "Heading Weight", usage: "Subheadline MD — Medium (500)" },
+          { token: "--letter-spacing-subheadline-md",value: "0em",     category: "Tracking",       usage: "Subheadline MD — Figma: 0%" },
           { token: "--font-size-body-15",          value: "15px",    category: "Body Size",      usage: "Body · 15 — Default body copy" },
           { token: "--font-weight-body-15",        value: "400",     category: "Body Weight",    usage: "Body · 15 — Regular (Figma)" },
           { token: "--font-size-label-15",         value: "15px",    category: "Label Size",     usage: "Label · 15 — Form labels, nav" },
@@ -3028,8 +3062,12 @@ function PageTokensTypography() {
           { token: "--font-weight-label-sb-15",    value: "600",     category: "Label Weight",   usage: "Label SB · 15 — SemiBold (Figma)" },
           { token: "--font-size-label-12",         value: "12px",    category: "Label Size",     usage: "Label · 12 — Captions, badges" },
           { token: "--font-weight-label-12",       value: "500",     category: "Label Weight",   usage: "Label · 12 — Medium (Figma)" },
+          { token: "--font-size-label-12-bd",      value: "12px",    category: "Label Size",     usage: "Label · 12 Bold — Bold captions, emphasis badges" },
+          { token: "--font-weight-label-12-bd",    value: "700",     category: "Label Weight",   usage: "Label · 12 Bold — Bold (700)" },
           { token: "--font-size-body-13",          value: "13px",    category: "Body Size",      usage: "Body · 13 — Secondary body text" },
           { token: "--font-weight-body-13",        value: "400",     category: "Body Weight",    usage: "Body · 13 — Regular (Figma)" },
+          { token: "--font-size-body-13-bd",       value: "13px",    category: "Body Size",      usage: "Body · 13 Bold — Bold secondary text, emphasis" },
+          { token: "--font-weight-body-13-bd",     value: "700",     category: "Body Weight",    usage: "Body · 13 Bold — Bold (700)" },
         ]} />
       </DocSection>
     </DocPage>
@@ -4043,11 +4081,14 @@ function PageTheming() {
         ["--font-size-h3",         "36px",  "H3"],
         ["--font-size-h4",         "20px",  "H4"],
         ["--font-size-h5",         "18px",  "H5"],
-        ["--font-size-subheadline","24px",  "Subheadline / lead text"],
+        ["--font-size-subheadline",   "24px",  "Subheadline / lead text (Light)"],
+        ["--font-size-subheadline-md","24px",  "Subheadline MD / lead text (Medium)"],
         ["--font-size-body-15",    "15px",  "Body text"],
         ["--font-size-label-15",   "15px",  "Label — medium weight"],
-        ["--font-size-label-12",   "12px",  "Label — small / caption"],
+        ["--font-size-label-12",    "12px",  "Label — small / caption"],
+        ["--font-size-label-12-bd","12px",  "Label — small / caption (Bold)"],
         ["--font-size-body-13",    "13px",  "Dense body / secondary text"],
+        ["--font-size-body-13-bd", "13px",  "Dense body / secondary text (Bold)"],
       ]
     },
     {
