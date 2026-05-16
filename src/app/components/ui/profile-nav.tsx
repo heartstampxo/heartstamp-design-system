@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "motion/react";
 import {
-  Palette, Settings, Bell, Lock, AtSign, Calendar, CalendarCheck,
-  History, Home, Wallet, Sun, Moon, Monitor, X, LogOut,
+  Palette, Heart, Settings, Bell, Lock, AtSign, Calendar, CalendarCheck,
+  History, Home, Wallet, Globe, Sun, Moon, Monitor, X, LogOut,
 } from "lucide-react";
 import { Avt } from "./hs-avt";
 import { HSLockup, useIsDark } from "./hs-logo";
@@ -90,7 +90,14 @@ export function PnSignOutRow() {
   );
 }
 
-type Theme = "light" | "dark" | "system";
+type Theme    = "light" | "dark" | "system";
+export type Language = "en" | "es" | "fr";
+
+const LANGUAGES: [Language, string][] = [
+  ["en", "🇬🇧"],
+  ["es", "🇪🇸"],
+  ["fr", "🇫🇷"],
+];
 
 export function PnThemeRow({ theme, setTheme }: { theme: Theme; setTheme: (t: Theme) => void }) {
   return (
@@ -121,6 +128,39 @@ export function PnThemeRow({ theme, setTheme }: { theme: Theme; setTheme: (t: Th
 
 export function PnDivider() { return <div style={{ height: 1, background: "var(--color-element-subtle)" }} />; }
 
+export function PnLanguageRow({ language, setLanguage }: { language: Language; setLanguage: (l: Language) => void }) {
+  return (
+    <div style={{ ...pnItemStyle, cursor: "default" }}>
+      <span style={{ color: "var(--color-text-secondary)", display: "flex", flexShrink: 0, width: "var(--space-4)", height: "var(--space-4)", alignItems: "center", justifyContent: "center" }}>
+        <Globe size={16} />
+      </span>
+      <span style={{ flex: 1 }}>Language</span>
+      <div style={{ display: "flex", background: "var(--color-brand-secondary-dim)", borderRadius: "var(--radius-full)", padding: "var(--space-1)", gap: "var(--space-1)" }}>
+        {LANGUAGES.map(([val, flag]) => (
+          <motion.button
+            key={val}
+            onClick={() => setLanguage(val)}
+            style={{
+              height: "var(--space-7)", width: "var(--space-10)",
+              border: "none", cursor: "pointer", borderRadius: "var(--radius-full)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              background: language === val ? "var(--bg-menus)" : "transparent",
+              color: "var(--fg)",
+              boxShadow: language === val ? "0 0 var(--space-1) rgba(0,0,0,0.08)" : "none",
+              fontFamily: "inherit",
+              fontSize: "16px",
+            } as React.CSSProperties}
+            whileHover={language !== val ? { background: "var(--color-state-hover)" } : {}}
+            transition={{ duration: 0.12 }}
+          >
+            {flag}
+          </motion.button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export function PnUserHeader() {
   return (
     <div style={{ padding: "var(--space-4)", display: "flex", alignItems: "center", gap: "var(--space-3)" }}>
@@ -135,6 +175,7 @@ export function PnUserHeader() {
 
 /* ── Desktop & Mobile ──────────────────────────────────────────────────── */
 export function ProfileNavDesktop({ theme, setTheme }: { theme: Theme; setTheme: (t: Theme) => void }) {
+  const [language, setLanguage] = useState<Language>("en");
   const sysIsDark = useIsDark();
   const themeVars: React.CSSProperties = theme === "dark" ? DARK_THEME : theme === "light" ? LIGHT_THEME : (sysIsDark ? DARK_THEME : LIGHT_THEME);
   return (
@@ -148,17 +189,19 @@ export function ProfileNavDesktop({ theme, setTheme }: { theme: Theme; setTheme:
       <PnUserHeader />
       <div style={{ borderTop: "1px solid var(--color-element-subtle)" }}>
         <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-1-5)", padding: "var(--space-3) 0" }}>
+          <PnNavRow icon={<Home size={16} />}           label="Home" />
           <PnNavRow icon={<Palette size={16} />}        label="My cards" />
+          <PnNavRow icon={<Heart size={16} />}          label="My favourites" />
           <PnDivider />
-          <PnNavRow icon={<Settings size={16} />}       label="Settings" />
-          <PnThemeRow theme={theme} setTheme={setTheme} />
           <PnNavRow icon={<AtSign size={16} />}         label="Addresses" />
           <PnNavRow icon={<CalendarCheck size={16} />}  label="Reminders" />
           <PnNavRow icon={<History size={16} />}        label="Order history" />
+          <PnDivider />
+          <PnThemeRow theme={theme} setTheme={setTheme} />
+          <PnLanguageRow language={language} setLanguage={setLanguage} />
+          <PnDivider />
+          <PnSignOutRow />
         </div>
-      </div>
-      <div style={{ borderTop: "1px solid var(--color-element-subtle)", padding: "var(--space-3) 0" }}>
-        <PnSignOutRow />
       </div>
     </motion.div>
     </div>
@@ -166,6 +209,7 @@ export function ProfileNavDesktop({ theme, setTheme }: { theme: Theme; setTheme:
 }
 
 export function ProfileNavMobile({ theme, setTheme, onClose }: { theme: Theme; setTheme: (t: Theme) => void; onClose?: () => void }) {
+  const [language, setLanguage] = useState<Language>("en");
   const sysIsDark = useIsDark();
   const themeVars: React.CSSProperties = theme === "dark" ? DARK_THEME : theme === "light" ? LIGHT_THEME : (sysIsDark ? DARK_THEME : LIGHT_THEME);
   return (
@@ -176,15 +220,14 @@ export function ProfileNavMobile({ theme, setTheme, onClose }: { theme: Theme; s
         <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-1-5)", padding: "var(--space-3) 0" }}>
           <PnNavRow icon={<Home size={16} />}          label="Home" />
           <PnNavRow icon={<Palette size={16} />}       label="My cards" />
+          <PnNavRow icon={<Heart size={16} />}         label="My favourites" />
           <PnDivider />
-          <PnNavRow icon={<Settings size={16} />}      label="Settings" />
-          <PnNavRow icon={<Bell size={16} />}          label="Notifications" />
-          <PnNavRow icon={<Lock size={16} />}          label="Security" />
+          <PnNavRow icon={<AtSign size={16} />}         label="Addresses" />
+          <PnNavRow icon={<CalendarCheck size={16} />} label="Reminders" />
+          <PnNavRow icon={<History size={16} />}        label="Order history" />
+          <PnDivider />
           <PnThemeRow theme={theme} setTheme={setTheme} />
-          <PnDivider />
-          <PnNavRow icon={<AtSign size={16} />}        label="Addresses" />
-          <PnNavRow icon={<Calendar size={16} />}      label="Reminders" />
-          <PnNavRow icon={<History size={16} />}       label="Order history" />
+          <PnLanguageRow language={language} setLanguage={setLanguage} />
           <PnDivider />
           <PnSignOutRow />
         </div>

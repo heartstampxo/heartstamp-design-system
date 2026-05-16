@@ -4691,13 +4691,18 @@ import { ProfileNav } from "@/components/ui/profile-nav";
         </Preview>
       </DocSection>
 
-      <DocSection title="Props">
+      <DocSection title="Props · ProfileNavDesktop">
         <PropsTable props={[
-          { name: "user.name",       type: "string",   desc: "Display name shown in the header." },
-          { name: "user.email",      type: "string",   desc: "Email address shown below the name." },
-          { name: "user.avatar",     type: "string",   desc: "Optional avatar image URL. Falls back to initials." },
-          { name: "onThemeChange",   type: "(theme: 'light' | 'dark' | 'system') => void", desc: "Called when the user selects a theme." },
-          { name: "onSignOut",       type: "() => void", desc: "Called when Sign out is clicked." },
+          { name: "theme",    type: '"light" | "dark" | "system"', desc: "Currently selected theme. Controls the active pill in the theme switcher row." },
+          { name: "setTheme", type: "(t: 'light' | 'dark' | 'system') => void", desc: "Called when the user selects a theme option." },
+        ]} />
+      </DocSection>
+
+      <DocSection title="Props · ProfileNavMobile">
+        <PropsTable props={[
+          { name: "theme",    type: '"light" | "dark" | "system"', desc: "Currently selected theme." },
+          { name: "setTheme", type: "(t: 'light' | 'dark' | 'system') => void", desc: "Called when the user selects a theme option." },
+          { name: "onClose",  type: "() => void", def: "—", desc: "Called when the user taps the back / close action. Use to close the profile panel in the parent nav." },
         ]} />
       </DocSection>
     </DocPage>

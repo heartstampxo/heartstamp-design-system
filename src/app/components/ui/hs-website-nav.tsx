@@ -398,6 +398,8 @@ export interface WebsiteNavMobileProps {
   showInvitationBtn?: boolean;
   /** Frosted glass (default) or solid background */
   bgVariant?:      WebsiteNavBgVariant;
+  /** Pre-open the profile panel — useful for docs demos */
+  initialProfileOpen?: boolean;
 }
 
 export function WebsiteNavMobile({
@@ -411,11 +413,12 @@ export function WebsiteNavMobile({
   maxWidth          = 393,
   showInvitationBtn = true,
   bgVariant         = "default",
+  initialProfileOpen = false,
 }: WebsiteNavMobileProps) {
   const [navOpen, setNavOpen]         = useState(initialOpen || initialView === "search");
   const [view, setView]               = useState<"nav" | "search">(initialView);
   const [searchVal, setSearchVal]     = useState("");
-  const [profileOpen, setProfileOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(initialProfileOpen);
   const [theme, setTheme]             = useState<"light" | "dark" | "system">("system");
 
   const isSearch = view === "search";
