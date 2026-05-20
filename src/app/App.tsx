@@ -109,7 +109,7 @@ import { PlaceholderPage } from "./components/docs/doc-placeholder";
 ═══════════════════════════════════════════════════════════ */
 
 function PageButton() {
-  return <DocPage title="Button" subtitle="Triggers an action or event — submit a form, open a dialog, or navigate." sourceSlug="button">
+  return <DocPage title="Button" subtitle="Triggers an action or event — submit a form, open a dialog, or navigate." sourceSlug="button" figmaUrl="https://www.figma.com/design/fm22sR1a5DlXgX4IkjDVXz/HeartStamp-Library?node-id=4105-2522&t=6lHSqfxq74OBsrQS-1">
     <DocSection title="Builder" desc="Configure every option and copy the exact code.">
       <BtnBuilder />
     </DocSection>
