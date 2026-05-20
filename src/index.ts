@@ -1,5 +1,3 @@
-import './styles/index.css';
-
 // ── Radix / shadcn primitives ────────────────────────────────────────────────
 export * from './app/components/ui/accordion';
 export * from './app/components/ui/alert-dialog';

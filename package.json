@@ -1,6 +1,6 @@
 {
   "name": "@heartstampxo/design-system",
-  "version": "1.15.3",
+  "version": "2.0.0",
   "description": "HeartStamp Design System — a React component library built on Radix UI and Tailwind CSS",
   "keywords": [
     "design-system",
@@ -35,10 +35,11 @@
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
     },
-    "./design-system.css": "./dist/design-system.css"
+    "./tokens.css": "./dist/css/tokens.css",
+    "./btn.css":    "./dist/css/btn.css"
   },
   "scripts": {
-    "build": "vite build",
+    "build": "vite build && node scripts/copy-dist-css.mjs",
     "build:site": "vite build --config vite.site.config.ts",
     "vercel-build": "vite build --config vite.site.config.ts",
     "dev": "vite",

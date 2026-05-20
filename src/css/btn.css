@@ -1,0 +1,180 @@
+/*
+ * HeartStamp Design System — btn.css
+ *
+ * Self-contained styles for the Btn component.
+ * No Tailwind utilities. No bare-element selectors.
+ * Requires tokens.css to be imported first.
+ *
+ * Usage:
+ *   @import "@heartstampxo/design-system/tokens.css";
+ *   @import "@heartstampxo/design-system/btn.css";
+ */
+
+/* ── Base ──────────────────────────────────────────────────── */
+.hs-btn {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  user-select: none;
+  line-height: 1;
+  border-radius: var(--radius-button);
+  border: 1px solid transparent;
+  font-family: var(--font-family-body, 'DM Sans', system-ui, sans-serif);
+  font-weight: var(--font-weight-btn, 500);
+  gap: var(--btn-gap, 6px);
+  transition: all 150ms ease-in-out;
+  cursor: pointer;
+  outline: none;
+  text-decoration: none;
+}
+
+.hs-btn:focus-visible {
+  outline: 2px solid var(--color-brand-primary);
+  outline-offset: 2px;
+}
+
+.hs-btn:disabled {
+  opacity: 0.2;
+  pointer-events: none;
+}
+
+/* ── Variant: default (primary) ────────────────────────────── */
+.hs-btn--default {
+  background: var(--color-brand-primary);
+  border-color: var(--color-brand-primary);
+}
+.hs-btn--default:hover {
+  background: var(--color-brand-primary-hover);
+  border-color: var(--color-brand-primary-hover);
+}
+.hs-btn--default:active {
+  background: var(--color-brand-primary-pressed);
+  border-color: var(--color-brand-primary-pressed);
+}
+
+/* ── Variant: secondary ─────────────────────────────────────── */
+.hs-btn--secondary {
+  background: var(--color-brand-secondary);
+  border-color: var(--color-brand-secondary);
+}
+.hs-btn--secondary:hover {
+  background: var(--color-brand-secondary-hover);
+  border-color: var(--color-brand-secondary-hover);
+}
+.hs-btn--secondary:active {
+  background: var(--color-brand-secondary-pressed);
+  border-color: var(--color-brand-secondary-pressed);
+}
+
+/* ── Variant: outline ───────────────────────────────────────── */
+.hs-btn--outline {
+  background: transparent;
+  border-color: var(--color-element-subtle);
+}
+.hs-btn--outline:hover  { background: var(--color-state-hover); }
+.hs-btn--outline:active { background: var(--color-state-pressed); }
+
+/* ── Variant: ghost ─────────────────────────────────────────── */
+.hs-btn--ghost {
+  background: var(--color-brand-primary-dim);
+  border-color: transparent;
+}
+.hs-btn--ghost:hover  { opacity: 0.8; }
+.hs-btn--ghost:active { opacity: 0.6; }
+
+/* ── Variant: secondary-ghost ───────────────────────────────── */
+.hs-btn--secondary-ghost {
+  background: var(--color-brand-secondary-dim);
+  border-color: transparent;
+}
+.hs-btn--secondary-ghost:hover  { background: var(--color-element-subtle); }
+.hs-btn--secondary-ghost:active { background: var(--color-state-pressed); }
+
+/* ── Variant: destructive ───────────────────────────────────── */
+.hs-btn--destructive {
+  background: var(--color-state-error);
+  border-color: var(--color-state-error);
+}
+.hs-btn--destructive:hover  { opacity: 0.9; }
+.hs-btn--destructive:active { opacity: 0.8; }
+
+/* ── Variant: link ──────────────────────────────────────────── */
+.hs-btn--link {
+  background: transparent;
+  border-color: transparent;
+  text-decoration: underline;
+  /* Override any size height/padding — must come after size classes in cascade */
+  height: auto;
+  padding: 0;
+}
+.hs-btn--link:hover  { opacity: 0.8; }
+.hs-btn--link:active { opacity: 0.6; }
+
+/* ── Size: default ──────────────────────────────────────────── */
+.hs-btn--size-default {
+  height: 40px;
+  padding: 0 16px;
+  font-size: var(--font-size-btn, 13px);
+}
+
+/* ── Size: sm ───────────────────────────────────────────────── */
+.hs-btn--size-sm {
+  height: 36px;
+  padding: 0 12px;
+  font-size: var(--font-size-btn-sm, 12px);
+}
+
+/* ── Size: lg ───────────────────────────────────────────────── */
+.hs-btn--size-lg {
+  height: 44px;
+  padding: 0 20px;
+  font-size: var(--font-size-btn-lg, 15px);
+}
+
+/* ── Size: xl ───────────────────────────────────────────────── */
+.hs-btn--size-xl {
+  height: 48px;
+  padding: 0 24px;
+  font-size: var(--font-size-btn-lg, 15px);
+}
+
+/* ── Size: icon-sm ──────────────────────────────────────────── */
+.hs-btn--size-icon-sm {
+  height: 36px;
+  width: 36px;
+  padding: 0;
+}
+
+/* ── Size: icon ─────────────────────────────────────────────── */
+.hs-btn--size-icon {
+  height: 40px;
+  width: 40px;
+  padding: 0;
+}
+
+/* ── Size: icon-lg ──────────────────────────────────────────── */
+.hs-btn--size-icon-lg {
+  height: 44px;
+  width: 44px;
+  padding: 0;
+}
+
+/* ── Size: icon-xl ──────────────────────────────────────────── */
+.hs-btn--size-icon-xl {
+  height: 48px;
+  width: 48px;
+  padding: 0;
+}
+
+/* ── Loading spinner ────────────────────────────────────────── */
+@keyframes hs-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.hs-btn__spinner {
+  animation: hs-spin 1s linear infinite;
+  flex-shrink: 0;
+}
