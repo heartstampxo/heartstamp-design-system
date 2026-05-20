@@ -77,6 +77,7 @@ import {
 import * as LucideIcons from "lucide-react";
 import { PageCustomIcons } from "./pages/page-custom-icons";
 import { PageStyleSidebar } from "./pages/page-style-sidebar";
+import { BtnBuilder } from "./pages/page-btn-builder";
 import { NAV, ALL_ITEMS, LABEL_COLORS } from "./nav-config";
 import { CodeBlock, InstallBlock } from "./components/docs/doc-code-block";
 import { Preview } from "./components/docs/doc-preview";
@@ -106,13 +107,17 @@ import { PlaceholderPage } from "./components/docs/doc-placeholder";
 /* ═══════════════════════════════════════════════════════════
    ALL COMPONENT PAGES
 ═══════════════════════════════════════════════════════════ */
+
 function PageButton() {
   return <DocPage title="Button" subtitle="Triggers an action or event — submit a form, open a dialog, or navigate." sourceSlug="button">
+    <DocSection title="Builder" desc="Configure every option and copy the exact code.">
+      <BtnBuilder />
+    </DocSection>
     <DocSection title="Variants">
-      <Preview title="All variants" code={`{/* Primary */}\n<Button size="sm" variant="default">Button</Button>\n<Button variant="default">Button</Button>\n<Button size="lg" variant="default">Button</Button>\n\n{/* Secondary */}\n<Button size="sm" variant="secondary">Button</Button>\n<Button variant="secondary">Button</Button>\n<Button size="lg" variant="secondary">Button</Button>\n\n{/* Outline */}\n<Button size="sm" variant="outline">Button</Button>\n<Button variant="outline">Button</Button>\n<Button size="lg" variant="outline">Button</Button>\n\n{/* Link */}\n<Button size="sm" variant="link">Button</Button>\n<Button variant="link">Button</Button>\n<Button size="lg" variant="link">Button</Button>\n\n{/* Icon only */}\n<Button size="icon" variant="default"><Plus size={14} /></Button>\n<Button size="icon" variant="secondary"><Search size={14} /></Button>\n<Button size="icon" variant="outline"><Star size={14} /></Button>`} filename="button-variants.tsx">
+      <Preview title="All variants" code={`{/* Primary */}\n<Button size="sm" variant="default">Button</Button>\n<Button variant="default">Button</Button>\n<Button size="lg" variant="default">Button</Button>\n\n{/* Secondary */}\n<Button size="sm" variant="secondary">Button</Button>\n<Button variant="secondary">Button</Button>\n<Button size="lg" variant="secondary">Button</Button>\n\n{/* Outline */}\n<Button size="sm" variant="outline">Button</Button>\n<Button variant="outline">Button</Button>\n<Button size="lg" variant="outline">Button</Button>\n\n{/* Primary Ghost */}\n<Button size="sm" variant="primary-ghost">Button</Button>\n<Button variant="primary-ghost">Button</Button>\n<Button size="lg" variant="primary-ghost">Button</Button>\n\n{/* Secondary Ghost */}\n<Button size="sm" variant="secondary-ghost">Button</Button>\n<Button variant="secondary-ghost">Button</Button>\n<Button size="lg" variant="secondary-ghost">Button</Button>\n\n{/* Link */}\n<Button size="sm" variant="link">Button</Button>\n<Button variant="link">Button</Button>\n<Button size="lg" variant="link">Button</Button>\n\n{/* Icon only */}\n<Button size="icon" variant="default"><Plus size={14} /></Button>\n<Button size="icon" variant="secondary"><Search size={14} /></Button>\n<Button size="icon" variant="outline"><Star size={14} /></Button>`} filename="button-variants.tsx">
         {(() => {
           const labelStyle: React.CSSProperties = {
-            width: 90, flexShrink: 0, fontSize: 11, fontFamily: "monospace",
+            width: 116, flexShrink: 0, fontSize: 11, fontFamily: "monospace",
             color: "var(--muted-fg)", letterSpacing: ".01em"
           };
           const row = (label: string, children: React.ReactNode) => (
@@ -137,6 +142,16 @@ function PageButton() {
                 <Btn size="sm" variant="outline">Button</Btn>
                 <Btn variant="outline">Button</Btn>
                 <Btn size="lg" variant="outline">Button</Btn>
+              </>)}
+              {row("Primary Ghost", <>
+                <Btn size="sm" variant="primary-ghost">Button</Btn>
+                <Btn variant="primary-ghost">Button</Btn>
+                <Btn size="lg" variant="primary-ghost">Button</Btn>
+              </>)}
+              {row("Secondary Ghost", <>
+                <Btn size="sm" variant="secondary-ghost">Button</Btn>
+                <Btn variant="secondary-ghost">Button</Btn>
+                <Btn size="lg" variant="secondary-ghost">Button</Btn>
               </>)}
               {row("Link", <>
                 <Btn size="sm" variant="link">Button</Btn>
@@ -163,17 +178,18 @@ function PageButton() {
       {React.createElement(() => {
         const [iconSize, setIconSize] = useState<"sm"|"default"|"lg">("default");
         const sizeAttr = iconSize === "default" ? "" : ` size="${iconSize}"`;
-        const code = `// Each variant supports a labeled + icon-only form.\n// The size tab controls padding/font across all variants.\n\n<Button${sizeAttr}><Plus size={14} /> Create</Button>\n<Button${sizeAttr} size="icon"><Plus size={14} /></Button>\n\n<Button variant="secondary"${sizeAttr}><Upload size={14} /> Export</Button>\n<Button variant="secondary"${sizeAttr} size="icon"><Upload size={14} /></Button>\n\n<Button variant="outline"${sizeAttr}><ArrowRight size={14} /> Learn more</Button>\n<Button variant="outline"${sizeAttr} size="icon"><ArrowRight size={14} /></Button>\n\n<Button variant="ghost"${sizeAttr}><Star size={14} /> Favourite</Button>\n<Button variant="ghost"${sizeAttr} size="icon"><Star size={14} /></Button>`;
+        const code = `// Each variant supports a labeled + icon-only form.\n// The size tab controls padding/font across all variants.\n\n<Button${sizeAttr}><Plus size={14} /> Create</Button>\n<Button${sizeAttr} size="icon"><Plus size={14} /></Button>\n\n<Button variant="secondary"${sizeAttr}><Upload size={14} /> Export</Button>\n<Button variant="secondary"${sizeAttr} size="icon"><Upload size={14} /></Button>\n\n<Button variant="outline"${sizeAttr}><ArrowRight size={14} /> Learn more</Button>\n<Button variant="outline"${sizeAttr} size="icon"><ArrowRight size={14} /></Button>\n\n<Button variant="primary-ghost"${sizeAttr}><Star size={14} /> Favourite</Button>\n<Button variant="primary-ghost"${sizeAttr} size="icon"><Star size={14} /></Button>\n\n<Button variant="secondary-ghost"${sizeAttr}><Star size={14} /> Favourite</Button>\n<Button variant="secondary-ghost"${sizeAttr} size="icon"><Star size={14} /></Button>`;
         const labelStyle: React.CSSProperties = {
-          width: 90, flexShrink: 0, fontSize: 11, fontFamily: "monospace",
+          width: 116, flexShrink: 0, fontSize: 11, fontFamily: "monospace",
           color: "var(--muted-fg)", letterSpacing: ".01em"
         };
         const iconOnlySize = ({ sm: "icon-sm", default: "icon", lg: "icon-lg" } as const)[iconSize];
-        const rows: { label: string; variant: "default"|"secondary"|"outline"|"ghost"; icon: React.ReactNode; text: string }[] = [
-          { label: "Primary",   variant: "default",   icon: <Plus size={16} />,      text: "Create"    },
-          { label: "Secondary", variant: "secondary", icon: <Upload size={16} />,     text: "Export"    },
-          { label: "Outline",   variant: "outline",   icon: <ArrowRight size={16} />, text: "Learn more"},
-          { label: "Ghost",     variant: "ghost",     icon: <Star size={16} />,       text: "Favourite" },
+        const rows: { label: string; variant: "default"|"secondary"|"outline"|"primary-ghost"|"secondary-ghost"; icon: React.ReactNode; text: string }[] = [
+          { label: "Primary",        variant: "default",         icon: <Plus size={16} />,      text: "Create"    },
+          { label: "Secondary",      variant: "secondary",       icon: <Upload size={16} />,     text: "Export"    },
+          { label: "Outline",        variant: "outline",         icon: <ArrowRight size={16} />, text: "Learn more"},
+          { label: "Primary Ghost",  variant: "primary-ghost",   icon: <Star size={16} />,       text: "Favourite" },
+          { label: "Secondary Ghost",variant: "secondary-ghost", icon: <Star size={16} />,       text: "Favourite" },
         ];
         const sizes: ("sm"|"default"|"lg")[] = ["sm", "default", "lg"];
         return (
@@ -206,7 +222,7 @@ function PageButton() {
         const [loadingLocal, setLoadingLocal] = useState(false);
         const sizes: ("sm"|"default"|"lg")[] = ["sm", "default", "lg"];
         const sizeStr = loadSize === "default" ? "" : ` size="${loadSize}"`;
-        const code = [`<Button${sizeStr} disabled>`, `  <Loader2 size={14} style={{ marginRight: 6, animation: "spin 1s linear infinite" }} />`, `  Please wait`, `</Button>`].join("\n");
+        const code = `<Btn${sizeStr} loading>\n  Please wait\n</Btn>`;
         return (
           <>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
@@ -217,8 +233,7 @@ function PageButton() {
               </Tabs>
             </div>
             <Preview title="Loading" code={code}>
-              <Btn size={loadSize} disabled={loadingLocal} onClick={() => { setLoadingLocal(true); setTimeout(() => setLoadingLocal(false), 2000); }}>
-                {loadingLocal && <IcoLink name="Loader2"><Loader2 size={16} style={{ marginRight: "var(--space-1-5)", animation: "spin 1s linear infinite" }} /></IcoLink>}
+              <Btn size={loadSize} loading={loadingLocal} onClick={() => { setLoadingLocal(true); setTimeout(() => setLoadingLocal(false), 2000); }}>
                 {loadingLocal ? "Please wait…" : "Click to simulate load"}
               </Btn>
             </Preview>
@@ -249,43 +264,44 @@ function PageButton() {
 
     <DocSection title="Props">
       <PropsTable props={[
-        { name: "variant", type: '"default"|"secondary"|"ghost"|"secondary-ghost"|"outline"|"link"|"destructive"', def: '"default"', desc: 'Visual style of the button. Colors sourced from --accent, --secondary, --accent-subtle, --secondary-subtle, and --border tokens.' },
-        { name: "size", type: '"default"|"sm"|"lg"|"icon"', def: '"default"', desc: "Size variant — maps to --btn-padding-* and --font-size-btn-* token vars." },
-        { name: "disabled", type: "boolean", def: "false", desc: "Disables interaction and reduces opacity to 0.5." },
+        { name: "variant", type: '"default"|"secondary"|"outline"|"primary-ghost"|"secondary-ghost"|"link"|"destructive"', def: '"default"', desc: 'Visual style. All colours are driven by --color-brand-* and --color-state-* semantic tokens.' },
+        { name: "size", type: '"default"|"sm"|"lg"|"xl"|"icon-sm"|"icon"|"icon-lg"|"icon-xl"', def: '"default"', desc: 'Size variant — controls height, padding, and font-size via --font-size-btn-* tokens.' },
+        { name: "loading", type: "boolean", def: "false", desc: "Shows a spinner (Loader2) and disables the button. Use instead of disabled for async actions." },
+        { name: "disabled", type: "boolean", def: "false", desc: "Disables interaction and reduces opacity to 0.2. Shows a tooltip set by disabledTooltip." },
+        { name: "disabledTooltip", type: "string", def: '"Disabled"', desc: "Tooltip text shown on hover when the button is disabled." },
         { name: "onClick", type: "() => void", def: "—", desc: "Click handler passed directly to the underlying <button> element." },
         { name: "style", type: "React.CSSProperties", def: "—", desc: "Inline style overrides applied after all variant and hover styles." },
         { name: "children", type: "React.ReactNode", def: "—", desc: "Button label or content, including optional icons." },
       ]} />
     </DocSection>
-    <DocSection title="Design Tokens" desc="All visual properties of the Button are driven by CSS token variables. Override these in your theme to restyle every button variant at once.">
-      <div style={{ border: "1px solid var(--border)", borderRadius: 12, overflow: "hidden" }}>
-        <div style={{ background: "var(--muted)", padding: "8px 16px", display: "grid", gridTemplateColumns: "1.4fr 1fr 1fr 1.6fr", gap: 12, fontSize: 10.5, fontWeight: 700, color: "var(--muted-fg)", textTransform: "uppercase", letterSpacing: ".04em", borderBottom: "1px solid var(--border)" }}>
-          <span>Token</span><span>Value</span><span>Category</span><span>Usage</span>
+    <DocSection title="Design Tokens" desc="Every visual property is driven by --color-* semantic tokens from tokens.css. Override these in your theme to restyle every button variant at once.">
+      <div style={{ border: "1px solid var(--color-element-subtle)", borderRadius: 12, overflow: "hidden" }}>
+        <div style={{ background: "var(--muted)", padding: "8px 16px", display: "grid", gridTemplateColumns: "1.4fr 1fr 1fr 1.6fr", gap: 12, fontSize: 10.5, fontWeight: 700, color: "var(--muted-fg)", textTransform: "uppercase", letterSpacing: ".04em", borderBottom: "1px solid var(--color-element-subtle)" }}>
+          <span>Token</span><span>Light value</span><span>Category</span><span>Usage</span>
         </div>
         {[
-          { token: "--radius-button",     value: "25px",       cat: "Radius",      usage: "Border radius on all button variants" },
-          { token: "--btn-padding-sm",    value: "8px 12px",   cat: "Spacing",     usage: "Padding for size=\"sm\"" },
-          { token: "--btn-padding-default", value: "10px 16px", cat: "Spacing",     usage: "Padding for size=\"default\"" },
-          { token: "--btn-padding-lg",    value: "12px 20px",  cat: "Spacing",     usage: "Padding for size=\"lg\"" },
-          { token: "--btn-padding-icon",  value: "8px",        cat: "Spacing",     usage: "Padding for size=\"icon\"" },
-          { token: "--btn-gap",           value: "6px",        cat: "Spacing",     usage: "Gap between icon and label content" },
-          { token: "--font-size-btn-sm",  value: "12px",       cat: "Typography",  usage: "Font size for size=\"sm\"" },
-          { token: "--font-size-btn",     value: "13px",       cat: "Typography",  usage: "Font size for size=\"default\"" },
-          { token: "--font-size-btn-lg",  value: "15px",       cat: "Typography",  usage: "Font size for size=\"lg\"" },
-          { token: "--font-weight-btn",   value: "500",        cat: "Typography",  usage: "Font weight across all variants" },
-          { token: "--accent",            value: "var(--accent)", cat: "Color",    usage: "Background — default (primary filled)" },
-          { token: "--accent-hover",      value: "var(--accent-hover)", cat: "Color", usage: "Hover background — default variant" },
-          { token: "--text-on-primary",   value: "var(--text-on-primary)", cat: "Color", usage: "Text color — default & destructive variants" },
-          { token: "--secondary",         value: "var(--secondary)", cat: "Color", usage: "Background — secondary filled variant" },
-          { token: "--secondary-hover",   value: "var(--secondary-hover)", cat: "Color", usage: "Hover background — secondary variant" },
-          { token: "--text-on-secondary", value: "var(--text-on-secondary)", cat: "Color", usage: "Text color — secondary variant" },
-          { token: "--accent-subtle",     value: "var(--accent-subtle)", cat: "Color", usage: "Background — ghost variant (rest & hover base)" },
-          { token: "--secondary-subtle",  value: "var(--secondary-subtle)", cat: "Color", usage: "Background — secondary-ghost variant" },
-          { token: "--border",            value: "var(--border)", cat: "Color",    usage: "Border color — outline variant" },
-          { token: "--state-hover",       value: "var(--state-hover)", cat: "Color", usage: "Hover background — outline & secondary-ghost" },
-        ].map((row, i) => (
-          <div key={row.token} style={{ padding: "10px 16px", display: "grid", gridTemplateColumns: "1.4fr 1fr 1fr 1.6fr", gap: 12, alignItems: "center", borderBottom: i < 19 ? "1px solid var(--border)" : "none", background: i % 2 === 0 ? "var(--bg)" : "var(--muted)" }}>
-            <code style={{ fontSize: 11, fontFamily: "monospace", color: "var(--accent)" }}>{row.token}</code>
+          { token: "--radius-button",               value: "25px",                    cat: "Radius",     usage: "Border radius — all variants" },
+          { token: "--btn-gap",                     value: "6px",                     cat: "Spacing",    usage: "Gap between icon and label" },
+          { token: "--font-size-btn-sm",            value: "12px",                    cat: "Typography", usage: "Font size — size=\"sm\"" },
+          { token: "--font-size-btn",               value: "13px",                    cat: "Typography", usage: "Font size — size=\"default\"" },
+          { token: "--font-size-btn-lg",            value: "15px",                    cat: "Typography", usage: "Font size — size=\"lg\" and \"xl\"" },
+          { token: "--font-weight-btn",             value: "500",                     cat: "Typography", usage: "Font weight — all variants" },
+          { token: "--color-brand-primary",         value: "#be1d2c",                 cat: "Color",      usage: "Background & border — default (primary)" },
+          { token: "--color-brand-primary-hover",   value: "#d42031",                 cat: "Color",      usage: "Hover background — default" },
+          { token: "--color-brand-primary-pressed", value: "#a81a27",                 cat: "Color",      usage: "Active background — default" },
+          { token: "--color-brand-primary-dim",     value: "rgba(190,29,44,0.08)",    cat: "Color",      usage: "Background — primary-ghost" },
+          { token: "--btn-primary-ghost-hover-bg",  value: "rgba(190,29,44,0.12)",    cat: "Color",      usage: "Hover background — primary-ghost" },
+          { token: "--color-brand-secondary",       value: "#242423",                 cat: "Color",      usage: "Background & border — secondary" },
+          { token: "--color-brand-secondary-dim",   value: "rgba(36,36,35,0.06)",     cat: "Color",      usage: "Background — secondary-ghost" },
+          { token: "--color-element-subtle",        value: "rgba(36,36,35,0.1)",      cat: "Color",      usage: "Border — outline; hover bg — secondary-ghost" },
+          { token: "--color-state-hover",           value: "rgba(36,36,35,0.06)",     cat: "Color",      usage: "Hover background — outline" },
+          { token: "--color-state-pressed",         value: "rgba(36,36,35,0.08)",     cat: "Color",      usage: "Active background — outline & secondary-ghost" },
+          { token: "--color-state-error",           value: "#be1d2c",                 cat: "Color",      usage: "Background — destructive" },
+          { token: "--color-text-on-primary",       value: "#ffffff",                 cat: "Color",      usage: "Text — default & destructive variants" },
+          { token: "--color-text-on-secondary",     value: "#ffffff",                 cat: "Color",      usage: "Text — secondary variant" },
+        ].map((row, i, arr) => (
+          <div key={row.token} style={{ padding: "10px 16px", display: "grid", gridTemplateColumns: "1.4fr 1fr 1fr 1.6fr", gap: 12, alignItems: "center", borderBottom: i < arr.length - 1 ? "1px solid var(--color-element-subtle)" : "none", background: i % 2 === 0 ? "var(--bg)" : "var(--muted)" }}>
+            <code style={{ fontSize: 11, fontFamily: "monospace", color: "var(--color-brand-primary)" }}>{row.token}</code>
             <code style={{ fontSize: 11, fontFamily: "monospace", color: "var(--fg)", background: "var(--color-element-disabled)", padding: "2px var(--space-1-5)", borderRadius: 4 }}>{row.value}</code>
             <span style={{ fontSize: 11.5, color: "var(--muted-fg)" }}>{row.cat}</span>
             <span style={{ fontSize: 12, color: "var(--muted-fg)" }}>{row.usage}</span>
@@ -3369,10 +3385,15 @@ function PageIntro() {
    INSTALLATION PAGE
 ═══════════════════════════════════════════════════════════ */
 function PageInstallation() {
+  /* ── code samples ── */
+  const npmrc = `# .npmrc — place in your project root
+@heartstampxo:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=YOUR_GITHUB_PAT`;
+
   const installPkg = {
-    npm:  "npm install @heartstamp/design-system",
-    pnpm: "pnpm add @heartstamp/design-system",
-    yarn: "yarn add @heartstamp/design-system",
+    npm:  "npm install @heartstampxo/design-system",
+    pnpm: "pnpm add @heartstampxo/design-system",
+    yarn: "yarn add @heartstampxo/design-system",
   };
 
   const peerInstall = {
@@ -3381,10 +3402,15 @@ function PageInstallation() {
     yarn: "yarn add react react-dom",
   };
 
-  const importCss = `// main.tsx — add this once at your app entry point
-import '@heartstamp/design-system/design-system.css'`;
+  const importTokens = `// main.tsx (or global CSS entry) — add once at your app root
+import '@heartstampxo/design-system/tokens.css'
 
-  const firstComponentCode = `import { Btn, Bdg } from '@heartstamp/design-system'
+// Import per-component CSS only for components you actually use:
+import '@heartstampxo/design-system/btn.css'   // only if using Btn`;
+
+  const firstComponentCode = `import '@heartstampxo/design-system/tokens.css'
+import '@heartstampxo/design-system/btn.css'
+import { Btn, Bdg } from '@heartstampxo/design-system'
 
 export default function App() {
   return (
@@ -3396,21 +3422,91 @@ export default function App() {
   )
 }`;
 
+  const darkModeCode = `// Wrap your app — or any subtree — with the .dark class to activate dark mode.
+// Works with next-themes, your own theme toggle, or any class toggle.
+
+// Option A — manual class toggle
+document.documentElement.classList.add('dark')
+
+// Option B — next-themes (recommended for Next.js)
+// In layout.tsx:
+import { ThemeProvider } from 'next-themes'
+
+export default function RootLayout({ children }) {
+  return (
+    <html suppressHydrationWarning>
+      <body>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          {children}
+        </ThemeProvider>
+      </body>
+    </html>
+  )
+}`;
+
+  const tsUsageCode = `import type { BtnVariant, BtnSize } from '@heartstampxo/design-system'
+
+// All component props are fully typed
+const variant: BtnVariant = 'default'   // 'default' | 'secondary' | 'outline' | 'ghost' | ...
+const size: BtnSize = 'lg'              // 'default' | 'sm' | 'lg' | 'xl' | 'icon' | ...
+
+// Props auto-complete in your IDE
+<Btn variant={variant} size={size} loading={false}>
+  Save changes
+</Btn>`;
+
+  const inpUsageCode = `// Inp, Tarea, Lbl, Swt, Cbx, Rdo, Sel, Sldr, Prg, Skl — all use inline styles.
+// tokens.css is the only CSS import needed for these components.
+
+import '@heartstampxo/design-system/tokens.css'
+import { Inp, Lbl, Swt } from '@heartstampxo/design-system'
+
+<Lbl>Email</Lbl>
+<Inp type="email" placeholder="you@example.com" />
+<Swt />`;
+
+  /* ── shared styles ── */
   const stepNumStyle: React.CSSProperties = {
-    width: 24, height: 24, borderRadius: "50%",
+    width: 28, height: 28, borderRadius: "50%",
     background: "var(--accent)", color: "#fff",
     display: "flex", alignItems: "center", justifyContent: "center",
-    fontSize: 12, fontWeight: 700, flexShrink: 0,
+    fontSize: 13, fontWeight: 700, flexShrink: 0, marginTop: 2,
   };
 
   const stepRowStyle: React.CSSProperties = {
-    display: "flex", alignItems: "flex-start", gap: 14, marginBottom: 32,
+    display: "flex", alignItems: "flex-start", gap: 16, marginBottom: 40,
   };
 
+  const sectionTitleStyle: React.CSSProperties = {
+    fontSize: 18, fontWeight: 700, color: "var(--fg)", letterSpacing: "-.02em", marginBottom: 4,
+  };
+
+  const bodyStyle: React.CSSProperties = {
+    fontSize: 13, color: "var(--muted-fg)", lineHeight: 1.7, marginBottom: 16,
+  };
+
+  const mono: React.CSSProperties = {
+    fontFamily: "monospace", background: "var(--muted)", padding: "1px 5px", borderRadius: 4,
+  };
+
+  /* ── CSS reference table data ── */
+  const cssTable = [
+    { component: "Btn", imports: ["tokens.css", "btn.css"], note: "Only component with a dedicated CSS file in v2" },
+    { component: "Inp, Tarea", imports: ["tokens.css"], note: "Pure inline styles — tokens.css only" },
+    { component: "Lbl, Kbd, Sep", imports: ["tokens.css"], note: "Pure inline styles — tokens.css only" },
+    { component: "Bdg, Avt, Alrt", imports: ["tokens.css"], note: "Pure inline styles — tokens.css only" },
+    { component: "Swt, Cbx, Rdo", imports: ["tokens.css"], note: "Pure inline styles — tokens.css only" },
+    { component: "Sel, Sldr, Prg, Skl", imports: ["tokens.css"], note: "Pure inline styles — tokens.css only" },
+    { component: "Crd, Tbl, Brd, Pgn", imports: ["tokens.css"], note: "Pure inline styles — tokens.css only" },
+    { component: "Dlg, Sht, DdMenu, Ppvr", imports: ["tokens.css"], note: "Pure inline styles — tokens.css only" },
+    { component: "All hs-* nav/layout components", imports: ["tokens.css"], note: "Pure inline styles — tokens.css only" },
+  ];
+
   const prereqs = [
-    { label: "Node.js",   req: "≥ 18.0", note: "LTS recommended" },
-    { label: "react",     req: "≥ 18.0", note: "peer dependency" },
-    { label: "react-dom", req: "≥ 18.0", note: "peer dependency" },
+    { label: "Node.js",   req: "≥ 18.0",  note: "LTS recommended" },
+    { label: "react",     req: "≥ 18.0",  note: "peer dependency" },
+    { label: "react-dom", req: "≥ 18.0",  note: "peer dependency" },
+    { label: "TypeScript", req: "≥ 5.0", note: "optional, but fully typed" },
   ];
 
   return (
@@ -3423,85 +3519,119 @@ export default function App() {
           </h1>
           <CopyLinkButton />
         </div>
-        <p style={{ margin: 0, fontSize: 14, color: "var(--muted-fg)", lineHeight: 1.7, maxWidth: 560 }}>
-          Add <code style={{ fontFamily: "monospace", background: "var(--muted)", padding: "1px var(--space-1-5)", borderRadius: 4 }}>@heartstamp/design-system</code> to your React project in three steps. The stylesheet ships bundled — no extra tooling required.
+        <p style={{ margin: 0, fontSize: 15, color: "var(--muted-fg)", lineHeight: 1.7, maxWidth: 600 }}>
+          Add <code style={mono}>@heartstampxo/design-system</code> to your React project in four steps.
+          The library ships zero global CSS — components are self-contained and won't interfere with your app's existing styles.
         </p>
       </div>
 
-      <div style={{ height: 1, background: "var(--border)", marginBottom: 36 }} />
+      <div style={{ height: 1, background: "var(--border)", marginBottom: 40 }} />
 
       {/* ── Step 1 — Prerequisites ── */}
       <div style={stepRowStyle}>
         <div style={stepNumStyle}>1</div>
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 16, fontWeight: 700, color: "var(--fg)", marginBottom: 4 }}>Prerequisites</div>
-          <div style={{ fontSize: 13, color: "var(--muted-fg)", marginBottom: 16, lineHeight: 1.6 }}>
-            Make sure your project satisfies these peer dependencies before installing.
+          <div style={sectionTitleStyle}>Prerequisites</div>
+          <div style={bodyStyle}>
+            Make sure your project meets these requirements before installing.
           </div>
 
-          {/* Prereq table */}
-          <div style={{ border: "1px solid var(--border)", borderRadius: 10, overflow: "hidden", marginBottom: 16 }}>
+          <div style={{ border: "1px solid var(--border)", borderRadius: 10, overflow: "hidden", marginBottom: 20 }}>
             <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
               <thead>
                 <tr style={{ background: "var(--muted)", borderBottom: "1px solid var(--border)" }}>
                   {["Dependency", "Version", "Notes"].map(h => (
-                    <th key={h} style={{ padding: "8px 14px", textAlign: "left", fontWeight: 600, color: "var(--muted-fg)", fontSize: 11, textTransform: "uppercase", letterSpacing: ".05em" }}>{h}</th>
+                    <th key={h} style={{ padding: "9px 16px", textAlign: "left", fontWeight: 600, color: "var(--muted-fg)", fontSize: 11, textTransform: "uppercase", letterSpacing: ".05em" }}>{h}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
                 {prereqs.map((r, i) => (
-                  <tr key={r.label} style={{ background: i % 2 === 0 ? "var(--bg)" : "var(--muted)", borderBottom: i < prereqs.length - 1 ? "1px solid var(--border)" : "none" }}>
-                    <td style={{ padding: "9px 14px", fontWeight: 600, color: "var(--fg)", fontFamily: "monospace" }}>{r.label}</td>
-                    <td style={{ padding: "9px 14px", color: "var(--accent)", fontFamily: "monospace", fontWeight: 600 }}>{r.req}</td>
-                    <td style={{ padding: "9px 14px", color: "var(--muted-fg)" }}>{r.note}</td>
+                  <tr key={r.label} style={{ borderBottom: i < prereqs.length - 1 ? "1px solid var(--border)" : "none" }}>
+                    <td style={{ padding: "10px 16px", fontWeight: 600, color: "var(--fg)", fontFamily: "monospace" }}>{r.label}</td>
+                    <td style={{ padding: "10px 16px", color: "var(--accent)", fontFamily: "monospace", fontWeight: 600 }}>{r.req}</td>
+                    <td style={{ padding: "10px 16px", color: "var(--muted-fg)" }}>{r.note}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
 
-          {/* Peer deps — shadcn-style install block */}
-          <InstallBlock
-            label="Don't have React yet? Install peer deps first:"
-            commands={peerInstall}
-          />
+          <InstallBlock label="Install React peer dependencies if not already present:" commands={peerInstall} />
         </div>
       </div>
 
-      {/* ── Step 2 — Install the package ── */}
+      {/* ── Step 2 — Configure registry ── */}
       <div style={stepRowStyle}>
         <div style={stepNumStyle}>2</div>
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 16, fontWeight: 700, color: "var(--fg)", marginBottom: 4 }}>Install the Package</div>
-          <div style={{ fontSize: 13, color: "var(--muted-fg)", marginBottom: 16, lineHeight: 1.6 }}>
-            Install <code style={{ fontFamily: "monospace", background: "var(--muted)", padding: "1px 5px", borderRadius: 4 }}>@heartstamp/design-system</code> from the npm registry:
+          <div style={sectionTitleStyle}>Configure GitHub Packages Registry</div>
+          <div style={bodyStyle}>
+            The design system is published to <strong>GitHub Packages</strong> under the <code style={mono}>@heartstampxo</code> scope.
+            You need to tell your package manager where to find scoped packages from that org.
           </div>
 
-          <InstallBlock commands={installPkg} />
+          <CodeBlock code={npmrc} filename=".npmrc" />
 
-          <div style={{ marginTop: 16 }}>
-            <CodeBlock code={importCss} filename="main.tsx" />
-          </div>
-
-          <div style={{ marginTop: 12 }}>
+          <div style={{ marginTop: 14, display: "flex", flexDirection: "column", gap: 10 }}>
+            <Callout variant="info">
+              <strong>Generating a GitHub PAT</strong><br />
+              Go to <strong>GitHub → Settings → Developer settings → Personal access tokens</strong>.
+              Create a token with the <code style={mono}>read:packages</code> scope.
+              Paste it in place of <code style={mono}>YOUR_GITHUB_PAT</code>. Keep this token secret — do not commit it to version control.
+            </Callout>
             <Callout variant="warning">
-              The CSS import must be added <strong>once</strong> at the root of your app (e.g. <code style={{ fontFamily: "monospace" }}>main.tsx</code>). Skipping it will cause components to render unstyled.
+              <strong>CI / Vercel / Netlify</strong><br />
+              Add your PAT as an environment variable (e.g. <code style={mono}>NPM_TOKEN</code>) and reference it in <code style={mono}>.npmrc</code> as{" "}
+              <code style={mono}>{"//npm.pkg.github.com/:_authToken=${NPM_TOKEN}"}</code>.
             </Callout>
           </div>
         </div>
       </div>
 
-      {/* ── Step 3 — Use components ── */}
+      {/* ── Step 3 — Install ── */}
       <div style={stepRowStyle}>
         <div style={stepNumStyle}>3</div>
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 16, fontWeight: 700, color: "var(--fg)", marginBottom: 4 }}>Use Components</div>
-          <div style={{ fontSize: 13, color: "var(--muted-fg)", marginBottom: 16, lineHeight: 1.6 }}>
-            Import any component from <code style={{ fontFamily: "monospace", background: "var(--muted)", padding: "1px 5px", borderRadius: 4 }}>@heartstamp/design-system</code>. Tree-shaking is fully supported — only what you import is bundled.
+          <div style={sectionTitleStyle}>Install the Package</div>
+          <div style={bodyStyle}>
+            Install <code style={mono}>@heartstampxo/design-system</code>. Tree-shaking is fully supported — only the components you import are bundled.
           </div>
 
-          <Preview title="Button & Badge" code={firstComponentCode} filename="App.tsx" height={68}>
+          <InstallBlock commands={installPkg} />
+
+          <div style={{ marginTop: 20 }}>
+            <div style={{ fontSize: 15, fontWeight: 600, color: "var(--fg)", marginBottom: 8 }}>Import CSS</div>
+            <div style={bodyStyle}>
+              The library ships <strong>no global styles</strong>. You import only what you need. At minimum, import{" "}
+              <code style={mono}>tokens.css</code> once at your app entry point. For each component that has
+              a dedicated CSS file, import that file too.
+            </div>
+            <CodeBlock code={importTokens} filename="main.tsx" />
+            <div style={{ marginTop: 12 }}>
+              <Callout variant="success">
+                <strong>Why no global CSS bundle?</strong><br />
+                v1 shipped a monolithic <code style={mono}>design-system.css</code> that included Tailwind preflight and bare-element
+                resets (<code style={mono}>button</code>, <code style={mono}>h1–h5</code>, <code style={mono}>input</code>, etc.).
+                These rules leaked into host apps and overrode your existing styles.{" "}
+                v2 ships <code style={mono}>tokens.css</code> (CSS custom property declarations only — zero element selectors)
+                plus self-contained per-component CSS files. Nothing leaks.
+              </Callout>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Step 4 — Use components ── */}
+      <div style={stepRowStyle}>
+        <div style={stepNumStyle}>4</div>
+        <div style={{ flex: 1 }}>
+          <div style={sectionTitleStyle}>Use Components</div>
+          <div style={bodyStyle}>
+            Import any component from the package root. All exports are available from a single entry point — no deep path imports needed.
+          </div>
+
+          <Preview title="Btn + Bdg" code={firstComponentCode} filename="App.tsx" height={68}>
             <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
               <Btn variant="default">Get started</Btn>
               <Btn variant="outline">Learn more</Btn>
@@ -3509,36 +3639,148 @@ export default function App() {
             </div>
           </Preview>
 
-          <div style={{ marginTop: 12 }}>
-            <Callout variant="info">
-              All components are exported from the package root — no deep path imports needed.
-            </Callout>
+          <div style={{ marginTop: 20 }}>
+            <div style={{ fontSize: 15, fontWeight: 600, color: "var(--fg)", marginBottom: 8 }}>
+              Inline-styled components (most <code style={{ fontFamily: "monospace", fontSize: 13 }}>hs-*</code> components)
+            </div>
+            <div style={bodyStyle}>
+              The majority of components use <strong>inline styles driven entirely by CSS custom properties</strong>.
+              They only need <code style={mono}>tokens.css</code> — no additional CSS file required.
+            </div>
+            <CodeBlock code={inpUsageCode} filename="form-example.tsx" />
           </div>
         </div>
       </div>
 
-      <div style={{ height: 1, background: "var(--border)", margin: "8px 0 32px" }} />
+      <div style={{ height: 1, background: "var(--border)", margin: "0 0 40px" }} />
+
+      {/* ── CSS Import Reference ── */}
+      <div style={{ marginBottom: 40 }}>
+        <div style={{ fontSize: 22, fontWeight: 800, color: "var(--fg)", letterSpacing: "-.02em", marginBottom: 6 }}>CSS Import Reference</div>
+        <div style={{ fontSize: 13, color: "var(--muted-fg)", marginBottom: 20, lineHeight: 1.6 }}>
+          Which CSS files does each component need? The table below shows the minimum imports per component group.
+          Import only what you use — unused CSS files have no effect but add unnecessary weight.
+        </div>
+
+        <div style={{ border: "1px solid var(--border)", borderRadius: 10, overflow: "hidden" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+            <thead>
+              <tr style={{ background: "var(--muted)", borderBottom: "1px solid var(--border)" }}>
+                {["Component(s)", "Required CSS imports", "Notes"].map(h => (
+                  <th key={h} style={{ padding: "9px 16px", textAlign: "left", fontWeight: 600, color: "var(--muted-fg)", fontSize: 11, textTransform: "uppercase", letterSpacing: ".05em" }}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {cssTable.map((r, i) => (
+                <tr key={r.component} style={{ borderBottom: i < cssTable.length - 1 ? "1px solid var(--border)" : "none" }}>
+                  <td style={{ padding: "10px 16px", fontWeight: 600, color: "var(--fg)", fontFamily: "monospace", whiteSpace: "nowrap" }}>{r.component}</td>
+                  <td style={{ padding: "10px 16px" }}>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                      {r.imports.map(imp => (
+                        <span key={imp} style={{ fontFamily: "monospace", fontSize: 12, background: "var(--accent-subtle)", color: "var(--accent)", padding: "2px 7px", borderRadius: 4 }}>{imp}</span>
+                      ))}
+                    </div>
+                  </td>
+                  <td style={{ padding: "10px 16px", color: "var(--muted-fg)", fontSize: 12 }}>{r.note}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div style={{ marginTop: 14 }}>
+          <Callout variant="info">
+            More components will get dedicated CSS files in future releases. Watch the changelog — when a component gets its own CSS file, the inline-style version will be kept for one major version as a deprecated fallback.
+          </Callout>
+        </div>
+      </div>
+
+      {/* ── Dark Mode ── */}
+      <div style={{ marginBottom: 40 }}>
+        <div style={{ fontSize: 22, fontWeight: 800, color: "var(--fg)", letterSpacing: "-.02em", marginBottom: 6 }}>Dark Mode</div>
+        <div style={{ fontSize: 13, color: "var(--muted-fg)", marginBottom: 20, lineHeight: 1.6 }}>
+          All design tokens have dark-mode overrides defined in <code style={mono}>tokens.css</code> under the <code style={mono}>.dark</code> class.
+          Apply the class to <code style={mono}>{'<html>'}</code> or any ancestor element to activate dark mode for that subtree.
+          No extra configuration needed — the CSS handles everything.
+        </div>
+        <CodeBlock code={darkModeCode} filename="layout.tsx" />
+      </div>
+
+      {/* ── TypeScript ── */}
+      <div style={{ marginBottom: 40 }}>
+        <div style={{ fontSize: 22, fontWeight: 800, color: "var(--fg)", letterSpacing: "-.02em", marginBottom: 6 }}>TypeScript</div>
+        <div style={{ fontSize: 13, color: "var(--muted-fg)", marginBottom: 20, lineHeight: 1.6 }}>
+          The package ships full TypeScript types. All component props, variants, and sizes are typed and exported.
+          No <code style={mono}>@types</code> package needed.
+        </div>
+        <CodeBlock code={tsUsageCode} filename="example.tsx" />
+        <div style={{ marginTop: 12 }}>
+          <Callout variant="info">
+            Type exports follow the pattern <code style={mono}>BtnVariant</code>, <code style={mono}>BtnSize</code>, <code style={mono}>BdgVariant</code>, etc.
+            All prop interfaces extend the relevant HTML element's attributes, so you can pass any native HTML prop (e.g. <code style={mono}>onClick</code>, <code style={mono}>disabled</code>, <code style={mono}>aria-*</code>) directly.
+          </Callout>
+        </div>
+      </div>
+
+      {/* ── Design System Philosophy ── */}
+      <div style={{ marginBottom: 40 }}>
+        <div style={{ fontSize: 22, fontWeight: 800, color: "var(--fg)", letterSpacing: "-.02em", marginBottom: 6 }}>How the Design System Works</div>
+        <div style={{ fontSize: 13, color: "var(--muted-fg)", marginBottom: 20, lineHeight: 1.6 }}>
+          HeartStamp components are <strong>black-box primitives</strong>. You import and use them — you do not style them.
+          All visual decisions (spacing, color, radius, typography) live inside the design system and are owned by the design system team.
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <Callout variant="info">
+            <strong>Don't override component internals.</strong><br />
+            If a component has a visual problem — wrong padding, incorrect color, missing state — that's a design system issue.
+            File a ticket or open a PR against this repo. Don't patch it with <code style={mono}>!important</code> or wrapper <code style={mono}>div</code> hacks in your app.
+          </Callout>
+          <Callout variant="info">
+            <strong>Token customisation is intentional.</strong><br />
+            You <em>can</em> override <code style={mono}>--color-brand-primary</code> and other tokens at the <code style={mono}>:root</code> level in your own CSS to apply a custom brand.
+            That is the designed extension point. Overriding component class selectors directly is not supported.
+          </Callout>
+        </div>
+      </div>
+
+      <div style={{ height: 1, background: "var(--border)", margin: "0 0 40px" }} />
 
       {/* ── Troubleshooting ── */}
       <div style={{ marginBottom: 8 }}>
-        <div style={{ fontSize: 20, fontWeight: 800, color: "var(--fg)", letterSpacing: "-.02em", marginBottom: 4 }}>Troubleshooting</div>
+        <div style={{ fontSize: 22, fontWeight: 800, color: "var(--fg)", letterSpacing: "-.02em", marginBottom: 6 }}>Troubleshooting</div>
         <div style={{ fontSize: 13, color: "var(--muted-fg)", marginBottom: 20, lineHeight: 1.6 }}>Common issues and how to fix them.</div>
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           <Callout variant="danger">
-            <strong>Components render without styles</strong><br />
-            You're missing the CSS import. Add <code style={{ fontFamily: "monospace" }}>import '@heartstamp/design-system/design-system.css'</code> to your app entry point.
+            <strong>Module not found: @heartstampxo/design-system</strong><br />
+            You're missing the registry config. Make sure <code style={mono}>.npmrc</code> is in your project root with the correct scope registry and a valid GitHub PAT. Then re-run install.
+          </Callout>
+          <Callout variant="danger">
+            <strong>Btn renders unstyled (no background, no border-radius)</strong><br />
+            You're missing <code style={mono}>btn.css</code>. Add <code style={mono}>import '@heartstampxo/design-system/btn.css'</code> at your app entry point.
           </Callout>
           <Callout variant="warning">
-            <strong>React peer dependency not found</strong><br />
-            <code style={{ fontFamily: "monospace" }}>react</code> and <code style={{ fontFamily: "monospace" }}>react-dom</code> must be installed in your own project. Run <code style={{ fontFamily: "monospace" }}>npm install react react-dom</code>.
+            <strong>Components render but tokens look wrong (wrong colors, wrong font)</strong><br />
+            You're missing <code style={mono}>tokens.css</code>. Add <code style={mono}>import '@heartstampxo/design-system/tokens.css'</code> at your app entry point before any component CSS.
           </Callout>
           <Callout variant="warning">
-            <strong>Module not found: @heartstamp/design-system</strong><br />
-            Ensure the package is published or linked locally. For local dev: <code style={{ fontFamily: "monospace" }}>npm install ../path-to-design-system</code>.
+            <strong>react / react-dom peer dependency not found</strong><br />
+            Install them in your own project: <code style={mono}>npm install react react-dom</code>. They are peer dependencies and are not bundled in the design system package.
+          </Callout>
+          <Callout variant="warning">
+            <strong>401 Unauthorized when installing</strong><br />
+            Your GitHub PAT has expired, has insufficient scope (needs <code style={mono}>read:packages</code>), or is missing from <code style={mono}>.npmrc</code>.
+            Generate a new token and update your <code style={mono}>.npmrc</code>.
           </Callout>
           <Callout variant="info">
             <strong>Node.js version</strong><br />
-            Node.js ≥ 18 is required. Run <code style={{ fontFamily: "monospace" }}>node -v</code> to verify. Use <a href="https://github.com/nvm-sh/nvm" style={{ color: "var(--accent)" }}>nvm</a> to manage multiple versions.
+            Node.js ≥ 18 is required. Run <code style={mono}>node -v</code> to verify. Use{" "}
+            <a href="https://github.com/nvm-sh/nvm" target="_blank" rel="noreferrer" style={{ color: "var(--accent)" }}>nvm</a> or{" "}
+            <a href="https://volta.sh" target="_blank" rel="noreferrer" style={{ color: "var(--accent)" }}>Volta</a> to manage Node versions.
+          </Callout>
+          <Callout variant="info">
+            <strong>TypeScript: Property 'variant' does not exist</strong><br />
+            Ensure you have <code style={mono}>@heartstampxo/design-system</code> (not an old <code style={mono}>@heartstamp/design-system</code>) installed. The types are bundled — no separate <code style={mono}>@types</code> package is needed.
           </Callout>
         </div>
       </div>

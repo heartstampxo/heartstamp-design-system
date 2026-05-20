@@ -84,6 +84,14 @@
 .hs-btn--ghost:hover  { opacity: 0.8; }
 .hs-btn--ghost:active { opacity: 0.6; }
 
+/* ── Variant: primary-ghost ─────────────────────────────────── */
+.hs-btn--primary-ghost {
+  background: var(--color-brand-primary-dim);
+  border-color: transparent;
+}
+.hs-btn--primary-ghost:hover  { background: var(--btn-primary-ghost-hover-bg); }
+.hs-btn--primary-ghost:active { background: var(--btn-primary-ghost-active-bg); }
+
 /* ── Variant: secondary-ghost ───────────────────────────────── */
 .hs-btn--secondary-ghost {
   background: var(--color-brand-secondary-dim);

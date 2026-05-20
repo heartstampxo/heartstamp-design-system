@@ -166,6 +166,10 @@
   --color-google-pay-bg-hover: rgba(36, 36, 35, 0.10);
   --color-google-pay-text:     #242423;
 
+  /* ── Primary-ghost interactive states ───────────────────── */
+  --btn-primary-ghost-hover-bg:    rgba(190, 29, 44, 0.12);
+  --btn-primary-ghost-active-bg:   rgba(190, 29, 44, 0.16);
+
   /* ── Secondary-ghost interactive states ─────────────────── */
   --btn-secondary-ghost-hover-bg:  rgba(36, 36, 35, 0.12);
   --btn-secondary-ghost-hover-bdr: rgba(36, 36, 35, 0.15);
@@ -229,6 +233,10 @@
   --color-google-pay-bg:       #1c1c1e;
   --color-google-pay-bg-hover: #2c2c2e;
   --color-google-pay-text:     #ffffff;
+
+  /* ── Primary-ghost interactive states (dark) ────────────── */
+  --btn-primary-ghost-hover-bg:    rgba(207, 39, 55, 0.18);
+  --btn-primary-ghost-active-bg:   rgba(207, 39, 55, 0.24);
 
   /* ── Secondary-ghost interactive states (dark) ───────────── */
   --btn-secondary-ghost-hover-bg:  rgba(245, 245, 244, 0.12);
