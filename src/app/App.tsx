@@ -3416,7 +3416,8 @@ export default function App() {
   return (
     <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
       <Btn variant="default">Get started</Btn>
-      <Btn variant="outline">Learn more</Btn>
+      <Btn variant="primary-ghost">Learn more</Btn>
+      <Btn variant="outline">Outline</Btn>
       <Bdg variant="default">New</Bdg>
     </div>
   )
@@ -3446,11 +3447,14 @@ export default function RootLayout({ children }) {
 
   const tsUsageCode = `import type { BtnVariant, BtnSize } from '@heartstampxo/design-system'
 
-// All component props are fully typed
-const variant: BtnVariant = 'default'   // 'default' | 'secondary' | 'outline' | 'ghost' | ...
-const size: BtnSize = 'lg'              // 'default' | 'sm' | 'lg' | 'xl' | 'icon' | ...
+// All component props are fully typed — no @types package needed
+const variant: BtnVariant = 'primary-ghost'
+// BtnVariant → 'default' | 'secondary' | 'outline' | 'primary-ghost' | 'secondary-ghost' | 'link' | 'destructive'
 
-// Props auto-complete in your IDE
+const size: BtnSize = 'lg'
+// BtnSize    → 'default' | 'sm' | 'lg' | 'xl' | 'icon-sm' | 'icon' | 'icon-lg' | 'icon-xl'
+
+// Props auto-complete in your IDE, full HTML button attributes pass through
 <Btn variant={variant} size={size} loading={false}>
   Save changes
 </Btn>`;
@@ -3468,7 +3472,7 @@ import { Inp, Lbl, Swt } from '@heartstampxo/design-system'
   /* ── shared styles ── */
   const stepNumStyle: React.CSSProperties = {
     width: 28, height: 28, borderRadius: "50%",
-    background: "var(--accent)", color: "#fff",
+    background: "var(--color-brand-primary)", color: "var(--color-text-on-primary)",
     display: "flex", alignItems: "center", justifyContent: "center",
     fontSize: 13, fontWeight: 700, flexShrink: 0, marginTop: 2,
   };
@@ -3478,15 +3482,15 @@ import { Inp, Lbl, Swt } from '@heartstampxo/design-system'
   };
 
   const sectionTitleStyle: React.CSSProperties = {
-    fontSize: 18, fontWeight: 700, color: "var(--fg)", letterSpacing: "-.02em", marginBottom: 4,
+    fontSize: 18, fontWeight: 700, color: "var(--color-text-primary)", letterSpacing: "-.02em", marginBottom: 4,
   };
 
   const bodyStyle: React.CSSProperties = {
-    fontSize: 13, color: "var(--muted-fg)", lineHeight: 1.7, marginBottom: 16,
+    fontSize: 13, color: "var(--color-text-secondary)", lineHeight: 1.7, marginBottom: 16,
   };
 
   const mono: React.CSSProperties = {
-    fontFamily: "monospace", background: "var(--muted)", padding: "1px 5px", borderRadius: 4,
+    fontFamily: "monospace", background: "var(--color-element-subtle)", padding: "1px 5px", borderRadius: 4,
   };
 
   /* ── CSS reference table data ── */
@@ -3514,18 +3518,31 @@ import { Inp, Lbl, Swt } from '@heartstampxo/design-system'
       {/* ── Header ── */}
       <div style={{ marginBottom: 36 }}>
         <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", marginBottom: 10 }}>
-          <h1 style={{ margin: 0, fontSize: 34, fontWeight: 900, color: "var(--fg)", letterSpacing: "-.03em", lineHeight: 1.1 }}>
+          <h1 style={{ margin: 0, fontSize: 34, fontWeight: 900, color: "var(--color-text-primary)", letterSpacing: "-.03em", lineHeight: 1.1 }}>
             Installation
           </h1>
           <CopyLinkButton />
         </div>
-        <p style={{ margin: 0, fontSize: 15, color: "var(--muted-fg)", lineHeight: 1.7, maxWidth: 600 }}>
+        <p style={{ margin: 0, fontSize: 15, color: "var(--color-text-secondary)", lineHeight: 1.7, maxWidth: 600 }}>
           Add <code style={mono}>@heartstampxo/design-system</code> to your React project in four steps.
           The library ships zero global CSS — components are self-contained and won't interfere with your app's existing styles.
         </p>
       </div>
 
-      <div style={{ height: 1, background: "var(--border)", marginBottom: 40 }} />
+      <div style={{ height: 1, background: "var(--color-element-subtle)", marginBottom: 24 }} />
+
+      {/* ── What's new ── */}
+      <div style={{ marginBottom: 32 }}>
+        <Callout variant="info">
+          <strong>What's new in v2.1.0</strong><br />
+          · New button variants: <code style={{ fontFamily: "monospace" }}>primary-ghost</code> (brand tint bg + brand text) and <code style={{ fontFamily: "monospace" }}>secondary-ghost</code> (neutral tint bg + secondary text)<br />
+          · Interactive <strong>Button Builder</strong> on the Button docs page — configure every option and copy the exact code<br />
+          · Bug fix: the <code style={{ fontFamily: "monospace" }}>loading</code> prop now correctly shows the built-in spinner (previously the demo was using <code style={{ fontFamily: "monospace" }}>disabled</code> instead)<br />
+          · <strong>Migration:</strong> <code style={{ fontFamily: "monospace" }}>variant="ghost"</code> no longer exists — replace with <code style={{ fontFamily: "monospace" }}>primary-ghost</code> or <code style={{ fontFamily: "monospace" }}>secondary-ghost</code>
+        </Callout>
+      </div>
+
+      <div style={{ height: 1, background: "var(--color-element-subtle)", marginBottom: 40 }} />
 
       {/* ── Step 1 — Prerequisites ── */}
       <div style={stepRowStyle}>
@@ -3536,21 +3553,21 @@ import { Inp, Lbl, Swt } from '@heartstampxo/design-system'
             Make sure your project meets these requirements before installing.
           </div>
 
-          <div style={{ border: "1px solid var(--border)", borderRadius: 10, overflow: "hidden", marginBottom: 20 }}>
+          <div style={{ border: "1px solid var(--color-element-subtle)", borderRadius: 10, overflow: "hidden", marginBottom: 20 }}>
             <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
               <thead>
-                <tr style={{ background: "var(--muted)", borderBottom: "1px solid var(--border)" }}>
+                <tr style={{ background: "var(--muted)", borderBottom: "1px solid var(--color-element-subtle)" }}>
                   {["Dependency", "Version", "Notes"].map(h => (
-                    <th key={h} style={{ padding: "9px 16px", textAlign: "left", fontWeight: 600, color: "var(--muted-fg)", fontSize: 11, textTransform: "uppercase", letterSpacing: ".05em" }}>{h}</th>
+                    <th key={h} style={{ padding: "9px 16px", textAlign: "left", fontWeight: 600, color: "var(--color-text-secondary)", fontSize: 11, textTransform: "uppercase", letterSpacing: ".05em" }}>{h}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
                 {prereqs.map((r, i) => (
-                  <tr key={r.label} style={{ borderBottom: i < prereqs.length - 1 ? "1px solid var(--border)" : "none" }}>
-                    <td style={{ padding: "10px 16px", fontWeight: 600, color: "var(--fg)", fontFamily: "monospace" }}>{r.label}</td>
-                    <td style={{ padding: "10px 16px", color: "var(--accent)", fontFamily: "monospace", fontWeight: 600 }}>{r.req}</td>
-                    <td style={{ padding: "10px 16px", color: "var(--muted-fg)" }}>{r.note}</td>
+                  <tr key={r.label} style={{ borderBottom: i < prereqs.length - 1 ? "1px solid var(--color-element-subtle)" : "none" }}>
+                    <td style={{ padding: "10px 16px", fontWeight: 600, color: "var(--color-text-primary)", fontFamily: "monospace" }}>{r.label}</td>
+                    <td style={{ padding: "10px 16px", color: "var(--color-brand-primary)", fontFamily: "monospace", fontWeight: 600 }}>{r.req}</td>
+                    <td style={{ padding: "10px 16px", color: "var(--color-text-secondary)" }}>{r.note}</td>
                   </tr>
                 ))}
               </tbody>
@@ -3601,7 +3618,7 @@ import { Inp, Lbl, Swt } from '@heartstampxo/design-system'
           <InstallBlock commands={installPkg} />
 
           <div style={{ marginTop: 20 }}>
-            <div style={{ fontSize: 15, fontWeight: 600, color: "var(--fg)", marginBottom: 8 }}>Import CSS</div>
+            <div style={{ fontSize: 15, fontWeight: 600, color: "var(--color-text-primary)", marginBottom: 8 }}>Import CSS</div>
             <div style={bodyStyle}>
               The library ships <strong>no global styles</strong>. You import only what you need. At minimum, import{" "}
               <code style={mono}>tokens.css</code> once at your app entry point. For each component that has
@@ -3632,15 +3649,16 @@ import { Inp, Lbl, Swt } from '@heartstampxo/design-system'
           </div>
 
           <Preview title="Btn + Bdg" code={firstComponentCode} filename="App.tsx" height={68}>
-            <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+            <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
               <Btn variant="default">Get started</Btn>
-              <Btn variant="outline">Learn more</Btn>
+              <Btn variant="primary-ghost">Learn more</Btn>
+              <Btn variant="outline">Outline</Btn>
               <Bdg variant="default">New</Bdg>
             </div>
           </Preview>
 
           <div style={{ marginTop: 20 }}>
-            <div style={{ fontSize: 15, fontWeight: 600, color: "var(--fg)", marginBottom: 8 }}>
+            <div style={{ fontSize: 15, fontWeight: 600, color: "var(--color-text-primary)", marginBottom: 8 }}>
               Inline-styled components (most <code style={{ fontFamily: "monospace", fontSize: 13 }}>hs-*</code> components)
             </div>
             <div style={bodyStyle}>
@@ -3652,37 +3670,37 @@ import { Inp, Lbl, Swt } from '@heartstampxo/design-system'
         </div>
       </div>
 
-      <div style={{ height: 1, background: "var(--border)", margin: "0 0 40px" }} />
+      <div style={{ height: 1, background: "var(--color-element-subtle)", margin: "0 0 40px" }} />
 
       {/* ── CSS Import Reference ── */}
       <div style={{ marginBottom: 40 }}>
-        <div style={{ fontSize: 22, fontWeight: 800, color: "var(--fg)", letterSpacing: "-.02em", marginBottom: 6 }}>CSS Import Reference</div>
-        <div style={{ fontSize: 13, color: "var(--muted-fg)", marginBottom: 20, lineHeight: 1.6 }}>
+        <div style={{ fontSize: 22, fontWeight: 800, color: "var(--color-text-primary)", letterSpacing: "-.02em", marginBottom: 6 }}>CSS Import Reference</div>
+        <div style={{ fontSize: 13, color: "var(--color-text-secondary)", marginBottom: 20, lineHeight: 1.6 }}>
           Which CSS files does each component need? The table below shows the minimum imports per component group.
           Import only what you use — unused CSS files have no effect but add unnecessary weight.
         </div>
 
-        <div style={{ border: "1px solid var(--border)", borderRadius: 10, overflow: "hidden" }}>
+        <div style={{ border: "1px solid var(--color-element-subtle)", borderRadius: 10, overflow: "hidden" }}>
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
             <thead>
-              <tr style={{ background: "var(--muted)", borderBottom: "1px solid var(--border)" }}>
+              <tr style={{ background: "var(--color-bg-muted)", borderBottom: "1px solid var(--color-element-subtle)" }}>
                 {["Component(s)", "Required CSS imports", "Notes"].map(h => (
-                  <th key={h} style={{ padding: "9px 16px", textAlign: "left", fontWeight: 600, color: "var(--muted-fg)", fontSize: 11, textTransform: "uppercase", letterSpacing: ".05em" }}>{h}</th>
+                  <th key={h} style={{ padding: "9px 16px", textAlign: "left", fontWeight: 600, color: "var(--color-text-secondary)", fontSize: 11, textTransform: "uppercase", letterSpacing: ".05em" }}>{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {cssTable.map((r, i) => (
-                <tr key={r.component} style={{ borderBottom: i < cssTable.length - 1 ? "1px solid var(--border)" : "none" }}>
-                  <td style={{ padding: "10px 16px", fontWeight: 600, color: "var(--fg)", fontFamily: "monospace", whiteSpace: "nowrap" }}>{r.component}</td>
+                <tr key={r.component} style={{ borderBottom: i < cssTable.length - 1 ? "1px solid var(--color-element-subtle)" : "none" }}>
+                  <td style={{ padding: "10px 16px", fontWeight: 600, color: "var(--color-text-primary)", fontFamily: "monospace", whiteSpace: "nowrap" }}>{r.component}</td>
                   <td style={{ padding: "10px 16px" }}>
                     <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                       {r.imports.map(imp => (
-                        <span key={imp} style={{ fontFamily: "monospace", fontSize: 12, background: "var(--accent-subtle)", color: "var(--accent)", padding: "2px 7px", borderRadius: 4 }}>{imp}</span>
+                        <span key={imp} style={{ fontFamily: "monospace", fontSize: 12, background: "var(--color-brand-primary-dim)", color: "var(--color-brand-primary)", padding: "2px 7px", borderRadius: 4 }}>{imp}</span>
                       ))}
                     </div>
                   </td>
-                  <td style={{ padding: "10px 16px", color: "var(--muted-fg)", fontSize: 12 }}>{r.note}</td>
+                  <td style={{ padding: "10px 16px", color: "var(--color-text-secondary)", fontSize: 12 }}>{r.note}</td>
                 </tr>
               ))}
             </tbody>
@@ -3698,8 +3716,8 @@ import { Inp, Lbl, Swt } from '@heartstampxo/design-system'
 
       {/* ── Dark Mode ── */}
       <div style={{ marginBottom: 40 }}>
-        <div style={{ fontSize: 22, fontWeight: 800, color: "var(--fg)", letterSpacing: "-.02em", marginBottom: 6 }}>Dark Mode</div>
-        <div style={{ fontSize: 13, color: "var(--muted-fg)", marginBottom: 20, lineHeight: 1.6 }}>
+        <div style={{ fontSize: 22, fontWeight: 800, color: "var(--color-text-primary)", letterSpacing: "-.02em", marginBottom: 6 }}>Dark Mode</div>
+        <div style={{ fontSize: 13, color: "var(--color-text-secondary)", marginBottom: 20, lineHeight: 1.6 }}>
           All design tokens have dark-mode overrides defined in <code style={mono}>tokens.css</code> under the <code style={mono}>.dark</code> class.
           Apply the class to <code style={mono}>{'<html>'}</code> or any ancestor element to activate dark mode for that subtree.
           No extra configuration needed — the CSS handles everything.
@@ -3709,8 +3727,8 @@ import { Inp, Lbl, Swt } from '@heartstampxo/design-system'
 
       {/* ── TypeScript ── */}
       <div style={{ marginBottom: 40 }}>
-        <div style={{ fontSize: 22, fontWeight: 800, color: "var(--fg)", letterSpacing: "-.02em", marginBottom: 6 }}>TypeScript</div>
-        <div style={{ fontSize: 13, color: "var(--muted-fg)", marginBottom: 20, lineHeight: 1.6 }}>
+        <div style={{ fontSize: 22, fontWeight: 800, color: "var(--color-text-primary)", letterSpacing: "-.02em", marginBottom: 6 }}>TypeScript</div>
+        <div style={{ fontSize: 13, color: "var(--color-text-secondary)", marginBottom: 20, lineHeight: 1.6 }}>
           The package ships full TypeScript types. All component props, variants, and sizes are typed and exported.
           No <code style={mono}>@types</code> package needed.
         </div>
@@ -3725,8 +3743,8 @@ import { Inp, Lbl, Swt } from '@heartstampxo/design-system'
 
       {/* ── Design System Philosophy ── */}
       <div style={{ marginBottom: 40 }}>
-        <div style={{ fontSize: 22, fontWeight: 800, color: "var(--fg)", letterSpacing: "-.02em", marginBottom: 6 }}>How the Design System Works</div>
-        <div style={{ fontSize: 13, color: "var(--muted-fg)", marginBottom: 20, lineHeight: 1.6 }}>
+        <div style={{ fontSize: 22, fontWeight: 800, color: "var(--color-text-primary)", letterSpacing: "-.02em", marginBottom: 6 }}>How the Design System Works</div>
+        <div style={{ fontSize: 13, color: "var(--color-text-secondary)", marginBottom: 20, lineHeight: 1.6 }}>
           HeartStamp components are <strong>black-box primitives</strong>. You import and use them — you do not style them.
           All visual decisions (spacing, color, radius, typography) live inside the design system and are owned by the design system team.
         </div>
@@ -3744,12 +3762,12 @@ import { Inp, Lbl, Swt } from '@heartstampxo/design-system'
         </div>
       </div>
 
-      <div style={{ height: 1, background: "var(--border)", margin: "0 0 40px" }} />
+      <div style={{ height: 1, background: "var(--color-element-subtle)", margin: "0 0 40px" }} />
 
       {/* ── Troubleshooting ── */}
       <div style={{ marginBottom: 8 }}>
-        <div style={{ fontSize: 22, fontWeight: 800, color: "var(--fg)", letterSpacing: "-.02em", marginBottom: 6 }}>Troubleshooting</div>
-        <div style={{ fontSize: 13, color: "var(--muted-fg)", marginBottom: 20, lineHeight: 1.6 }}>Common issues and how to fix them.</div>
+        <div style={{ fontSize: 22, fontWeight: 800, color: "var(--color-text-primary)", letterSpacing: "-.02em", marginBottom: 6 }}>Troubleshooting</div>
+        <div style={{ fontSize: 13, color: "var(--color-text-secondary)", marginBottom: 20, lineHeight: 1.6 }}>Common issues and how to fix them.</div>
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           <Callout variant="danger">
             <strong>Module not found: @heartstampxo/design-system</strong><br />
@@ -3775,12 +3793,19 @@ import { Inp, Lbl, Swt } from '@heartstampxo/design-system'
           <Callout variant="info">
             <strong>Node.js version</strong><br />
             Node.js ≥ 18 is required. Run <code style={mono}>node -v</code> to verify. Use{" "}
-            <a href="https://github.com/nvm-sh/nvm" target="_blank" rel="noreferrer" style={{ color: "var(--accent)" }}>nvm</a> or{" "}
-            <a href="https://volta.sh" target="_blank" rel="noreferrer" style={{ color: "var(--accent)" }}>Volta</a> to manage Node versions.
+            <a href="https://github.com/nvm-sh/nvm" target="_blank" rel="noreferrer" style={{ color: "var(--color-brand-primary)" }}>nvm</a> or{" "}
+            <a href="https://volta.sh" target="_blank" rel="noreferrer" style={{ color: "var(--color-brand-primary)" }}>Volta</a> to manage Node versions.
           </Callout>
           <Callout variant="info">
             <strong>TypeScript: Property 'variant' does not exist</strong><br />
             Ensure you have <code style={mono}>@heartstampxo/design-system</code> (not an old <code style={mono}>@heartstamp/design-system</code>) installed. The types are bundled — no separate <code style={mono}>@types</code> package is needed.
+          </Callout>
+          <Callout variant="info">
+            <strong><code style={mono}>variant="ghost"</code> no longer exists</strong><br />
+            The <code style={mono}>ghost</code> variant was split into two in v2.1.0:{" "}
+            <code style={mono}>primary-ghost</code> (brand-tinted background + brand text) and{" "}
+            <code style={mono}>secondary-ghost</code> (neutral-tinted background + secondary text).{" "}
+            Search your codebase for <code style={mono}>variant="ghost"</code> and replace with the appropriate variant.
           </Callout>
         </div>
       </div>
