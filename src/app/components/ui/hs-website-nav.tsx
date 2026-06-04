@@ -182,19 +182,29 @@ function NavAvatar({ src, fallback }: { src?: string; fallback: string }) {
 }
 
 /* ── Shared search clear button ─────────────────────────────── */
-function SearchClearBtn({ onClick }: { onClick: () => void }) {
+/* Built on Btn (plain variant) so its chrome — transparent fill,
+   neutral grey hover/press, no border — comes from the design system.
+   The clear-specific bits (muted colour, tight box so the 12px glyph
+   sits flush, pointer-events for use inside Inp adornments) are
+   encapsulated here so consumers render <SearchClearBtn/> with no
+   styling of their own. Exported for app reuse. */
+export function SearchClearBtn({ onClick }: { onClick: () => void }) {
   return (
-    <button
-      type="button"
+    <Btn
+      variant="plain"
+      size="icon-sm"
       onClick={onClick}
       aria-label="Clear search"
       style={{
-        background: "none", border: "none", cursor: "pointer", padding: 0,
-        display: "flex", color: "var(--color-text-secondary)", pointerEvents: "auto",
+        color: "var(--color-text-secondary)",
+        width: "auto",
+        height: "auto",
+        padding: 0,
+        pointerEvents: "auto",
       }}
     >
       <X size={12} />
-    </button>
+    </Btn>
   );
 }
 
