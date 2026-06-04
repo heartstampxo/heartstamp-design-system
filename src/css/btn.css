@@ -109,16 +109,17 @@
 .hs-btn--destructive:active { opacity: 0.8; }
 
 /* ── Variant: plain ─────────────────────────────────────────── */
-/* Naked icon/text button — no background, no border, inherits the
-   surrounding text colour (set via inline style in btn.tsx). For
-   affordances embedded in other components, e.g. an X clear inside
-   a search field. Hover/active dim with opacity only — no fill. */
+/* Naked icon/text button — no border, inherits the surrounding text
+   colour (set via inline style in btn.tsx). Transparent at rest;
+   on hover/press it fills with a neutral state background (no brand
+   tint). For affordances embedded in other components, e.g. an X
+   clear or a "Close" button inside a search field. */
 .hs-btn--plain {
   background: transparent;
   border-color: transparent;
 }
-.hs-btn--plain:hover  { opacity: 0.7; }
-.hs-btn--plain:active { opacity: 0.5; }
+.hs-btn--plain:hover  { background: var(--color-state-hover); }
+.hs-btn--plain:active { background: var(--color-state-pressed); }
 
 /* ── Variant: link ──────────────────────────────────────────── */
 .hs-btn--link {
