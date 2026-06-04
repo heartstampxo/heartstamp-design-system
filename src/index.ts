@@ -48,6 +48,7 @@ export * from './app/components/ui/tooltip';
 
 // ── HeartStamp components ────────────────────────────────────────────────────
 export * from './app/components/ui/btn';
+export * from './app/components/ui/hs-search-clear-btn';
 export * from './app/components/ui/hs-brand-btn';
 export * from './app/components/ui/hs-acc';
 export * from './app/components/ui/hs-alrt';

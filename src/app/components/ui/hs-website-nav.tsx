@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Search, FileHeart, ShoppingCart, Menu, X } from "lucide-react";
 import { Btn } from "./btn";
+import { SearchClearBtn } from "./hs-search-clear-btn";
 import { Sep } from "./hs-sep";
 import { HSLockup, HSEmblem } from "./hs-logo";
 import { Inp } from "./hs-inp";
@@ -181,32 +182,8 @@ function NavAvatar({ src, fallback }: { src?: string; fallback: string }) {
   );
 }
 
-/* ── Shared search clear button ─────────────────────────────── */
-/* Built on Btn (plain variant) so its chrome — transparent fill,
-   neutral grey hover/press, no border — comes from the design system.
-   The clear-specific bits (muted colour, tight box so the 12px glyph
-   sits flush, pointer-events for use inside Inp adornments) are
-   encapsulated here so consumers render <SearchClearBtn/> with no
-   styling of their own. Exported for app reuse. */
-export function SearchClearBtn({ onClick }: { onClick: () => void }) {
-  return (
-    <Btn
-      variant="plain"
-      size="icon-sm"
-      onClick={onClick}
-      aria-label="Clear search"
-      style={{
-        color: "var(--color-text-secondary)",
-        width: "auto",
-        height: "auto",
-        padding: 0,
-        pointerEvents: "auto",
-      }}
-    >
-      <X size={12} />
-    </Btn>
-  );
-}
+/* SearchClearBtn now lives in its own module (./hs-search-clear-btn)
+   and is imported at the top of this file. */
 
 /* ── Mobile search input ────────────────────────────────────── */
 function MobileSearchInp({
