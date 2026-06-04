@@ -118,8 +118,11 @@
   background: transparent;
   border-color: transparent;
 }
-.hs-btn--plain:hover  { background: var(--color-state-hover); }
-.hs-btn--plain:active { background: var(--color-state-pressed); }
+/* Use the more visible neutral greys (element-subtle / muted, ~10%)
+   rather than --color-state-* (~6%) so the hover/press fill reads
+   clearly even over translucent surfaces like a glassy navbar. */
+.hs-btn--plain:hover  { background: var(--color-element-subtle); }
+.hs-btn--plain:active { background: var(--muted); }
 
 /* ── Variant: link ──────────────────────────────────────────── */
 .hs-btn--link {
