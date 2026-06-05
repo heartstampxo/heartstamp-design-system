@@ -124,6 +124,12 @@
 .hs-btn--plain:hover  { background: var(--color-element-subtle); }
 .hs-btn--plain:active { background: var(--muted); }
 
+/* Opt-out modifier: a plain button with NO hover/press fill at all
+   (e.g. a clear-search X that should only ever show its glyph).
+   Declared after the plain rules so it wins at equal specificity. */
+.hs-btn--no-feedback:hover,
+.hs-btn--no-feedback:active { background: transparent; }
+
 /* ── Variant: link ──────────────────────────────────────────── */
 .hs-btn--link {
   background: transparent;

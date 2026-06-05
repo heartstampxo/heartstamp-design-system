@@ -18,6 +18,8 @@ export function SearchClearBtn({ onClick }: { onClick: () => void }) {
     <Btn
       variant="plain"
       size="icon-sm"
+      // no-feedback: the clear X shows only its glyph — no hover/press fill
+      className="hs-btn--no-feedback"
       onClick={onClick}
       aria-label="Clear search"
       style={{
