@@ -121,8 +121,12 @@
 /* Use the more visible neutral greys (element-subtle / muted, ~10%)
    rather than --color-state-* (~6%) so the hover/press fill reads
    clearly even over translucent surfaces like a glassy navbar. */
+/* Both states use DS-only --color-* tokens. Avoid shadcn-shared names
+   like --muted: consumers (e.g. an app using shadcn) redefine --muted
+   to a near-white, which would shadow the DS value and make the press
+   state appear white instead of grey. */
 .hs-btn--plain:hover  { background: var(--color-element-subtle); }
-.hs-btn--plain:active { background: var(--muted); }
+.hs-btn--plain:active { background: var(--color-element-subtle); }
 
 /* Opt-out modifier: a plain button with NO hover/press fill at all
    (e.g. a clear-search X that should only ever show its glyph).
