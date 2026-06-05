@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
+import pkg from "../../package.json";
 import { motion } from "motion/react";
 import { Btn } from "./components/ui/btn";
 import { AppleBtn, GoogleBtn, AmazonBtn, LinkBtn } from "./components/ui/hs-brand-btn";
@@ -76,6 +77,7 @@ import {
 } from "lucide-react";
 import * as LucideIcons from "lucide-react";
 import { PageCustomIcons } from "./pages/page-custom-icons";
+import { PageMascot } from "./pages/page-mascot";
 import { PageStyleSidebar } from "./pages/page-style-sidebar";
 import { BtnBuilder } from "./pages/page-btn-builder";
 import { NAV, ALL_ITEMS, LABEL_COLORS } from "./nav-config";
@@ -5188,6 +5190,7 @@ const PAGES: Record<string, any> = {
   icons: PageIcons,
   "custom-icons": PageCustomIcons,
   logos: PageLogos,
+  mascot: PageMascot,
   theming: PageTheming,
   "tokens-color": PageTokensColor,
   "tokens-typography": PageTokensTypography,
@@ -5352,7 +5355,7 @@ export default function App() {
           <span style={{
             fontSize: 10, padding: "2px 7px", borderRadius: 999, background: "var(--muted)",
             color: "var(--muted-fg)", border: "1px solid var(--border)", fontWeight: 600
-          }}>v1.5</span>
+          }}>v{pkg.version}</span>
         </div>
 
         <div style={{ flex: 1 }} />

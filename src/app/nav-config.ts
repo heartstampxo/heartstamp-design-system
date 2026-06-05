@@ -21,6 +21,7 @@ export const NAV = [
       { title: "Icons",         id: "icons" },
       { title: "Custom Icons",  id: "custom-icons", label: "new" },
       { title: "Branding",      id: "logos", label: "new" },
+      { title: "Mascot",        id: "mascot", label: "new" },
     ]
   },
   {
