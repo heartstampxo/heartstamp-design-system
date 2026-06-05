@@ -3459,10 +3459,12 @@ const size: BtnSize = 'lg'
   Save changes
 </Btn>`;
 
-  const inpUsageCode = `// Inp, Tarea, Lbl, Swt, Cbx, Rdo, Sel, Sldr, Prg, Skl — all use inline styles.
-// tokens.css is the only CSS import needed for these components.
+  const inpUsageCode = `// Tarea, Lbl, Swt, Cbx, Rdo, Sel, Sldr, Prg, Skl — all use inline styles
+// (tokens.css only). Inp now uses a dedicated stylesheet — import inp.css too,
+// or the input renders unstyled.
 
 import '@heartstampxo/design-system/tokens.css'
+import '@heartstampxo/design-system/inp.css'
 import { Inp, Lbl, Swt } from '@heartstampxo/design-system'
 
 <Lbl>Email</Lbl>
@@ -3495,8 +3497,10 @@ import { Inp, Lbl, Swt } from '@heartstampxo/design-system'
 
   /* ── CSS reference table data ── */
   const cssTable = [
-    { component: "Btn", imports: ["tokens.css", "btn.css"], note: "Only component with a dedicated CSS file in v2" },
-    { component: "Inp, Tarea", imports: ["tokens.css"], note: "Pure inline styles — tokens.css only" },
+    { component: "Btn", imports: ["tokens.css", "btn.css"], note: "Per-component CSS file" },
+    { component: "Inp", imports: ["tokens.css", "inp.css"], note: "Per-component CSS file" },
+    { component: "SearchClearBtn, SearchCloseBtn", imports: ["tokens.css", "btn.css"], note: "Built on Btn — needs btn.css" },
+    { component: "Tarea", imports: ["tokens.css"], note: "Pure inline styles — tokens.css only" },
     { component: "Lbl, Kbd, Sep", imports: ["tokens.css"], note: "Pure inline styles — tokens.css only" },
     { component: "Bdg, Avt, Alrt", imports: ["tokens.css"], note: "Pure inline styles — tokens.css only" },
     { component: "Swt, Cbx, Rdo", imports: ["tokens.css"], note: "Pure inline styles — tokens.css only" },
