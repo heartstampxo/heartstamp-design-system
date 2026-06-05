@@ -27,7 +27,9 @@ export function SearchCloseBtn({
       size="sm"
       className={className}
       onClick={onClick}
-      style={{ fontSize: "var(--font-size-body-13)" }}
+      // paddingTop nudges the label 1px down so its baseline lines up
+      // with the adjacent search input / nav items.
+      style={{ fontSize: "var(--font-size-body-13)", paddingTop: "1px" }}
     >
       {children}
     </Btn>
