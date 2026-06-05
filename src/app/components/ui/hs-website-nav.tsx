@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Search, FileHeart, ShoppingCart, Menu, X } from "lucide-react";
 import { Btn } from "./btn";
+import { SearchClearBtn } from "./hs-search-clear-btn";
 import { Sep } from "./hs-sep";
 import { HSLockup, HSEmblem } from "./hs-logo";
 import { Inp } from "./hs-inp";
@@ -181,22 +182,8 @@ function NavAvatar({ src, fallback }: { src?: string; fallback: string }) {
   );
 }
 
-/* ── Shared search clear button ─────────────────────────────── */
-function SearchClearBtn({ onClick }: { onClick: () => void }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-label="Clear search"
-      style={{
-        background: "none", border: "none", cursor: "pointer", padding: 0,
-        display: "flex", color: "var(--color-text-secondary)", pointerEvents: "auto",
-      }}
-    >
-      <X size={12} />
-    </button>
-  );
-}
+/* SearchClearBtn now lives in its own module (./hs-search-clear-btn)
+   and is imported at the top of this file. */
 
 /* ── Mobile search input ────────────────────────────────────── */
 function MobileSearchInp({

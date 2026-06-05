@@ -1,10 +1,15 @@
-import React, { useState } from "react";
+import React from "react";
 import { Lbl } from "./hs-lbl";
 import { Kbd, KbdGroup } from "./hs-kbd";
+import { cn } from "./utils";
 
 /* ─────────────────────────────────────────────────────────────
    hs-inp — HeartStamp Input primitive
-   Supports: plain, icon-left, icon-right, kbd shortcut, label
+   ·  Supports: plain, icon-left, icon-right, kbd shortcut, label
+   ·  Visual rules live in inp.css (.hs-inp*) — no inline styles,
+      no Tailwind utilities in this file
+   ·  Focus / error / disabled handled by CSS pseudo-classes and
+      BEM modifiers (no JS focus state)
 ───────────────────────────────────────────────────────────────*/
 
 interface InpProps {
@@ -16,6 +21,8 @@ interface InpProps {
   error?: boolean;
   id?: string;
   style?: React.CSSProperties;
+  /** Extra class names merged onto the input element. */
+  className?: string;
   /** Label rendered above the input */
   label?: string;
   /** Icon node rendered on the left side */
@@ -30,25 +37,13 @@ interface InpProps {
 /* ── Input ──────────────────────────────────────────────────── */
 export function Inp({
   placeholder, value, onChange, type = "text",
-  disabled, error, id, style, label, iconLeft, iconRight, kbd,
+  disabled, error, id, style, className, label, iconLeft, iconRight, kbd,
 }: InpProps) {
-  const [focused, setFocused] = useState(false);
-
-  const borderColor = error
-    ? "var(--state-error)"
-    : focused
-      ? "var(--secondary)"
-      : "var(--border)";
-
   const kbdKeys = kbd
     ? (Array.isArray(kbd) ? kbd : [kbd])
     : null;
 
   const hasRight = iconRight || kbdKeys;
-
-  /* padding offsets so text never slides under icons / kbd */
-  const padLeft  = iconLeft ? "calc(var(--space-3) + var(--space-5))" : "var(--inp-padding-x, var(--space-3))";
-  const padRight = hasRight ? "calc(var(--space-3) + var(--space-10))" : "var(--inp-padding-x, var(--space-3))";
 
   const inputEl = (
     <input
@@ -58,24 +53,14 @@ export function Inp({
       value={value}
       onChange={onChange}
       disabled={disabled}
-      onFocus={() => setFocused(true)}
-      onBlur={() => setFocused(false)}
-      style={{
-        width: "100%",
-        padding: `var(--inp-padding-y, 9px) ${padRight} var(--inp-padding-y, 9px) ${padLeft}`,
-        borderRadius: "var(--radius-input)",
-        border: `1px solid ${borderColor}`,
-        background: "var(--bg-input)",
-        color: "var(--fg)",
-        fontSize: "var(--font-size-inp)" as React.CSSProperties["fontSize"],
-        fontFamily: "inherit",
-        outline: "none",
-        opacity: disabled ? ("var(--inp-opacity-disabled)" as React.CSSProperties["opacity"]) : 1,
-        cursor: disabled ? "not-allowed" : "auto",
-        transition: "border-color 0.15s ease",
-        boxSizing: "border-box",
-        ...style,
-      }}
+      className={cn(
+        "hs-inp__field",
+        iconLeft && "hs-inp__field--icon-left",
+        hasRight && "hs-inp__field--icon-right",
+        error && "hs-inp__field--error",
+        className,
+      )}
+      style={style}
     />
   );
 
@@ -83,17 +68,13 @@ export function Inp({
   if (!iconLeft && !hasRight && !label) return inputEl;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
+    <div className="hs-inp">
       {label && <Lbl htmlFor={id}>{label}</Lbl>}
 
-      <div style={{ position: "relative", display: "flex", alignItems: "center", width: "100%" }}>
+      <div className="hs-inp__control">
         {/* Left icon */}
         {iconLeft && (
-          <span style={{
-            position: "absolute", left: "var(--space-3)",
-            display: "flex", alignItems: "center",
-            color: "var(--muted-fg)", pointerEvents: "none", zIndex: 1,
-          }}>
+          <span className="hs-inp__adornment hs-inp__adornment--left">
             {iconLeft}
           </span>
         )}
@@ -102,21 +83,14 @@ export function Inp({
 
         {/* Right icon */}
         {iconRight && !kbdKeys && (
-          <span style={{
-            position: "absolute", right: "var(--space-3)",
-            display: "flex", alignItems: "center",
-            color: "var(--muted-fg)", pointerEvents: "none", zIndex: 1,
-          }}>
+          <span className="hs-inp__adornment hs-inp__adornment--right">
             {iconRight}
           </span>
         )}
 
         {/* Right kbd */}
         {kbdKeys && (
-          <span style={{
-            position: "absolute", right: "var(--space-3)",
-            display: "flex", alignItems: "center", zIndex: 1,
-          }}>
+          <span className="hs-inp__adornment hs-inp__adornment--kbd">
             <KbdGroup>
               {kbdKeys.map(k => <Kbd key={k}>{k}</Kbd>)}
             </KbdGroup>

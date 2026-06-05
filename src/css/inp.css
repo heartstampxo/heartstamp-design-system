@@ -1,0 +1,89 @@
+/*
+ * HeartStamp Design System — inp.css
+ *
+ * Self-contained styles for the Inp (Input) component.
+ * No Tailwind utilities. No bare-element selectors.
+ * Requires tokens.css to be imported first.
+ *
+ * Usage:
+ *   @import "@heartstampxo/design-system/tokens.css";
+ *   @import "@heartstampxo/design-system/inp.css";
+ */
+
+/* ── Wrapper (present only when label / adornments are used) ── */
+.hs-inp {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* ── Control row (input + absolutely-positioned adornments) ── */
+.hs-inp__control {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+/* ── Field (the <input>) ────────────────────────────────────── */
+.hs-inp__field {
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--inp-padding-y, 9px) var(--inp-padding-x, var(--space-3));
+  border-radius: var(--radius-input);
+  border: 1px solid var(--border);
+  background: var(--bg-input);
+  color: var(--fg);
+  font-family: inherit;
+  font-size: var(--font-size-inp);
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.hs-inp__field:focus {
+  border-color: var(--secondary);
+}
+
+.hs-inp__field:disabled {
+  opacity: var(--inp-opacity-disabled);
+  cursor: not-allowed;
+}
+
+/* ── Modifier: error state ──────────────────────────────────── */
+.hs-inp__field--error,
+.hs-inp__field--error:focus {
+  border-color: var(--state-error);
+}
+
+/* ── Modifiers: padding offsets so text never slides under
+      icons / kbd hints (match the legacy inline offsets) ────── */
+.hs-inp__field--icon-left {
+  padding-left: calc(var(--space-3) + var(--space-5));
+}
+.hs-inp__field--icon-right {
+  padding-right: calc(var(--space-3) + var(--space-10));
+}
+
+/* ── Adornments (left icon / right icon / kbd hint) ─────────── */
+.hs-inp__adornment {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  z-index: 1;
+}
+.hs-inp__adornment--left {
+  left: var(--space-3);
+  color: var(--muted-fg);
+  pointer-events: none;
+}
+.hs-inp__adornment--right {
+  right: var(--space-3);
+  color: var(--muted-fg);
+  pointer-events: none;
+}
+/* kbd hints are interactive-looking but still non-interactive;
+   the KbdGroup carries its own styling */
+.hs-inp__adornment--kbd {
+  right: var(--space-3);
+  pointer-events: none;
+}

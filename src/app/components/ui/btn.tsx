@@ -24,6 +24,10 @@ const COLOR_MAP: Record<string, string> = {
   "secondary-ghost":"var(--color-brand-secondary)",
   link:             "var(--color-element-link)",
   destructive:      "var(--color-text-on-primary)",
+  // `plain` is a naked icon/text button: no background, no border, and it
+  // inherits the surrounding text colour. Built for affordances embedded
+  // inside other components (e.g. an X clear inside a search field).
+  plain:            "inherit",
 };
 
 const btnVariants = cva(
@@ -41,6 +45,7 @@ const btnVariants = cva(
         "secondary-ghost":"hs-btn--secondary-ghost",
         link:             "hs-btn--link",
         destructive:      "hs-btn--destructive",
+        plain:            "hs-btn--plain",
       },
 
       /* ── size variants ──────────────────────────────────────── */

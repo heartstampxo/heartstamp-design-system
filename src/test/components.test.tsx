@@ -91,9 +91,11 @@ describe('component behavior and style contracts', () => {
     const button = screen.getByRole('button', { name: 'Donate' });
     expect(button).toBeDisabled();
     expect(button).toHaveClass('custom-btn');
-    expect(button.className).toContain('bg-[var(--color-brand-secondary)]');
-    expect(button.className).toContain('h-[44px]');
-    expect(button).toHaveStyle({ color: 'var(--color-text-disabled)' });
+    // Btn emits BEM classes (since the v2 per-component-CSS migration),
+    // not Tailwind utilities; text colour is applied inline per variant.
+    expect(button.className).toContain('hs-btn--secondary');
+    expect(button.className).toContain('hs-btn--size-lg');
+    expect(button).toHaveStyle({ color: 'var(--color-text-on-secondary)' });
   });
 
   it('applies Bdg variant styles', () => {

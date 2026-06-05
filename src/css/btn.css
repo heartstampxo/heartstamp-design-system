@@ -108,6 +108,32 @@
 .hs-btn--destructive:hover  { opacity: 0.9; }
 .hs-btn--destructive:active { opacity: 0.8; }
 
+/* ── Variant: plain ─────────────────────────────────────────── */
+/* Naked icon/text button — no border, inherits the surrounding text
+   colour (set via inline style in btn.tsx). Transparent at rest;
+   on hover/press it fills with a neutral state background (no brand
+   tint). For affordances embedded in other components, e.g. an X
+   clear or a "Close" button inside a search field. */
+.hs-btn--plain {
+  background: transparent;
+  border-color: transparent;
+}
+/* Use the more visible neutral greys (element-subtle / muted, ~10%)
+   rather than --color-state-* (~6%) so the hover/press fill reads
+   clearly even over translucent surfaces like a glassy navbar. */
+/* Both states use DS-only --color-* tokens. Avoid shadcn-shared names
+   like --muted: consumers (e.g. an app using shadcn) redefine --muted
+   to a near-white, which would shadow the DS value and make the press
+   state appear white instead of grey. */
+.hs-btn--plain:hover  { background: var(--color-element-subtle); }
+.hs-btn--plain:active { background: var(--color-element-subtle); }
+
+/* Opt-out modifier: a plain button with NO hover/press fill at all
+   (e.g. a clear-search X that should only ever show its glyph).
+   Declared after the plain rules so it wins at equal specificity. */
+.hs-btn--no-feedback:hover,
+.hs-btn--no-feedback:active { background: transparent; }
+
 /* ── Variant: link ──────────────────────────────────────────── */
 .hs-btn--link {
   background: transparent;
