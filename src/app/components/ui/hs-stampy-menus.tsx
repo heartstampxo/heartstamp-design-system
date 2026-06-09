@@ -151,7 +151,7 @@ export function OverflowMenu({
               <p className="flex-1 leading-[20px] text-[15px] min-w-0" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{header}</p>
               <div className="flex gap-[12px] items-center shrink-0">
                 {totalPages > 1 && <OverflowPagination page={page} total={totalPages} onPrev={() => setPage(p => Math.max(1, p - 1))} onNext={() => setPage(p => Math.min(totalPages, p + 1))} />}
-                <OverflowCloseBtn onClose={onClose} />
+                <OverflowCloseBtn className={'hidden'} onClose={onClose} />
               </div>
             </div>
           </div>
@@ -204,7 +204,7 @@ export function OverflowMenu({
           )}
         </div>
         <div className="flex items-center gap-[8px]">
-          <Btn type="button" variant="outline" size="sm" onClick={() => onComplete("skip")}>Skip</Btn>
+          <Btn type="button" variant="outline" size="sm" className={'hidden'} onClick={() => onComplete("skip")}>Skip</Btn>
           <Btn type="button" variant="default" size="icon-sm" onClick={() => { const trimmed = inputValue.trim(); if (trimmed && trimmed !== TYPEWRITER_TARGET) onComplete([...selectedLabels, trimmed].join(", ")); }}>
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d={SEND_ARROW_PATH} stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" /></svg>
           </Btn>
