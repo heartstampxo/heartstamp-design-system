@@ -172,11 +172,43 @@ import type { OverflowPage } from '@heartstamp/design-system';
           </div>
         </Preview>
 
+        <Preview
+          title="With Show More (single page only)"
+          height={320}
+          code={`<OverflowMenu
+  pages={[{
+    question: "What kind of vibe are you going for?",
+    options: [
+      { num: "1", label: "Funny" },
+      { num: "2", label: "Sentimental" },
+      { num: "3", label: "Serious / Heartfelt" },
+      { num: "4", label: "Celebratory" },
+      { num: "5", label: "Formal" },
+    ],
+  }]}
+  inputPlaceholder="Type your own"
+  onClose={() => setOpen(false)}
+  onComplete={(label) => handleAnswer(label)}
+  onShowMore={() => openFullList()}
+/>`}
+        >
+          <div style={MENU_WRAPPER_STYLE}>
+            <OverflowMenu
+              pages={[{ question: "What kind of vibe are you going for?", options: VIBE_OPTIONS }]}
+              inputPlaceholder="Type your own"
+              onClose={NOOP}
+              onComplete={NOOP}
+              onShowMore={() => alert("Show More clicked")}
+            />
+          </div>
+        </Preview>
+
         <PropsTable props={[
           { name: "pages",            type: "OverflowPage[]",        def: "(required)", required: true, desc: "Array of pages — each has a question string and options array ({ num, label })" },
           { name: "onComplete",       type: "(label: string) => void", def: "(required)", required: true, desc: "Called with the selected option label when the user picks an item or submits free text" },
           { name: "onClose",          type: "() => void",            def: "(required)", required: true, desc: "Called when the × close button is tapped" },
           { name: "inputPlaceholder", type: "string",                def: '"Type your own"',            desc: "Placeholder text for the free-text input row at the bottom" },
+          { name: "onShowMore",       type: "() => void",            def: "—",                          desc: "When provided, renders a Show More button below the list. Only shown when there is a single page." },
         ]} />
       </DocSection>
 
@@ -216,11 +248,41 @@ import type { ChecklistPage } from '@heartstamp/design-system';
             />
           </div>
         </Preview>
+        <Preview
+          title="With Show More"
+          height={380}
+          code={`<ChecklistOverflowMenu
+  pages={[{
+    question: "What are they into?",
+    items: [
+      { id: "cooking", label: "Cooking" },
+      { id: "hiking",  label: "Hiking" },
+      { id: "gaming",  label: "Gaming" },
+    ],
+  }]}
+  inputPlaceholder="You make the call"
+  onClose={() => setOpen(false)}
+  onComplete={(selected) => handleAnswer(selected)}
+  onShowMore={() => openFullList()}
+/>`}
+        >
+          <div style={MENU_WRAPPER_STYLE}>
+            <ChecklistOverflowMenu
+              pages={[{ question: "What are they into?", items: INTEREST_ITEMS }]}
+              inputPlaceholder="You make the call"
+              onClose={NOOP}
+              onComplete={NOOP}
+              onShowMore={() => alert("Show More clicked")}
+            />
+          </div>
+        </Preview>
+
         <PropsTable props={[
           { name: "pages",            type: "ChecklistPage[]",           def: "(required)", required: true, desc: "Array of pages — each has a question string and items array ({ id, label })" },
           { name: "onComplete",       type: "(selected: string[]) => void", def: "(required)", required: true, desc: "Called with an array of selected labels (plus any free-text input) when the user taps Send" },
           { name: "onClose",          type: "() => void",                def: "(required)", required: true, desc: "Called when the × close button is tapped" },
           { name: "inputPlaceholder", type: "string",                    def: '"You make the call"',         desc: "Placeholder text for the free-text input row at the bottom" },
+          { name: "onShowMore",       type: "() => void",                def: "—",                          desc: "When provided, renders a Show More button below the checklist items and above the input" },
         ]} />
       </DocSection>
 
@@ -267,12 +329,37 @@ import type { TemplateCard } from '@heartstamp/design-system';
             />
           </div>
         </Preview>
+        <Preview
+          title="With Show More"
+          height={440}
+          code={`<TemplateOverflowMenu
+  header="Pick a template"
+  cards={[...]}
+  inputPlaceholder="Something else"
+  onClose={() => setOpen(false)}
+  onComplete={(label) => handleAnswer(label)}
+  onShowMore={() => openAllTemplates()}
+/>`}
+        >
+          <div style={MENU_WRAPPER_STYLE}>
+            <TemplateOverflowMenu
+              header="Pick a template"
+              cards={TEMPLATE_CARDS}
+              inputPlaceholder="Something else"
+              onClose={NOOP}
+              onComplete={NOOP}
+              onShowMore={() => alert("Show More clicked")}
+            />
+          </div>
+        </Preview>
+
         <PropsTable props={[
           { name: "header",           type: "string",               def: "(required)", required: true, desc: "Heading text shown above the card grid" },
           { name: "cards",            type: "TemplateCard[]",        def: "(required)", required: true, desc: "Array of template cards — each has: num, title, front, insideBody, giftMessage, and optional insideHeading" },
           { name: "onComplete",       type: "(label: string) => void", def: "(required)", required: true, desc: "Called with a formatted description string when the user selects a card or submits free text" },
           { name: "onClose",          type: "() => void",            def: "(required)", required: true, desc: "Called when the × close button is tapped" },
           { name: "inputPlaceholder", type: "string",                def: '"Something else"',           desc: "Placeholder for the custom text input at the bottom" },
+          { name: "onShowMore",       type: "() => void",            def: "—",                          desc: "When provided, renders a Show More button between the card grid and the custom input" },
         ]} />
       </DocSection>
 
