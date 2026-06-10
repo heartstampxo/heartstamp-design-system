@@ -88,7 +88,7 @@ function OverflowInput({
         />
       </div>
       <div className="flex items-center gap-[8px]">
-        <Btn type="button" variant="outline" size="sm" className="hidden" onClick={onSkip}>Skip</Btn>
+        <Btn type="button" variant="outline" size="sm" className="!hidden" onClick={onSkip}>Skip</Btn>
         <Btn type="button" variant="default" size="icon-sm" onClick={onSend}>
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
             <path d={SEND_ARROW_PATH} stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
@@ -102,9 +102,9 @@ function OverflowInput({
 // ── OverflowMenu ───────────────────────────────────────────────────────────
 
 export function OverflowMenu({
-  pages, inputPlaceholder, onClose, onComplete, onShowMore,
+  pages, inputPlaceholder, onClose, onComplete, onShowMore, isLoadingShowMore,
 }: {
-  pages: OverflowPage[]; inputPlaceholder?: string; onClose: () => void; onComplete: (label: string) => void; onShowMore?: () => void;
+  pages: OverflowPage[]; inputPlaceholder?: string; onClose: () => void; onComplete: (label: string) => void; onShowMore?: () => void; isLoadingShowMore?: boolean;
 }) {
   const totalPages = pages.length;
   const [page, setPage] = useState(1);
@@ -160,27 +160,33 @@ export function OverflowMenu({
             </div>
           </div>
 
-          {items.map((item) => (
-            <div
-              key={item.num}
-              className="flex gap-[8px] items-center h-[36px] px-[8px] py-[6px] w-full rounded-[6px] transition-colors cursor-pointer"
-              {...hoverItem}
-              onClick={() => handleItemClick(item)}
-            >
-              <NumBadge num={item.num} />
-              <p className="flex-1 leading-[20px] text-[14px] truncate min-w-0" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{item.label}</p>
-            </div>
-          ))}
+          <div className={'w-full max-h-[200px] overflow-y-auto scrollbar-thin scrollbar-thumb-muted-foreground scrollbar-track-transparent'}>
+            {items.map((item) => (
+              <div
+                key={item.num}
+                className="flex gap-[8px] items-center h-[36px] px-[8px] py-[6px] w-full rounded-[6px] transition-colors cursor-pointer"
+                {...hoverItem}
+                onClick={() => handleItemClick(item)}
+              >
+                <NumBadge num={item.num} />
+                <p className="flex-1 leading-[20px] text-[14px] truncate min-w-0" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{item.label}</p>
+              </div>
+            ))}
+          </div>
         </motion.div>
       </AnimatePresence>
 
       {onShowMore && totalPages === 1 && (
         <button
-          className="flex items-center w-full py-[6px] px-[8px] rounded-[6px] transition-colors cursor-pointer"
-          onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-element-subtle)")}
+          className="flex items-center gap-[6px] w-full py-[6px] px-[8px] rounded-[6px] transition-colors cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
+          onMouseEnter={e => { if (!isLoadingShowMore) e.currentTarget.style.backgroundColor = "var(--color-element-subtle)"; }}
           onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")}
           onClick={onShowMore}
+          disabled={isLoadingShowMore}
         >
+          {isLoadingShowMore
+            ? <svg className="shrink-0 animate-spin" width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="var(--color-brand-primary)" strokeWidth="1.5" strokeDasharray="20 12" /></svg>
+            : null}
           <p className="text-[13px] leading-[20px]" style={{ ...dmSans500, color: "var(--color-text-secondary)" }}>Show More</p>
         </button>
       )}
@@ -228,9 +234,9 @@ export function OverflowMenu({
 // ── ChecklistOverflowMenu ──────────────────────────────────────────────────
 
 export function ChecklistOverflowMenu({
-  pages: checklistPages, inputPlaceholder, onClose, onComplete, onShowMore,
+  pages: checklistPages, inputPlaceholder, onClose, onComplete, onShowMore, isLoadingShowMore,
 }: {
-  pages: ChecklistPage[]; inputPlaceholder?: string; onClose: () => void; onComplete: (selected: string[]) => void; onShowMore?: () => void;
+  pages: ChecklistPage[]; inputPlaceholder?: string; onClose: () => void; onComplete: (selected: string[]) => void; onShowMore?: () => void; isLoadingShowMore?: boolean;
 }) {
   const [page, setPage] = useState(0);
   const totalPages = checklistPages.length;
@@ -265,7 +271,7 @@ export function ChecklistOverflowMenu({
         </div>
 
         <AnimatePresence mode="wait">
-          <motion.div key={page} className="w-full flex flex-col" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} transition={{ type: "spring", stiffness: 380, damping: 28 }}>
+          <motion.div key={page} className="w-full flex flex-col max-h-[200px] overflow-y-auto scrollbar-thin scrollbar-thumb-muted-foreground scrollbar-track-transparent" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} transition={{ type: "spring", stiffness: 380, damping: 28 }}>
             {currentPageData.items.map((item) => {
               const checked = selected.has(item.id);
               return (
@@ -283,11 +289,15 @@ export function ChecklistOverflowMenu({
 
       {onShowMore && (
         <button
-          className="flex items-center w-full py-[6px] px-[8px] rounded-[6px] transition-colors cursor-pointer"
-          onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-element-subtle)")}
+          className="flex items-center gap-[6px] w-full py-[6px] px-[8px] rounded-[6px] transition-colors cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
+          onMouseEnter={e => { if (!isLoadingShowMore) e.currentTarget.style.backgroundColor = "var(--color-element-subtle)"; }}
           onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")}
           onClick={onShowMore}
+          disabled={isLoadingShowMore}
         >
+          {isLoadingShowMore
+            ? <svg className="shrink-0 animate-spin" width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="var(--color-brand-primary)" strokeWidth="1.5" strokeDasharray="20 12" /></svg>
+            : null}
           <p className="text-[13px] leading-[20px]" style={{ ...dmSans500, color: "var(--color-text-secondary)" }}>Show More</p>
         </button>
       )}
@@ -307,9 +317,9 @@ export function ChecklistOverflowMenu({
 // ── TemplateOverflowMenu ───────────────────────────────────────────────────
 
 export function TemplateOverflowMenu({
-  header, cards, inputPlaceholder, onClose, onComplete, onShowMore,
+  header, cards, inputPlaceholder, onClose, onComplete, onShowMore, isLoadingShowMore,
 }: {
-  header: string; cards: TemplateCard[]; inputPlaceholder?: string; onClose: () => void; onComplete: (label: string) => void; onShowMore?: () => void;
+  header: string; cards: TemplateCard[]; inputPlaceholder?: string; onClose: () => void; onComplete: (label: string) => void; onShowMore?: () => void; isLoadingShowMore?: boolean;
 }) {
   const [customInput, setCustomInput] = useState("");
   const CARDS_PER_PAGE = 2;
@@ -352,11 +362,15 @@ export function TemplateOverflowMenu({
       {onShowMore && (
         <div className="px-[8px] w-full">
           <button
-            className="flex items-center justify-center w-full py-[6px] px-[8px] rounded-[6px] transition-colors cursor-pointer"
-            onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-element-subtle)")}
+            className="flex items-center justify-center gap-[6px] w-full py-[6px] px-[8px] rounded-[6px] transition-colors cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
+            onMouseEnter={e => { if (!isLoadingShowMore) e.currentTarget.style.backgroundColor = "var(--color-element-subtle)"; }}
             onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")}
             onClick={onShowMore}
+            disabled={isLoadingShowMore}
           >
+            {isLoadingShowMore
+              ? <svg className="shrink-0 animate-spin" width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="var(--color-brand-primary)" strokeWidth="1.5" strokeDasharray="20 12" /></svg>
+              : null}
             <p className="text-[13px] leading-[20px]" style={{ ...dmSans500, color: "var(--color-text-secondary)" }}>Show More</p>
           </button>
         </div>
