@@ -164,12 +164,12 @@ export function OverflowMenu({
             {items.map((item) => (
               <div
                 key={item.num}
-                className="flex gap-[8px] items-center h-[36px] px-[8px] py-[6px] w-full rounded-[6px] transition-colors cursor-pointer"
+                className="flex gap-[8px] items-center min-h-[36px] px-[8px] py-[6px] w-full rounded-[6px] transition-colors cursor-pointer"
                 {...hoverItem}
                 onClick={() => handleItemClick(item)}
               >
                 <NumBadge num={item.num} />
-                <p className="flex-1 leading-[20px] text-[14px] truncate min-w-0" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{item.label}</p>
+                <p className="flex-1 leading-[20px] text-[14px] min-w-0" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{item.label}</p>
               </div>
             ))}
           </div>
@@ -214,7 +214,7 @@ export function OverflowMenu({
               spellCheck={false}
             />
           ) : (
-            <span className="flex-1 leading-[20px] text-[14px] truncate min-w-0 select-none" style={{ ...dmSans400, color: "var(--color-text-secondary)" }}>
+            <span className="flex-1 leading-[20px] text-[14px] min-w-0 select-none" style={{ ...dmSans400, color: "var(--color-text-secondary)" }}>
               {typewriterText}
               <motion.span className="inline-block w-[1px] h-[12px] ml-[1px] align-middle" style={{ backgroundColor: "var(--color-text-secondary)" }} animate={{ opacity: [1, 1, 0, 0] }} transition={{ repeat: Infinity, duration: 0.7, times: [0, 0.45, 0.5, 1] }} />
             </span>
@@ -275,11 +275,11 @@ export function ChecklistOverflowMenu({
             {currentPageData.items.map((item) => {
               const checked = selected.has(item.id);
               return (
-                <div key={item.id} className="flex gap-[8px] items-center h-[36px] px-[8px] py-[6px] rounded-[6px] w-full cursor-pointer transition-colors" {...hoverItem} onClick={() => toggleItem(item.id)}>
+                <div key={item.id} className="flex gap-[8px] items-center min-h-[36px] px-[8px] py-[6px] rounded-[6px] w-full cursor-pointer transition-colors" {...hoverItem} onClick={() => toggleItem(item.id)}>
                   <div className="relative rounded-[4px] shrink-0 size-[16px] flex items-center justify-center transition-colors duration-150" style={{ backgroundColor: checked ? "var(--color-brand-primary)" : "transparent", border: checked ? "1px solid var(--color-brand-primary)" : "1px solid var(--color-element-subtle)", boxShadow: "var(--shadow-xs)" }}>
                     {checked && <svg width="10.7" height="7.75" viewBox="0 0 10.6633 7.74667" fill="none"><path d={CHECKMARK_PATH} stroke="var(--color-text-on-primary)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33" /></svg>}
                   </div>
-                  <p className="flex-1 leading-[20px] text-[14px] truncate min-w-0" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{item.label}</p>
+                  <p className="flex-1 leading-[20px] text-[14px] min-w-0" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{item.label}</p>
                 </div>
               );
             })}
@@ -350,8 +350,9 @@ export function TemplateOverflowMenu({
                 onClick={() => onComplete(`${item.title}: "${item.front}" — ${item.insideHeading ?? ""} ${item.insideBody}`)}
               >
                 <div className="p-[12px] h-full flex flex-col gap-[6px] text-[13px] leading-[18px]" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>
-                  <p className="shrink-0"><span style={{ ...dmSans500 }}>Front:</span>{` ${item.front}`}</p>
-                  <p className="flex-1 overflow-hidden"><span style={{ ...dmSans500 }}>Inside:</span>{` ${item.insideHeading ?? ""} ${item.insideBody}`}</p>
+                  {item.front && <p className="shrink-0"><span style={{...dmSans500}}>Front:</span>{` ${item.front}`}</p>}
+                  {(item.insideHeading || item.insideBody) && <p className="flex-1 overflow-hidden"><span
+                      style={{...dmSans500}}>Inside:</span>{` ${item.insideHeading ?? ""} ${item.insideBody}`}</p>}
                 </div>
               </div>
             ))}
@@ -470,12 +471,12 @@ export function ActionOverflowMenuList({
             {items.map((item) => (
               <div
                 key={item.num}
-                className="flex gap-[8px] items-center h-[36px] px-[8px] py-[6px] w-full rounded-[6px] transition-colors cursor-pointer"
+                className="flex gap-[8px] items-center min-h-[36px] px-[8px] py-[6px] w-full rounded-[6px] transition-colors cursor-pointer"
                 {...hoverItem}
                 onClick={() => onComplete(item.label)}
               >
                 <NumBadge num={item.num} />
-                <p className="flex-1 leading-[20px] text-[14px] truncate min-w-0" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{item.label}</p>
+                <p className="flex-1 leading-[20px] text-[14px] min-w-0" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{item.label}</p>
               </div>
             ))}
           </div>
@@ -503,6 +504,87 @@ export function ActionOverflowMenuList({
           onKeyDown={(e) => { e.stopPropagation(); if (e.key === "Enter" && customInput.trim()) onComplete(customInput.trim()); }}
           onSkip={onClose}
           onSend={() => { if (customInput.trim()) onComplete(customInput.trim()); }}
+          placeholder={inputPlaceholder ?? "Something else"}
+        />
+      </div>
+    </div>
+  );
+}
+
+// ── ActionChecklistOverflowMenu (Action header + multi-select checklist) ──────
+
+export function ActionChecklistOverflowMenu({
+  config, items, inputPlaceholder, onClose, onGenerate, onShowMore, isLoadingShowMore, isLoadingGenerate, generateButtonLabel,
+}: {
+  config: ActionMenuConfig; items: { id: string; label: string }[]; inputPlaceholder?: string; onClose: () => void; onGenerate: (selected: string[]) => void; onShowMore?: () => void; isLoadingShowMore?: boolean; isLoadingGenerate?: boolean; generateButtonLabel?: string;
+}) {
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [inputValue, setInputValue] = useState("");
+
+  const toggleItem = (id: string) => {
+    setSelected(prev => { const next = new Set(prev); if (next.has(id)) next.delete(id); else next.add(id); return next; });
+  };
+
+  const getSelectedLabels = () => {
+    const labels = items.filter(item => selected.has(item.id)).map(item => item.label);
+    const typed = inputValue.trim();
+    if (typed) labels.push(typed);
+    return labels;
+  };
+
+  return (
+    <div className="flex flex-col gap-[4px] items-start py-[12px] relative rounded-[12px] w-full" style={{ backgroundColor: "var(--color-bg-main)", boxShadow: "var(--shadow-xs)", border: "1px solid var(--color-element-subtle)" }}>
+      {/* Header */}
+      <div className="flex items-center gap-[16px] px-[20px] py-[8px] w-full">
+        <div className="flex flex-col gap-[4px] flex-1 min-w-0">
+          <p className="leading-[20px] text-[15px]" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{config.title}</p>
+          <p className="leading-[20px] text-[13px]" style={{ ...dmSans400, color: "var(--color-text-secondary)" }}>{config.subtitle}</p>
+        </div>
+        <Btn onClick={() => onGenerate(getSelectedLabels())} className="shrink-0 flex items-center gap-[6px]" disabled={isLoadingGenerate}>
+          {isLoadingGenerate && <svg className="shrink-0 animate-spin" width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" strokeWidth="1.5" strokeDasharray="20 12" /></svg>}
+          {generateButtonLabel ?? config.generateButtonLabel}
+        </Btn>
+        <OverflowCloseBtn onClose={onClose} />
+      </div>
+      {/* Separator */}
+      <div className="w-full h-[1px]" style={{ backgroundColor: "var(--color-element-subtle)" }} />
+      {/* Checklist */}
+      <div className="flex flex-col w-full px-[8px] pt-[4px] max-h-[200px] overflow-y-auto scrollbar-thin scrollbar-thumb-muted-foreground scrollbar-track-transparent">
+        {items.map((item) => {
+          const checked = selected.has(item.id);
+          return (
+            <div key={item.id} className="flex gap-[8px] items-center min-h-[36px] px-[8px] py-[6px] rounded-[6px] w-full cursor-pointer transition-colors" {...hoverItem} onClick={() => toggleItem(item.id)}>
+              <div className="relative rounded-[4px] shrink-0 size-[16px] flex items-center justify-center transition-colors duration-150" style={{ backgroundColor: checked ? "var(--color-brand-primary)" : "transparent", border: checked ? "1px solid var(--color-brand-primary)" : "1px solid var(--color-element-subtle)", boxShadow: "var(--shadow-xs)" }}>
+                {checked && <svg width="10.7" height="7.75" viewBox="0 0 10.6633 7.74667" fill="none"><path d={CHECKMARK_PATH} stroke="var(--color-text-on-primary)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33" /></svg>}
+              </div>
+              <p className="flex-1 leading-[20px] text-[14px] min-w-0" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{item.label}</p>
+            </div>
+          );
+        })}
+      </div>
+      {/* Show More */}
+      {onShowMore && (
+        <button
+          className="flex items-center gap-[6px] w-full py-[6px] px-[8px] rounded-[6px] transition-colors cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
+          onMouseEnter={e => { if (!isLoadingShowMore) e.currentTarget.style.backgroundColor = "var(--color-element-subtle)"; }}
+          onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")}
+          onClick={onShowMore}
+          disabled={isLoadingShowMore}
+        >
+          {isLoadingShowMore
+            ? <svg className="shrink-0 animate-spin" width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="var(--color-brand-primary)" strokeWidth="1.5" strokeDasharray="20 12" /></svg>
+            : null}
+          <p className="text-[13px] leading-[20px]" style={{ ...dmSans500, color: "var(--color-text-secondary)" }}>Show More</p>
+        </button>
+      )}
+      {/* Input */}
+      <div className="px-[8px] w-full">
+        <OverflowInput
+          value={inputValue}
+          onChange={setInputValue}
+          onKeyDown={(e) => { if (e.key === "Enter") onGenerate(getSelectedLabels()); }}
+          onSkip={onClose}
+          onSend={() => onGenerate(getSelectedLabels())}
           placeholder={inputPlaceholder ?? "Something else"}
         />
       </div>
