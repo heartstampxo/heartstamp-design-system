@@ -12,7 +12,7 @@ import type { ChatScript, ChatMessage } from "./hs-chat-types";
 import { OCCASIONS, getRandomSuggestions, bubbleSpring, entranceSpring, bubbleBg, dmSans400 } from "./hs-stampy-constants";
 import { useBubbleTypewriter } from "./hs-stampy-hooks";
 import { WorkingSpinner, StampyBubble, UserBubble, StyleCarousel } from "./hs-stampy-bubbles";
-import { OverflowMenu, ChecklistOverflowMenu, TemplateOverflowMenu, ActionOverflowMenuList } from "./hs-stampy-menus";
+import { OverflowMenu, ChecklistOverflowMenu, TemplateOverflowMenu, ActionOverflowMenuList, ActionChecklistOverflowMenu } from "./hs-stampy-menus";
 import { ChatHomeInput, ChatConversationInput, OccasionSuggestions } from "./hs-stampy-inputs";
 import { TadaBanner, ChatHomeScreen, ChatHeader } from "./hs-stampy-panels";
 
@@ -511,7 +511,7 @@ export default StampyChatbot;
 // ── Barrel re-exports for backwards compatibility ─────────────────────────
 
 export { WorkingSpinner, BubbleButton, StampyBubble, UserBubble, StyleCarousel } from "./hs-stampy-bubbles";
-export { OverflowMenu, ChecklistOverflowMenu, TemplateOverflowMenu, ActionOverflowMenu, ActionOverflowMenuList, SignupOverflowMenu, OTPOverflowMenu } from "./hs-stampy-menus";
+export { OverflowMenu, ChecklistOverflowMenu, TemplateOverflowMenu, ActionOverflowMenu, ActionOverflowMenuList, ActionChecklistOverflowMenu, SignupOverflowMenu, OTPOverflowMenu } from "./hs-stampy-menus";
 export { ChatHomeInput, ChatConversationInput, OccasionSuggestions } from "./hs-stampy-inputs";
 export type { ChatHomeInputProps, ChatConversationInputProps, OccasionSuggestionsProps } from "./hs-stampy-inputs";
 export { TadaBanner, ChatHomeScreen, ChatHeader } from "./hs-stampy-panels";
