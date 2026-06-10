@@ -435,9 +435,9 @@ export function ActionOverflowMenu({
 // ── ActionOverflowMenuList (V2 — Numbered List) ────────────────────────────
 
 export function ActionOverflowMenuList({
-  config, inputPlaceholder, onClose, onGenerate, onComplete,
+  config, inputPlaceholder, onClose, onGenerate, onComplete, onShowMore, isLoadingShowMore, isLoadingGenerate, generateButtonLabel,
 }: {
-  config: ActionMenuConfig; inputPlaceholder?: string; onClose: () => void; onGenerate: () => void; onComplete: (label: string) => void;
+  config: ActionMenuConfig; inputPlaceholder?: string; onClose: () => void; onGenerate: () => void; onComplete: (label: string) => void; onShowMore?: () => void; isLoadingShowMore?: boolean; isLoadingGenerate?: boolean; generateButtonLabel?: string;
 }) {
   const [customInput, setCustomInput] = useState("");
   const adjustHeader = config.adjustHeader ?? "Or, want to make changes?";
@@ -454,7 +454,10 @@ export function ActionOverflowMenuList({
               <p className="leading-[20px] text-[15px]" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{config.title}</p>
               <p className="leading-[20px] text-[13px]" style={{ ...dmSans400, color: "var(--color-text-secondary)" }}>{config.subtitle}</p>
             </div>
-            <Btn onClick={onGenerate} className="shrink-0">{config.generateButtonLabel}</Btn>
+            <Btn onClick={onGenerate} className="shrink-0 flex items-center gap-[6px]" disabled={isLoadingGenerate}>
+              {isLoadingGenerate && <svg className="shrink-0 animate-spin" width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" strokeWidth="1.5" strokeDasharray="20 12" /></svg>}
+              {generateButtonLabel ?? config.generateButtonLabel}
+            </Btn>
           </div>
           <OverflowCloseBtn onClose={onClose} />
         </div>
@@ -463,7 +466,7 @@ export function ActionOverflowMenuList({
         {/* "or" section */}
         <div className="flex flex-col gap-[8px] w-full">
           <p className="leading-[20px] text-[15px] px-[20px]" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{adjustHeader}</p>
-          <div className="flex flex-col px-[12px] w-full">
+          <div className="flex flex-col px-[12px] w-full max-h-[200px] overflow-y-auto scrollbar-thin scrollbar-thumb-muted-foreground scrollbar-track-transparent">
             {items.map((item) => (
               <div
                 key={item.num}
@@ -478,6 +481,20 @@ export function ActionOverflowMenuList({
           </div>
         </div>
       </div>
+      {onShowMore && (
+        <button
+          className="flex items-center gap-[6px] w-full py-[6px] px-[8px] rounded-[6px] transition-colors cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
+          onMouseEnter={e => { if (!isLoadingShowMore) e.currentTarget.style.backgroundColor = "var(--color-element-subtle)"; }}
+          onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")}
+          onClick={onShowMore}
+          disabled={isLoadingShowMore}
+        >
+          {isLoadingShowMore
+            ? <svg className="shrink-0 animate-spin" width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="var(--color-brand-primary)" strokeWidth="1.5" strokeDasharray="20 12" /></svg>
+            : null}
+          <p className="text-[13px] leading-[20px]" style={{ ...dmSans500, color: "var(--color-text-secondary)" }}>Show More</p>
+        </button>
+      )}
       {/* Input */}
       <div className="px-[8px] w-full">
         <OverflowInput
