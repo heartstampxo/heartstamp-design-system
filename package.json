@@ -1,6 +1,6 @@
 {
   "name": "@heartstampxo/design-system",
-  "version": "2.1.4",
+  "version": "2.1.5",
   "description": "HeartStamp Design System — a React component library built on Radix UI and Tailwind CSS",
   "keywords": [
     "design-system",
@@ -122,6 +122,11 @@
   "peerDependencies": {
     "react": ">=18.0.0",
     "react-dom": ">=18.0.0"
+  },
+  "overrides": {
+    "react-day-picker": {
+      "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
+    }
   },
   "pnpm": {
     "overrides": {
