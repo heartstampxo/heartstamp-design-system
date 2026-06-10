@@ -93,7 +93,7 @@ describe('component behavior and style contracts', () => {
     expect(button).toHaveClass('custom-btn');
     expect(button.className).toContain('hs-btn--secondary');
     expect(button.className).toContain('hs-btn--size-lg');
-    expect(button).toHaveStyle({ color: 'var(--color-text-disabled)' });
+    expect(button).toHaveStyle({ color: 'var(--color-text-on-secondary)' });
   });
 
   it('applies Bdg variant styles', () => {
