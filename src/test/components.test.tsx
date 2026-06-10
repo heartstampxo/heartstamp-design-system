@@ -91,9 +91,9 @@ describe('component behavior and style contracts', () => {
     const button = screen.getByRole('button', { name: 'Donate' });
     expect(button).toBeDisabled();
     expect(button).toHaveClass('custom-btn');
-    expect(button.className).toContain('bg-[var(--color-brand-secondary)]');
-    expect(button.className).toContain('h-[44px]');
-    expect(button).toHaveStyle({ color: 'var(--color-text-disabled)' });
+    expect(button.className).toContain('hs-btn--secondary');
+    expect(button.className).toContain('hs-btn--size-lg');
+    expect(button).toHaveStyle({ color: 'var(--color-text-on-secondary)' });
   });
 
   it('applies Bdg variant styles', () => {
