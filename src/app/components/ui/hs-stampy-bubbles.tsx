@@ -2,7 +2,7 @@
 // StampyChatbot — Bubble components (WorkingSpinner, BubbleButton, StampyBubble, UserBubble, StyleCarousel)
 // ═══════════════════════════════════════════════════════════════════════════
 
-import { useRef } from "react";
+import React, { useRef } from "react";
 import { Loader2, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
@@ -126,7 +126,7 @@ export function StampyBubble({
   onButtonClick,
   buttonDelay = 0,
 }: {
-  text: string;
+  text: React.ReactNode;
   buttons?: string[];
   /** Greys out buttons when a later message already exists. Defaults to false. */
   buttonsUsed?: boolean;
@@ -145,7 +145,7 @@ export function StampyBubble({
         className="rounded-[12px] px-[12px] py-[8px] max-w-[85%] sm:max-w-[440px] flex flex-col gap-[12px]"
         style={{ backgroundColor: bubbleBg, ...dmSans400, fontSize: 14, color: "var(--color-text-primary)", lineHeight: "1.5" }}
       >
-        <p className="leading-[20px] text-[15px] whitespace-pre-wrap">{text}</p>
+        <div className="leading-[20px] text-[15px] whitespace-pre-wrap">{text}</div>
         {buttons?.length ? (
           <div className="flex flex-col gap-[6px]">
             {buttons.map((b, bi) => (
@@ -164,7 +164,7 @@ export function StampyBubble({
   );
 }
 
-export function UserBubble({ text, delay }: { text: string; delay?: number }) {
+export function UserBubble({ text, delay }: { text: React.ReactNode; delay?: number }) {
   return (
     <motion.div
       className="flex w-full justify-end shrink-0 pl-[56px]"
@@ -175,7 +175,7 @@ export function UserBubble({ text, delay }: { text: string; delay?: number }) {
         className="rounded-[12px] px-[12px] py-[8px] max-w-[85%] sm:max-w-[440px]"
         style={{ backgroundColor: bubbleBg, ...dmSans400, fontSize: 14, color: "var(--color-text-primary)", lineHeight: "1.5" }}
       >
-        <p className="leading-[20px] text-[15px] whitespace-pre-wrap">{text}</p>
+        <div className="leading-[20px] text-[15px] whitespace-pre-wrap">{text}</div>
       </div>
     </motion.div>
   );
