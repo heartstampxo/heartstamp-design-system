@@ -164,7 +164,7 @@ export function OverflowMenu({
             {items.map((item) => (
               <div
                 key={item.num}
-                className="flex gap-[8px] items-center min-h-[36px] px-[8px] py-[6px] w-full rounded-[6px] transition-colors cursor-pointer"
+                className="flex gap-[8px] items-center px-[8px] py-[6px] w-full rounded-[6px] transition-colors cursor-pointer"
                 {...hoverItem}
                 onClick={() => handleItemClick(item)}
               >
@@ -262,7 +262,7 @@ export function ChecklistOverflowMenu({
       <div className="flex flex-col items-start w-full">
         <div className="flex flex-row items-center w-full">
           <div className="flex gap-[8px] items-center p-[8px] w-full">
-            <p className="flex-1 leading-[20px] text-[15px] min-w-0 truncate" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{currentPageData.question}</p>
+            <p className="flex-1 leading-[20px] text-[15px] min-w-0" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{currentPageData.question}</p>
             <div className="flex gap-[12px] items-center shrink-0">
               {totalPages > 1 && <OverflowPagination page={page + 1} total={totalPages} onPrev={() => setPage(p => Math.max(0, p - 1))} onNext={() => setPage(p => Math.min(totalPages - 1, p + 1))} />}
               <OverflowCloseBtn onClose={onClose} />
@@ -275,7 +275,7 @@ export function ChecklistOverflowMenu({
             {currentPageData.items.map((item) => {
               const checked = selected.has(item.id);
               return (
-                <div key={item.id} className="flex gap-[8px] items-center min-h-[36px] px-[8px] py-[6px] rounded-[6px] w-full cursor-pointer transition-colors" {...hoverItem} onClick={() => toggleItem(item.id)}>
+                <div key={item.id} className="flex gap-[8px] items-center px-[8px] py-[6px] rounded-[6px] w-full cursor-pointer transition-colors" {...hoverItem} onClick={() => toggleItem(item.id)}>
                   <div className="relative rounded-[4px] shrink-0 size-[16px] flex items-center justify-center transition-colors duration-150" style={{ backgroundColor: checked ? "var(--color-brand-primary)" : "transparent", border: checked ? "1px solid var(--color-brand-primary)" : "1px solid var(--color-element-subtle)", boxShadow: "var(--shadow-xs)" }}>
                     {checked && <svg width="10.7" height="7.75" viewBox="0 0 10.6633 7.74667" fill="none"><path d={CHECKMARK_PATH} stroke="var(--color-text-on-primary)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33" /></svg>}
                   </div>
@@ -471,7 +471,7 @@ export function ActionOverflowMenuList({
             {items.map((item) => (
               <div
                 key={item.num}
-                className="flex gap-[8px] items-center min-h-[36px] px-[8px] py-[6px] w-full rounded-[6px] transition-colors cursor-pointer"
+                className="flex gap-[8px] items-center px-[8px] py-[6px] w-full rounded-[6px] transition-colors cursor-pointer"
                 {...hoverItem}
                 onClick={() => onComplete(item.label)}
               >
@@ -533,7 +533,7 @@ export function ActionChecklistOverflowMenu({
   };
 
   return (
-    <div className="flex flex-col gap-[4px] items-start py-[12px] relative rounded-[12px] w-full" style={{ backgroundColor: "var(--color-bg-main)", boxShadow: "var(--shadow-xs)", border: "1px solid var(--color-element-subtle)" }}>
+    <div className="flex flex-col gap-[4px] items-start py-[12px] px-[8px] relative rounded-[12px] w-full" style={{ backgroundColor: "var(--color-bg-main)", boxShadow: "var(--shadow-xs)", border: "1px solid var(--color-element-subtle)" }}>
       {/* Header */}
       <div className="flex items-center gap-[16px] px-[20px] py-[8px] w-full">
         <div className="flex flex-col gap-[4px] flex-1 min-w-0">
@@ -553,7 +553,7 @@ export function ActionChecklistOverflowMenu({
         {items.map((item) => {
           const checked = selected.has(item.id);
           return (
-            <div key={item.id} className="flex gap-[8px] items-center min-h-[36px] px-[8px] py-[6px] rounded-[6px] w-full cursor-pointer transition-colors" {...hoverItem} onClick={() => toggleItem(item.id)}>
+            <div key={item.id} className="flex gap-[8px] items-center px-[8px] py-[6px] rounded-[6px] w-full cursor-pointer transition-colors" {...hoverItem} onClick={() => toggleItem(item.id)}>
               <div className="relative rounded-[4px] shrink-0 size-[16px] flex items-center justify-center transition-colors duration-150" style={{ backgroundColor: checked ? "var(--color-brand-primary)" : "transparent", border: checked ? "1px solid var(--color-brand-primary)" : "1px solid var(--color-element-subtle)", boxShadow: "var(--shadow-xs)" }}>
                 {checked && <svg width="10.7" height="7.75" viewBox="0 0 10.6633 7.74667" fill="none"><path d={CHECKMARK_PATH} stroke="var(--color-text-on-primary)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33" /></svg>}
               </div>
