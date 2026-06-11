@@ -514,9 +514,9 @@ export function ActionOverflowMenuList({
 // ── ActionChecklistOverflowMenu (Action header + multi-select checklist) ──────
 
 export function ActionChecklistOverflowMenu({
-  config, items, inputPlaceholder, onClose, onGenerate, onShowMore, isLoadingShowMore, isLoadingGenerate, generateButtonLabel,
+  config, items, inputPlaceholder, onClose, onGenerate, onComplete, onShowMore, isLoadingShowMore, isLoadingGenerate, generateButtonLabel,
 }: {
-  config: ActionMenuConfig; items: { id: string; label: string }[]; inputPlaceholder?: string; onClose: () => void; onGenerate: (selected: string[]) => void; onShowMore?: () => void; isLoadingShowMore?: boolean; isLoadingGenerate?: boolean; generateButtonLabel?: string;
+  config: ActionMenuConfig; items: { id: string; label: string }[]; inputPlaceholder?: string; onClose: () => void; onGenerate: () => void; onComplete: (selected: string[]) => void; onShowMore?: () => void; isLoadingShowMore?: boolean; isLoadingGenerate?: boolean; generateButtonLabel?: string;
 }) {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [inputValue, setInputValue] = useState("");
@@ -540,7 +540,7 @@ export function ActionChecklistOverflowMenu({
           <p className="leading-[20px] text-[15px]" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{config.title}</p>
           <p className="leading-[20px] text-[13px]" style={{ ...dmSans400, color: "var(--color-text-secondary)" }}>{config.subtitle}</p>
         </div>
-        <Btn onClick={() => onGenerate(getSelectedLabels())} className="shrink-0 flex items-center gap-[6px]" disabled={isLoadingGenerate}>
+        <Btn onClick={onGenerate} className="shrink-0 flex items-center gap-[6px]" disabled={isLoadingGenerate}>
           {isLoadingGenerate && <svg className="shrink-0 animate-spin" width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" strokeWidth="1.5" strokeDasharray="20 12" /></svg>}
           {generateButtonLabel ?? config.generateButtonLabel}
         </Btn>
@@ -582,9 +582,9 @@ export function ActionChecklistOverflowMenu({
         <OverflowInput
           value={inputValue}
           onChange={setInputValue}
-          onKeyDown={(e) => { if (e.key === "Enter") onGenerate(getSelectedLabels()); }}
+          onKeyDown={(e) => { if (e.key === "Enter") onComplete(getSelectedLabels()); }}
           onSkip={onClose}
-          onSend={() => onGenerate(getSelectedLabels())}
+          onSend={() => onComplete(getSelectedLabels())}
           placeholder={inputPlaceholder ?? "Something else"}
         />
       </div>
