@@ -98,6 +98,7 @@ export const NAV = [
       { title: "Home Screen",     id: "chatbot-home-screen",    group: "Chatbot", label: "new" },
       { title: "Chat Input",      id: "chatbot-input",          group: "Chatbot", label: "new" },
       { title: "Chat Bubbles",    id: "chatbot-bubbles",        group: "Chatbot", label: "new" },
+      { title: "Promotions",      id: "chatbot-promotions",     group: "Chatbot", label: "new" },
     ]
   },
 ];

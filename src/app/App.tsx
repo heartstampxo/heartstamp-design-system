@@ -60,6 +60,7 @@ import {
   PageChatHomeScreen,
   PageChatHeader,
   PageChatbotOverflowMenus,
+  PagePromotions,
 } from "./pages/chatbot";
 import {
   DARK_THEME, LIGHT_THEME,
@@ -5252,6 +5253,7 @@ const PAGES: Record<string, any> = {
   "chatbot-home-screen": PageChatHomeScreen,
   "chatbot-input": PageChatInput,
   "chatbot-bubbles": PageChatBubbles,
+  "chatbot-promotions": PagePromotions,
 };
 
 /* ═══════════════════════════════════════════════════════════

@@ -166,6 +166,18 @@
   --color-google-pay-bg-hover: rgba(36, 36, 35, 0.10);
   --color-google-pay-text:     #242423;
 
+  /* ── State / feedback colours ───────────────────────────── */
+  --color-state-success:      #22c55e;
+  --color-state-success-rgb:  34, 197, 94;
+  --color-state-dislike:      #ef4444;
+  --color-state-dislike-rgb:  239, 68, 68;
+
+  /* ── RGB channel tokens (for dynamic rgba() in JS) ──────── */
+  --color-brand-primary-rgb:  190, 29, 44;
+
+  /* ── Component-specific shadows ─────────────────────────── */
+  --shadow-card-back: drop-shadow(24px 12px 10px rgba(0, 0, 0, 0.15));
+
   /* ── Primary-ghost interactive states ───────────────────── */
   --btn-primary-ghost-hover-bg:    rgba(190, 29, 44, 0.12);
   --btn-primary-ghost-active-bg:   rgba(190, 29, 44, 0.16);

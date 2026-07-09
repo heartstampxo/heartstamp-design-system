@@ -106,6 +106,8 @@ export * from './app/components/ui/stepper';
 export * from './app/components/ui/hs-chat-types';
 // StampyChatbot + all sub-components (panels, inputs, bubbles, menus)
 export * from './app/components/ui/hs-stampy-chat';
+// Stampy Promotions — swipeable card deck shown while card is generating
+export * from './app/components/ui/hs-stampy-promotions';
 
 // ── Style Sidebar (desktop + mobile) ────────────────────────────────────────
 export * from './app/components/ui/hs-style-sidebar';
