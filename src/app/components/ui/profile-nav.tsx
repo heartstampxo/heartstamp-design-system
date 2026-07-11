@@ -190,7 +190,7 @@ export function ProfileNavDesktop({ theme, setTheme }: { theme: Theme; setTheme:
       <div style={{ borderTop: "1px solid var(--color-element-subtle)" }}>
         <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-1-5)", padding: "var(--space-3) 0" }}>
           <PnNavRow icon={<Home size={16} />}           label="Home" />
-          <PnNavRow icon={<Palette size={16} />}        label="My drafts" />
+          <PnNavRow icon={<Palette size={16} />}        label="My creations" />
           <PnNavRow icon={<Heart size={16} />}          label="My favorites" />
           <PnDivider />
           <PnNavRow icon={<AtSign size={16} />}         label="Addresses" />
@@ -219,7 +219,7 @@ export function ProfileNavMobile({ theme, setTheme, onClose }: { theme: Theme; s
       <div style={{ borderTop: "1px solid var(--color-element-subtle)" }}>
         <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-1-5)", padding: "var(--space-3) 0" }}>
           <PnNavRow icon={<Home size={16} />}          label="Home" />
-          <PnNavRow icon={<Palette size={16} />}       label="My drafts" />
+          <PnNavRow icon={<Palette size={16} />}       label="My creations" />
           <PnNavRow icon={<Heart size={16} />}         label="My favorites" />
           <PnDivider />
           <PnNavRow icon={<AtSign size={16} />}         label="Addresses" />
