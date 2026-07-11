@@ -2491,31 +2491,15 @@ function TokenColorSwatch({ name, value, variable }: { name: string; value: stri
 }
 
 function PageTokensColor() {
-  const { setMainStyle } = React.useContext(AppNavContext);
-  const [mode, setMode] = useState<"light" | "dark">("light");
-  const tokens = mode === "light" ? LIGHT_TOKENS : DARK_TOKENS;
-  const modeTheme = mode === "dark" ? DARK_THEME : LIGHT_THEME;
+  const { dark } = React.useContext(AppNavContext);
+  const tokens = dark ? DARK_TOKENS : LIGHT_TOKENS;
   const groups = Object.keys(tokens);
 
-  // Push theme tokens up to <main> before paint — useLayoutEffect prevents flicker
-  React.useLayoutEffect(() => {
-    setMainStyle({ ...modeTheme, background: "var(--bg)", color: "var(--fg)" });
-    return () => setMainStyle(null); // reset when leaving page
-  }, [mode]);
-
   return (
-    <DocPage title="Color Tokens" subtitle="The complete color system for HeartStamp DS — two full palettes (Light & Dark) connected to every component, text, and surface in the product." style={modeTheme}>
-      {/* Mode toggle */}
-      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 32, padding: "12px 16px", borderRadius: 12, border: "1px solid var(--border)", background: "var(--muted)" }}>
-        <span style={{ fontSize: 13, fontWeight: 500, color: "var(--fg)", marginRight: 4 }}>Mode:</span>
-        <Tabs value={mode} onValueChange={(v) => setMode(v as typeof mode)} style={{ display: "contents" }}>
-          <TabsList>
-            <TabsTrigger value="light">☀️ Light</TabsTrigger>
-            <TabsTrigger value="dark">🌙 Dark</TabsTrigger>
-          </TabsList>
-        </Tabs>
-        <span style={{ marginLeft: "auto", fontSize: 11.5, color: "var(--muted-fg)" }}>
-          {Object.values(tokens).reduce((a, g) => a + Object.keys(g).length, 0)} tokens
+    <DocPage title="Color Tokens" subtitle="The complete color system for HeartStamp DS — two full palettes (Light & Dark) connected to every component, text, and surface in the product.">
+      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 24 }}>
+        <span style={{ fontSize: 11.5, color: "var(--muted-fg)" }}>
+          {Object.values(tokens).reduce((a, g) => a + Object.keys(g).length, 0)} tokens · {dark ? "🌙 Dark" : "☀️ Light"} mode — toggle in the top nav
         </span>
       </div>
 
@@ -3819,8 +3803,8 @@ import { Inp, Lbl, Swt } from '@heartstampxo/design-system'
 /* ═══════════════════════════════════════════════════════════
    APP NAV CONTEXT — shared navigation for icon cross-linking
 ═══════════════════════════════════════════════════════════ */
-interface AppNav { goToIcon: (name: string) => void; iconSearch: string; goToPage: (id: string) => void; setMainStyle: (s: React.CSSProperties | null) => void; }
-const AppNavContext = React.createContext<AppNav>({ goToIcon: () => {}, iconSearch: "", goToPage: () => {}, setMainStyle: () => {} });
+interface AppNav { goToIcon: (name: string) => void; iconSearch: string; goToPage: (id: string) => void; setMainStyle: (s: React.CSSProperties | null) => void; dark: boolean; }
+const AppNavContext = React.createContext<AppNav>({ goToIcon: () => {}, iconSearch: "", goToPage: () => {}, setMainStyle: () => {}, dark: false });
 
 /* ── IcoLink — wraps any icon in a hover tooltip that links to
    the Icons page pre-searched for that icon name ─────────── */
@@ -5314,7 +5298,7 @@ export default function App() {
   const goToPage = (id: string) => { setPage(id); setMainStyle(null); };
 
   return (
-    <AppNavContext.Provider value={{ goToIcon, iconSearch, goToPage, setMainStyle }}>
+    <AppNavContext.Provider value={{ goToIcon, iconSearch, goToPage, setMainStyle, dark }}>
     <div style={{ ...theme, fontFamily: "var(--font-family-body)", background: "var(--bg)", color: "var(--fg)", height: "100vh", display: "flex", flexDirection: "column", overflow: "hidden" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
