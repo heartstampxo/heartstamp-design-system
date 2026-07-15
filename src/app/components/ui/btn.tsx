@@ -20,9 +20,9 @@ const COLOR_MAP: Record<string, string> = {
   secondary:        "var(--color-text-on-secondary)",
   outline:          "var(--color-text-primary)",
   ghost:            "var(--color-brand-primary)",
-  "primary-ghost":  "var(--color-brand-primary)",
+  "primary-ghost":  "var(--btn-primary-ghost-color)",
   "secondary-ghost":"var(--color-brand-secondary)",
-  link:             "var(--color-element-link)",
+  link:             "var(--color-text-link)",
   destructive:      "var(--color-text-on-primary)",
 };
 

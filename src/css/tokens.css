@@ -180,6 +180,8 @@
   --shadow-card-back: drop-shadow(24px 12px 10px rgba(0, 0, 0, 0.15));
 
   /* ── Primary-ghost interactive states ───────────────────── */
+  --btn-primary-ghost-color:       var(--color-brand-primary);
+  --btn-primary-ghost-bg:          var(--color-brand-primary-dim);
   --btn-primary-ghost-hover-bg:    rgba(190, 29, 44, 0.12);
   --btn-primary-ghost-active-bg:   rgba(190, 29, 44, 0.16);
 
@@ -249,6 +251,8 @@
   --color-google-pay-text:     #ffffff;
 
   /* ── Primary-ghost interactive states (dark) ────────────── */
+  --btn-primary-ghost-color:       var(--color-text-link);
+  --btn-primary-ghost-bg:          var(--color-brand-secondary-dim);
   --btn-primary-ghost-hover-bg:    rgba(207, 39, 55, 0.18);
   --btn-primary-ghost-active-bg:   rgba(207, 39, 55, 0.24);
 

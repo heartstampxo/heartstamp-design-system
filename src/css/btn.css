@@ -86,7 +86,7 @@
 
 /* ── Variant: primary-ghost ─────────────────────────────────── */
 .hs-btn--primary-ghost {
-  background: var(--color-brand-primary-dim);
+  background: var(--btn-primary-ghost-bg);
   border-color: transparent;
 }
 .hs-btn--primary-ghost:hover  { background: var(--btn-primary-ghost-hover-bg); }

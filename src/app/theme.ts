@@ -154,6 +154,9 @@ export const DARK_THEME: Record<string, string> = {
   "--color-google-pay-bg":       "#1c1c1e",
   "--color-google-pay-bg-hover": "#2c2c2e",
   "--color-google-pay-text":     "#ffffff",
+  /* Primary-ghost – dark mode overrides */
+  "--btn-primary-ghost-color": "var(--color-text-link)",
+  "--btn-primary-ghost-bg":    "var(--color-brand-secondary-dim)",
   /* Secondary-ghost hover – 12% bg / 15% border (dark) */
   "--btn-secondary-ghost-hover-bg":  "rgba(245,245,244,0.12)",
   "--btn-secondary-ghost-hover-bdr": "rgba(245,245,244,0.15)",
@@ -217,6 +220,9 @@ export const LIGHT_THEME: Record<string, string> = {
   "--color-google-pay-bg":       "#ffffff",
   "--color-google-pay-bg-hover": "rgba(36,36,35,0.10)",
   "--color-google-pay-text":     "#242423",
+  /* Primary-ghost – light mode */
+  "--btn-primary-ghost-color": "var(--color-brand-primary)",
+  "--btn-primary-ghost-bg":    "var(--color-brand-primary-dim)",
   /* Secondary-ghost hover – 12% bg / 15% border (light) */
   "--btn-secondary-ghost-hover-bg":  "rgba(36,36,35,0.12)",
   "--btn-secondary-ghost-hover-bdr": "rgba(36,36,35,0.15)",
