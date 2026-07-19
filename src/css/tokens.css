@@ -9,6 +9,12 @@
  */
 
 :root {
+  /* ── Marketing page grid ────────────────────────────────── */
+  --grid-columns:   12;
+  --grid-gutter:    24px;
+  --grid-margin:    16px;
+  --grid-max-width: 1200px;
+
   /* ── Space (4px base scale) ──────────────────────────────── */
   --space-0:   0px;
   --space-1:   4px;

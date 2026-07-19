@@ -1,0 +1,132 @@
+/*
+ * HeartStamp Design System — grid.css
+ *
+ * Responsive 12-column layout grid for HeartStamp marketing pages.
+ * Import alongside tokens.css:
+ *   @import "@heartstampxo/design-system/tokens.css";
+ *   @import "@heartstampxo/design-system/grid.css";
+ *
+ * Breakpoints
+ * ──────────────────────────────────────────────────────────────
+ *   Desktop  ≥ 1024px   12 columns  24px gutter  16px margin
+ *   Tablet   768–1023px 12 columns  16px gutter  16px margin
+ *   Mobile    < 768px    4 columns  16px gutter  16px margin
+ */
+
+/* ── Page grid ────────────────────────────────────────────── */
+.hs-page-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-columns, 12), 1fr);
+  gap: var(--grid-gutter, 24px);
+  max-width: var(--grid-max-width, 1200px);
+  margin: 0 auto;
+  padding: 48px var(--grid-margin, 16px) 80px;
+  align-items: flex-start;
+}
+
+/* ── Tablet (768–1023px): keep 12 columns, reduce gutter ──── */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .hs-page-grid {
+    gap: 16px;
+  }
+}
+
+/* ── Mobile (< 768px): 4 columns ─────────────────────────── */
+@media (max-width: 767px) {
+  .hs-page-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    padding: 20px var(--grid-margin, 16px) 64px;
+  }
+}
+
+/* ── Column span helpers ─────────────────────────────────── */
+.hs-col-span-1  { grid-column: span 1; }
+.hs-col-span-2  { grid-column: span 2; }
+.hs-col-span-3  { grid-column: span 3; }
+.hs-col-span-4  { grid-column: span 4; }
+.hs-col-span-5  { grid-column: span 5; }
+.hs-col-span-6  { grid-column: span 6; }
+.hs-col-span-7  { grid-column: span 7; }
+.hs-col-span-8  { grid-column: span 8; }
+.hs-col-span-9  { grid-column: span 9; }
+.hs-col-span-10 { grid-column: span 10; }
+.hs-col-span-11 { grid-column: span 11; }
+.hs-col-span-12 { grid-column: span 12; }
+.hs-col-full    { grid-column: 1 / -1; }
+
+/* On mobile spans > 4 columns clamp to full width */
+@media (max-width: 767px) {
+  .hs-col-span-5,
+  .hs-col-span-6,
+  .hs-col-span-7,
+  .hs-col-span-8,
+  .hs-col-span-9,
+  .hs-col-span-10,
+  .hs-col-span-11,
+  .hs-col-span-12 {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ── Dev grid overlay ────────────────────────────────────── */
+/*
+ * Add <div class="hs-grid-overlay"> anywhere in your page (e.g. <body>)
+ * to render a fixed column guide for design QA. Toggle visibility with
+ * JS: el.classList.toggle('hs-grid-overlay--visible'), or bind to a
+ * keyboard shortcut (e.g. Ctrl+G).
+ *
+ * Structure:
+ *   <div class="hs-grid-overlay hs-grid-overlay--visible">
+ *     <div class="hs-grid-overlay__track">
+ *       <!-- 12 column divs (rendered by HsGridOverlay component or manually) -->
+ *       <div class="hs-grid-overlay__col"></div> × 12
+ *     </div>
+ *   </div>
+ */
+.hs-grid-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  pointer-events: none;
+  display: none;
+  justify-content: center;
+}
+
+.hs-grid-overlay--visible {
+  display: flex;
+}
+
+.hs-grid-overlay__track {
+  width: 100%;
+  max-width: var(--grid-max-width, 1200px);
+  padding: 0 var(--grid-margin, 16px);
+  display: flex;
+  gap: var(--grid-gutter, 24px);
+}
+
+.hs-grid-overlay__col {
+  flex: 1;
+  background: rgba(190, 29, 44, 0.08);
+  border-left:  1px solid rgba(190, 29, 44, 0.28);
+  border-right: 1px solid rgba(190, 29, 44, 0.28);
+  min-height: 100vh;
+}
+
+/* Tablet: reduce gutter between columns */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .hs-grid-overlay__track {
+    gap: 16px;
+  }
+}
+
+/* Mobile: show only 4 columns */
+@media (max-width: 767px) {
+  .hs-grid-overlay__track {
+    gap: 16px;
+  }
+
+  .hs-grid-overlay__col:nth-child(n+5) {
+    display: none;
+  }
+}

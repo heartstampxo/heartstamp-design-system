@@ -31,6 +31,7 @@ export const NAV = [
       { title: "Spacing",    id: "tokens-spacing"    },
       { title: "Radius",     id: "tokens-radius"     },
       { title: "Shadow",     id: "tokens-shadow"     },
+      { title: "Grid",       id: "tokens-grid",      label: "new" },
     ]
   },
   {
