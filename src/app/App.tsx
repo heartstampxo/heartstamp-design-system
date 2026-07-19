@@ -3299,85 +3299,126 @@ function PageTokensGrid() {
   const [overlayOn, setOverlayOn] = React.useState(false);
 
   const breakpoints = [
-    { name: "Mobile",  abbr: "xs", range: "< 768px",    cols: 4,  gutter: "16px", margin: "16px" },
-    { name: "Tablet",  abbr: "md", range: "768–1023px", cols: 12, gutter: "16px", margin: "16px" },
-    { name: "Desktop", abbr: "lg", range: "≥ 1024px",   cols: 12, gutter: "24px", margin: "16px" },
+    { name: "Mobile",  range: "< 768px",    cols: 4,  gutter: "16px", margin: "16px" },
+    { name: "Tablet",  range: "768–1023px", cols: 12, gutter: "16px", margin: "16px" },
+    { name: "Desktop", range: "≥ 1024px",   cols: 12, gutter: "24px", margin: "16px" },
   ];
 
   const columnExamples = [
-    { label: "Full width",     cols: 12, cls: "hs-col-full",     desc: "Hero banners, full-bleed sections" },
-    { label: "Main + Sidebar", cols: 8,  cls: "hs-col-span-8",   desc: "Content area paired with a 4-col sidebar" },
-    { label: "Half",           cols: 6,  cls: "hs-col-span-6",   desc: "Side-by-side split layouts" },
-    { label: "One third",      cols: 4,  cls: "hs-col-span-4",   desc: "Three-up card grids" },
-    { label: "One quarter",    cols: 3,  cls: "hs-col-span-3",   desc: "Four-up thumbnail grids" },
+    { label: "Full width",     cols: 12, cls: "hs-col-full",   colSpan: "1 / -1", desc: "Hero banners, full-bleed sections" },
+    { label: "Main + Sidebar", cols: 8,  cls: "hs-col-span-8", colSpan: "span 8", desc: "Content area with 4-col sidebar" },
+    { label: "Half",           cols: 6,  cls: "hs-col-span-6", colSpan: "span 6", desc: "Side-by-side split layouts" },
+    { label: "One third",      cols: 4,  cls: "hs-col-span-4", colSpan: "span 4", desc: "Three-up card grids" },
+    { label: "One quarter",    cols: 3,  cls: "hs-col-span-3", colSpan: "span 3", desc: "Four-up thumbnail grids" },
   ];
+
+  const codeBlockStyle: React.CSSProperties = {
+    background: "#09090b", border: "1px solid #27272a", borderRadius: 8, overflow: "hidden",
+  };
+  const preStyle: React.CSSProperties = {
+    margin: 0, padding: "14px 16px", fontSize: 12, lineHeight: 1.75,
+    fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace", color: "#e4e4e7", overflowX: "auto",
+  };
+  const codeLabelStyle: React.CSSProperties = {
+    padding: "7px 14px", borderBottom: "1px solid #27272a", fontSize: 11.5, color: "#71717a",
+    display: "block",
+  };
 
   return (
     <DocPage
       title="Grid"
       subtitle="Responsive 12-column layout grid for HeartStamp marketing pages. Collapses to 4 columns on mobile with consistent 16px margins across all breakpoints."
     >
-      {/* Dev grid overlay — position: fixed, z-index 9000 */}
+      {/* Dev grid overlay — position: fixed, z-index 9000 via grid.css */}
       <div className={`hs-grid-overlay${overlayOn ? " hs-grid-overlay--visible" : ""}`}>
         <div className="hs-grid-overlay__track">
-          {Array.from({ length: 12 }, (_, i) => (
-            <div key={i} className="hs-grid-overlay__col" />
-          ))}
+          {Array.from({ length: 12 }, (_, i) => <div key={i} className="hs-grid-overlay__col" />)}
         </div>
       </div>
 
-      {/* Tokens */}
-      <DocSection title="Tokens" desc="CSS custom properties that drive the grid. Set in tokens.css, consumed by grid.css.">
+      {/* ── Tokens ────────────────────────────────────────────── */}
+      <DocSection title="Tokens" desc="Four CSS custom properties drive the entire grid. Set them once in tokens.css — grid.css consumes them via var().">
         <TokenTable rows={[
           { token: "--grid-columns",   value: "12",     category: "Grid", usage: "Number of columns (desktop & tablet)" },
-          { token: "--grid-gutter",    value: "24px",   category: "Grid", usage: "Column gap on desktop; overridden to 16px on mobile/tablet" },
+          { token: "--grid-gutter",    value: "24px",   category: "Grid", usage: "Column gap on desktop; 16px on mobile & tablet" },
           { token: "--grid-margin",    value: "16px",   category: "Grid", usage: "Outer horizontal padding for the grid track" },
           { token: "--grid-max-width", value: "1200px", category: "Grid", usage: "Maximum content width, centered with margin: auto" },
         ]} />
       </DocSection>
 
-      {/* Breakpoints */}
-      <DocSection title="Breakpoints" desc="Column counts and gutters adapt across three viewport sizes. Margin stays 16px on all breakpoints.">
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 12 }}>
-          {breakpoints.map(bp => (
-            <div key={bp.name} style={{ border: "1px solid var(--border)", borderRadius: 12, padding: "20px", background: "var(--bg)" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-                <span style={{ fontSize: 11, fontWeight: 700, padding: "2px 8px", borderRadius: 999, background: "var(--color-brand-primary-dim)", color: "var(--color-brand-primary)", fontFamily: "monospace" }}>{bp.abbr}</span>
-                <span style={{ fontSize: 14, fontWeight: 600, color: "var(--fg)" }}>{bp.name}</span>
-              </div>
-              <div style={{ fontSize: 12, color: "var(--muted-fg)", marginBottom: 12 }}>{bp.range}</div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                {[["Columns", String(bp.cols)], ["Gutter", bp.gutter], ["Margin", bp.margin]].map(([k, v]) => (
-                  <div key={k} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <span style={{ fontSize: 11.5, color: "var(--muted-fg)" }}>{k}</span>
-                    <code style={{ fontSize: 11.5, fontFamily: "monospace", fontWeight: 600, color: "var(--fg)" }}>{v}</code>
+      {/* ── Breakpoints ───────────────────────────────────────── */}
+      <DocSection title="Breakpoints" desc="Column count adapts at two breakpoints. Gutter reduces on smaller viewports; margin stays 16px throughout.">
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
+          {breakpoints.map((bp, bi) => {
+            const isDesktop = bi === 2;
+            return (
+              <div key={bp.name} style={{ border: "1px solid var(--border)", borderRadius: 12, overflow: "hidden", background: "var(--bg)" }}>
+                {/* Card header with mini column preview */}
+                <div style={{ padding: "16px 18px 14px", borderBottom: "1px solid var(--border)", background: isDesktop ? "var(--color-brand-primary-dim)" : "var(--muted)" }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+                    <span style={{ fontSize: 14, fontWeight: 700, color: "var(--fg)" }}>{bp.name}</span>
+                    <code style={{ fontSize: 10, fontFamily: "monospace", color: isDesktop ? "var(--color-brand-primary)" : "var(--muted-fg)", padding: "2px 7px", borderRadius: 999, background: "var(--bg)", border: "1px solid var(--border)" }}>{bp.range}</code>
                   </div>
-                ))}
+                  {/* Mini columns */}
+                  <div style={{ display: "grid", gridTemplateColumns: `repeat(${bp.cols}, 1fr)`, gap: 3 }}>
+                    {Array.from({ length: bp.cols }, (_, i) => (
+                      <div key={i} style={{ height: 8, borderRadius: 2, background: isDesktop ? "rgba(190,29,44,0.55)" : "var(--color-element-subtle)" }} />
+                    ))}
+                  </div>
+                </div>
+                {/* Specs */}
+                <div style={{ padding: "14px 18px", display: "flex", flexDirection: "column", gap: 9 }}>
+                  {([["Columns", String(bp.cols)], ["Gutter", bp.gutter], ["Margin", bp.margin]] as [string, string][]).map(([k, v]) => (
+                    <div key={k} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <span style={{ fontSize: 12, color: "var(--muted-fg)" }}>{k}</span>
+                      <code style={{ fontSize: 11.5, fontFamily: "monospace", fontWeight: 600, color: "var(--fg)", background: "var(--color-element-disabled)", padding: "2px 8px", borderRadius: 4 }}>{v}</code>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </DocSection>
 
-      {/* Column span visualiser */}
-      <DocSection title="Column Spans" desc="Desktop baseline — span helpers expressed as fractions of 12 columns. Spans ≥ 5 collapse to full width on mobile.">
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(12, 1fr)", gap: 8, marginBottom: 24 }}>
+      {/* ── Column Spans ──────────────────────────────────────── */}
+      <DocSection title="Column Spans" desc="Span helpers for .hs-page-grid children. Desktop is 12 columns; spans ≥ 5 collapse to full width on mobile.">
+        {/* Numbered ruler — same gap as span rows so they align */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(12, 1fr)", gap: 6, marginBottom: 6 }}>
           {Array.from({ length: 12 }, (_, i) => (
-            <div key={i} style={{ height: 32, background: "var(--color-brand-primary-dim)", border: "1px solid var(--color-brand-primary)", borderRadius: 4, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <span style={{ fontSize: 10, fontWeight: 700, color: "var(--color-brand-primary)", fontFamily: "monospace" }}>{i + 1}</span>
+            <div key={i} style={{ height: 26, background: "var(--color-brand-primary-dim)", border: "1px solid rgba(190,29,44,0.2)", borderRadius: 5, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <span style={{ fontSize: 9.5, fontWeight: 700, color: "var(--color-brand-primary)", fontFamily: "monospace" }}>{i + 1}</span>
             </div>
           ))}
         </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+
+        {/* Span rows */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
           {columnExamples.map(ex => (
-            <div key={ex.label} style={{ display: "grid", gridTemplateColumns: "repeat(12, 1fr)", gap: 8, alignItems: "center" }}>
-              <div style={{ gridColumn: `span ${ex.cols}`, height: 40, borderRadius: 6, background: "var(--color-brand-secondary-dim)", border: "1px solid var(--color-element-subtle)", display: "flex", alignItems: "center", paddingLeft: 12, gap: 8 }}>
-                <span style={{ fontSize: 11.5, fontWeight: 600, color: "var(--fg)" }}>{ex.label}</span>
-                <code style={{ fontSize: 10.5, fontFamily: "monospace", color: "var(--color-brand-primary)" }}>.{ex.cls}</code>
+            <div key={ex.cls} style={{ display: "grid", gridTemplateColumns: "repeat(12, 1fr)", gap: 6 }}>
+              {/* Filled portion */}
+              <div style={{
+                gridColumn: ex.colSpan,
+                borderRadius: 7,
+                background: "var(--color-brand-primary-dim)",
+                borderLeft: "3px solid var(--color-brand-primary)",
+                display: "flex", alignItems: "center", justifyContent: "space-between",
+                padding: "9px 12px 9px 10px", gap: 8, minHeight: 46,
+              }}>
+                <span style={{ fontSize: 12.5, fontWeight: 600, color: "var(--fg)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{ex.label}</span>
+                <code style={{ fontSize: 10, fontFamily: "monospace", color: "var(--color-brand-primary)", whiteSpace: "nowrap", flexShrink: 0, background: "rgba(190,29,44,0.1)", padding: "2px 6px", borderRadius: 4 }}>.{ex.cls}</code>
               </div>
+              {/* Empty portion */}
               {ex.cols < 12 && (
-                <div style={{ gridColumn: `span ${12 - ex.cols}`, height: 40, borderRadius: 6, background: "transparent", border: "1px dashed var(--border)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <span style={{ fontSize: 10.5, color: "var(--muted-fg)" }}>{12 - ex.cols}/12</span>
+                <div style={{
+                  gridColumn: `span ${12 - ex.cols}`,
+                  borderRadius: 7,
+                  background: "var(--muted)",
+                  border: "1px dashed var(--border)",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  minHeight: 46,
+                }}>
+                  <span style={{ fontSize: 10.5, color: "var(--muted-fg)", fontFamily: "monospace" }}>{12 - ex.cols} / 12</span>
                 </div>
               )}
             </div>
@@ -3385,83 +3426,73 @@ function PageTokensGrid() {
         </div>
       </DocSection>
 
-      {/* Usage */}
-      <DocSection title="Usage" desc="Import grid.css after tokens.css, then wrap page content in .hs-page-grid and apply span classes to children.">
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      {/* ── Usage ─────────────────────────────────────────────── */}
+      <DocSection title="Usage" desc="Import grid.css after tokens.css, then wrap your page content in .hs-page-grid and apply span classes to children.">
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           {[
-            {
-              label: "Import",
-              code: `@import "@heartstampxo/design-system/tokens.css";\n@import "@heartstampxo/design-system/grid.css";`,
-            },
-            {
-              label: "HTML",
-              code: `<div class="hs-page-grid">\n  <!-- Full-width hero -->\n  <section class="hs-col-full">…</section>\n\n  <!-- Main content + sidebar -->\n  <main  class="hs-col-span-8">…</main>\n  <aside class="hs-col-span-4">…</aside>\n\n  <!-- Three-up cards -->\n  <div class="hs-col-span-4">…</div>\n  <div class="hs-col-span-4">…</div>\n  <div class="hs-col-span-4">…</div>\n</div>`,
-            },
+            { label: "Import",
+              code: `@import "@heartstampxo/design-system/tokens.css";\n@import "@heartstampxo/design-system/grid.css";` },
+            { label: "HTML",
+              code: `<div class="hs-page-grid">\n  <section class="hs-col-full">…</section>\n\n  <main  class="hs-col-span-8">…</main>\n  <aside class="hs-col-span-4">…</aside>\n\n  <div class="hs-col-span-4">…</div>\n  <div class="hs-col-span-4">…</div>\n  <div class="hs-col-span-4">…</div>\n</div>` },
           ].map(({ label, code }) => (
-            <div key={label} style={{ background: "#09090b", border: "1px solid #27272a", borderRadius: 8, overflow: "hidden" }}>
-              <div style={{ padding: "8px 16px", borderBottom: "1px solid #27272a" }}>
-                <span style={{ fontSize: 12, color: "#71717a" }}>{label}</span>
-              </div>
-              <pre style={{ margin: 0, padding: 16, fontSize: 11.5, lineHeight: 1.8, fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace", color: "#e4e4e7", overflowX: "auto" }}>{code}</pre>
+            <div key={label} style={codeBlockStyle}>
+              <span style={codeLabelStyle}>{label}</span>
+              <pre style={preStyle}>{code}</pre>
             </div>
           ))}
         </div>
       </DocSection>
 
-      {/* Grid overlay */}
-      <DocSection title="Grid Overlay" desc="A fixed column guide for design QA. Overlay columns are rendered in a red tint and sit above page content at z-index 9000.">
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+      {/* ── Grid Overlay ──────────────────────────────────────── */}
+      <DocSection title="Grid Overlay" desc="A fixed column guide for design QA. Columns render at z-index 9000 in a red tint. Click to toggle it on this page.">
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <button
               onClick={() => setOverlayOn(v => !v)}
               style={{
-                display: "inline-flex", alignItems: "center", gap: 8,
-                height: 36, padding: "0 16px", borderRadius: 999,
+                display: "inline-flex", alignItems: "center", height: 34, padding: "0 14px",
+                borderRadius: 999, border: "none", cursor: "pointer", fontSize: 12.5, fontWeight: 500,
                 background: overlayOn ? "var(--color-brand-primary)" : "var(--color-brand-primary-dim)",
                 color: overlayOn ? "#ffffff" : "var(--color-brand-primary)",
-                border: "none", cursor: "pointer", fontSize: 13, fontWeight: 500,
-                transition: "all 150ms ease",
+                transition: "background 150ms ease, color 150ms ease",
               }}
             >
               {overlayOn ? "Hide overlay" : "Show overlay"}
             </button>
             <span style={{ fontSize: 12, color: "var(--muted-fg)" }}>
-              {overlayOn ? "Overlay active — columns shown in red tint" : "Toggle to preview the 12-column grid overlay"}
+              {overlayOn ? "Active — red-tinted columns overlaying the viewport" : "Toggle to preview the 12-column grid guide"}
             </span>
           </div>
           {[
-            {
-              label: "HTML structure",
-              code: `<div class="hs-grid-overlay hs-grid-overlay--visible">\n  <div class="hs-grid-overlay__track">\n    <div class="hs-grid-overlay__col"></div>\n    <!-- × 12 -->\n  </div>\n</div>`,
-            },
-            {
-              label: "JS keyboard toggle",
-              code: `document.addEventListener('keydown', e => {\n  if (e.ctrlKey && e.key === 'g') {\n    document.querySelector('.hs-grid-overlay')\n      ?.classList.toggle('hs-grid-overlay--visible');\n  }\n});`,
-            },
+            { label: "HTML",
+              code: `<div class="hs-grid-overlay hs-grid-overlay--visible">\n  <div class="hs-grid-overlay__track">\n    <div class="hs-grid-overlay__col"></div> <!-- × 12 -->\n  </div>\n</div>` },
+            { label: "JS toggle (e.g. Ctrl+G)",
+              code: `document.addEventListener('keydown', e => {\n  if (e.ctrlKey && e.key === 'g')\n    document.querySelector('.hs-grid-overlay')\n      ?.classList.toggle('hs-grid-overlay--visible');\n});` },
           ].map(({ label, code }) => (
-            <div key={label} style={{ background: "#09090b", border: "1px solid #27272a", borderRadius: 8, overflow: "hidden" }}>
-              <div style={{ padding: "8px 16px", borderBottom: "1px solid #27272a" }}>
-                <span style={{ fontSize: 12, color: "#71717a" }}>{label}</span>
-              </div>
-              <pre style={{ margin: 0, padding: 16, fontSize: 11.5, lineHeight: 1.8, fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace", color: "#e4e4e7", overflowX: "auto" }}>{code}</pre>
+            <div key={label} style={codeBlockStyle}>
+              <span style={codeLabelStyle}>{label}</span>
+              <pre style={preStyle}>{code}</pre>
             </div>
           ))}
         </div>
       </DocSection>
 
-      {/* Span helpers reference */}
-      <DocSection title="Span Helpers Reference">
+      {/* ── All Span Helpers ──────────────────────────────────── */}
+      <DocSection title="All Span Helpers">
         <TokenTable rows={[
           { token: ".hs-col-span-1",  value: "span 1",  category: "Span", usage: "1 of 12 columns" },
           { token: ".hs-col-span-2",  value: "span 2",  category: "Span", usage: "2 of 12 columns" },
-          { token: ".hs-col-span-3",  value: "span 3",  category: "Span", usage: "One quarter (four-up)" },
-          { token: ".hs-col-span-4",  value: "span 4",  category: "Span", usage: "One third (three-up)" },
-          { token: ".hs-col-span-5",  value: "span 5",  category: "Span", usage: "Collapses to full width on mobile" },
-          { token: ".hs-col-span-6",  value: "span 6",  category: "Span", usage: "Half width (two-up)" },
-          { token: ".hs-col-span-8",  value: "span 8",  category: "Span", usage: "Main content with 4-col sidebar" },
-          { token: ".hs-col-span-9",  value: "span 9",  category: "Span", usage: "Three-quarter width" },
+          { token: ".hs-col-span-3",  value: "span 3",  category: "Span", usage: "One quarter — four-up layouts" },
+          { token: ".hs-col-span-4",  value: "span 4",  category: "Span", usage: "One third — three-up card grids" },
+          { token: ".hs-col-span-5",  value: "span 5",  category: "Span", usage: "5 cols — collapses to full width on mobile" },
+          { token: ".hs-col-span-6",  value: "span 6",  category: "Span", usage: "Half width — two-up layouts" },
+          { token: ".hs-col-span-7",  value: "span 7",  category: "Span", usage: "7 cols — collapses to full width on mobile" },
+          { token: ".hs-col-span-8",  value: "span 8",  category: "Span", usage: "Main content alongside a 4-col sidebar" },
+          { token: ".hs-col-span-9",  value: "span 9",  category: "Span", usage: "Three-quarter width — collapses on mobile" },
+          { token: ".hs-col-span-10", value: "span 10", category: "Span", usage: "10 cols — collapses to full width on mobile" },
+          { token: ".hs-col-span-11", value: "span 11", category: "Span", usage: "11 cols — collapses to full width on mobile" },
           { token: ".hs-col-span-12", value: "span 12", category: "Span", usage: "Full 12-column width" },
-          { token: ".hs-col-full",    value: "1 / -1",  category: "Span", usage: "Full width regardless of column count" },
+          { token: ".hs-col-full",    value: "1 / -1",  category: "Span", usage: "Full width regardless of column count — preferred for heroes" },
         ]} />
       </DocSection>
     </DocPage>
