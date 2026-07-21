@@ -14,6 +14,7 @@ export const NAV = [
       { title: "Introduction",  id: "intro"   },
       { title: "Installation",  id: "install" },
       { title: "Theming",       id: "theming" },
+      { title: "Grid System",   id: "tokens-grid", label: "new" },
     ]
   },
   {
@@ -31,7 +32,6 @@ export const NAV = [
       { title: "Spacing",    id: "tokens-spacing"    },
       { title: "Radius",     id: "tokens-radius"     },
       { title: "Shadow",     id: "tokens-shadow"     },
-      { title: "Grid",       id: "tokens-grid",      label: "new" },
     ]
   },
   {
