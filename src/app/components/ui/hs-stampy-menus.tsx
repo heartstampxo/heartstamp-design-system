@@ -60,9 +60,11 @@ function NumBadge({ num }: { num: string }) {
   );
 }
 
-/** Pencil input + Skip + Send row shared across all 4 overflow menu variants */
+/** Pencil input + Skip + Send row shared across all 4 overflow menu variants.
+ *  Pass `inputLeading` to swap the leading pencil badge for a custom control
+ *  (e.g. the app's reference-image button). */
 function OverflowInput({
-  value, onChange, onKeyDown, onSkip, onSend, placeholder,
+  value, onChange, onKeyDown, onSkip, onSend, placeholder, inputLeading,
 }: {
   value: string;
   onChange: (v: string) => void;
@@ -70,13 +72,16 @@ function OverflowInput({
   onSkip: () => void;
   onSend: () => void;
   placeholder: string;
+  inputLeading?: React.ReactNode;
 }) {
   return (
     <div className="rounded-[12px] flex items-center px-[12px] py-[8px] w-full" style={{ border: "1px solid var(--color-element-subtle)" }}>
       <div className="flex flex-1 items-center gap-[4px] min-w-0">
-        <div className="shrink-0 size-[20px] flex items-center justify-center rounded-[4px]" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }}>
-          <Pencil size={14} color="var(--color-text-primary)" strokeWidth={2.5} />
-        </div>
+        {inputLeading ?? (
+          <div className="shrink-0 size-[20px] flex items-center justify-center rounded-[4px]" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }}>
+            <Pencil size={14} color="var(--color-text-primary)" strokeWidth={2.5} />
+          </div>
+        )}
         <input
           type="text"
           value={value}
@@ -102,9 +107,9 @@ function OverflowInput({
 // ── OverflowMenu ───────────────────────────────────────────────────────────
 
 export function OverflowMenu({
-  pages, inputPlaceholder, onClose, onComplete, onShowMore, isLoadingShowMore,
+  pages, inputPlaceholder, onClose, onComplete, onShowMore, isLoadingShowMore, inputLeading,
 }: {
-  pages: OverflowPage[]; inputPlaceholder?: string; onClose: () => void; onComplete: (label: string) => void; onShowMore?: () => void; isLoadingShowMore?: boolean;
+  pages: OverflowPage[]; inputPlaceholder?: string; onClose: () => void; onComplete: (label: string) => void; onShowMore?: () => void; isLoadingShowMore?: boolean; inputLeading?: React.ReactNode;
 }) {
   const totalPages = pages.length;
   const [page, setPage] = useState(1);
@@ -194,9 +199,11 @@ export function OverflowMenu({
       {/* "Something else" input */}
       <div className="rounded-[12px] flex items-center px-[12px] py-[8px] w-full" style={{ border: "1px solid var(--color-element-subtle)" }}>
         <div className="flex flex-1 items-center gap-[4px] min-w-0">
-          <div className="flex items-center justify-center rounded-[4px] shrink-0 size-[20px]" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }}>
-            <Pencil size={14} color="var(--color-text-primary)" strokeWidth={2.5} />
-          </div>
+          {inputLeading ?? (
+            <div className="flex items-center justify-center rounded-[4px] shrink-0 size-[20px]" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }}>
+              <Pencil size={14} color="var(--color-text-primary)" strokeWidth={2.5} />
+            </div>
+          )}
           {typewriterDone ? (
             <input
               className="flex-1 leading-[20px] text-[14px] min-w-0 bg-transparent outline-none border-none"
@@ -234,9 +241,9 @@ export function OverflowMenu({
 // ── ChecklistOverflowMenu ──────────────────────────────────────────────────
 
 export function ChecklistOverflowMenu({
-  pages: checklistPages, inputPlaceholder, onClose, onComplete, onShowMore, isLoadingShowMore,
+  pages: checklistPages, inputPlaceholder, onClose, onComplete, onShowMore, isLoadingShowMore, inputLeading,
 }: {
-  pages: ChecklistPage[]; inputPlaceholder?: string; onClose: () => void; onComplete: (selected: string[]) => void; onShowMore?: () => void; isLoadingShowMore?: boolean;
+  pages: ChecklistPage[]; inputPlaceholder?: string; onClose: () => void; onComplete: (selected: string[]) => void; onShowMore?: () => void; isLoadingShowMore?: boolean; inputLeading?: React.ReactNode;
 }) {
   const [page, setPage] = useState(0);
   const totalPages = checklistPages.length;
@@ -309,6 +316,7 @@ export function ChecklistOverflowMenu({
         onSkip={() => onComplete([])}
         onSend={handleSend}
         placeholder={inputPlaceholder ?? "You make the call"}
+        inputLeading={inputLeading}
       />
     </div>
   );
@@ -317,9 +325,9 @@ export function ChecklistOverflowMenu({
 // ── TemplateOverflowMenu ───────────────────────────────────────────────────
 
 export function TemplateOverflowMenu({
-  header, cards, inputPlaceholder, onClose, onComplete, onShowMore, isLoadingShowMore,
+  header, cards, inputPlaceholder, onClose, onComplete, onShowMore, isLoadingShowMore, inputLeading,
 }: {
-  header: string; cards: TemplateCard[]; inputPlaceholder?: string; onClose: () => void; onComplete: (label: string) => void; onShowMore?: () => void; isLoadingShowMore?: boolean;
+  header: string; cards: TemplateCard[]; inputPlaceholder?: string; onClose: () => void; onComplete: (label: string) => void; onShowMore?: () => void; isLoadingShowMore?: boolean; inputLeading?: React.ReactNode;
 }) {
   const [customInput, setCustomInput] = useState("");
   const CARDS_PER_PAGE = 2;
@@ -385,6 +393,7 @@ export function TemplateOverflowMenu({
           onSkip={() => onComplete("skip")}
           onSend={() => onComplete(customInput.trim() || "skip")}
           placeholder={inputPlaceholder ?? "Something else"}
+          inputLeading={inputLeading}
         />
       </div>
     </div>
@@ -394,9 +403,9 @@ export function TemplateOverflowMenu({
 // ── ActionOverflowMenu (V1 — Ghost Buttons) ────────────────────────────────
 
 export function ActionOverflowMenu({
-  config, inputPlaceholder, onClose, onGenerate,
+  config, inputPlaceholder, onClose, onGenerate, inputLeading,
 }: {
-  config: ActionMenuConfig; inputPlaceholder?: string; onClose: () => void; onGenerate: () => void;
+  config: ActionMenuConfig; inputPlaceholder?: string; onClose: () => void; onGenerate: () => void; inputLeading?: React.ReactNode;
 }) {
   const [customInput, setCustomInput] = useState("");
 
@@ -427,6 +436,7 @@ export function ActionOverflowMenu({
           onSkip={onClose}
           onSend={() => { if (customInput.trim()) onClose(); }}
           placeholder={inputPlaceholder ?? "Something else"}
+          inputLeading={inputLeading}
         />
       </div>
     </div>
@@ -436,9 +446,9 @@ export function ActionOverflowMenu({
 // ── ActionOverflowMenuList (V2 — Numbered List) ────────────────────────────
 
 export function ActionOverflowMenuList({
-  config, inputPlaceholder, onClose, onGenerate, onComplete, onShowMore, isLoadingShowMore, isLoadingGenerate, generateButtonLabel,
+  config, inputPlaceholder, onClose, onGenerate, onComplete, onShowMore, isLoadingShowMore, isLoadingGenerate, generateButtonLabel, inputLeading,
 }: {
-  config: ActionMenuConfig; inputPlaceholder?: string; onClose: () => void; onGenerate: () => void; onComplete: (label: string) => void; onShowMore?: () => void; isLoadingShowMore?: boolean; isLoadingGenerate?: boolean; generateButtonLabel?: string;
+  config: ActionMenuConfig; inputPlaceholder?: string; onClose: () => void; onGenerate: () => void; onComplete: (label: string) => void; onShowMore?: () => void; isLoadingShowMore?: boolean; isLoadingGenerate?: boolean; generateButtonLabel?: string; inputLeading?: React.ReactNode;
 }) {
   const [customInput, setCustomInput] = useState("");
   const adjustHeader = config.adjustHeader ?? "Or, want to make changes?";
@@ -505,6 +515,7 @@ export function ActionOverflowMenuList({
           onSkip={onClose}
           onSend={() => { if (customInput.trim()) onComplete(customInput.trim()); }}
           placeholder={inputPlaceholder ?? "Something else"}
+          inputLeading={inputLeading}
         />
       </div>
     </div>
@@ -514,9 +525,9 @@ export function ActionOverflowMenuList({
 // ── ActionChecklistOverflowMenu (Action header + multi-select checklist) ──────
 
 export function ActionChecklistOverflowMenu({
-  config, items, inputPlaceholder, onClose, onGenerate, onComplete, onShowMore, isLoadingShowMore, isLoadingGenerate, generateButtonLabel,
+  config, items, inputPlaceholder, onClose, onGenerate, onComplete, onShowMore, isLoadingShowMore, isLoadingGenerate, generateButtonLabel, inputLeading,
 }: {
-  config: ActionMenuConfig; items: { id: string; label: string }[]; inputPlaceholder?: string; onClose: () => void; onGenerate: () => void; onComplete: (selected: string[]) => void; onShowMore?: () => void; isLoadingShowMore?: boolean; isLoadingGenerate?: boolean; generateButtonLabel?: string;
+  config: ActionMenuConfig; items: { id: string; label: string }[]; inputPlaceholder?: string; onClose: () => void; onGenerate: () => void; onComplete: (selected: string[]) => void; onShowMore?: () => void; isLoadingShowMore?: boolean; isLoadingGenerate?: boolean; generateButtonLabel?: string; inputLeading?: React.ReactNode;
 }) {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [inputValue, setInputValue] = useState("");
@@ -586,6 +597,7 @@ export function ActionChecklistOverflowMenu({
           onSkip={onClose}
           onSend={() => onComplete(getSelectedLabels())}
           placeholder={inputPlaceholder ?? "Something else"}
+          inputLeading={inputLeading}
         />
       </div>
     </div>

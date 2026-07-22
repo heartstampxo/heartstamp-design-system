@@ -1,4 +1,5 @@
 import React from "react";
+import { ImagePlus } from "lucide-react";
 import { DocPage, DocSection } from "../../components/docs/doc-page";
 import { Preview } from "../../components/docs/doc-preview";
 import { PropsTable } from "../../components/docs/doc-props-table";
@@ -16,6 +17,24 @@ import {
 const DESC_STYLE: React.CSSProperties = { fontSize: 14, color: "var(--color-text-secondary)", marginBottom: 16 };
 const MENU_WRAPPER_STYLE: React.CSSProperties = { width: "100%", maxWidth: 400 };
 const NOOP = () => {};
+
+// Demo reference-image button for the `inputLeading` slot. In the app this slot
+// is filled by the app's own AddReferenceImagesButton (upload + placement menu);
+// here it's a static visual so the docs show the Option A menu-input layout.
+function DemoReferenceImageButton() {
+  return (
+    <button
+      type="button"
+      aria-label="Add reference images"
+      className="shrink-0 flex items-center justify-center size-[20px] cursor-pointer opacity-70 hover:opacity-100 transition-opacity"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <ImagePlus size={18} strokeWidth={2} color="var(--color-text-secondary)" />
+    </button>
+  );
+}
+
+const REFERENCE_IMAGE_SLOT = <DemoReferenceImageButton />;
 
 // ── Shared demo data ────────────────────────────────────────────────────────
 
@@ -128,6 +147,7 @@ import type { OverflowPage } from '@heartstamp/design-system';
               inputPlaceholder="Type your own"
               onClose={NOOP}
               onComplete={NOOP}
+              inputLeading={REFERENCE_IMAGE_SLOT}
             />
           </div>
         </Preview>
@@ -168,6 +188,7 @@ import type { OverflowPage } from '@heartstamp/design-system';
               inputPlaceholder="Type your own"
               onClose={NOOP}
               onComplete={NOOP}
+              inputLeading={REFERENCE_IMAGE_SLOT}
             />
           </div>
         </Preview>
@@ -199,6 +220,7 @@ import type { OverflowPage } from '@heartstamp/design-system';
               onClose={NOOP}
               onComplete={NOOP}
               onShowMore={() => alert("Show More clicked")}
+              inputLeading={REFERENCE_IMAGE_SLOT}
             />
           </div>
         </Preview>
@@ -209,6 +231,7 @@ import type { OverflowPage } from '@heartstamp/design-system';
           { name: "onClose",          type: "() => void",            def: "(required)", required: true, desc: "Called when the × close button is tapped" },
           { name: "inputPlaceholder", type: "string",                def: '"Type your own"',            desc: "Placeholder text for the free-text input row at the bottom" },
           { name: "onShowMore",       type: "() => void",            def: "—",                          desc: "When provided, renders a Show More button below the list. Only shown when there is a single page." },
+          { name: "inputLeading",     type: "React.ReactNode",       def: "pencil icon",               desc: "Leading control in the free-text input row. Pass the app's reference-image button here; falls back to the pencil badge when omitted." },
         ]} />
       </DocSection>
 
@@ -245,6 +268,7 @@ import type { ChecklistPage } from '@heartstamp/design-system';
               inputPlaceholder="You make the call"
               onClose={NOOP}
               onComplete={NOOP}
+              inputLeading={REFERENCE_IMAGE_SLOT}
             />
           </div>
         </Preview>
@@ -273,6 +297,7 @@ import type { ChecklistPage } from '@heartstamp/design-system';
               onClose={NOOP}
               onComplete={NOOP}
               onShowMore={() => alert("Show More clicked")}
+              inputLeading={REFERENCE_IMAGE_SLOT}
             />
           </div>
         </Preview>
@@ -283,6 +308,7 @@ import type { ChecklistPage } from '@heartstamp/design-system';
           { name: "onClose",          type: "() => void",                def: "(required)", required: true, desc: "Called when the × close button is tapped" },
           { name: "inputPlaceholder", type: "string",                    def: '"You make the call"',         desc: "Placeholder text for the free-text input row at the bottom" },
           { name: "onShowMore",       type: "() => void",                def: "—",                          desc: "When provided, renders a Show More button below the checklist items and above the input" },
+          { name: "inputLeading",     type: "React.ReactNode",           def: "pencil icon",                desc: "Leading control in the free-text input row. Pass the app's reference-image button here; falls back to the pencil badge when omitted." },
         ]} />
       </DocSection>
 
@@ -326,6 +352,7 @@ import type { TemplateCard } from '@heartstamp/design-system';
               inputPlaceholder="Something else"
               onClose={NOOP}
               onComplete={NOOP}
+              inputLeading={REFERENCE_IMAGE_SLOT}
             />
           </div>
         </Preview>
@@ -349,6 +376,7 @@ import type { TemplateCard } from '@heartstamp/design-system';
               onClose={NOOP}
               onComplete={NOOP}
               onShowMore={() => alert("Show More clicked")}
+              inputLeading={REFERENCE_IMAGE_SLOT}
             />
           </div>
         </Preview>
@@ -360,6 +388,7 @@ import type { TemplateCard } from '@heartstamp/design-system';
           { name: "onClose",          type: "() => void",            def: "(required)", required: true, desc: "Called when the × close button is tapped" },
           { name: "inputPlaceholder", type: "string",                def: '"Something else"',           desc: "Placeholder for the custom text input at the bottom" },
           { name: "onShowMore",       type: "() => void",            def: "—",                          desc: "When provided, renders a Show More button between the card grid and the custom input" },
+          { name: "inputLeading",     type: "React.ReactNode",       def: "pencil icon",               desc: "Leading control in the custom-text input row. Pass the app's reference-image button here; falls back to the pencil badge when omitted." },
         ]} />
       </DocSection>
 
@@ -391,6 +420,7 @@ import type { TemplateCard } from '@heartstamp/design-system';
               inputPlaceholder="Something else"
               onClose={NOOP}
               onGenerate={NOOP}
+              inputLeading={REFERENCE_IMAGE_SLOT}
             />
           </div>
         </Preview>
@@ -399,6 +429,7 @@ import type { TemplateCard } from '@heartstamp/design-system';
           { name: "onGenerate",       type: "() => void",       def: "(required)", required: true, desc: "Called when the primary generate button is clicked" },
           { name: "onClose",          type: "() => void",       def: "(required)", required: true, desc: "Called when the × close button is tapped" },
           { name: "inputPlaceholder", type: "string",           def: '"Something else"',           desc: "Placeholder for the free-text input at the bottom" },
+          { name: "inputLeading",     type: "React.ReactNode",  def: "pencil icon",               desc: "Leading control in the free-text input row. Pass the app's reference-image button here; falls back to the pencil badge when omitted." },
         ]} />
       </DocSection>
 
@@ -437,6 +468,7 @@ import type { TemplateCard } from '@heartstamp/design-system';
               onClose={NOOP}
               onGenerate={NOOP}
               onComplete={NOOP}
+              inputLeading={REFERENCE_IMAGE_SLOT}
             />
           </div>
         </Preview>
@@ -446,6 +478,7 @@ import type { TemplateCard } from '@heartstamp/design-system';
           { name: "onComplete",       type: "(label: string) => void", def: "(required)", required: true, desc: "Called when a list item or custom input is submitted" },
           { name: "onClose",          type: "() => void",       def: "(required)", required: true, desc: "Called when the × close button or Skip is tapped" },
           { name: "inputPlaceholder", type: "string",           def: '"Something else"',           desc: "Placeholder for the free-text input at the bottom" },
+          { name: "inputLeading",     type: "React.ReactNode",  def: "pencil icon",               desc: "Leading control in the free-text input row. Pass the app's reference-image button here; falls back to the pencil badge when omitted." },
         ]} />
       </DocSection>
 
