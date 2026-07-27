@@ -1,8 +1,17 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import Lottie, { type LottieRefCurrentProps } from "lottie-react";
 import { ThumbsDown, ThumbsUp, Heart, ChevronRight } from "lucide-react";
 import { HSEmblem } from "./hs-logo";
 import { Prg } from "./hs-prg";
+import confettiSvg from "../../../assets/confetti.svg?url";
+import likeHeart from "../../../assets/like-heart.json";
+import cardImg1 from "../../../assets/promo-cards/card-1.png";
+import cardImg2 from "../../../assets/promo-cards/card-2.png";
+import cardImg3 from "../../../assets/promo-cards/card-3.png";
+import cardImg4 from "../../../assets/promo-cards/card-4.png";
+import cardImg5 from "../../../assets/promo-cards/card-5.png";
+import cardImg6 from "../../../assets/promo-cards/card-6.png";
 
 /* ═══════════════════════════════════════════════════════
    Types
@@ -33,16 +42,12 @@ export interface StampyPromotionsProps {
 ═══════════════════════════════════════════════════════ */
 
 const DEMO_CARDS: PromoCard[] = [
-  { id: "1",  imageSrc: "", title: "Father's Day"    },
-  { id: "2",  imageSrc: "", title: "Birthday"        },
-  { id: "3",  imageSrc: "", title: "Anniversary"     },
-  { id: "4",  imageSrc: "", title: "Thank You"       },
-  { id: "5",  imageSrc: "", title: "Get Well Soon"   },
-  { id: "6",  imageSrc: "", title: "Graduation"      },
-  { id: "7",  imageSrc: "", title: "Valentine's Day" },
-  { id: "8",  imageSrc: "", title: "Mother's Day"    },
-  { id: "9",  imageSrc: "", title: "Thinking of You" },
-  { id: "10", imageSrc: "", title: "Just Because"    },
+  { id: "1", imageSrc: cardImg1, title: "Add Another Chapter"   },
+  { id: "2", imageSrc: cardImg2, title: "Champion Sister Status" },
+  { id: "3", imageSrc: cardImg3, title: "Best Version of You"    },
+  { id: "4", imageSrc: cardImg4, title: "Endless Romance"        },
+  { id: "5", imageSrc: cardImg5, title: "King of the Grill"      },
+  { id: "6", imageSrc: cardImg6, title: "Still My Favorite"      },
 ];
 
 // Decorative placeholder gradients for cards with no image.
@@ -61,19 +66,6 @@ const CARD_BG = [
   "linear-gradient(135deg, #30cfd0 0%, #330867 100%)",
 ];
 
-// Decorative confetti colours — creative content, not UI tokens.
-// First entry references brand primary via token.
-const CONFETTI_PALETTE = [
-  "var(--color-brand-primary, #be1d2c)",
-  "#ff6b9d", "#ffd700", "#ff6b35", "#a8d8ea", "#c4b5fd", "#86efac",
-];
-
-// Figma card overlay: white 20% + black 30% layered.
-// Fixed visual specification — not a configurable token.
-const CARD_OVERLAY =
-  "linear-gradient(90deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.2) 100%), " +
-  "linear-gradient(90deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.3) 100%)";
-
 // Swipe-hint overlay RGB channels — enables dynamic alpha in rgba().
 // Corresponding full-colour tokens are in tokens.css:
 //   --color-brand-primary-rgb, --color-state-success-rgb, --color-state-dislike-rgb
@@ -90,9 +82,10 @@ const STAGE_W     = 228;  // card stage container width
 const STAGE_H     = 340;  // card stage container height
 
 // Back-card visual offset from front-card (computed from Figma).
-const ENTER_X   = -17;
+// Rotation and X-offset reduced from the Figma spec so the back card peeks less.
+const ENTER_X   = -8;
 const ENTER_Y   = 5;
-const ENTER_ROT = -10.56;
+const ENTER_ROT = -4;
 
 // Animation easing / distance constants.
 const FLY_DISTANCE_X = 620;
@@ -101,67 +94,42 @@ const FLY_DISTANCE_Y = 660;
 const clamp = (v: number, lo: number, hi: number) => Math.min(Math.max(v, lo), hi);
 
 /* ═══════════════════════════════════════════════════════
-   Floating Heart  (super-like particle)
+   Super-like Hearts  (Heart spark Lottie)
+   Plays a single pass of the Lottie centered over the stage
+   each time `trigger` increments (i.e. on every super-like).
 ═══════════════════════════════════════════════════════ */
 
-interface FloatHeartProps {
-  id: number;
-  dx: number;
-  sz: number;
-  dy: number;
-  dur: number;
-  onDone: (id: number) => void;
-}
+// Playback speed multiplier for the ~3s source clip.
+const SUPER_LOTTIE_SPEED = 1.4;
+// Square render size for the centered heart-spark animation.
+const SUPER_LOTTIE_SIZE = 240;
 
-function FloatHeart({ id, dx, sz, dy, dur, onDone }: FloatHeartProps) {
-  // Random values computed once on mount via ref — stable across re-renders.
-  const ex           = useRef(dx + (Math.random() - 0.5) * 70).current;
-  const initRotate   = useRef(Math.random() * 30 - 15).current;
-  const finalRotate  = useRef(Math.random() * 60 - 30).current;
-
-  return (
-    <motion.div
-      initial={{ opacity: 1, y: 0, x: dx, scale: 0.4, rotate: initRotate }}
-      animate={{ opacity: 0, y: -dy, x: ex, scale: 1.1, rotate: finalRotate }}
-      transition={{ duration: dur, ease: "easeOut" }}
-      onAnimationComplete={() => onDone(id)}
-      style={{ position: "absolute", bottom: 80, left: "50%", pointerEvents: "none", zIndex: 20 }}
-    >
-      <Heart
-        size={sz}
-        fill="var(--color-brand-primary, #be1d2c)"
-        color="var(--color-brand-primary, #be1d2c)"
-      />
-    </motion.div>
-  );
-}
-
-function HeartBurst({ trigger }: { trigger: number }) {
-  const hidRef = useRef(0);
-  const [hearts, setHearts] = useState<FloatHeartProps[]>([]);
+function SuperLikeHearts({ trigger }: { trigger: number }) {
+  const [active, setActive] = useState(false);
+  const lottieRef = useRef<LottieRefCurrentProps>(null);
 
   useEffect(() => {
     if (!trigger) return;
-    setHearts(p => [
-      ...p,
-      ...Array.from({ length: 14 }, () => ({
-        id:  ++hidRef.current,
-        dx:  (Math.random() - 0.5) * 110,
-        sz:  14 + Math.random() * 14,
-        dy:  150 + Math.random() * 90,
-        dur: 1 + Math.random() * 0.5,
-        onDone: () => {},  // overridden below
-      })),
-    ]);
+    setActive(true);
   }, [trigger]);
 
-  const remove = useCallback((id: number) => setHearts(p => p.filter(h => h.id !== id)), []);
+  if (!active) return null;
 
   return (
-    <div style={{ position: "absolute", inset: 0, pointerEvents: "none", overflow: "hidden", zIndex: 20 }}>
-      <AnimatePresence>
-        {hearts.map(h => <FloatHeart key={h.id} {...h} onDone={remove} />)}
-      </AnimatePresence>
+    <div style={{
+      position: "absolute", inset: 0,
+      display: "flex", alignItems: "center", justifyContent: "center",
+      pointerEvents: "none", zIndex: 1,
+    }}>
+      <Lottie
+        key={trigger}            /* remount → replay on each super-like */
+        lottieRef={lottieRef}
+        animationData={likeHeart}
+        loop={false}
+        onDOMLoaded={() => lottieRef.current?.setSpeed(SUPER_LOTTIE_SPEED)}
+        onComplete={() => setActive(false)}
+        style={{ width: SUPER_LOTTIE_SIZE, height: SUPER_LOTTIE_SIZE }}
+      />
     </div>
   );
 }
@@ -170,45 +138,29 @@ function HeartBurst({ trigger }: { trigger: number }) {
    Reward Confetti
 ═══════════════════════════════════════════════════════ */
 
+// Animated confetti burst (SMIL SVG). Rendered via <img> so its built-in
+// animation plays; mounting fresh restarts the burst timeline from zero.
 function RewardConfetti({ active }: { active: boolean }) {
-  const particles = useRef(
-    Array.from({ length: 32 }, (_, i) => ({
-      id:     i,
-      x:      Math.random() * 100,
-      color:  CONFETTI_PALETTE[i % CONFETTI_PALETTE.length],
-      size:   5 + Math.random() * 5,
-      delay:  i * 0.025,
-      dur:    1.4 + Math.random() * 0.7,
-      drift:  (Math.random() - 0.5) * 90,
-      spin:   Math.random() > 0.5 ? 360 : -360,
-      circle: Math.random() > 0.5,
-    }))
-  ).current;
-
   return (
     <AnimatePresence>
       {active && (
-        <motion.div
+        <motion.img
           key="conf"
-          initial={{ opacity: 1 }}
+          src={confettiSvg}
+          alt=""
+          aria-hidden
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           exit={{ opacity: 0, transition: { duration: 0.5 } }}
-          style={{ position: "absolute", inset: 0, pointerEvents: "none", overflow: "hidden", zIndex: 5 }}
-        >
-          {particles.map(p => (
-            <motion.div
-              key={p.id}
-              initial={{ opacity: 1, y: -10, x: `${p.x}%`, rotate: 0 }}
-              animate={{ opacity: 0, y: "110%", x: `calc(${p.x}% + ${p.drift}px)`, rotate: p.spin }}
-              transition={{ duration: p.dur, delay: p.delay, ease: "easeIn" }}
-              style={{
-                position: "absolute", top: 0,
-                width: p.size, height: p.size,
-                borderRadius: p.circle ? "50%" : "var(--radius-xs, 4px)",
-                background: p.color,
-              }}
-            />
-          ))}
-        </motion.div>
+          transition={{ duration: 0.2 }}
+          style={{
+            position: "absolute", inset: 0,
+            width: "100%", height: "100%",
+            objectFit: "cover",
+            pointerEvents: "none",
+            zIndex: 5,
+          }}
+        />
       )}
     </AnimatePresence>
   );
@@ -218,7 +170,7 @@ function RewardConfetti({ active }: { active: boolean }) {
    Card Image
 ═══════════════════════════════════════════════════════ */
 
-function CardImage({ src, idx, withOverlay }: { src: string; idx: number; withOverlay?: boolean }) {
+function CardImage({ src, idx }: { src: string; idx: number }) {
   const topRadius = "var(--radius-lg, 8px) var(--radius-lg, 8px) 0 0";
   return (
     <>
@@ -237,17 +189,6 @@ function CardImage({ src, idx, withOverlay }: { src: string; idx: number; withOv
       ) : (
         <div style={{ position: "absolute", inset: 0, background: CARD_BG[idx % CARD_BG.length], borderRadius: topRadius }} />
       )}
-      {withOverlay && (
-        <div
-          aria-hidden
-          style={{
-            position: "absolute", inset: 0,
-            backgroundImage: CARD_OVERLAY,
-            borderRadius: topRadius,
-            pointerEvents: "none",
-          }}
-        />
-      )}
     </>
   );
 }
@@ -256,15 +197,15 @@ function CardImage({ src, idx, withOverlay }: { src: string; idx: number; withOv
    Card Footer
 ═══════════════════════════════════════════════════════ */
 
-function CardFooter({ title, isBack }: { title: string; isBack?: boolean }) {
+function CardFooter({ title }: { title: string }) {
   return (
     <div style={{
       borderTop: "1px solid var(--color-element-subtle, rgba(36,36,35,0.1))",
       display: "flex", alignItems: "center",
       gap: "var(--space-6, 24px)",
-      padding: isBack
-        ? "var(--space-2-5, 10px) var(--space-3, 12px)"
-        : "var(--space-2-5, 10px) var(--space-4, 16px)",
+      // Padding is identical for front and back so the text never reflows
+      // when a rising card takes over the front role.
+      padding: "var(--space-2-5, 10px) var(--space-4, 16px)",
       backgroundColor: "var(--color-bg-main, #ffffff)",
       flexShrink: 0, width: "100%", overflow: "hidden",
     }}>
@@ -386,6 +327,7 @@ function CardSlot({
 }: CardSlotProps) {
   const cardRef     = useRef<HTMLDivElement>(null);
   const startRef    = useRef<{ x: number; y: number } | null>(null);
+  const deltaRef    = useRef({ dx: 0, dy: 0 });   // latest raw drag delta
   const progressRef = useRef(0);
   const superRef    = useRef(0);
   const busyRef     = useRef(false);
@@ -449,9 +391,17 @@ function CardSlot({
     if (!el) return;
     el.style.transition = "transform 0.45s cubic-bezier(0.22, 1, 0.36, 1)";
     el.style.transform  = "translate(0px, 0px) rotate(0deg)";
-    const onEnd = () => onRiseRef.current();
-    el.addEventListener("transitionend", onEnd, { once: true });
-    return () => el.removeEventListener("transitionend", onEnd);
+    // Complete on transitionend, with a fallback timer in case it never fires
+    // (interrupted transition, prefers-reduced-motion, backgrounded tab) — otherwise
+    // the deck would stay stuck in swipeInProgress with the buttons disabled.
+    let done = false;
+    const finish = () => { if (done) return; done = true; onRiseRef.current(); };
+    el.addEventListener("transitionend", finish, { once: true });
+    const fallback = window.setTimeout(finish, 550);
+    return () => {
+      el.removeEventListener("transitionend", finish);
+      clearTimeout(fallback);
+    };
   }, [shouldRise]);
 
   /* ── Fly out ────────────────────────────────────────────────── */
@@ -466,6 +416,7 @@ function CardSlot({
     } else if (dir === "dislike") {
       el.style.transform = `translate(-${FLY_DISTANCE_X}px, -30px) rotate(-20deg)`;
     } else {
+      // Super-like: card flies straight up while the heart spark plays behind it.
       el.style.transform = `translate(0px, -${FLY_DISTANCE_Y}px)`;
     }
     // Signal immediately — back slot starts rising in parallel with fly-out.
@@ -492,6 +443,7 @@ function CardSlot({
       ? { x: e.touches[0].clientX, y: e.touches[0].clientY }
       : { x: e.clientX, y: e.clientY };
     startRef.current = pos;
+    deltaRef.current = { dx: 0, dy: 0 };
     setIsInteracting(true);
     if (cardRef.current) cardRef.current.style.transition = "none";
   }, []);
@@ -502,6 +454,7 @@ function CardSlot({
     const { x, y } = getEventPos(e);
     const rawDx = x - startRef.current.x;
     const rawDy = y - startRef.current.y;
+    deltaRef.current = { dx: rawDx, dy: rawDy };
     const dx    = rawDx * 0.8;
     const dy    = rawDy * 0.5;
     const isUp  = rawDy < -40 && Math.abs(rawDy) > Math.abs(rawDx);
@@ -520,9 +473,9 @@ function CardSlot({
     startRef.current = null;
     setIsInteracting(false);
     const el = cardRef.current;
-    const t  = el.style.transform;
-    const dx = parseFloat(t.match(/translate\((-?[\d.]+)px/)?.[1] ?? "0");
-    const dy = parseFloat(t.match(/translate\([^,]+,\s*(-?[\d.]+)px\)/)?.[1] ?? "0");
+    // Use the raw delta captured during the drag (matches handleMove's isUp test)
+    // rather than re-parsing the applied transform string.
+    const { dx, dy } = deltaRef.current;
     const isUp = dy < -40 && Math.abs(dy) > Math.abs(dx);
     const p  = progressRef.current;
     const sp = superRef.current;
@@ -534,6 +487,7 @@ function CardSlot({
       el.style.transform  = "translate(0px, 0px) rotate(0deg)";
       progressRef.current = 0;
       superRef.current    = 0;
+      deltaRef.current    = { dx: 0, dy: 0 };
       setProgress(0);
       setSuperProgress(0);
     }
@@ -573,25 +527,86 @@ function CardSlot({
         touchAction: isFront ? "none" : "auto",
         userSelect: "none",
         willChange: "transform",
-        // --shadow-card-back is defined in tokens.css.
-        // filter is used (not box-shadow) per Figma spec to render behind rotated card.
-        filter: isStaticBack ? "var(--shadow-card-back, drop-shadow(24px 12px 10px rgba(0,0,0,0.15)))" : "none",
+        // Soft, light shadow applied to every card equally so it never toggles / jumps.
+        boxShadow: "0 4px 14px rgba(0, 0, 0, 0.08)",
         pointerEvents: isFront ? "auto" : "none",
       }}
     >
       <div style={{ flex: 1, position: "relative" }}>
-        <CardImage src={card.imageSrc} idx={cardIdx} withOverlay={isFront && !!card.imageSrc} />
+        <CardImage src={card.imageSrc} idx={cardIdx} />
         {isFront && <SwipeHint progress={progress} superProgress={superProgress} />}
       </div>
-      <CardFooter title={card.title} isBack={!isFront} />
+      <CardFooter title={card.title} />
+      {/* Depth scrim — dims the card while it sits behind. It fades out only
+          while rising to front (in sync with the rise); when a card settles
+          back it snaps on instantly, so the returning card never flashes bright. */}
+      <div
+        aria-hidden
+        style={{
+          position: "absolute", inset: 0,
+          borderRadius: "var(--radius-lg, 8px)",
+          background: "rgba(0, 0, 0, 0.18)",
+          opacity: isStaticBack ? 1 : 0,
+          transition: shouldRise ? "opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1)" : "none",
+          pointerEvents: "none",
+          zIndex: 4,
+        }}
+      />
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════
+   StaticBackCard — non-interactive card pinned at the back
+   position, beneath both ping-pong slots (zIndex 0). At rest it
+   sits directly behind the back slot (hidden). While the back slot
+   rises to front, it is revealed so a card is always peeking —
+   the deck never drops to a single visible card mid-swipe.
+   Shows the "next-next" card, which becomes the new back after swap.
+═══════════════════════════════════════════════════════ */
+
+function StaticBackCard({ card, cardIdx }: { card: PromoCard; cardIdx: number }) {
+  return (
+    <div
+      aria-hidden
+      style={{
+        position: "absolute",
+        left: CARD_SLOT_L, top: CARD_SLOT_T,
+        width: CARD_W, height: CARD_H,
+        zIndex: 0,
+        transform: `translate(${ENTER_X}px, ${ENTER_Y}px) rotate(${ENTER_ROT}deg)`,
+        borderRadius: "var(--radius-lg, 8px)",
+        backgroundColor: "var(--color-bg-main, #ffffff)",
+        border: "1px solid var(--color-element-subtle, rgba(36,36,35,0.1))",
+        display: "flex", flexDirection: "column",
+        overflow: "hidden",
+        userSelect: "none",
+        pointerEvents: "none",
+        boxShadow: "0 4px 14px rgba(0, 0, 0, 0.08)",
+      }}
+    >
+      <div style={{ flex: 1, position: "relative" }}>
+        <CardImage src={card.imageSrc} idx={cardIdx} />
+      </div>
+      <CardFooter title={card.title} />
+      {/* Depth scrim — this card is always behind, so it stays dimmed. */}
+      <div
+        aria-hidden
+        style={{
+          position: "absolute", inset: 0,
+          borderRadius: "var(--radius-lg, 8px)",
+          background: "rgba(0, 0, 0, 0.18)",
+          pointerEvents: "none",
+          zIndex: 4,
+        }}
+      />
     </div>
   );
 }
 
 /* ═══════════════════════════════════════════════════════
    Action Buttons
-   Figma layout: space-between, horizontal padding 112px each side.
-   112px is a Figma layout constant (not a spacing token).
+   Centered row with a 24px (--space-6) gap between each button.
 ═══════════════════════════════════════════════════════ */
 
 interface ActionButtonsProps {
@@ -627,7 +642,7 @@ function ActionButtons({ onDislike, onLike, onSuper, disabled }: ActionButtonsPr
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-2, 8px)", alignItems: "center", width: "100%" }}>
-      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", padding: "0 112px", width: "100%" }}>
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "center", gap: "var(--space-6, 24px)", width: "100%" }}>
         {btn("var(--color-brand-secondary-dim, rgba(36,36,35,0.06))", "Dislike", onDislike,
           <ThumbsDown size={24} color="var(--color-text-primary, #242423)" />)}
         {btn("var(--color-brand-primary, #be1d2c)", "Super like", onSuper,
@@ -654,10 +669,13 @@ interface RewardScreenProps {
 }
 
 function RewardScreen({ creditsEarned, onClose, renderInput }: RewardScreenProps) {
-  const [confetti, setConfetti] = useState(true);
+  // Delay the confetti burst by 1s after the reward screen appears, then let it
+  // play a single burst before unmounting (the SMIL loop would otherwise repeat).
+  const [confetti, setConfetti] = useState(false);
   useEffect(() => {
-    const t = setTimeout(() => setConfetti(false), 3200);
-    return () => clearTimeout(t);
+    const show = setTimeout(() => setConfetti(true), 1000);
+    const hide = setTimeout(() => setConfetti(false), 1000 + 3200);
+    return () => { clearTimeout(show); clearTimeout(hide); };
   }, []);
 
   return (
@@ -777,7 +795,8 @@ export function StampyPromotions({
   // swipeCount drives which slot is front (even = slot-a, odd = slot-b).
   const [swipeCount,      setSwipeCount]      = useState(0);
   const [swipes,          setSwipes]          = useState(0);
-  const [phase,           setPhase]           = useState<"swipe" | "reward">("swipe");
+  // swipesUntilReward <= 0 means "no swipes required" → open straight on the reward.
+  const [phase,           setPhase]           = useState<"swipe" | "reward">(swipesUntilReward <= 0 ? "reward" : "swipe");
   const [progress,        setProgress]        = useState(0);
   const [autoSwipe,       setAutoSwipe]       = useState<PromoSwipeDirection | null>(null);
   const [superTrigger,    setSuperTrigger]    = useState(0);
@@ -796,6 +815,8 @@ export function StampyPromotions({
     setProgress(0);
     setAutoSwipe(null);
     const duration = autoAdvanceSec * 1000;
+    // autoAdvanceSec <= 0 disables auto-advance (manual swipes only) and avoids /0 → NaN.
+    if (duration <= 0) return;
     let fired = false;
     const tick = (now: number) => {
       if (ver !== versionRef.current) return;
@@ -816,10 +837,16 @@ export function StampyPromotions({
   const idxB     = (frontIsA ? swipeCount + 1   : swipeCount    ) % n;
   const cardA    = allCards[idxA];
   const cardB    = allCards[idxB];
+  // Backdrop card sitting behind the deck — the card that becomes the new back after this swipe.
+  const idxStatic  = (swipeCount + 2) % n;
+  const cardStatic = allCards[idxStatic];
 
   /* ── Front slot commits a swipe → start rise on back slot ──── */
   const handleSwipeCommit = useCallback((dir: PromoSwipeDirection) => {
     pendingDirRef.current = dir;
+    // Fire the heart-spark the instant the super-like is committed (card starts
+    // flying up), so the animation feels connected to the gesture — not delayed.
+    if (dir === "super") setSuperTrigger(t => t + 1);
     setSwipeInProgress(true);
     setAutoSwipe(null);
   }, []);
@@ -828,7 +855,6 @@ export function StampyPromotions({
   const handleRiseComplete = useCallback(() => {
     const dir = pendingDirRef.current ?? "like";
     pendingDirRef.current = null;
-    if (dir === "super") setSuperTrigger(t => t + 1);
     const card = allCards[swipeCount % n];
     onSwipe?.(card, dir);
     const next = swipes + 1;
@@ -855,7 +881,8 @@ export function StampyPromotions({
               position: "relative",
               background: "var(--color-brand-secondary-dim, rgba(36,36,35,0.06))",
               borderRadius: "var(--radius-2xl, 12px)",
-              padding: "var(--space-3, 12px)",
+              // Extra bottom padding so the action buttons aren't against the edge.
+              padding: "var(--space-3, 12px) var(--space-3, 12px) var(--space-5, 20px)",
               display: "flex", flexDirection: "column",
               gap: "var(--space-2, 8px)",
               alignItems: "center",
@@ -863,7 +890,6 @@ export function StampyPromotions({
               overflow: "hidden",
             }}
           >
-            <HeartBurst trigger={superTrigger} />
             <Prg value={progress * 100} style={{ flexShrink: 0, width: "100%" }} />
 
             <p style={{
@@ -879,6 +905,8 @@ export function StampyPromotions({
             </p>
 
             <div style={{ position: "relative", width: STAGE_W, height: STAGE_H, flexShrink: 0 }}>
+              {/* Static backdrop card — always peeking behind the two animating slots. */}
+              <StaticBackCard card={cardStatic} cardIdx={idxStatic} />
               {/* Slot B rendered first in DOM (lower zIndex = visually behind). */}
               <CardSlot
                 key="slot-b"
@@ -900,10 +928,10 @@ export function StampyPromotions({
                 onSwipeCommit={handleSwipeCommit}
                 onRiseComplete={handleRiseComplete}
               />
+              {/* Heart spark plays behind the front card (z1), revealed as it flies up. */}
+              <SuperLikeHearts trigger={superTrigger} />
             </div>
 
-            {/* Spacer between card stage and action buttons. */}
-            <div style={{ height: "var(--space-2, 8px)" }} />
             <ActionButtons
               onDislike={() => { if (!autoSwipe && !swipeInProgress) setAutoSwipe("dislike"); }}
               onLike={   () => { if (!autoSwipe && !swipeInProgress) setAutoSwipe("like");    }}

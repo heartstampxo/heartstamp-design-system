@@ -4,40 +4,14 @@ import { Preview } from "../../components/docs/doc-preview";
 import { PropsTable } from "../../components/docs/doc-props-table";
 import { StampyPromotions } from "../../components/ui/hs-stampy-promotions";
 import { ChatHeader } from "../../components/ui/hs-stampy-panels";
+import { ChatHomeInput } from "../../components/ui/hs-stampy-chat";
 
-/* Sample chat input — rendered inside the reward screen via renderInput */
+/* Real chat input — rendered inside the reward screen via renderInput */
 const SAMPLE_INPUT = (
-  <div style={{
-    background: "white",
-    border: "1px solid rgba(36,36,35,0.1)",
-    borderRadius: 12,
-    padding: "12px 8px 8px",
-    display: "flex",
-    flexDirection: "column",
-    gap: 16,
-  }}>
-    <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "0 6px" }}>
-      <span style={{ fontSize: 13, color: "rgba(36,36,35,0.4)" }}>✦</span>
-      <span style={{ fontSize: 15, color: "rgba(36,36,35,0.4)", flex: 1 }}>Something else? Write your own…</span>
-    </div>
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 2px" }}>
-      <div style={{
-        display: "flex", alignItems: "center", gap: 6,
-        background: "rgba(36,36,35,0.06)", borderRadius: 100,
-        padding: "6px 8px", fontSize: 12, fontWeight: 500, color: "#242423",
-      }}>
-        <span>🖼</span> Add reference images
-      </div>
-      <div style={{ display: "flex", gap: 4 }}>
-        <div style={{ width: 32, height: 32, borderRadius: 20, display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <span style={{ fontSize: 18 }}>🎤</span>
-        </div>
-        <div style={{ width: 32, height: 32, borderRadius: 20, background: "rgba(36,36,35,0.06)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <span style={{ fontSize: 14 }}>↑</span>
-        </div>
-      </div>
-    </div>
-  </div>
+  <ChatHomeInput
+    placeholder="Ask, search or create your card"
+    onSend={(value) => console.log(value)}
+  />
 );
 
 export function PagePromotions() {
@@ -53,7 +27,7 @@ export function PagePromotions() {
           title="Stampy Promotions — inside chat container"
           height={600}
           fullWidth
-          code={`import { StampyPromotions } from '@heartstampxo/design-system';
+          code={`import { StampyPromotions, ChatHomeInput } from '@heartstampxo/design-system';
 
 <StampyPromotions
   swipesUntilReward={15}
@@ -61,7 +35,7 @@ export function PagePromotions() {
   autoAdvanceSec={8}
   onSwipe={(card, dir) => console.log(card.title, dir)}
   onClose={() => setVisible(false)}
-  renderInput={<YourChatInput />}
+  renderInput={<ChatHomeInput placeholder="Ask, search or create your card" onSend={(value) => console.log(value)} />}
 />`}
         >
           {/* Chat window shell — matches the Figma layout */}
