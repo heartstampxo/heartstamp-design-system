@@ -5,9 +5,15 @@ import React from "react";
 interface PrgProps {
   value: number;
   style?: React.CSSProperties;
+  /**
+   * CSS transition applied to the fill. The default smooths discrete value
+   * updates. Pass "none" when driving the value continuously (e.g. via
+   * requestAnimationFrame) so the bar stays exactly in sync and never lags.
+   */
+  fillTransition?: string;
 }
 
-export function Prg({ value, style }: PrgProps) {
+export function Prg({ value, style, fillTransition = "width .3s" }: PrgProps) {
   return (
     <div
       style={{
@@ -24,7 +30,7 @@ export function Prg({ value, style }: PrgProps) {
           borderRadius: "var(--radius-full)",
           background: "var(--accent)",
           width: `${value}%`,
-          transition: "width .3s",
+          transition: fillTransition,
         }}
       />
     </div>

@@ -19,6 +19,10 @@ import cardImg6 from "../../../assets/promo-cards/card-6.png";
 
 export type PromoSwipeDirection = "like" | "dislike" | "super";
 
+// Internal fly direction. "skip" = auto-advance with no user choice: the card
+// tucks to the back of the deck and is NOT reported via onSwipe.
+type AutoDir = PromoSwipeDirection | "skip";
+
 export interface PromoCard {
   id: string;
   imageSrc: string;
@@ -50,9 +54,8 @@ const DEMO_CARDS: PromoCard[] = [
   { id: "6", imageSrc: cardImg6, title: "Still My Favorite"      },
 ];
 
-// Decorative placeholder gradients for cards with no image.
-// Colors are creative content, not UI tokens.
-// Exception: index 8 references the brand primary via token.
+// Fallback gradients for cards supplied without an imageSrc. Decorative creative
+// content, not UI tokens (one entry references the brand primary via token).
 const CARD_BG = [
   "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
   "linear-gradient(135deg, #f5576c 0%, #f093fb 100%)",
@@ -92,6 +95,25 @@ const FLY_DISTANCE_X = 620;
 const FLY_DISTANCE_Y = 660;
 
 const clamp = (v: number, lo: number, hi: number) => Math.min(Math.max(v, lo), hi);
+
+// ── Shared card visuals ──────────────────────────────────────
+const CARD_RADIUS   = "var(--radius-lg, 8px)";
+const CARD_SHADOW   = "0 4px 14px rgba(0, 0, 0, 0.08)";  // soft, static — never toggles
+const CARD_SCRIM_BG = "rgba(0, 0, 0, 0.18)";             // depth dim for cards behind the front
+
+// Base container shared by the interactive slots and the static backdrop card.
+const cardBaseStyle: React.CSSProperties = {
+  position: "absolute",
+  left: CARD_SLOT_L, top: CARD_SLOT_T,
+  width: CARD_W, height: CARD_H,
+  borderRadius: CARD_RADIUS,
+  backgroundColor: "var(--color-bg-main, #ffffff)",
+  border: "1px solid var(--color-element-subtle, rgba(36,36,35,0.1))",
+  display: "flex", flexDirection: "column",
+  overflow: "hidden",
+  userSelect: "none",
+  boxShadow: CARD_SHADOW,
+};
 
 /* ═══════════════════════════════════════════════════════
    Super-like Hearts  (Heart spark Lottie)
@@ -289,6 +311,46 @@ function SwipeHint({ progress, superProgress }: { progress: number; superProgres
 }
 
 /* ═══════════════════════════════════════════════════════
+   CardFace — shared inner content for every card: artwork,
+   footer, and the depth scrim. `children` overlays the artwork
+   (e.g. the SwipeHint on the interactive front card).
+═══════════════════════════════════════════════════════ */
+
+function CardFace({
+  card, cardIdx, scrimOpacity, scrimTransition = "none", children,
+}: {
+  card: PromoCard;
+  cardIdx: number;
+  scrimOpacity: number;
+  scrimTransition?: string;
+  children?: React.ReactNode;
+}) {
+  return (
+    <>
+      <div style={{ flex: 1, position: "relative" }}>
+        <CardImage src={card.imageSrc} idx={cardIdx} />
+        {children}
+      </div>
+      <CardFooter title={card.title} />
+      {/* Depth scrim — dims a card while it sits behind. The front card passes 0; a
+          rising card fades it out (scrimTransition); a settling/back card snaps it on. */}
+      <div
+        aria-hidden
+        style={{
+          position: "absolute", inset: 0,
+          borderRadius: CARD_RADIUS,
+          background: CARD_SCRIM_BG,
+          opacity: scrimOpacity,
+          transition: scrimTransition,
+          pointerEvents: "none",
+          zIndex: 4,
+        }}
+      />
+    </>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════
    CardSlot — unified front / back card
    Two permanent instances ("slot-a", "slot-b") ping-pong roles on
    each swipe so no component ever remounts mid-animation.
@@ -312,8 +374,8 @@ interface CardSlotProps {
   cardIdx:        number;
   isFront:        boolean;
   shouldRise:     boolean;
-  autoSwipe:      PromoSwipeDirection | null;
-  onSwipeCommit:  (dir: PromoSwipeDirection) => void;
+  autoSwipe:      AutoDir | null;
+  onSwipeCommit:  (dir: AutoDir) => void;
   onRiseComplete: () => void;
 }
 
@@ -332,6 +394,7 @@ function CardSlot({
   const superRef    = useRef(0);
   const busyRef     = useRef(false);
   const enteredRef  = useRef(false);
+  const skipTimerRef = useRef<number | null>(null);  // phase-2 timer for the skip animation
   const prevIsFront = useRef(isFront);
   // Stable ref wrappers so effects never capture stale callbacks.
   const onRiseRef   = useRef(onRiseComplete);
@@ -342,6 +405,9 @@ function CardSlot({
   const [isInteracting, setIsInteracting] = useState(false);
   const [progress,      setProgress]      = useState(0);
   const [superProgress, setSuperProgress] = useState(0);
+  // During a skip the front card tucks behind the deck, so it drops below the
+  // rising card (zIndex 0) instead of staying on top.
+  const [skipping,      setSkipping]      = useState(false);
 
   /* ── Set initial position on mount ─────────────────────────── */
   useEffect(() => {
@@ -357,6 +423,9 @@ function CardSlot({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // mount only — reads isFront from first render
 
+  /* ── Clear the skip phase-2 timer on unmount ───────────────── */
+  useEffect(() => () => { if (skipTimerRef.current) clearTimeout(skipTimerRef.current); }, []);
+
   /* ── Handle role changes ────────────────────────────────────── */
   useEffect(() => {
     const wasFront = prevIsFront.current;
@@ -366,12 +435,14 @@ function CardSlot({
       // front → back: just flew off-screen; snap to back position instantly.
       const el = cardRef.current;
       if (!el) return;
+      if (skipTimerRef.current) { clearTimeout(skipTimerRef.current); skipTimerRef.current = null; }
       el.style.transition = "none";
       el.style.transform  = `translate(${ENTER_X}px, ${ENTER_Y}px) rotate(${ENTER_ROT}deg)`;
       busyRef.current     = false;
       enteredRef.current  = false;
       progressRef.current = 0;
       superRef.current    = 0;
+      setSkipping(false);   // restore normal back-card z-index
       setProgress(0);
       setSuperProgress(0);
       setIsInteracting(false);
@@ -405,7 +476,7 @@ function CardSlot({
   }, [shouldRise]);
 
   /* ── Fly out ────────────────────────────────────────────────── */
-  const flyOut = useCallback((dir: PromoSwipeDirection) => {
+  const flyOut = useCallback((dir: AutoDir) => {
     const el = cardRef.current;
     if (!el || busyRef.current) return;
     busyRef.current    = true;
@@ -415,9 +486,24 @@ function CardSlot({
       el.style.transform = `translate(${FLY_DISTANCE_X}px, -30px) rotate(20deg)`;
     } else if (dir === "dislike") {
       el.style.transform = `translate(-${FLY_DISTANCE_X}px, -30px) rotate(-20deg)`;
-    } else {
+    } else if (dir === "super") {
       // Super-like: card flies straight up while the heart spark plays behind it.
       el.style.transform = `translate(0px, -${FLY_DISTANCE_Y}px)`;
+    } else {
+      // Skip (auto-advance): recycle the top card to the bottom of the deck like a
+      // dealt card — two phases synced with the 0.45s rise:
+      //   1) peel up-right, staying on top;
+      //   2) drop behind the rising card (skipping → zIndex 0) and arc down to the
+      //      back slot position.
+      el.style.transition = "transform 0.18s ease-out";
+      el.style.transform  = "translate(64px, -18px) rotate(7deg)";
+      skipTimerRef.current = window.setTimeout(() => {
+        const el2 = cardRef.current;
+        if (!el2) return;
+        setSkipping(true);
+        el2.style.transition = "transform 0.27s cubic-bezier(0.4, 0, 0.2, 1)";
+        el2.style.transform  = `translate(${ENTER_X}px, ${ENTER_Y}px) rotate(${ENTER_ROT}deg)`;
+      }, 180);
     }
     // Signal immediately — back slot starts rising in parallel with fly-out.
     onCommitRef.current(dir);
@@ -514,44 +600,23 @@ function CardSlot({
       onMouseDown={isFront ? handleStart : undefined}
       onTouchStart={isFront ? handleStart : undefined}
       style={{
-        position: "absolute",
-        left: CARD_SLOT_L, top: CARD_SLOT_T,
-        width: CARD_W, height: CARD_H,
-        zIndex: isFront ? 2 : 1,
-        borderRadius: "var(--radius-lg, 8px)",
-        backgroundColor: "var(--color-bg-main, #ffffff)",
-        border: "1px solid var(--color-element-subtle, rgba(36,36,35,0.1))",
-        display: "flex", flexDirection: "column",
-        overflow: "hidden",
+        ...cardBaseStyle,
+        // Skipping cards drop behind the rising card; otherwise front = 2, back = 1.
+        zIndex: skipping ? 0 : isFront ? 2 : 1,
         cursor: isFront ? (isInteracting ? "grabbing" : "grab") : "default",
         touchAction: isFront ? "none" : "auto",
-        userSelect: "none",
         willChange: "transform",
-        // Soft, light shadow applied to every card equally so it never toggles / jumps.
-        boxShadow: "0 4px 14px rgba(0, 0, 0, 0.08)",
         pointerEvents: isFront ? "auto" : "none",
       }}
     >
-      <div style={{ flex: 1, position: "relative" }}>
-        <CardImage src={card.imageSrc} idx={cardIdx} />
+      <CardFace
+        card={card}
+        cardIdx={cardIdx}
+        scrimOpacity={isStaticBack ? 1 : 0}
+        scrimTransition={shouldRise ? "opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1)" : "none"}
+      >
         {isFront && <SwipeHint progress={progress} superProgress={superProgress} />}
-      </div>
-      <CardFooter title={card.title} />
-      {/* Depth scrim — dims the card while it sits behind. It fades out only
-          while rising to front (in sync with the rise); when a card settles
-          back it snaps on instantly, so the returning card never flashes bright. */}
-      <div
-        aria-hidden
-        style={{
-          position: "absolute", inset: 0,
-          borderRadius: "var(--radius-lg, 8px)",
-          background: "rgba(0, 0, 0, 0.18)",
-          opacity: isStaticBack ? 1 : 0,
-          transition: shouldRise ? "opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1)" : "none",
-          pointerEvents: "none",
-          zIndex: 4,
-        }}
-      />
+      </CardFace>
     </div>
   );
 }
@@ -570,36 +635,14 @@ function StaticBackCard({ card, cardIdx }: { card: PromoCard; cardIdx: number })
     <div
       aria-hidden
       style={{
-        position: "absolute",
-        left: CARD_SLOT_L, top: CARD_SLOT_T,
-        width: CARD_W, height: CARD_H,
+        ...cardBaseStyle,
         zIndex: 0,
         transform: `translate(${ENTER_X}px, ${ENTER_Y}px) rotate(${ENTER_ROT}deg)`,
-        borderRadius: "var(--radius-lg, 8px)",
-        backgroundColor: "var(--color-bg-main, #ffffff)",
-        border: "1px solid var(--color-element-subtle, rgba(36,36,35,0.1))",
-        display: "flex", flexDirection: "column",
-        overflow: "hidden",
-        userSelect: "none",
         pointerEvents: "none",
-        boxShadow: "0 4px 14px rgba(0, 0, 0, 0.08)",
       }}
     >
-      <div style={{ flex: 1, position: "relative" }}>
-        <CardImage src={card.imageSrc} idx={cardIdx} />
-      </div>
-      <CardFooter title={card.title} />
-      {/* Depth scrim — this card is always behind, so it stays dimmed. */}
-      <div
-        aria-hidden
-        style={{
-          position: "absolute", inset: 0,
-          borderRadius: "var(--radius-lg, 8px)",
-          background: "rgba(0, 0, 0, 0.18)",
-          pointerEvents: "none",
-          zIndex: 4,
-        }}
-      />
+      {/* Always behind the deck, so the scrim stays fully on. */}
+      <CardFace card={card} cardIdx={cardIdx} scrimOpacity={1} />
     </div>
   );
 }
@@ -631,9 +674,9 @@ function ActionButtons({ onDislike, onLike, onSuper, disabled }: ActionButtonsPr
         background: bg,
         border: "none",
         cursor: disabled ? "default" : "pointer",
-        opacity: disabled ? 0.4 : 1,
         flexShrink: 0,
-        transition: "opacity 0.2s",
+        // No opacity change on disable — the buttons stay visually static so an
+        // auto-swipe / skip never makes the thumbs / heart flicker.
       }}
     >
       {children}
@@ -641,7 +684,9 @@ function ActionButtons({ onDislike, onLike, onSuper, disabled }: ActionButtonsPr
   );
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-2, 8px)", alignItems: "center", width: "100%" }}>
+    // position/zIndex lift the buttons above the card layer so an animating card
+    // (e.g. a skip tucking back) never paints over the thumbs / heart.
+    <div style={{ position: "relative", zIndex: 10, display: "flex", flexDirection: "column", gap: "var(--space-2, 8px)", alignItems: "center", width: "100%" }}>
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "center", gap: "var(--space-6, 24px)", width: "100%" }}>
         {btn("var(--color-brand-secondary-dim, rgba(36,36,35,0.06))", "Dislike", onDislike,
           <ThumbsDown size={24} color="var(--color-text-primary, #242423)" />)}
@@ -782,7 +827,7 @@ export function StampyPromotions({
   cards,
   swipesUntilReward = 15,
   creditsEarned     = 20,
-  autoAdvanceSec    = 8,
+  autoAdvanceSec    = 5,
   onSwipe,
   onClose,
   renderInput,
@@ -798,10 +843,10 @@ export function StampyPromotions({
   // swipesUntilReward <= 0 means "no swipes required" → open straight on the reward.
   const [phase,           setPhase]           = useState<"swipe" | "reward">(swipesUntilReward <= 0 ? "reward" : "swipe");
   const [progress,        setProgress]        = useState(0);
-  const [autoSwipe,       setAutoSwipe]       = useState<PromoSwipeDirection | null>(null);
+  const [autoSwipe,       setAutoSwipe]       = useState<AutoDir | null>(null);
   const [superTrigger,    setSuperTrigger]    = useState(0);
   const [swipeInProgress, setSwipeInProgress] = useState(false);
-  const pendingDirRef = useRef<PromoSwipeDirection | null>(null);
+  const pendingDirRef = useRef<AutoDir | null>(null);
 
   const rafRef     = useRef<number | null>(null);
   const timerRef   = useRef<number | null>(null);
@@ -823,7 +868,7 @@ export function StampyPromotions({
       if (!timerRef.current) timerRef.current = now;
       const p = Math.min((now - timerRef.current) / duration, 1);
       setProgress(p);
-      if (p >= 1 && !fired) { fired = true; setAutoSwipe("like"); return; }
+      if (p >= 1 && !fired) { fired = true; setAutoSwipe("skip"); return; }
       if (p < 1) rafRef.current = requestAnimationFrame(tick);
     };
     rafRef.current = requestAnimationFrame(tick);
@@ -842,7 +887,7 @@ export function StampyPromotions({
   const cardStatic = allCards[idxStatic];
 
   /* ── Front slot commits a swipe → start rise on back slot ──── */
-  const handleSwipeCommit = useCallback((dir: PromoSwipeDirection) => {
+  const handleSwipeCommit = useCallback((dir: AutoDir) => {
     pendingDirRef.current = dir;
     // Fire the heart-spark the instant the super-like is committed (card starts
     // flying up), so the animation feels connected to the gesture — not delayed.
@@ -853,19 +898,23 @@ export function StampyPromotions({
 
   /* ── Back slot rise completes → advance state ───────────────── */
   const handleRiseComplete = useCallback(() => {
-    const dir = pendingDirRef.current ?? "like";
+    const dir = pendingDirRef.current;
     pendingDirRef.current = null;
-    const card = allCards[swipeCount % n];
-    onSwipe?.(card, dir);
-    const next = swipes + 1;
-    setSwipes(next);
-    if (next >= swipesUntilReward) {
-      setPhase("reward");
-      setSwipeInProgress(false);
-    } else {
+
+    // A "skip" is an auto-advance the user didn't choose: recycle the card to the
+    // back of the deck without reporting it or counting it toward the reward.
+    if (dir === "skip" || dir == null) {
       setSwipeCount(c => c + 1);
       setSwipeInProgress(false);
+      return;
     }
+
+    onSwipe?.(allCards[swipeCount % n], dir);
+    const next = swipes + 1;
+    setSwipes(next);
+    if (next >= swipesUntilReward) setPhase("reward");
+    else                          setSwipeCount(c => c + 1);
+    setSwipeInProgress(false);
   }, [allCards, swipeCount, n, swipes, swipesUntilReward, onSwipe]);
 
   return (
@@ -890,7 +939,9 @@ export function StampyPromotions({
               overflow: "hidden",
             }}
           >
-            <Prg value={progress * 100} style={{ flexShrink: 0, width: "100%" }} />
+            {/* fillTransition="none" — value is driven per-frame via RAF, so a CSS
+                transition would make the bar lag behind the auto-swipe. */}
+            <Prg value={progress * 100} fillTransition="none" style={{ flexShrink: 0, width: "100%" }} />
 
             <p style={{
               margin: 0,

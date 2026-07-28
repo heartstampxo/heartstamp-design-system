@@ -32,7 +32,7 @@ export function PagePromotions() {
 <StampyPromotions
   swipesUntilReward={15}
   creditsEarned={20}
-  autoAdvanceSec={8}
+  autoAdvanceSec={5}
   onSwipe={(card, dir) => console.log(card.title, dir)}
   onClose={() => setVisible(false)}
   renderInput={<ChatHomeInput placeholder="Ask, search or create your card" onSend={(value) => console.log(value)} />}
@@ -68,7 +68,7 @@ export function PagePromotions() {
                 key={key}
                 swipesUntilReward={5}
                 creditsEarned={20}
-                autoAdvanceSec={8}
+                autoAdvanceSec={5}
                 onClose={() => setKey(k => k + 1)}
                 renderInput={SAMPLE_INPUT}
               />
@@ -80,7 +80,7 @@ export function PagePromotions() {
           { name: "cards",             type: "PromoCard[]",          def: "10 demo cards",  desc: "Array of card objects to swipe through. Loops when exhausted." },
           { name: "swipesUntilReward", type: "number",               def: "15",             desc: "Total swipes before the reward screen appears." },
           { name: "creditsEarned",     type: "number",               def: "20",             desc: "Heart Credits shown in the reward screen." },
-          { name: "autoAdvanceSec",    type: "number",               def: "8",              desc: "Seconds before the progress bar auto-swipes right." },
+          { name: "autoAdvanceSec",    type: "number",               def: "5",              desc: "Seconds before the progress bar auto-swipes right." },
           { name: "onSwipe",           type: "(card, dir) => void",  def: "—",              desc: "Called on every swipe. dir is 'like' | 'dislike' | 'super'." },
           { name: "onClose",           type: "() => void",           def: "—",              desc: "Called when the user taps Close on the reward screen." },
           { name: "renderInput",       type: "ReactNode",            def: "—",              desc: "Input rendered below the reward card. Animates in after 250 ms." },
