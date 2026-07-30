@@ -56,6 +56,64 @@ export function panelShell(radius: number | string, shadow: string): React.CSSPr
   };
 }
 
+/* ── The wide form panel ────────────────────────────────────────────
+   SocialHandles and LinkBtnEditor are the same 382px sheet: 342px of
+   content inside 20px gutters, an 18px radius, and the same lifted
+   shadow. Only the row gap differs, so that is the one parameter.
+──────────────────────────────────────────────────────────────────── */
+
+export const FORM_PANEL_CONTENT_W = 342;
+export const FORM_PANEL_PAD_X = 20;
+export const FORM_PANEL_WIDTH = FORM_PANEL_CONTENT_W + FORM_PANEL_PAD_X * 2;   // 382
+
+/** 18px sits between --radius-3xl (14) and --radius-button (25). */
+const FORM_PANEL_RADIUS = 18;
+
+/** Tinted with the text-primary hue (36,36,35). No --shadow-* token matches. */
+const FORM_PANEL_SHADOW = "0px 14px 40px rgba(36, 36, 35, 0.20)";
+
+export function formPanelShell(gap: number): React.CSSProperties {
+  return {
+    ...panelShell(FORM_PANEL_RADIUS, FORM_PANEL_SHADOW),
+    alignItems: "stretch",
+    gap,
+    padding: `var(--space-4, 16px) ${FORM_PANEL_PAD_X}px var(--space-5, 20px)`,
+  };
+}
+
+/** Title on the left, close button hard right. */
+export const panelHeaderStyle: React.CSSProperties = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  gap: "var(--space-3, 12px)",
+};
+
+/** 46px pill input — the field both wide panels use. */
+export const pillFieldStyle: React.CSSProperties = {
+  boxSizing: "border-box",
+  width: "100%",
+  height: 46,
+  padding: "0 var(--space-4, 16px)",
+  background: "var(--color-bg-main, #ffffff)",
+  borderRadius: "var(--radius-full, 999px)",
+  border: SUBTLE_BORDER,
+  color: "var(--color-text-primary, #242423)",
+  fontFamily: FONT_BODY,
+  fontSize: 14,
+  fontWeight: "var(--font-weight-body-13, 400)" as React.CSSProperties["fontWeight"],
+};
+
+/** Full-width 44px primary commit action, and its top spacing. */
+export const panelCtaStyle: React.CSSProperties = {
+  width: "100%",
+  height: 44,
+  borderRadius: "var(--radius-button, 25px)",
+  fontSize: 15,
+};
+
+export const panelCtaWrapStyle: React.CSSProperties = { paddingTop: "var(--space-1-5, 6px)" };
+
 /* ── Shared text roles ──────────────────────────────────────────── */
 
 /** Panel heading — 19px in the heading face. */

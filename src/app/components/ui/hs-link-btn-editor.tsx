@@ -4,8 +4,10 @@ import { Btn } from "./btn";
 import { EmojiPicker } from "./hs-emoji-picker";
 import { PopoverNotch } from "./hs-popover-notch";
 import {
-  FONT_BODY, FONT_EMOJI, PLACEHOLDER_CLASS, PlaceholderStyle,
-  SUBTLE_BORDER, panelDescStyle, panelShell, panelTitleStyle, roundIconBtnStyle,
+  FORM_PANEL_PAD_X, FORM_PANEL_WIDTH, PLACEHOLDER_CLASS, PlaceholderStyle,
+  SUBTLE_BORDER, FONT_BODY, FONT_EMOJI, formPanelShell, panelCtaStyle,
+  panelCtaWrapStyle, panelDescStyle, panelHeaderStyle, panelTitleStyle,
+  pillFieldStyle, roundIconBtnStyle,
 } from "./hs-popover-kit";
 
 /* ═══════════════════════════════════════════════════════
@@ -19,26 +21,18 @@ import {
 ═══════════════════════════════════════════════════════ */
 
 /* ── Figma geometry with no matching token ──────────────────────── */
-const CONTENT_W     = 342;
-const SHELL_PAD_X   = 20;
-const DEFAULT_WIDTH = CONTENT_W + SHELL_PAD_X * 2;   // 382
-const SHELL_RADIUS  = 18;   // between --radius-3xl (14) and --radius-button (25)
 const STACK_GAP     = 9;    // off-scale, between --space-2 (8) and --space-2-5 (10)
 const LABEL_SIZE    = 12;
-const FIELD_H       = 46;
 const ROW_GAP       = 9;    // off-scale
 const PREVIEW       = 46;
 const PREVIEW_RADIUS = 13;  // off-scale, between --radius-2xl (12) and --radius-3xl (14)
 const CHOICE_GAP    = 7;    // off-scale
 const LINK_BTN_H    = 40;
-const CTA_H         = 44;
 const VALUE_SIZE    = 14;
-const CTA_SIZE      = 15;
 const CHIP_SIZE     = 13;
 const PREVIEW_EMOJI = 24;
 
 // Panel shadow, tinted with the text-primary hue (36,36,35). No token matches.
-const SHELL_SHADOW = "0px 14px 40px rgba(36, 36, 35, 0.20)";
 
 // Default link glyph colour. A deliberate accent for the card element, not a
 // system state — no --color-* token carries it.
@@ -46,19 +40,7 @@ const LINK_GLYPH_COLOR = "#0A84FF";
 
 /* ── Static styles ──────────────────────────────────────────────── */
 
-const shellStyle: React.CSSProperties = {
-  ...panelShell(SHELL_RADIUS, SHELL_SHADOW),
-  alignItems: "stretch",
-  gap: STACK_GAP,
-  padding: `var(--space-4, 16px) ${SHELL_PAD_X}px var(--space-5, 20px)`,
-};
-
-const headerStyle: React.CSSProperties = {
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-  gap: "var(--space-3, 12px)",
-};
+const shellStyle: React.CSSProperties = formPanelShell(STACK_GAP);
 
 /* Sentence-case labels at 12/600 in text-primary — note this panel does not use
    the uppercase 11/700 field labels the small link editor carries. */
@@ -67,20 +49,6 @@ const labelStyle: React.CSSProperties = {
   fontFamily: FONT_BODY,
   fontSize: LABEL_SIZE,
   fontWeight: 600,
-};
-
-const fieldStyle: React.CSSProperties = {
-  boxSizing: "border-box",
-  width: "100%",
-  height: FIELD_H,
-  padding: "0 var(--space-4, 16px)",
-  background: "var(--color-bg-main, #ffffff)",
-  borderRadius: "var(--radius-full, 999px)",
-  border: SUBTLE_BORDER,
-  color: "var(--color-text-primary, #242423)",
-  fontFamily: FONT_BODY,
-  fontSize: VALUE_SIZE,
-  fontWeight: "var(--font-weight-body-13, 400)" as React.CSSProperties["fontWeight"],
 };
 
 const fieldGroupStyle: React.CSSProperties = {
@@ -114,7 +82,7 @@ const chooseStyle: React.CSSProperties = {
   gap: CHOICE_GAP,
   flex: "1 1 0",
   minWidth: 0,
-  height: FIELD_H,
+  height: 46,
   padding: "0 var(--space-1-5, 6px)",
   background: "var(--color-bg-main, #ffffff)",
   borderRadius: "var(--radius-full, 999px)",
@@ -137,22 +105,13 @@ const linkChipStyle: React.CSSProperties = {
   flexShrink: 0,
 };
 
-const ctaStyle: React.CSSProperties = {
-  width: "100%",
-  height: CTA_H,
-  borderRadius: "var(--radius-button, 25px)",
-  fontSize: CTA_SIZE,
-};
-
-const ctaWrapStyle: React.CSSProperties = { paddingTop: "var(--space-1-5, 6px)" };
-
 /* The emoji picker layers over the panel interior rather than extending past its
    bottom edge — aligned to the content column so it reads as part of the panel,
    and stacked above the fields it covers. */
 const emojiLayerStyle: React.CSSProperties = {
   position: "absolute",
-  left: SHELL_PAD_X,
-  right: SHELL_PAD_X,
+  left: FORM_PANEL_PAD_X,
+  right: FORM_PANEL_PAD_X,
   top: "var(--space-4, 16px)",
   zIndex: 5,
 };
@@ -227,7 +186,7 @@ export function LinkBtnEditor({
   chooseEmojiLabel = "Choose emoji",
   linkIconLabel = "Link icon",
   applyLabel = "Add link",
-  width = DEFAULT_WIDTH,
+  width = FORM_PANEL_WIDTH,
   autoFocus = false,
   arrow = true,
   arrowOffset,
@@ -293,7 +252,7 @@ export function LinkBtnEditor({
       <PlaceholderStyle />
 
       {/* ── Header ────────────────────────────────────────── */}
-      <div style={headerStyle}>
+      <div style={panelHeaderStyle}>
         <h2 style={panelTitleStyle}>{title}</h2>
         {onClose && (
           <button type="button" aria-label="Close" style={roundIconBtnStyle} onClick={onClose}>
@@ -311,7 +270,7 @@ export function LinkBtnEditor({
           id={textId}
           type="text"
           className={PLACEHOLDER_CLASS}
-          style={fieldStyle}
+          style={pillFieldStyle}
           value={text}
           placeholder={textPlaceholder}
           autoFocus={autoFocus}
@@ -326,7 +285,7 @@ export function LinkBtnEditor({
           id={urlId}
           type="url"
           className={PLACEHOLDER_CLASS}
-          style={fieldStyle}
+          style={pillFieldStyle}
           value={url}
           placeholder={urlPlaceholder}
           onChange={(e) => report({ url: e.target.value })}
@@ -369,11 +328,11 @@ export function LinkBtnEditor({
       </div>
 
       {/* ── Commit ────────────────────────────────────────── */}
-      <div style={ctaWrapStyle}>
+      <div style={panelCtaWrapStyle}>
         <Btn
           variant="default"
           size="sm"
-          style={ctaStyle}
+          style={panelCtaStyle}
           disabled={!canApply}
           disabledTooltip="Add a URL first"
           onClick={submit}
