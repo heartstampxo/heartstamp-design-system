@@ -48,7 +48,6 @@ const rowStyle: React.CSSProperties = {
   padding: "var(--space-2, 8px) var(--space-2-5, 10px)",
   border: "none",
   borderRadius: "var(--radius-xl, 10px)",
-  background: "transparent",
   cursor: "pointer",
   textAlign: "left",
   transition: "background 120ms ease-in-out",

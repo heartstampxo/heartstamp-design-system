@@ -66,23 +66,37 @@ export function panelShell(radius: number | string, shadow: string): React.CSSPr
    keeps hover, press and focus on the interaction tokens.
 
    Tag a control with CONTROL_CLASS and render <ControlStyles /> once.
-   Leave its resting `background` unset — an inline background would win
-   over these rules and kill the states.
+
+   CONTROL_CLASS owns the *resting* background too. Do not set `background`
+   in the control's inline style — an inline value outranks a stylesheet, so
+   even `background: "transparent"` silently kills hover, press and the
+   on-state. That is a genuine trap: it looks like nothing is wired.
+
+   CONTROL_FILLED is for controls that carry their own fill (a white bordered
+   pill, a tinted circle). Those keep their inline background and take the
+   tint as an inset shadow instead, which layers over any fill.
 
      data-on="true"   the control's formatting is applied (toolbar toggles)
      :disabled        dimmed and not interactive
 ──────────────────────────────────────────────────────────────────── */
 
 export const CONTROL_CLASS = "hs-ctl";
+export const CONTROL_FILLED = "hs-ctl--filled";
+
+const HOVER = "var(--color-state-hover, rgba(36, 36, 35, 0.06))";
+const PRESSED = "var(--color-state-pressed, rgba(36, 36, 35, 0.08))";
+const ON = "var(--color-element-subtle, rgba(36, 36, 35, 0.10))";
 
 const CONTROL_CSS = `
-.${CONTROL_CLASS} { transition: background 120ms ease-in-out; }
-.${CONTROL_CLASS}:hover:not(:disabled) { background: var(--color-state-hover, rgba(36, 36, 35, 0.06)); }
-.${CONTROL_CLASS}:active:not(:disabled) { background: var(--color-state-pressed, rgba(36, 36, 35, 0.08)); }
+.${CONTROL_CLASS} { background: transparent; transition: background 120ms ease-in-out, box-shadow 120ms ease-in-out; }
+.${CONTROL_CLASS}:hover:not(:disabled) { background: ${HOVER}; }
+.${CONTROL_CLASS}:active:not(:disabled) { background: ${PRESSED}; }
+.${CONTROL_CLASS}[data-on="true"] { background: ${ON}; }
+.${CONTROL_CLASS}[data-on="true"]:active { background: ${PRESSED}; }
 .${CONTROL_CLASS}:focus-visible { outline: 2px solid var(--color-ring); outline-offset: 2px; }
-.${CONTROL_CLASS}[data-on="true"] { background: var(--color-element-subtle, rgba(36, 36, 35, 0.10)); }
-.${CONTROL_CLASS}[data-on="true"]:active { background: var(--color-state-pressed, rgba(36, 36, 35, 0.08)); }
 .${CONTROL_CLASS}:disabled { opacity: 0.5; cursor: not-allowed; }
+.${CONTROL_FILLED}:hover:not(:disabled) { box-shadow: inset 0 0 0 999px ${HOVER}; }
+.${CONTROL_FILLED}:active:not(:disabled) { box-shadow: inset 0 0 0 999px ${PRESSED}; }
 `;
 
 export function ControlStyles() {

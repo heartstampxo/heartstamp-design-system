@@ -790,12 +790,18 @@ describe('interaction states', () => {
   const kit = () => readFileSync(join(process.cwd(), 'src/app/components/ui/hs-popover-kit.tsx'), 'utf8');
 
   it('defines hover, press, focus and disabled on the interaction tokens', () => {
-    const css = kit();
+    /* Asserts the CSS a component actually injects, not the source that builds
+       it — otherwise refactoring the string breaks the test without a regression. */
+    const { container } = render(<FmtToolbar />);
+    const css = Array.from(container.querySelectorAll('style')).map((s) => s.textContent).join('\n');
+
     expect(css).toMatch(/:hover:not\(:disabled\) \{ background: var\(--color-state-hover/);
     expect(css).toMatch(/:active:not\(:disabled\) \{ background: var\(--color-state-pressed/);
     expect(css).toMatch(/:focus-visible \{ outline: 2px solid var\(--color-ring\)/);
     expect(css).toMatch(/\[data-on="true"\] \{ background: var\(--color-element-subtle/);
     expect(css).toMatch(/:disabled \{ opacity/);
+    // The resting fill must come from CSS, or an inline one would outrank it
+    expect(css).toMatch(/\.hs-ctl \{ background: transparent/);
   });
 
   it('tags every interactive control in the panels', () => {
@@ -807,15 +813,30 @@ describe('interaction states', () => {
   });
 
   it('leaves no inline background on a tagged control, which would beat the CSS', () => {
-    /* Inline styles outrank a stylesheet, so a resting `background` on a
-       CONTROL_CLASS button silently kills hover, press and the on-state. */
+    /* Inline styles outrank a stylesheet, so a resting `background` on a plain
+       CONTROL_CLASS button silently kills hover, press and the on-state — the
+       control looks completely unwired.
+       Checks the RENDERED DOM: an earlier version of this test scanned JSX text
+       and missed it, because the background came from a shared style object
+       referenced by name. CONTROL_FILLED opts out — those carry their own fill
+       and take the tint as an inset shadow instead. */
     const offenders: string[] = [];
-    for (const f of readdirSync(join(process.cwd(), 'src/app/components/ui')).filter((f) => f.startsWith('hs-') && f.endsWith('.tsx'))) {
-      const src = readFileSync(join(process.cwd(), `src/app/components/ui/${f}`), 'utf8');
-      for (const m of src.matchAll(/<button[^>]*?>/gs)) {
-        if (m[0].includes('CONTROL_CLASS') && /background:/.test(m[0])) offenders.push(f);
+
+    const scan = (label: string, ui: React.ReactElement) => {
+      const { container, unmount } = render(ui);
+      for (const b of Array.from(container.querySelectorAll<HTMLElement>(`button.${'hs-ctl'}`))) {
+        if (b.classList.contains('hs-ctl--filled')) continue;
+        if (b.style.background) offenders.push(`${label}: ${b.getAttribute('aria-label') ?? '?'} → ${b.style.background}`);
       }
-    }
+      unmount();
+    };
+
+    scan('FmtToolbar', <FmtToolbar />);
+    scan('EmojiPicker', <EmojiPicker />);
+    scan('FontPicker', <FontPicker />);
+    scan('SocialHandles', <SocialHandles />);
+    scan('LinkBtnEditor', <LinkBtnEditor />);
+
     expect(offenders).toEqual([]);
   });
 

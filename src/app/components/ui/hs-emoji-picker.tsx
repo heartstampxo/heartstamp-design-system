@@ -116,7 +116,6 @@ const navBtnBase: React.CSSProperties = {
   height: NAV_H,
   border: "none",
   borderRadius: "var(--radius-lg, 8px)",
-  background: "transparent",
   cursor: "pointer",
   padding: 0,
   fontFamily: FONT_EMOJI,

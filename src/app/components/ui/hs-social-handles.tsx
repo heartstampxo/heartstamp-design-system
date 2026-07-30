@@ -4,7 +4,7 @@ import { Btn } from "./btn";
 import { DdMenu } from "./hs-dd-menu";
 import { PopoverNotch } from "./hs-popover-notch";
 import {
-  CONTROL_CLASS, ControlStyles, FONT_BODY, FORM_PANEL_WIDTH, PLACEHOLDER_CLASS,
+  CONTROL_CLASS, CONTROL_FILLED, ControlStyles, FONT_BODY, FORM_PANEL_WIDTH, PLACEHOLDER_CLASS,
   PlaceholderStyle, SUBTLE_BORDER, formPanelShell, panelCtaStyle, panelCtaWrapStyle,
   panelDescStyle, panelHeaderStyle, panelTitleStyle, pillFieldStyle, roundIconBtnStyle,
 } from "./hs-popover-kit";
@@ -220,7 +220,7 @@ export function SocialHandles({
       <div style={panelHeaderStyle}>
         <h2 style={panelTitleStyle}>{title}</h2>
         {onClose && (
-          <button type="button" aria-label="Close" className={CONTROL_CLASS} style={roundIconBtnStyle} onClick={onClose}>
+          <button type="button" aria-label="Close" className={`${CONTROL_CLASS} ${CONTROL_FILLED}`} style={roundIconBtnStyle} onClick={onClose}>
             <X size={16} strokeWidth={1.33} />
           </button>
         )}
@@ -242,7 +242,7 @@ export function SocialHandles({
             <button
               type="button"
               aria-label={`Remove ${platform ? `${platform.name} ` : ""}${handle.value}`}
-              className={CONTROL_CLASS}
+              className={`${CONTROL_CLASS} ${CONTROL_FILLED}`}
               style={roundIconBtnStyle}
               onClick={() => remove(index)}
             >
@@ -259,7 +259,7 @@ export function SocialHandles({
           trigger={
             <button
               type="button"
-              className={CONTROL_CLASS}
+              className={`${CONTROL_CLASS} ${CONTROL_FILLED}`}
               style={pickerStyle}
               aria-label={active ? `Platform: ${active.name}` : "Choose a platform"}
             >

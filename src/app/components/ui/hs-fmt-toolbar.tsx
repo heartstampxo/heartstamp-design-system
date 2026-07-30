@@ -69,7 +69,6 @@ const controlBase: React.CSSProperties = {
   justifyContent: "center",
   height: BTN_SIZE,
   border: "none",
-  background: "transparent",
   color: "var(--color-text-primary, #242423)",
   cursor: "pointer",
   padding: 0,
@@ -164,6 +163,8 @@ export interface FmtToolbarProps {
   onAction?: (id: string, trigger: HTMLButtonElement) => void;
   /** Overrides the `value` of every `font` item — for a font name that changes at runtime. */
   fontValue?: string;
+  /** Overrides the `color` of every `swatch` item — for the live text colour. */
+  swatchColor?: string;
   /** Accessible name for the toolbar. */
   ariaLabel?: string;
   style?: React.CSSProperties;
@@ -212,6 +213,7 @@ export function FmtToolbar({
   active,
   onAction,
   fontValue,
+  swatchColor,
   ariaLabel = "Text formatting",
   style,
   className,
@@ -255,7 +257,6 @@ export function FmtToolbar({
       "data-fmt": item.kind,
       "data-on": on ? "true" : undefined,
       className: CONTROL_CLASS,
-      key: item.id,
       type: "button" as const,
       tabIndex: order.get(item.id) === rovingIndex ? 0 : -1,
       onClick: (e: React.MouseEvent<HTMLButtonElement>) => onAction?.(item.id, e.currentTarget),
@@ -265,6 +266,7 @@ export function FmtToolbar({
       case "font":
         return (
           <button
+            key={item.id}
             {...shared}
             aria-label={item.label ?? "Font family"}
             aria-haspopup="listbox"
@@ -278,6 +280,7 @@ export function FmtToolbar({
       case "glyph":
         return (
           <button
+            key={item.id}
             {...shared}
             aria-label={item.label}
             aria-pressed={on}
@@ -292,6 +295,7 @@ export function FmtToolbar({
       case "swatch":
         return (
           <button
+            key={item.id}
             {...shared}
             aria-label={item.label}
             style={iconBtnStyle}
@@ -301,7 +305,7 @@ export function FmtToolbar({
                 width: SWATCH_SIZE,
                 height: SWATCH_SIZE,
                 borderRadius: "var(--radius-full, 999px)",
-                background: item.color,
+                background: swatchColor ?? item.color,
                 border: SWATCH_RING,
               }}
             />
@@ -311,6 +315,7 @@ export function FmtToolbar({
       case "pill":
         return (
           <button
+            key={item.id}
             {...shared}
             aria-label={item.label}
             aria-pressed={item.toggle ? on : undefined}
@@ -325,6 +330,7 @@ export function FmtToolbar({
       default:
         return (
           <button
+            key={item.id}
             {...shared}
             aria-label={item.label}
             aria-pressed={on}

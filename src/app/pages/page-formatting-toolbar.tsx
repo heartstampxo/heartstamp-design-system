@@ -10,6 +10,7 @@ import { LinkEditor } from "../components/ui/hs-link-editor";
 import { SocialHandles, type SocialHandle } from "../components/ui/hs-social-handles";
 import { LinkBtnEditor } from "../components/ui/hs-link-btn-editor";
 import { FontPicker, findFontOption } from "../components/ui/hs-font-picker";
+import { ColorPicker } from "../components/ui/hs-color-picker";
 
 /* Toggles that hold an on/off state; the rest are one-shot actions */
 const TOGGLES = ["bold", "italic", "underline", "strikethrough"];
@@ -54,6 +55,9 @@ export function PageFormattingToolbar() {
   const [inserted, setInserted] = useState<string[]>([]);
   const [appliedLink, setAppliedLink] = useState<string | null>(null);
   const [fontId, setFontId] = useState("kalam");
+  const [textColor, setTextColor] = useState("#242423");
+  /* ColorPicker positions itself from a DOMRect, so the trigger's rect is enough */
+  const [colorAnchor, setColorAnchor] = useState<DOMRect | null>(null);
   const anchorRef = useRef<HTMLDivElement>(null);
   /* Which panel is open, where it sits, and where its notch lands */
   const [popover, setPopover] = useState<Popover | null>(null);
@@ -77,6 +81,8 @@ export function PageFormattingToolbar() {
       setActive((a) => (a.includes(id) ? a.filter((x) => x !== id) : [...a, id]));
     } else if (ALIGNMENTS.includes(id)) {
       setActive((a) => [...a.filter((x) => !ALIGNMENTS.includes(x)), id]);
+    } else if (id === "text-color") {
+      setColorAnchor((r) => (r ? null : trigger.getBoundingClientRect()));
     } else if (POPOVER_WIDTH[id]) {
       if (popover?.id === id) setPopover(null);
       else anchorTo(id, trigger);
@@ -162,7 +168,17 @@ const anchorTo = (trigger) => {
                 active={popover ? [...active, popover.id] : active}
                 onAction={handleAction}
                 fontValue={findFontOption(fontId)?.name}
+                swatchColor={textColor}
               />
+
+              {colorAnchor && (
+                <ColorPicker
+                  color={textColor}
+                  anchorRect={colorAnchor}
+                  onChange={setTextColor}
+                  onClose={() => setColorAnchor(null)}
+                />
+              )}
 
               {popover && (
                 <div style={{ position: "absolute", top: "100%", left: popover.left, marginTop: ANCHOR_GAP, zIndex: 2 }}>

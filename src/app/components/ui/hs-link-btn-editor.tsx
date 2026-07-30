@@ -4,7 +4,7 @@ import { Btn } from "./btn";
 import { EmojiPicker } from "./hs-emoji-picker";
 import { PopoverNotch } from "./hs-popover-notch";
 import {
-  CONTROL_CLASS, ControlStyles, FONT_BODY, FONT_EMOJI, FORM_PANEL_PAD_X,
+  CONTROL_CLASS, CONTROL_FILLED, ControlStyles, FONT_BODY, FONT_EMOJI, FORM_PANEL_PAD_X,
   FORM_PANEL_WIDTH, PLACEHOLDER_CLASS, PlaceholderStyle, SUBTLE_BORDER,
   formPanelShell, panelCtaStyle, panelCtaWrapStyle, panelDescStyle,
   panelHeaderStyle, panelTitleStyle, pillFieldStyle, roundIconBtnStyle,
@@ -254,7 +254,7 @@ export function LinkBtnEditor({
       <div style={panelHeaderStyle}>
         <h2 style={panelTitleStyle}>{title}</h2>
         {onClose && (
-          <button type="button" aria-label="Close" className={CONTROL_CLASS} style={roundIconBtnStyle} onClick={onClose}>
+          <button type="button" aria-label="Close" className={`${CONTROL_CLASS} ${CONTROL_FILLED}`} style={roundIconBtnStyle} onClick={onClose}>
             <X size={16} strokeWidth={1.33} />
           </button>
         )}
@@ -306,7 +306,7 @@ export function LinkBtnEditor({
 
         <button
           type="button"
-          className={CONTROL_CLASS}
+          className={`${CONTROL_CLASS} ${CONTROL_FILLED}`}
           style={chooseStyle}
           aria-expanded={emojiOpen}
           aria-haspopup="dialog"
