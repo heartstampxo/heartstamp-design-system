@@ -47,7 +47,10 @@ export function DdMenu({ trigger, items, style, fixed }: DdMenuProps) {
         position: "fixed",
         top: rect.bottom + 4,
         left: rect.left,
-        width: rect.width,
+        // minWidth, not width: a trigger narrower than the longest label would
+        // otherwise clip it against the menu's overflow:hidden. Matches the
+        // non-fixed branch below.
+        minWidth: rect.width,
         zIndex: 9999,
       }
     : {
@@ -93,6 +96,7 @@ export function DdMenu({ trigger, items, style, fixed }: DdMenuProps) {
                 ? "var(--color-text-disabled)"
                 : "var(--fg)",
               textAlign: "left",
+              whiteSpace: "nowrap",
               opacity: item.disabled ? 0.5 : 1,
               fontFamily: "inherit",
               transition: "background 0.1s ease",
