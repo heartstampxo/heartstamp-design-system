@@ -3,7 +3,7 @@ import {
   ALargeSmall, AlignCenter, AlignLeft, AlignRight, ChevronDown,
   Link, Link2, Share2, Smile,
 } from "lucide-react";
-import { FILL_ACTIVE, FILL_HOVER, FONT_BODY, SUBTLE_BORDER } from "./hs-popover-kit";
+import { CONTROL_CLASS, ControlStyles, FILL_ACTIVE, FONT_BODY, SUBTLE_BORDER } from "./hs-popover-kit";
 
 /* ═══════════════════════════════════════════════════════
    HeartStamp — Formatting Toolbar
@@ -136,14 +136,6 @@ const dividerStyle: React.CSSProperties = {
   background: FILL_ACTIVE,
 };
 
-/* ── State fills ────────────────────────────────────────────────────
-   The design only specifies the resting state, so hover and active reuse
-   the interaction tokens: --color-state-hover (0.06) then the stronger
-   --color-element-subtle (0.10) for the pressed-on state.
-──────────────────────────────────────────────────────────────────── */
-const fillFor = (isActive: boolean, isHovered: boolean) =>
-  isActive ? FILL_ACTIVE : isHovered ? FILL_HOVER : "transparent";
-
 /* ═══════════════════════════════════════════════════════
    Types
 ═══════════════════════════════════════════════════════ */
@@ -225,8 +217,6 @@ export function FmtToolbar({
   className,
 }: FmtToolbarProps) {
   const rootRef = useRef<HTMLDivElement>(null);
-  // Pointer hover and keyboard focus share one highlight fill.
-  const [highlighted, setHighlighted] = useState<string | null>(null);
   const [focusIndex, setFocusIndex] = useState(0);
 
   const isActive = (id: string) => !!active?.includes(id);
@@ -261,18 +251,14 @@ export function FmtToolbar({
 
   const renderItem = (item: FmtItem) => {
     const on = isActive(item.id);
-    const hot = highlighted === item.id;
-    const clear = () => setHighlighted((h) => (h === item.id ? null : h));
     const shared = {
       "data-fmt": item.kind,
+      "data-on": on ? "true" : undefined,
+      className: CONTROL_CLASS,
       key: item.id,
       type: "button" as const,
       tabIndex: order.get(item.id) === rovingIndex ? 0 : -1,
       onClick: (e: React.MouseEvent<HTMLButtonElement>) => onAction?.(item.id, e.currentTarget),
-      onMouseEnter: () => setHighlighted(item.id),
-      onMouseLeave: clear,
-      onFocus: () => setHighlighted(item.id),
-      onBlur: clear,
     };
 
     switch (item.kind) {
@@ -282,7 +268,7 @@ export function FmtToolbar({
             {...shared}
             aria-label={item.label ?? "Font family"}
             aria-haspopup="listbox"
-            style={{ ...fontBtnStyle, background: fillFor(on, hot) }}
+            style={fontBtnStyle}
           >
             <span style={fontLabelStyle}>{fontValue ?? item.value}</span>
             <ChevronDown size={CHEVRON_SIZE} strokeWidth={1.25} style={{ opacity: CHEVRON_DIM, flexShrink: 0 }} />
@@ -295,7 +281,7 @@ export function FmtToolbar({
             {...shared}
             aria-label={item.label}
             aria-pressed={on}
-            style={{ ...iconBtnStyle, background: fillFor(on, hot) }}
+            style={iconBtnStyle}
           >
             <span style={item.decoration ? { ...glyphStyle, textDecoration: item.decoration } : glyphStyle}>
               {item.glyph}
@@ -308,7 +294,7 @@ export function FmtToolbar({
           <button
             {...shared}
             aria-label={item.label}
-            style={{ ...iconBtnStyle, background: fillFor(on, hot) }}
+            style={iconBtnStyle}
           >
             <span
               style={{
@@ -328,7 +314,7 @@ export function FmtToolbar({
             {...shared}
             aria-label={item.label}
             aria-pressed={item.toggle ? on : undefined}
-            style={{ ...pillStyle, background: fillFor(on, hot) }}
+            style={pillStyle}
           >
             {item.icon}
             <span style={labelStyle}>{item.label}</span>
@@ -342,7 +328,7 @@ export function FmtToolbar({
             {...shared}
             aria-label={item.label}
             aria-pressed={on}
-            style={{ ...iconBtnStyle, background: fillFor(on, hot) }}
+            style={iconBtnStyle}
           >
             {item.icon}
           </button>
@@ -360,6 +346,7 @@ export function FmtToolbar({
       style={style ? { ...shellStyle, ...style } : shellStyle}
       onKeyDown={handleKeyDown}
     >
+      <ControlStyles />
       {groups.map((group, gi) => (
         <React.Fragment key={gi}>
           {gi > 0 && (

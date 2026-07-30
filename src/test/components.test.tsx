@@ -786,6 +786,51 @@ describe('CSS custom property contract', () => {
   });
 });
 
+describe('interaction states', () => {
+  const kit = () => readFileSync(join(process.cwd(), 'src/app/components/ui/hs-popover-kit.tsx'), 'utf8');
+
+  it('defines hover, press, focus and disabled on the interaction tokens', () => {
+    const css = kit();
+    expect(css).toMatch(/:hover:not\(:disabled\) \{ background: var\(--color-state-hover/);
+    expect(css).toMatch(/:active:not\(:disabled\) \{ background: var\(--color-state-pressed/);
+    expect(css).toMatch(/:focus-visible \{ outline: 2px solid var\(--color-ring\)/);
+    expect(css).toMatch(/\[data-on="true"\] \{ background: var\(--color-element-subtle/);
+    expect(css).toMatch(/:disabled \{ opacity/);
+  });
+
+  it('tags every interactive control in the panels', () => {
+    for (const f of ['hs-fmt-toolbar', 'hs-emoji-picker', 'hs-font-picker', 'hs-social-handles', 'hs-link-btn-editor']) {
+      const src = readFileSync(join(process.cwd(), `src/app/components/ui/${f}.tsx`), 'utf8');
+      expect(src, f).toContain('CONTROL_CLASS');
+      expect(src, f).toContain('<ControlStyles />');
+    }
+  });
+
+  it('leaves no inline background on a tagged control, which would beat the CSS', () => {
+    /* Inline styles outrank a stylesheet, so a resting `background` on a
+       CONTROL_CLASS button silently kills hover, press and the on-state. */
+    const offenders: string[] = [];
+    for (const f of readdirSync(join(process.cwd(), 'src/app/components/ui')).filter((f) => f.startsWith('hs-') && f.endsWith('.tsx'))) {
+      const src = readFileSync(join(process.cwd(), `src/app/components/ui/${f}`), 'utf8');
+      for (const m of src.matchAll(/<button[^>]*?>/gs)) {
+        if (m[0].includes('CONTROL_CLASS') && /background:/.test(m[0])) offenders.push(f);
+      }
+    }
+    expect(offenders).toEqual([]);
+  });
+
+  it('caps panel width so a 382px sheet cannot overflow a 320px viewport', () => {
+    expect(kit()).toMatch(/maxWidth: "calc\(100vw - var\(--space-4, 16px\) \* 2\)"/);
+  });
+
+  it('drives the toolbar on-state from data-on, not a JS hover hook', () => {
+    render(<FmtToolbar active={['bold']} />);
+
+    expect(screen.getByRole('button', { name: 'Bold' })).toHaveAttribute('data-on', 'true');
+    expect(screen.getByRole('button', { name: 'Italic' })).not.toHaveAttribute('data-on');
+  });
+});
+
 describe('placeholders are defined once and shared', () => {
   const read = (f: string) => readFileSync(join(process.cwd(), `src/app/components/ui/${f}`), 'utf8');
   const PANELS = ['hs-emoji-picker.tsx', 'hs-link-editor.tsx', 'hs-social-handles.tsx', 'hs-link-btn-editor.tsx'];

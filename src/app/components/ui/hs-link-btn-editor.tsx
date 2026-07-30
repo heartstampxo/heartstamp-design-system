@@ -4,10 +4,10 @@ import { Btn } from "./btn";
 import { EmojiPicker } from "./hs-emoji-picker";
 import { PopoverNotch } from "./hs-popover-notch";
 import {
-  FORM_PANEL_PAD_X, FORM_PANEL_WIDTH, PLACEHOLDER_CLASS, PlaceholderStyle,
-  SUBTLE_BORDER, FONT_BODY, FONT_EMOJI, formPanelShell, panelCtaStyle,
-  panelCtaWrapStyle, panelDescStyle, panelHeaderStyle, panelTitleStyle,
-  pillFieldStyle, roundIconBtnStyle,
+  CONTROL_CLASS, ControlStyles, FONT_BODY, FONT_EMOJI, FORM_PANEL_PAD_X,
+  FORM_PANEL_WIDTH, PLACEHOLDER_CLASS, PlaceholderStyle, SUBTLE_BORDER,
+  formPanelShell, panelCtaStyle, panelCtaWrapStyle, panelDescStyle,
+  panelHeaderStyle, panelTitleStyle, pillFieldStyle, roundIconBtnStyle,
 } from "./hs-popover-kit";
 
 /* ═══════════════════════════════════════════════════════
@@ -31,8 +31,6 @@ const LINK_BTN_H    = 40;
 const VALUE_SIZE    = 14;
 const CHIP_SIZE     = 13;
 const PREVIEW_EMOJI = 24;
-
-// Panel shadow, tinted with the text-primary hue (36,36,35). No token matches.
 
 // Default link glyph colour. A deliberate accent for the card element, not a
 // system state — no --color-* token carries it.
@@ -250,12 +248,13 @@ export function LinkBtnEditor({
     >
       {arrow && <PopoverNotch offset={arrowOffset} />}
       <PlaceholderStyle />
+      <ControlStyles />
 
       {/* ── Header ────────────────────────────────────────── */}
       <div style={panelHeaderStyle}>
         <h2 style={panelTitleStyle}>{title}</h2>
         {onClose && (
-          <button type="button" aria-label="Close" style={roundIconBtnStyle} onClick={onClose}>
+          <button type="button" aria-label="Close" className={CONTROL_CLASS} style={roundIconBtnStyle} onClick={onClose}>
             <X size={16} strokeWidth={1.33} />
           </button>
         )}
@@ -307,6 +306,7 @@ export function LinkBtnEditor({
 
         <button
           type="button"
+          className={CONTROL_CLASS}
           style={chooseStyle}
           aria-expanded={emojiOpen}
           aria-haspopup="dialog"

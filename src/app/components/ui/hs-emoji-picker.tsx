@@ -3,8 +3,8 @@ import { Search } from "lucide-react";
 import { EMOJI_CATEGORIES, matchesEmoji, type EmojiCategory, type EmojiEntry } from "./hs-emoji-data";
 import { PopoverNotch } from "./hs-popover-notch";
 import {
-  FILL_HOVER, FONT_BODY, FONT_EMOJI, PLACEHOLDER_CLASS, PlaceholderStyle,
-  SUBTLE_BORDER, panelShell,
+  CONTROL_CLASS, ControlStyles, FONT_BODY, FONT_EMOJI, PLACEHOLDER_CLASS,
+  PlaceholderStyle, SUBTLE_BORDER, panelShell,
 } from "./hs-popover-kit";
 
 /* ═══════════════════════════════════════════════════════
@@ -180,7 +180,6 @@ export function EmojiPicker({
   const bodyRef = useRef<HTMLDivElement>(null);
   const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const [query, setQuery] = useState("");
-  const [hovered, setHovered] = useState<number | null>(null);
   const [focusIdx, setFocusIdx] = useState(0);
   const [activeCat, setActiveCat] = useState(categories[0]?.id ?? "");
 
@@ -279,6 +278,7 @@ export function EmojiPicker({
           style={searchInputStyle}
         />
         <PlaceholderStyle />
+      <ControlStyles />
       </div>
 
       {/* ── Scrolling body ────────────────────────────────── */}
@@ -301,16 +301,14 @@ export function EmojiPicker({
                 <button
                   key={`${cat.id}-${index}`}
                   type="button"
+                  className={CONTROL_CLASS}
                   data-emoji-index={index}
                   tabIndex={index === roving ? 0 : -1}
                   aria-label={entry.name}
                   title={entry.name}
                   onClick={() => onSelect?.(entry.char, entry)}
-                  onFocus={() => { setFocusIdx(index); setHovered(index); }}
-                  onBlur={() => setHovered((h) => (h === index ? null : h))}
-                  onMouseEnter={() => setHovered(index)}
-                  onMouseLeave={() => setHovered((h) => (h === index ? null : h))}
-                  style={{ ...cellBase, background: hovered === index ? FILL_HOVER : "transparent" }}
+                  onFocus={() => setFocusIdx(index)}
+                  style={cellBase}
                 >
                   {entry.char}
                 </button>
@@ -328,15 +326,13 @@ export function EmojiPicker({
             <button
               key={cat.id}
               type="button"
+              className={CONTROL_CLASS}
+              data-on={on ? "true" : undefined}
               aria-label={`Jump to ${cat.label}`}
               aria-current={on ? "true" : undefined}
               title={cat.label}
               onClick={() => jumpTo(cat.id)}
-              style={{
-                ...navBtnBase,
-                opacity: on ? 1 : NAV_IDLE_OPACITY,
-                background: on ? FILL_HOVER : "transparent",
-              }}
+              style={{ ...navBtnBase, opacity: on ? 1 : NAV_IDLE_OPACITY }}
             >
               {cat.icon}
             </button>
