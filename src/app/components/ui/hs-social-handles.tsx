@@ -4,8 +4,9 @@ import { Btn } from "./btn";
 import { DdMenu } from "./hs-dd-menu";
 import { PopoverNotch } from "./hs-popover-notch";
 import {
-  FONT_BODY, PLACEHOLDER_CLASS, PlaceholderStyle, SUBTLE_BORDER,
-  panelDescStyle, panelShell, panelTitleStyle, roundIconBtnStyle,
+  FORM_PANEL_WIDTH, PLACEHOLDER_CLASS, PlaceholderStyle, SUBTLE_BORDER,
+  FONT_BODY, formPanelShell, panelCtaStyle, panelCtaWrapStyle, panelDescStyle,
+  panelHeaderStyle, panelTitleStyle, pillFieldStyle, roundIconBtnStyle,
 } from "./hs-popover-kit";
 import {
   SOCIAL_PLATFORMS,
@@ -27,38 +28,19 @@ import {
 ═══════════════════════════════════════════════════════ */
 
 /* ── Figma geometry with no matching token ──────────────────────── */
-const CONTENT_W    = 342;
-const SHELL_PAD_X  = 20;
-const DEFAULT_WIDTH = CONTENT_W + SHELL_PAD_X * 2;   // 382
-const SHELL_RADIUS = 18;   // between --radius-3xl (14) and --radius-button (25)
 const STACK_GAP    = 13;   // off-scale, between --space-3 (12) and --space-3-5 (14)
 const BADGE        = 38;   // platform badge on a filled row
 const ROW_GAP      = 11;   // off-scale
 const ADD_ROW_H    = 46;
 const ADD_ROW_GAP  = 9;    // off-scale
-const CTA_H        = 44;
 const VALUE_SIZE   = 14;   // no --font-size-* token at 14px
 const ADD_SIZE     = 13;
-const CTA_SIZE     = 15;
 
 // Panel shadow, tinted with the text-primary hue (36,36,35). No token matches.
-const SHELL_SHADOW = "0px 14px 40px rgba(36, 36, 35, 0.20)";
 
 /* ── Static styles ──────────────────────────────────────────────── */
 
-const shellStyle: React.CSSProperties = {
-  ...panelShell(SHELL_RADIUS, SHELL_SHADOW),
-  alignItems: "stretch",
-  gap: STACK_GAP,
-  padding: `var(--space-4, 16px) ${SHELL_PAD_X}px var(--space-5, 20px)`,
-};
-
-const headerStyle: React.CSSProperties = {
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-  gap: "var(--space-3, 12px)",
-};
+const shellStyle: React.CSSProperties = formPanelShell(STACK_GAP);
 
 const handleRowStyle: React.CSSProperties = {
   display: "flex",
@@ -115,21 +97,6 @@ const pickerStyle: React.CSSProperties = {
   flexShrink: 0,
 };
 
-const inputStyle: React.CSSProperties = {
-  boxSizing: "border-box",
-  flex: "1 1 0",
-  minWidth: 0,
-  height: ADD_ROW_H,
-  padding: "0 var(--space-4, 16px)",
-  background: "var(--color-bg-main, #ffffff)",
-  borderRadius: "var(--radius-full, 999px)",
-  border: SUBTLE_BORDER,
-  color: "var(--color-text-primary, #242423)",
-  fontFamily: FONT_BODY,
-  fontSize: VALUE_SIZE,
-  fontWeight: "var(--font-weight-body-13, 400)" as React.CSSProperties["fontWeight"],
-};
-
 /* Design shows a 46px tall pill with a --states-hover fill; Btn's `sm` is 36px
    with --radius-button, so height and label size are lifted to match. */
 const addBtnStyle: React.CSSProperties = {
@@ -139,15 +106,6 @@ const addBtnStyle: React.CSSProperties = {
   fontSize: ADD_SIZE,
   flexShrink: 0,
 };
-
-const ctaStyle: React.CSSProperties = {
-  width: "100%",
-  height: CTA_H,
-  borderRadius: "var(--radius-button, 25px)",
-  fontSize: CTA_SIZE,
-};
-
-const ctaWrapStyle: React.CSSProperties = { paddingTop: "var(--space-1-5, 6px)" };
 
 /* ═══════════════════════════════════════════════════════
    Types
@@ -203,7 +161,7 @@ export function SocialHandles({
   inputPlaceholder = "@handle or full link",
   addLabel = "Add",
   applyLabel = "Add to cover",
-  width = DEFAULT_WIDTH,
+  width = FORM_PANEL_WIDTH,
   arrow = true,
   arrowOffset,
   ariaLabel = "Your social handles",
@@ -260,7 +218,7 @@ export function SocialHandles({
       <PlaceholderStyle />
 
       {/* ── Header ────────────────────────────────────────── */}
-      <div style={headerStyle}>
+      <div style={panelHeaderStyle}>
         <h2 style={panelTitleStyle}>{title}</h2>
         {onClose && (
           <button type="button" aria-label="Close" style={roundIconBtnStyle} onClick={onClose}>
@@ -319,7 +277,7 @@ export function SocialHandles({
           id={inputId}
           type="text"
           className={PLACEHOLDER_CLASS}
-          style={inputStyle}
+          style={pillFieldStyle}
           value={draft}
           placeholder={inputPlaceholder}
           aria-label={inputPlaceholder}
@@ -345,8 +303,8 @@ export function SocialHandles({
       </div>
 
       {/* ── Commit ────────────────────────────────────────── */}
-      <div style={ctaWrapStyle}>
-        <Btn variant="default" size="sm" style={ctaStyle} onClick={() => onApply?.(list)}>
+      <div style={panelCtaWrapStyle}>
+        <Btn variant="default" size="sm" style={panelCtaStyle} onClick={() => onApply?.(list)}>
           {applyLabel}
         </Btn>
       </div>
