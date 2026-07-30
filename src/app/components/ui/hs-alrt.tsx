@@ -33,10 +33,7 @@ interface VariantStyle {
 const tint = (color: string, pct: number) => `color-mix(in srgb, ${color} ${pct}%, transparent)`;
 
 const SUCCESS = "var(--color-state-success, #22c55e)";
-
-// No --color-state-warning token exists, so the amber lives here as the single
-// raw value. Promote it to tokens.css (light + dark) to theme this variant.
-const WARNING = "#f59e0b";
+const WARNING = "var(--color-state-warning, #f59e0b)";
 
 const VARIANTS: Record<AlrtVariant, VariantStyle> = {
   default:     { border: "var(--border)",      bg: "var(--muted)",         color: "var(--fg)",    Icon: Info },
