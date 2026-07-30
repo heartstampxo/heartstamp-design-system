@@ -26,7 +26,7 @@ import { Sel } from "./components/ui/hs-sel";
 import { Sldr } from "./components/ui/hs-sldr";
 import { Prg } from "./components/ui/hs-prg";
 import { Skl } from "./components/ui/hs-skl";
-import { Alrt } from "./components/ui/hs-alrt";
+import { Alrt, AlrtStrong, StampyAlrt } from "./components/ui/hs-alrt";
 import { Crd, CrdHeader, CrdBody, CrdFooter, CrdTitle, CrdDesc } from "./components/ui/hs-crd";
 import { WalletCard, WalletPromoCard } from "./components/ui/hs-wallet";
 import { PaymentMethodCard } from "./components/ui/hs-payment-method-card";
@@ -79,6 +79,8 @@ import {
 import * as LucideIcons from "lucide-react";
 import { PageCustomIcons } from "./pages/page-custom-icons";
 import { PageMascot } from "./pages/page-mascot";
+import { PageCoachTips } from "./pages/page-coach-tips";
+import { PageFormattingToolbar } from "./pages/page-formatting-toolbar";
 import { PageStyleSidebar } from "./pages/page-style-sidebar";
 import { BtnBuilder } from "./pages/page-btn-builder";
 import { NAV, ALL_ITEMS, LABEL_COLORS } from "./nav-config";
@@ -1262,6 +1264,35 @@ function PageAlert() {
         { name: "title", type: "string", desc: "Alert heading text." },
         { name: "children", type: "ReactNode", desc: "Alert body/description content." },
       ]} />
+    </DocSection>
+
+    <DocSection title="Stampy Alert" desc="Mascot-fronted status alert. Reports progress in a flow and points at the next action — Stampy carries the tone, so there are no severity variants.">
+      <Preview title="StampyAlrt" code={`import { StampyAlrt, AlrtStrong } from '@heartstampxo/design-system';
+
+<StampyAlrt title="So good!">
+  Suds is applied, <AlrtStrong>tap Continue to cover</AlrtStrong> below to start writing.
+</StampyAlrt>`} height={200}>
+        <div style={{ width: 360 }}>
+          <StampyAlrt title="So good!">
+            Suds is applied, <AlrtStrong>tap Continue to cover</AlrtStrong> below to start writing.
+          </StampyAlrt>
+        </div>
+      </Preview>
+
+      <PropsTable props={[
+        { name: "title",    type: "ReactNode", def: "(required)", required: true, desc: "Alert heading. 13.5px bold." },
+        { name: "children", type: "ReactNode", def: "—",          desc: "Body copy. Wrap the call to action in <AlrtStrong>." },
+        { name: "iconSrc",  type: "string",    def: "Stampy — Excited Smile", desc: "Image for the 64×64 slot." },
+        { name: "icon",     type: "ReactNode", def: "—",          desc: "Replaces the 64×64 slot. Pass null to drop it entirely." },
+      ]} />
+    </DocSection>
+
+    <DocSection title="Title only" desc="The body is optional — drop it for a one-line confirmation.">
+      <Preview title="StampyAlrt without body" code={`<StampyAlrt title="Saved to your drafts" />`} height={160}>
+        <div style={{ width: 360 }}>
+          <StampyAlrt title="Saved to your drafts" />
+        </div>
+      </Preview>
     </DocSection>
   </DocPage>;
 }
@@ -5395,6 +5426,7 @@ const PAGES: Record<string, any> = {
   select: PageSelect,
   "pill-tabs": PagePillTabs,
   "color-picker": PageColorPicker,
+  "formatting-toolbar": PageFormattingToolbar,
   checkbox: PageCheckbox,
   "radio-group": PageRadioGroup,
   switch: PageSwitch,
@@ -5410,6 +5442,7 @@ const PAGES: Record<string, any> = {
   alert: PageAlert,
   toast: PageToast,
   "alert-dialog": PageAlertDialog,
+  "coach-tips": PageCoachTips,
   dialog: PageDialog,
   sheet: PageSheet,
   "style-sidebar": PageStyleSidebar,

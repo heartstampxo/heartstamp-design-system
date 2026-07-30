@@ -54,6 +54,7 @@ export const NAV = [
       /* ── Inputs & Forms ─────────────────────────────────── */
       { title: "Checkbox",        id: "checkbox",     group: "Inputs & Forms" },
       { title: "Color Picker",    id: "color-picker", group: "Inputs & Forms",    label: "new"  },
+      { title: "Formatting Toolbar", id: "formatting-toolbar", group: "Inputs & Forms", label: "new" },
       { title: "Input",           id: "input",        group: "Inputs & Forms" },
       { title: "Kbd",             id: "kbd",          group: "Inputs & Forms",    label: "new"  },
       { title: "Label",           id: "label",        group: "Inputs & Forms" },
@@ -69,6 +70,7 @@ export const NAV = [
       { title: "Toggle Group",    id: "toggle-group", group: "Inputs & Forms" },
       /* ── Overlays & Popups ──────────────────────────────── */
       { title: "Alert Dialog",    id: "alert-dialog", group: "Overlays & Popups" },
+      { title: "Coaching Tips",   id: "coach-tips",   group: "Overlays & Popups", label: "new"  },
       { title: "Command",         id: "command",      group: "Overlays & Popups", label: "new"  },
       { title: "Context Menu",    id: "context-menu", group: "Overlays & Popups" },
       { title: "Dialog",          id: "dialog",       group: "Overlays & Popups" },
