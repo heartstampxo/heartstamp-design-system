@@ -4,3 +4,8 @@
 
 /* ─── Message panel handwriting / script fonts ─── */
 @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600&family=Great+Vibes&family=Pacifico&family=Caveat:wght@400;600&family=Sacramento&family=Satisfy&display=swap');
+
+/* ─── Card lettering offered by FontPicker (hs-font-picker) ───
+   Every family in FONT_OPTIONS must be loaded here, otherwise its row in the
+   picker previews in a fallback face and the preview silently lies. */
+@import url('https://fonts.googleapis.com/css2?family=Shadows+Into+Light&family=Architects+Daughter&family=Kalam:wght@300;400;700&display=swap');
