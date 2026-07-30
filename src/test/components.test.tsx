@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
@@ -702,6 +702,87 @@ describe('LinkBtnEditor', () => {
 
     fireEvent.keyDown(screen.getByLabelText('Link text'), { key: 'Enter' });
     expect(applied).toHaveLength(1);
+  });
+});
+
+describe('CSS custom property contract', () => {
+  /* Families supplied at runtime rather than by our token layer. */
+  const EXTERNAL = [
+    '--radix-',   // Radix UI measures triggers and sets these on the element
+    '--spacing',  // Tailwind v4 built-in
+  ];
+
+  /* Deliberate override hooks: undefined by design, always used with a default
+     so a consumer can theme them per subtree. */
+  const OVERRIDE_HOOKS = ['--chatbot-hero-bg'];
+
+  const uiDir = join(process.cwd(), 'src/app/components/ui');
+
+  const defined = () => {
+    const tokens = new Set<string>();
+    /* Matches all three ways this repo declares a custom property:
+       CSS (`--x: v;`), CSS text inside a TS template (`--tb-x: var(--x);`),
+       and a JS style object with a quoted key (`"--sidebar-width": W`). */
+    const add = (dir: string, files: string[]) => {
+      for (const f of files) {
+        for (const m of readFileSync(join(dir, f), 'utf8').matchAll(/(--[a-z0-9-]+)["']?\s*:/g)) {
+          tokens.add(m[1]);
+        }
+      }
+    };
+    add(join(process.cwd(), 'src/css'), readdirSync(join(process.cwd(), 'src/css')));
+    add(join(process.cwd(), 'src/styles'), readdirSync(join(process.cwd(), 'src/styles')));
+    // Component-scoped families declared as CSS text in TS, e.g. --tb-* in hs-stampy-constants
+    add(uiDir, readdirSync(uiDir).filter((f) => f.endsWith('.ts') || f.endsWith('.tsx')));
+    return tokens;
+  };
+
+  it('never references an undefined token without a fallback', () => {
+    /* `var(--missing)` with no fallback makes the whole declaration invalid and
+       the browser drops it — a silent rendering bug. With a fallback it merely
+       loses theming, which is caught separately below. */
+    const tokens = defined();
+    const offenders: string[] = [];
+
+    for (const file of readdirSync(uiDir).filter((f) => f.endsWith('.tsx'))) {
+      const src = readFileSync(join(uiDir, file), 'utf8');
+      for (const m of src.matchAll(/var\((--[a-z0-9-]+)\s*\)/g)) {
+        const token = m[1];
+        if (tokens.has(token)) continue;
+        if (EXTERNAL.some((p) => token.startsWith(p))) continue;
+        offenders.push(`${file}: var(${token})`);
+      }
+    }
+
+    expect(offenders).toEqual([]);
+  });
+
+  it('defines every token referenced with a fallback, bar documented hooks', () => {
+    const tokens = defined();
+    const offenders: string[] = [];
+
+    for (const file of readdirSync(uiDir).filter((f) => f.endsWith('.tsx'))) {
+      const src = readFileSync(join(uiDir, file), 'utf8');
+      for (const m of src.matchAll(/var\((--[a-z0-9-]+)\s*,/g)) {
+        const token = m[1];
+        if (tokens.has(token)) continue;
+        if (EXTERNAL.some((p) => token.startsWith(p))) continue;
+        if (OVERRIDE_HOOKS.includes(token)) continue;
+        offenders.push(`${file}: var(${token}, …)`);
+      }
+    }
+
+    expect(offenders).toEqual([]);
+  });
+
+  it('carries the tokens that back previously-broken declarations', () => {
+    const css = readFileSync(join(process.cwd(), 'src/css/tokens.css'), 'utf8');
+    // Each of these was referenced by a component before it existed
+    expect(css).toMatch(/--space-0-5:\s*2px/);            // hs-pill-tabs, hs-editor-nav
+    expect(css).toMatch(/--space-16:\s*64px/);            // hs-style-sidebar
+    expect(css).toMatch(/--color-state-warning:\s*#f59e0b/); // hs-alrt, hs-bdg
+    expect(css).toMatch(/--inp-padding-x:\s*12px/);       // hs-inp
+    expect(css).toMatch(/--inp-padding-y:\s*9px/);        // hs-inp
   });
 });
 
