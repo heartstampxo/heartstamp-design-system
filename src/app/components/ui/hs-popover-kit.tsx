@@ -53,7 +53,40 @@ export function panelShell(radius: number | string, shadow: string): React.CSSPr
     borderRadius: radius,
     boxShadow: shadow,
     border: SUBTLE_BORDER,
+    // Panels carry a fixed design width; without this the 382px sheets
+    // overflow a 320px viewport. Callers may still narrow it further.
+    maxWidth: "calc(100vw - var(--space-4, 16px) * 2)",
   };
+}
+
+/* ── Interaction states ─────────────────────────────────────────────
+   Inline styles cannot express pseudo-classes, so every interactive
+   control opts into one shared stylesheet instead of hand-rolling hover
+   in JS. That is the only way to get :active and :focus-visible, and it
+   keeps hover, press and focus on the interaction tokens.
+
+   Tag a control with CONTROL_CLASS and render <ControlStyles /> once.
+   Leave its resting `background` unset — an inline background would win
+   over these rules and kill the states.
+
+     data-on="true"   the control's formatting is applied (toolbar toggles)
+     :disabled        dimmed and not interactive
+──────────────────────────────────────────────────────────────────── */
+
+export const CONTROL_CLASS = "hs-ctl";
+
+const CONTROL_CSS = `
+.${CONTROL_CLASS} { transition: background 120ms ease-in-out; }
+.${CONTROL_CLASS}:hover:not(:disabled) { background: var(--color-state-hover, rgba(36, 36, 35, 0.06)); }
+.${CONTROL_CLASS}:active:not(:disabled) { background: var(--color-state-pressed, rgba(36, 36, 35, 0.08)); }
+.${CONTROL_CLASS}:focus-visible { outline: 2px solid var(--color-ring); outline-offset: 2px; }
+.${CONTROL_CLASS}[data-on="true"] { background: var(--color-element-subtle, rgba(36, 36, 35, 0.10)); }
+.${CONTROL_CLASS}[data-on="true"]:active { background: var(--color-state-pressed, rgba(36, 36, 35, 0.08)); }
+.${CONTROL_CLASS}:disabled { opacity: 0.5; cursor: not-allowed; }
+`;
+
+export function ControlStyles() {
+  return <style>{CONTROL_CSS}</style>;
 }
 
 /* ── The wide form panel ────────────────────────────────────────────
@@ -135,7 +168,9 @@ export const panelDescStyle: React.CSSProperties = {
   lineHeight: "19.5px",
 };
 
-/** Circular icon button — panel close, row remove. 30×30 per the designs. */
+/** Circular icon button — panel close, row remove. 30×30 per the designs.
+ *  Its resting fill is the hover token by design, so it sits a step above the
+ *  panel; pair with CONTROL_CLASS so press and focus still register. */
 export const roundIconBtnStyle: React.CSSProperties = {
   display: "inline-flex",
   alignItems: "center",

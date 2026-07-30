@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { FILL_HOVER, FONT_BODY, panelShell } from "./hs-popover-kit";
+import { CONTROL_CLASS, ControlStyles, FONT_BODY, panelShell } from "./hs-popover-kit";
 
 /* ═══════════════════════════════════════════════════════
    HeartStamp — Font Picker
@@ -157,7 +157,6 @@ export function FontPicker({
   className,
 }: FontPickerProps) {
   const rootRef = useRef<HTMLDivElement>(null);
-  const [hovered, setHovered] = useState<string | null>(null);
 
   const selectedIndex = Math.max(fonts.findIndex((f) => f.id === value), 0);
   const [focusIndex, setFocusIndex] = useState(selectedIndex);
@@ -195,25 +194,23 @@ export function FontPicker({
       style={{ ...shellStyle, width, maxHeight, ...style }}
       onKeyDown={handleKeyDown}
     >
+      <ControlStyles />
       {fonts.map((font, index) => {
         const on = font.id === value;
-        const hot = hovered === font.id;
         return (
           <button
             key={font.id}
             type="button"
+            className={CONTROL_CLASS}
             role="option"
             aria-selected={on}
             data-font-index={index}
             tabIndex={index === roving ? 0 : -1}
             title={`${font.name} — ${font.description}`}
             onClick={() => onSelect?.(font.id, font)}
-            onMouseEnter={() => setHovered(font.id)}
-            onMouseLeave={() => setHovered((h) => (h === font.id ? null : h))}
-            style={{
-              ...rowStyle,
-              background: on ? SELECTED_BG : hot ? FILL_HOVER : "transparent",
-            }}
+            /* Selected keeps its brand wash inline, which outranks the shared
+               hover rule; unselected rows fall through to it. */
+            style={on ? { ...rowStyle, background: SELECTED_BG } : rowStyle}
           >
             <span
               aria-hidden="true"
