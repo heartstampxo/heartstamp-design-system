@@ -841,6 +841,45 @@ describe('GridOverlay / GridInspector', () => {
     expect(on.querySelector('.hs-grid-overlay')!.className).toContain('--visible');
   });
 
+  it('draws the panel from the contrast-inverting secondary pair, not primary red', () => {
+    /* --color-brand-primary is a dark red; mixed into the dark background it
+       lands within a few channel values of the page and vanishes.
+       --color-brand-secondary inverts with the theme (#242423 light /
+       #f5f5f4 dark), so a tint of it always separates. */
+    const src = readFileSync(join(process.cwd(), 'src/app/components/ui/hs-grid-overlay.tsx'), 'utf8');
+
+    expect(src).toContain('var(--color-brand-secondary');
+    expect(src).toContain('var(--color-text-on-secondary');
+    expect(src).not.toContain('--color-brand-primary');
+    // The active lift must not be a red glow either
+    expect(src).not.toContain('rgba(190, 29, 44');
+  });
+
+  it('keeps the column tint legible in dark mode', () => {
+    const css = readFileSync(join(process.cwd(), 'src/css/grid.css'), 'utf8');
+
+    // Tint held in variables so the theme can restate it
+    expect(css).toMatch(/--grid-overlay-fill:/);
+    expect(css).toMatch(/--grid-overlay-line:/);
+    expect(css).toMatch(/background: var\(--grid-overlay-fill\)/);
+
+    // And a dark override exists, keyed off both theme conventions
+    expect(css).toMatch(/\.dark \.hs-grid-overlay/);
+    expect(css).toMatch(/\[data-theme="dark"\] \.hs-grid-overlay/);
+
+    /* The dark fill must actually be more visible than simply reusing the
+       light value would be. Compare channel distance from each background. */
+    const composite = (fg: number[], a: number, bg: number[]) =>
+      fg.reduce((acc, f, i) => acc + Math.abs(Math.round(a * f + (1 - a) * bg[i]) - bg[i]), 0);
+
+    const darkBlock = css.slice(css.indexOf('.dark .hs-grid-overlay'));
+    const [, r, g, b, a] = darkBlock.match(/--grid-overlay-fill:\s*rgba\((\d+), (\d+), (\d+), ([\d.]+)\)/)!;
+    const darkFill = composite([+r, +g, +b], +a, [20, 20, 20]);
+    const naiveReuse = composite([190, 29, 44], 0.08, [20, 20, 20]);
+
+    expect(darkFill).toBeGreaterThan(naiveReuse * 2);
+  });
+
   it('sits above the overlay, or the columns paint over the control', () => {
     /* The overlay is z-index 9000 and spans the full viewport height, so a bar
        stacked below it gets red-striped — exactly the control you need to read

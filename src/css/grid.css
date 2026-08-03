@@ -123,11 +123,31 @@
   gap: var(--grid-gutter, 24px);
 }
 
+/*
+ * Column tint
+ * ─────────────────────────────────────────────────────────────
+ * Held in variables so a theme can restate them. The brand red is dark to
+ * begin with, so on a near-black background an 8% fill lands within a few
+ * channel values of the page and effectively disappears — the dark override
+ * below moves to the brighter red and raises the alpha to match the
+ * legibility the light theme gets.
+ */
+.hs-grid-overlay {
+  --grid-overlay-fill: rgba(190, 29, 44, 0.08);
+  --grid-overlay-line: rgba(190, 29, 44, 0.28);
+}
+
+.dark .hs-grid-overlay,
+[data-theme="dark"] .hs-grid-overlay {
+  --grid-overlay-fill: rgba(245, 64, 81, 0.16);
+  --grid-overlay-line: rgba(245, 64, 81, 0.45);
+}
+
 .hs-grid-overlay__col {
   flex: 1;
-  background: rgba(190, 29, 44, 0.08);
-  border-left:  1px solid rgba(190, 29, 44, 0.28);
-  border-right: 1px solid rgba(190, 29, 44, 0.28);
+  background: var(--grid-overlay-fill);
+  border-left:  1px solid var(--grid-overlay-line);
+  border-right: 1px solid var(--grid-overlay-line);
   min-height: 100vh;
 }
 

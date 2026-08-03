@@ -136,9 +136,15 @@ export function GridOverlay({ visible = false, columns, alignTo }: GridOverlayPr
 
 const OVERLAY_Z = 9000;
 
-const BRAND = "var(--color-brand-primary, #be1d2c)";
-const tint = (pct: number) => `color-mix(in srgb, ${BRAND} ${pct}%, var(--color-bg-main, #fff))`;
-const edge = (pct: number) => `color-mix(in srgb, ${BRAND} ${pct}%, transparent)`;
+/* Uses the secondary brand pair, not primary red. --color-brand-secondary is a
+   contrast-inverting neutral — #242423 on light, #f5f5f4 on dark — so a tint of
+   it always separates from the page. Primary red mixed into the dark background
+   came out nearly invisible. --color-text-on-secondary flips with it, keeping
+   the tile's icon legible either way. */
+const ACCENT = "var(--color-brand-secondary, #242423)";
+const ON_ACCENT = "var(--color-text-on-secondary, #ffffff)";
+const tint = (pct: number) => `color-mix(in srgb, ${ACCENT} ${pct}%, var(--color-bg-main, #fff))`;
+const edge = (pct: number) => `color-mix(in srgb, ${ACCENT} ${pct}%, transparent)`;
 
 const panelBase: React.CSSProperties = {
   zIndex: OVERLAY_Z + 1,
@@ -158,7 +164,7 @@ const panelBase: React.CSSProperties = {
 const panelActive: React.CSSProperties = {
   background: tint(9),
   border: `1px solid ${edge(34)}`,
-  boxShadow: "0 6px 20px rgba(190, 29, 44, 0.10)",
+  boxShadow: "0 6px 20px rgba(36, 36, 35, 0.12)",
 };
 
 /** Filled tile — anchors the eye and marks the region as a tool. */
@@ -170,8 +176,8 @@ const tileStyle: React.CSSProperties = {
   width: 40,
   height: 40,
   borderRadius: "var(--radius-2xl, 12px)",
-  background: BRAND,
-  color: "var(--color-text-on-primary, #ffffff)",
+  background: ACCENT,
+  color: ON_ACCENT,
 };
 
 const infoStyle: React.CSSProperties = {
@@ -319,7 +325,7 @@ export function GridInspector({
 
         <span style={actionsStyle}>
           {shortcut && <kbd style={kbdStyle}>⌘G</kbd>}
-          <Btn variant={visible ? "default" : "outline"} onClick={toggle} aria-pressed={visible}>
+          <Btn variant={visible ? "secondary" : "outline"} onClick={toggle} aria-pressed={visible}>
             {visible ? "Hide grid" : "Show grid"}
           </Btn>
         </span>
