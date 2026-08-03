@@ -70,6 +70,7 @@ export * from './app/components/ui/hs-editor-nav';
 export * from './app/components/ui/hs-emoji-data';
 export * from './app/components/ui/hs-emoji-picker';
 export * from './app/components/ui/hs-fmt-toolbar';
+export * from './app/components/ui/hs-grid-overlay';
 export * from './app/components/ui/hs-font-picker';
 export * from './app/components/ui/hs-link-btn-editor';
 export * from './app/components/ui/hs-link-editor';

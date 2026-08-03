@@ -27,6 +27,7 @@ import { Sldr } from "./components/ui/hs-sldr";
 import { Prg } from "./components/ui/hs-prg";
 import { Skl } from "./components/ui/hs-skl";
 import { Alrt, AlrtStrong, StampyAlrt } from "./components/ui/hs-alrt";
+import { GridInspector } from "./components/ui/hs-grid-overlay";
 import { Crd, CrdHeader, CrdBody, CrdFooter, CrdTitle, CrdDesc } from "./components/ui/hs-crd";
 import { WalletCard, WalletPromoCard } from "./components/ui/hs-wallet";
 import { PaymentMethodCard } from "./components/ui/hs-payment-method-card";
@@ -3327,7 +3328,6 @@ function PageTokensShadow() {
 }
 
 function PageTokensGrid() {
-  const [overlayOn, setOverlayOn] = React.useState(false);
 
   const breakpoints = [
     { name: "Mobile",  range: "< 768px",    cols: 4,  gutter: "16px", margin: "16px" },
@@ -3360,12 +3360,9 @@ function PageTokensGrid() {
       title="Grid"
       subtitle="Responsive 12-column layout grid for HeartStamp marketing pages. Collapses to 4 columns on mobile with consistent 16px margins across all breakpoints."
     >
-      {/* Dev grid overlay — position: fixed, z-index 9000 via grid.css */}
-      <div className={`hs-grid-overlay${overlayOn ? " hs-grid-overlay--visible" : ""}`}>
-        <div className="hs-grid-overlay__track">
-          {Array.from({ length: 12 }, (_, i) => <div key={i} className="hs-grid-overlay__col" />)}
-        </div>
-      </div>
+      {/* Sticky toggle + live grid readout. `alignTo` points at the docs content
+          column, so the guide lands on real content instead of the window. */}
+      <GridInspector alignTo="main" />
 
       {/* ── Tokens ────────────────────────────────────────────── */}
       <DocSection title="Tokens" desc="Four CSS custom properties drive the entire grid. Set them once in tokens.css — grid.css consumes them via var().">
@@ -3475,30 +3472,17 @@ function PageTokensGrid() {
       </DocSection>
 
       {/* ── Grid Overlay ──────────────────────────────────────── */}
-      <DocSection title="Grid Overlay" desc="A fixed column guide for design QA. Columns render at z-index 9000 in a red tint. Click to toggle it on this page.">
+      <DocSection title="Grid Overlay" desc="The column guide used for design QA, driven by the sticky inspector at the top of this page. Columns render at z-index 9000 in a red tint. Toggle with the button or ⌘/Ctrl+G.">
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <button
-              onClick={() => setOverlayOn(v => !v)}
-              style={{
-                display: "inline-flex", alignItems: "center", height: 34, padding: "0 14px",
-                borderRadius: 999, border: "none", cursor: "pointer", fontSize: 12.5, fontWeight: 500,
-                background: overlayOn ? "var(--color-brand-primary)" : "var(--color-brand-primary-dim)",
-                color: overlayOn ? "#ffffff" : "var(--color-brand-primary)",
-                transition: "background 150ms ease, color 150ms ease",
-              }}
-            >
-              {overlayOn ? "Hide overlay" : "Show overlay"}
-            </button>
-            <span style={{ fontSize: 12, color: "var(--muted-fg)" }}>
-              {overlayOn ? "Active — red-tinted columns overlaying the viewport" : "Toggle to preview the 12-column grid guide"}
-            </span>
-          </div>
           {[
             { label: "HTML",
               code: `<div class="hs-grid-overlay hs-grid-overlay--visible">\n  <div class="hs-grid-overlay__track">\n    <div class="hs-grid-overlay__col"></div> <!-- × 12 -->\n  </div>\n</div>` },
             { label: "JS toggle (e.g. Ctrl+G)",
               code: `document.addEventListener('keydown', e => {\n  if (e.ctrlKey && e.key === 'g')\n    document.querySelector('.hs-grid-overlay')\n      ?.classList.toggle('hs-grid-overlay--visible');\n});` },
+            { label: "React — sticky inspector (this page)",
+              code: `import { GridInspector } from '@heartstampxo/design-system';\n\n// Spans the viewport, which is right for a marketing page\n<GridInspector />\n\n// Inside a narrower column — docs shell, app frame — align to it\n<GridInspector alignTo="main" />` },
+            { label: "CSS — aligning the overlay to a column",
+              code: `/* The overlay is position:fixed and spans the viewport by default.\n   Point these at a narrower column and it will match instead. */\n.hs-grid-overlay {\n  --grid-overlay-left:  280px;  /* left edge of the column   */\n  --grid-overlay-width: 900px;  /* width of the column       */\n}` },
           ].map(({ label, code }) => (
             <div key={label} style={codeBlockStyle}>
               <span style={codeLabelStyle}>{label}</span>

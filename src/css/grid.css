@@ -84,9 +84,27 @@
  *     </div>
  *   </div>
  */
+/*
+ * Alignment
+ * ─────────────────────────────────────────────────────────────
+ * The overlay defaults to the full viewport, which is correct on a marketing
+ * page where .hs-page-grid is centred in the window.
+ *
+ * When the grid lives inside a narrower column — a docs shell with a sidebar,
+ * an app frame, a preview pane — a viewport-centred overlay cannot line up with
+ * it. Point these two hooks at that column instead:
+ *
+ *   --grid-overlay-left    left edge of the column, in px from the viewport
+ *   --grid-overlay-width   width of the column
+ *
+ * The GridOverlay component measures a target element and sets both for you.
+ */
 .hs-grid-overlay {
   position: fixed;
-  inset: 0;
+  top: 0;
+  bottom: 0;
+  left: var(--grid-overlay-left, 0px);
+  width: var(--grid-overlay-width, 100vw);
   z-index: 9000;
   pointer-events: none;
   display: none;

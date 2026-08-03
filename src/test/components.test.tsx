@@ -21,6 +21,9 @@ import {
   FONT_OPTIONS,
   FmtToolbar,
   FontPicker,
+  GridInspector,
+  GridOverlay,
+  gridBreakpointFor,
   HSEmblem,
   LinkBtnEditor,
   LinkEditor,
@@ -783,6 +786,101 @@ describe('CSS custom property contract', () => {
     expect(css).toMatch(/--color-state-warning:\s*#f59e0b/); // hs-alrt, hs-bdg
     expect(css).toMatch(/--inp-padding-x:\s*12px/);       // hs-inp
     expect(css).toMatch(/--inp-padding-y:\s*9px/);        // hs-inp
+  });
+});
+
+describe('GridOverlay / GridInspector', () => {
+  const fakeMain = (left: number, width: number) => {
+    const el = document.createElement('main');
+    el.getBoundingClientRect = () => ({
+      left, width, right: left + width, top: 0, bottom: 0, height: 0, x: left, y: 0, toJSON: () => {},
+    }) as DOMRect;
+    document.body.appendChild(el);
+    return el;
+  };
+
+  it('mirrors the breakpoints declared in grid.css', () => {
+    const css = readFileSync(join(process.cwd(), 'src/css/grid.css'), 'utf8');
+    // grid.css: <768 => 4 cols, 768-1023 => 12 @16px, >=1024 => 12 @24px
+    expect(css).toMatch(/max-width:\s*767px/);
+    expect(css).toMatch(/min-width:\s*768px\).*max-width:\s*1023px/s);
+
+    expect(gridBreakpointFor(375)).toMatchObject({ name: 'Mobile', columns: 4, gutter: 16 });
+    expect(gridBreakpointFor(768)).toMatchObject({ name: 'Tablet', columns: 12, gutter: 16 });
+    expect(gridBreakpointFor(1024)).toMatchObject({ name: 'Desktop', columns: 12, gutter: 24 });
+    // Boundaries land on the right side
+    expect(gridBreakpointFor(767).name).toBe('Mobile');
+    expect(gridBreakpointFor(1023).name).toBe('Tablet');
+  });
+
+  it('aligns to a target column instead of the viewport', () => {
+    /* The original bug: the overlay was viewport-centred, so inside the docs
+       shell (content offset by a sidebar) the columns could never line up. */
+    const main = fakeMain(280, 900);
+    const { container } = render(<GridOverlay visible alignTo="main" />);
+
+    const el = container.querySelector<HTMLElement>('.hs-grid-overlay')!;
+    expect(el.style.getPropertyValue('--grid-overlay-left')).toBe('280px');
+    expect(el.style.getPropertyValue('--grid-overlay-width')).toBe('900px');
+
+    document.body.removeChild(main);
+  });
+
+  it('spans the viewport when no target is given', () => {
+    const { container } = render(<GridOverlay visible />);
+    const el = container.querySelector<HTMLElement>('.hs-grid-overlay')!;
+    // No inline hooks — grid.css defaults to left:0 / width:100vw
+    expect(el.style.getPropertyValue('--grid-overlay-left')).toBe('');
+  });
+
+  it('only shows the columns when visible', () => {
+    const { container: off } = render(<GridOverlay />);
+    expect(off.querySelector('.hs-grid-overlay')!.className).not.toContain('--visible');
+
+    const { container: on } = render(<GridOverlay visible />);
+    expect(on.querySelector('.hs-grid-overlay')!.className).toContain('--visible');
+  });
+
+  it('survives an environment with no ResizeObserver', () => {
+    /* jsdom has none, and an unguarded constructor throws inside the effect and
+       takes the overlay down with it. */
+    expect(typeof ResizeObserver).toBe('undefined');
+    const main = fakeMain(100, 500);
+
+    expect(() => render(<GridOverlay visible alignTo="main" />)).not.toThrow();
+
+    document.body.removeChild(main);
+  });
+
+  it('renders a labelled toggle and the live grid readout', () => {
+    render(<GridInspector />);
+
+    expect(screen.getByRole('button', { name: /Show grid/ })).toHaveAttribute('aria-pressed', 'false');
+    expect(screen.getByText(/columns/)).toBeInTheDocument();
+    expect(screen.getByText(/gutter/)).toBeInTheDocument();
+    expect(screen.getByText(/margin/)).toBeInTheDocument();
+  });
+
+  it('toggles the overlay from the bar and reports it', () => {
+    const seen: boolean[] = [];
+    const { container } = render(<GridInspector onVisibleChange={(v) => seen.push(v)} />);
+
+    fireEvent.click(screen.getByRole('button', { name: /Show grid/ }));
+
+    expect(seen).toEqual([true]);
+    expect(container.querySelector('.hs-grid-overlay')!.className).toContain('--visible');
+    expect(screen.getByRole('button', { name: /Hide grid/ })).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  it('toggles on Ctrl+G / Cmd+G, and not when the shortcut is off', () => {
+    const { container, unmount } = render(<GridInspector />);
+    fireEvent.keyDown(window, { key: 'g', ctrlKey: true });
+    expect(container.querySelector('.hs-grid-overlay')!.className).toContain('--visible');
+    unmount();
+
+    const { container: noShortcut } = render(<GridInspector shortcut={false} />);
+    fireEvent.keyDown(window, { key: 'g', metaKey: true });
+    expect(noShortcut.querySelector('.hs-grid-overlay')!.className).not.toContain('--visible');
   });
 });
 
