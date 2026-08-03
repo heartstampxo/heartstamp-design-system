@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Grid3x3, X } from "lucide-react";
+import { Grid3x3 } from "lucide-react";
 import { Btn } from "./btn";
 import { FONT_BODY, SUBTLE_BORDER } from "./hs-popover-kit";
 
@@ -120,51 +120,77 @@ export function GridOverlay({ visible = false, columns, alignTo }: GridOverlayPr
    GridInspector
 ═══════════════════════════════════════════════════════ */
 
-const barStyle: React.CSSProperties = {
+/* ── Bar ────────────────────────────────────────────────────────────
+   Three elements only — action, headline, shortcut — so the eye lands on
+   the toggle first. The per-breakpoint numbers are held back until the
+   grid is actually on, since they are only useful once you are reading
+   columns against content.
+
+   The bar must outrank the overlay (z-index 9000 in grid.css), or the red
+   columns paint straight over the control that turns them off.
+──────────────────────────────────────────────────────────────────── */
+
+const OVERLAY_Z = 9000;
+
+const barBase: React.CSSProperties = {
   position: "sticky",
   top: 0,
-  // Under the overlay (9000) but above page content
-  zIndex: 40,
+  zIndex: OVERLAY_Z + 1,
   display: "flex",
   alignItems: "center",
-  flexWrap: "wrap",
   gap: "var(--space-3, 12px)",
-  padding: "var(--space-2-5, 10px) var(--space-3, 12px)",
+  padding: "var(--space-2, 8px) var(--space-3, 12px)",
   marginBottom: "var(--space-4, 16px)",
+  borderRadius: "var(--radius-xl, 10px)",
+  // Opaque, so the overlay behind it never bleeds through
   background: "var(--color-bg-main, #ffffff)",
   border: SUBTLE_BORDER,
-  borderRadius: "var(--radius-xl, 10px)",
-  // Lifts the bar off the content it overlaps while stuck
-  boxShadow: "0 2px 10px rgba(36, 36, 35, 0.06)",
+  transition: "background 150ms ease, border-color 150ms ease",
 };
 
-const readoutStyle: React.CSSProperties = {
+/* Active: a brand-tinted wash and edge, so the state reads at a glance
+   without competing with the button. */
+const barActive: React.CSSProperties = {
+  background: "color-mix(in srgb, var(--color-brand-primary, #be1d2c) 4%, var(--color-bg-main, #fff))",
+  borderColor: "color-mix(in srgb, var(--color-brand-primary, #be1d2c) 22%, transparent)",
+  boxShadow: "0 4px 16px rgba(36, 36, 35, 0.08)",
+};
+
+const infoStyle: React.CSSProperties = {
   display: "flex",
-  alignItems: "center",
-  flexWrap: "wrap",
-  gap: "var(--space-2-5, 10px)",
-  fontFamily: FONT_BODY,
-  fontSize: "var(--font-size-label-12, 12px)",
-  color: "var(--color-text-secondary, #6e6d6a)",
+  flexDirection: "column",
+  gap: 1,
+  minWidth: 0,
 };
 
-const chipStyle: React.CSSProperties = {
-  display: "inline-flex",
-  alignItems: "center",
-  gap: "var(--space-1, 4px)",
-  padding: "3px var(--space-2, 8px)",
-  borderRadius: "var(--radius-full, 999px)",
-  background: "var(--color-bg-editor, #f5f5f4)",
+/** Headline — the one value worth reading at a glance. */
+const headlineStyle: React.CSSProperties = {
+  fontFamily: FONT_BODY,
+  fontSize: "var(--font-size-body-13, 13px)",
+  fontWeight: 600,
+  color: "var(--color-text-primary, #242423)",
   whiteSpace: "nowrap",
 };
 
-const valueStyle: React.CSSProperties = {
-  color: "var(--color-text-primary, #242423)",
-  fontWeight: 600,
+const dimStyle: React.CSSProperties = {
+  fontWeight: 400,
+  color: "var(--color-text-secondary, #6e6d6a)",
 };
 
-const hintStyle: React.CSSProperties = {
+/** Supporting detail, one quiet line rather than four competing pills. */
+const detailStyle: React.CSSProperties = {
+  fontFamily: FONT_BODY,
+  fontSize: "var(--font-size-label-12, 12px)",
+  color: "var(--color-text-secondary, #6e6d6a)",
+  whiteSpace: "nowrap",
+};
+
+const kbdStyle: React.CSSProperties = {
   marginLeft: "auto",
+  flexShrink: 0,
+  padding: "2px var(--space-1-5, 6px)",
+  borderRadius: "var(--radius-sm, 6px)",
+  border: SUBTLE_BORDER,
   fontFamily: FONT_BODY,
   fontSize: "var(--font-size-label-12, 12px)",
   color: "var(--color-text-disabled, #a9a8a4)",
@@ -229,9 +255,15 @@ export function GridInspector({
 
   const bp = gridBreakpointFor(viewport);
 
+  const barStyle: React.CSSProperties = {
+    ...barBase,
+    ...(visible ? barActive : null),
+    ...style,
+  };
+
   return (
     <>
-      <div className={className} style={style ? { ...barStyle, ...style } : barStyle}>
+      <div className={className} style={barStyle}>
         <Btn
           variant={visible ? "default" : "outline"}
           size="sm"
@@ -242,27 +274,19 @@ export function GridInspector({
           {visible ? "Hide grid" : "Show grid"}
         </Btn>
 
-        <span style={readoutStyle} aria-live="polite">
-          <span style={chipStyle}>
-            <span style={valueStyle}>{bp.name}</span>
-            <span>· {viewport}px</span>
+        <span style={infoStyle} aria-live="polite">
+          <span style={headlineStyle}>
+            {bp.name} <span style={dimStyle}>· {viewport}px</span>
           </span>
-          <span style={chipStyle}>
-            <span style={valueStyle}>{bp.columns}</span> columns
-          </span>
-          <span style={chipStyle}>
-            <span style={valueStyle}>{bp.gutter}px</span> gutter
-          </span>
-          <span style={chipStyle}>
-            <span style={valueStyle}>{bp.margin}px</span> margin
-          </span>
+          {/* Held back until the grid is on — noise otherwise */}
+          {visible && (
+            <span style={detailStyle}>
+              {bp.columns} columns · {bp.gutter}px gutter · {bp.margin}px margin
+            </span>
+          )}
         </span>
 
-        {shortcut && (
-          <span style={hintStyle}>
-            {visible ? <X size={11} style={{ verticalAlign: -1 }} /> : null} ⌘/Ctrl + G
-          </span>
-        )}
+        {shortcut && <kbd style={kbdStyle}>⌘G</kbd>}
       </div>
 
       <GridOverlay visible={visible} alignTo={alignTo} />

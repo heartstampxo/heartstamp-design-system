@@ -841,6 +841,21 @@ describe('GridOverlay / GridInspector', () => {
     expect(on.querySelector('.hs-grid-overlay')!.className).toContain('--visible');
   });
 
+  it('sits above the overlay, or the columns paint over the control', () => {
+    /* The overlay is z-index 9000 and spans the full viewport height, so a bar
+       stacked below it gets red-striped — exactly the control you need to read
+       in order to turn the grid off. */
+    const css = readFileSync(join(process.cwd(), 'src/css/grid.css'), 'utf8');
+    const overlayZ = Number(css.match(/z-index:\s*(\d+)/)![1]);
+
+    const { container } = render(<GridInspector />);
+    const bar = container.firstElementChild as HTMLElement;
+
+    expect(Number(bar.style.zIndex)).toBeGreaterThan(overlayZ);
+    // Opaque, so the overlay cannot bleed through it either
+    expect(bar.style.background).toContain('var(--color-bg-main');
+  });
+
   it('survives an environment with no ResizeObserver', () => {
     /* jsdom has none, and an unguarded constructor throws inside the effect and
        takes the overlay down with it. */
@@ -852,13 +867,19 @@ describe('GridOverlay / GridInspector', () => {
     document.body.removeChild(main);
   });
 
-  it('renders a labelled toggle and the live grid readout', () => {
+  it('leads with the toggle and the breakpoint, holding the numbers back', () => {
+    /* Hierarchy: the action and the active breakpoint are all that show at
+       rest. Columns/gutter/margin only matter once you are reading the grid
+       against content, so they are disclosed with it. */
     render(<GridInspector />);
 
     expect(screen.getByRole('button', { name: /Show grid/ })).toHaveAttribute('aria-pressed', 'false');
-    expect(screen.getByText(/columns/)).toBeInTheDocument();
-    expect(screen.getByText(/gutter/)).toBeInTheDocument();
-    expect(screen.getByText(/margin/)).toBeInTheDocument();
+    expect(screen.getByText(/Desktop|Tablet|Mobile/)).toBeInTheDocument();
+    expect(screen.queryByText(/gutter/)).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /Show grid/ }));
+
+    expect(screen.getByText(/columns · .*gutter · .*margin/)).toBeInTheDocument();
   });
 
   it('toggles the overlay from the bar and reports it', () => {
