@@ -1,16 +1,16 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Grid3x3 } from "lucide-react";
 import { Btn } from "./btn";
-import { FONT_BODY, SUBTLE_BORDER } from "./hs-popover-kit";
+import { FONT_BODY, FONT_HEADING } from "./hs-popover-kit";
 
 /* ═══════════════════════════════════════════════════════
    HeartStamp — Grid Overlay
-   Column guide for design QA, plus a sticky inspector bar so
-   developers and marketing can toggle it and read the live grid
-   values while they scroll.
+   Column guide for design QA, plus a prominent inspector panel so
+   developers and marketing can toggle it and read the live grid values
+   while they scroll.
 
    ·  GridOverlay   — the red column guide (styles live in grid.css)
-   ·  GridInspector — the bar: toggle, breakpoint readout, shortcut
+   ·  GridInspector — the panel: toggle, breakpoint readout, shortcut
 
    Alignment: the overlay is position:fixed and defaults to the whole
    viewport, which is right on a marketing page. Inside a narrower
@@ -120,80 +120,104 @@ export function GridOverlay({ visible = false, columns, alignTo }: GridOverlayPr
    GridInspector
 ═══════════════════════════════════════════════════════ */
 
-/* ── Bar ────────────────────────────────────────────────────────────
-   Three elements only — action, headline, shortcut — so the eye lands on
-   the toggle first. The per-breakpoint numbers are held back until the
-   grid is actually on, since they are only useful once you are reading
-   columns against content.
+/* ── Panel ──────────────────────────────────────────────────────────
+   This is a tool, not a row of page content, and it has to read that way.
+   A thin strip of the same weight as everything else around it disappears
+   on a page this dense.
 
-   The bar must outrank the overlay (z-index 9000 in grid.css), or the red
-   columns paint straight over the control that turns them off.
+   Prominence comes from surface and anchor rather than height: a
+   brand-tinted field that is plainly not body copy, a filled icon tile to
+   anchor the eye, a named heading, and a full-size button. It stays
+   compact vertically so pinning it is not intrusive.
+
+   It must also outrank the overlay (z-index 9000 in grid.css), or the red
+   columns paint over the control that dismisses them.
 ──────────────────────────────────────────────────────────────────── */
 
 const OVERLAY_Z = 9000;
 
-const barBase: React.CSSProperties = {
-  position: "sticky",
-  top: 0,
+const BRAND = "var(--color-brand-primary, #be1d2c)";
+const tint = (pct: number) => `color-mix(in srgb, ${BRAND} ${pct}%, var(--color-bg-main, #fff))`;
+const edge = (pct: number) => `color-mix(in srgb, ${BRAND} ${pct}%, transparent)`;
+
+const panelBase: React.CSSProperties = {
   zIndex: OVERLAY_Z + 1,
   display: "flex",
   alignItems: "center",
-  gap: "var(--space-3, 12px)",
-  padding: "var(--space-2, 8px) var(--space-3, 12px)",
-  marginBottom: "var(--space-4, 16px)",
-  borderRadius: "var(--radius-xl, 10px)",
-  // Opaque, so the overlay behind it never bleeds through
-  background: "var(--color-bg-main, #ffffff)",
-  border: SUBTLE_BORDER,
-  transition: "background 150ms ease, border-color 150ms ease",
+  gap: "var(--space-3-5, 14px)",
+  padding: "var(--space-3, 12px) var(--space-3-5, 14px)",
+  marginBottom: "var(--space-6, 24px)",
+  borderRadius: "var(--radius-3xl, 14px)",
+  // A distinct field, so it never reads as body content
+  background: tint(5),
+  border: `1px solid ${edge(20)}`,
+  transition: "background 150ms ease, border-color 150ms ease, box-shadow 150ms ease",
 };
 
-/* Active: a brand-tinted wash and edge, so the state reads at a glance
-   without competing with the button. */
-const barActive: React.CSSProperties = {
-  background: "color-mix(in srgb, var(--color-brand-primary, #be1d2c) 4%, var(--color-bg-main, #fff))",
-  borderColor: "color-mix(in srgb, var(--color-brand-primary, #be1d2c) 22%, transparent)",
-  boxShadow: "0 4px 16px rgba(36, 36, 35, 0.08)",
+/** On: stronger field and a lift, so the state is unmistakable. */
+const panelActive: React.CSSProperties = {
+  background: tint(9),
+  border: `1px solid ${edge(34)}`,
+  boxShadow: "0 6px 20px rgba(190, 29, 44, 0.10)",
+};
+
+/** Filled tile — anchors the eye and marks the region as a tool. */
+const tileStyle: React.CSSProperties = {
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  flexShrink: 0,
+  width: 40,
+  height: 40,
+  borderRadius: "var(--radius-2xl, 12px)",
+  background: BRAND,
+  color: "var(--color-text-on-primary, #ffffff)",
 };
 
 const infoStyle: React.CSSProperties = {
   display: "flex",
   flexDirection: "column",
-  gap: 1,
+  gap: 2,
   minWidth: 0,
+  flex: "1 1 0",
 };
 
-/** Headline — the one value worth reading at a glance. */
-const headlineStyle: React.CSSProperties = {
-  fontFamily: FONT_BODY,
-  fontSize: "var(--font-size-body-13, 13px)",
+const titleStyle: React.CSSProperties = {
+  fontFamily: FONT_HEADING,
+  fontSize: "var(--font-size-label-sb-15, 15px)",
   fontWeight: 600,
   color: "var(--color-text-primary, #242423)",
-  whiteSpace: "nowrap",
+  lineHeight: 1.2,
 };
 
-const dimStyle: React.CSSProperties = {
-  fontWeight: 400,
-  color: "var(--color-text-secondary, #6e6d6a)",
-};
-
-/** Supporting detail, one quiet line rather than four competing pills. */
-const detailStyle: React.CSSProperties = {
+/** One line: what it does at rest, the live numbers once it is on. */
+const subStyle: React.CSSProperties = {
   fontFamily: FONT_BODY,
   fontSize: "var(--font-size-label-12, 12px)",
   color: "var(--color-text-secondary, #6e6d6a)",
-  whiteSpace: "nowrap",
+  lineHeight: 1.45,
+};
+
+const strongStyle: React.CSSProperties = {
+  color: "var(--color-text-primary, #242423)",
+  fontWeight: 600,
+};
+
+const actionsStyle: React.CSSProperties = {
+  display: "flex",
+  alignItems: "center",
+  gap: "var(--space-2-5, 10px)",
+  flexShrink: 0,
 };
 
 const kbdStyle: React.CSSProperties = {
-  marginLeft: "auto",
-  flexShrink: 0,
-  padding: "2px var(--space-1-5, 6px)",
+  padding: "3px var(--space-1-5, 6px)",
   borderRadius: "var(--radius-sm, 6px)",
-  border: SUBTLE_BORDER,
+  background: "var(--color-bg-main, #ffffff)",
+  border: `1px solid ${edge(20)}`,
   fontFamily: FONT_BODY,
   fontSize: "var(--font-size-label-12, 12px)",
-  color: "var(--color-text-disabled, #a9a8a4)",
+  color: "var(--color-text-secondary, #6e6d6a)",
   whiteSpace: "nowrap",
 };
 
@@ -204,6 +228,11 @@ export interface GridInspectorProps {
   defaultVisible?: boolean;
   /** Bind a keyboard shortcut — Ctrl+G, or Cmd+G on a Mac. Default true. */
   shortcut?: boolean;
+  /** Pin the panel to the top of the scroller so it stays reachable. Default true. */
+  sticky?: boolean;
+  title?: string;
+  /** Line under the title while the grid is off. */
+  description?: string;
   onVisibleChange?: (visible: boolean) => void;
   style?: React.CSSProperties;
   className?: string;
@@ -218,6 +247,9 @@ export function GridInspector({
   alignTo,
   defaultVisible = false,
   shortcut = true,
+  sticky = true,
+  title = "Grid inspector",
+  description = "Overlay the column guide to check alignment against real content.",
   onVisibleChange,
   style,
   className,
@@ -255,39 +287,43 @@ export function GridInspector({
 
   const bp = gridBreakpointFor(viewport);
 
-  const barStyle: React.CSSProperties = {
-    ...barBase,
-    ...(visible ? barActive : null),
+  const panelStyle: React.CSSProperties = {
+    ...panelBase,
+    ...(sticky ? { position: "sticky", top: 0 } : null),
+    ...(visible ? panelActive : null),
     ...style,
   };
 
   return (
     <>
-      <div className={className} style={barStyle}>
-        <Btn
-          variant={visible ? "default" : "outline"}
-          size="sm"
-          onClick={toggle}
-          aria-pressed={visible}
-        >
-          <Grid3x3 size={14} />
-          {visible ? "Hide grid" : "Show grid"}
-        </Btn>
-
-        <span style={infoStyle} aria-live="polite">
-          <span style={headlineStyle}>
-            {bp.name} <span style={dimStyle}>· {viewport}px</span>
-          </span>
-          {/* Held back until the grid is on — noise otherwise */}
-          {visible && (
-            <span style={detailStyle}>
-              {bp.columns} columns · {bp.gutter}px gutter · {bp.margin}px margin
-            </span>
-          )}
+      <section className={className} style={panelStyle} aria-label={title}>
+        <span style={tileStyle} aria-hidden="true">
+          <Grid3x3 size={20} strokeWidth={1.75} />
         </span>
 
-        {shortcut && <kbd style={kbdStyle}>⌘G</kbd>}
-      </div>
+        <span style={infoStyle}>
+          <span style={titleStyle}>{title}</span>
+          {/* At rest, what it does; once on, the live numbers */}
+          <span style={subStyle} aria-live="polite">
+            {visible ? (
+              <>
+                <span style={strongStyle}>{bp.name}</span> · {viewport}px ·{" "}
+                <span style={strongStyle}>{bp.columns}</span> columns ·{" "}
+                {bp.gutter}px gutter · {bp.margin}px margin
+              </>
+            ) : (
+              description
+            )}
+          </span>
+        </span>
+
+        <span style={actionsStyle}>
+          {shortcut && <kbd style={kbdStyle}>⌘G</kbd>}
+          <Btn variant={visible ? "default" : "outline"} onClick={toggle} aria-pressed={visible}>
+            {visible ? "Hide grid" : "Show grid"}
+          </Btn>
+        </span>
+      </section>
 
       <GridOverlay visible={visible} alignTo={alignTo} />
     </>

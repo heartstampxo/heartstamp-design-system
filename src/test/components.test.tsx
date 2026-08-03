@@ -867,19 +867,30 @@ describe('GridOverlay / GridInspector', () => {
     document.body.removeChild(main);
   });
 
-  it('leads with the toggle and the breakpoint, holding the numbers back', () => {
-    /* Hierarchy: the action and the active breakpoint are all that show at
-       rest. Columns/gutter/margin only matter once you are reading the grid
-       against content, so they are disclosed with it. */
+  it('reads as a named tool region, not a row of page content', () => {
+    /* The panel disappeared on a dense page when it was a thin unlabelled
+       strip. It is now a titled region with its own surface. */
+    render(<GridInspector />);
+
+    const panel = screen.getByRole('region', { name: 'Grid inspector' });
+    expect(panel).toBeInTheDocument();
+    expect(screen.getByText('Grid inspector')).toBeInTheDocument();
+    // A distinct tinted field, so it never reads as body copy
+    expect(panel.style.background).toContain('color-mix');
+  });
+
+  it('explains itself at rest, then swaps in the live numbers', () => {
     render(<GridInspector />);
 
     expect(screen.getByRole('button', { name: /Show grid/ })).toHaveAttribute('aria-pressed', 'false');
-    expect(screen.getByText(/Desktop|Tablet|Mobile/)).toBeInTheDocument();
+    expect(screen.getByText(/Overlay the column guide/)).toBeInTheDocument();
     expect(screen.queryByText(/gutter/)).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: /Show grid/ }));
 
-    expect(screen.getByText(/columns · .*gutter · .*margin/)).toBeInTheDocument();
+    expect(screen.queryByText(/Overlay the column guide/)).not.toBeInTheDocument();
+    expect(screen.getByText(/columns/)).toBeInTheDocument();
+    expect(screen.getByText(/gutter/)).toBeInTheDocument();
   });
 
   it('toggles the overlay from the bar and reports it', () => {
