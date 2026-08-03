@@ -3492,6 +3492,36 @@ function PageTokensGrid() {
         </div>
       </DocSection>
 
+      {/* ── Component API ─────────────────────────────────────── */}
+      <DocSection title="GridInspector" desc="The panel at the top of this page. Renders the toggle, the live breakpoint readout, and the overlay itself — so dropping it in is all that is needed.">
+        <PropsTable props={[
+          { name: "alignTo",         type: "string | HTMLElement", def: "—",      desc: "Element (or selector) whose horizontal bounds the overlay should match. Omit to span the viewport, which is right for a page-level marketing grid." },
+          { name: "defaultVisible",  type: "boolean",              def: "false",  desc: "Start with the overlay on." },
+          { name: "shortcut",        type: "boolean",              def: "true",   desc: "Bind ⌘G / Ctrl+G to the toggle." },
+          { name: "sticky",          type: "boolean",              def: "true",   desc: "Pin the panel to the top of the scroller so it stays reachable while studying the grid." },
+          { name: "title",           type: "string",               def: '"Grid inspector"', desc: "Panel heading, and the region's accessible name." },
+          { name: "description",     type: "string",               def: "see design", desc: "Line under the title while the grid is off. Once on, the live grid values replace it." },
+          { name: "onVisibleChange", type: "(visible) => void",    def: "—",      desc: "Fired with the new state each time the overlay is toggled." },
+        ]} />
+      </DocSection>
+
+      <DocSection title="GridOverlay" desc="The column guide on its own, if you would rather supply your own control. Styles come from grid.css.">
+        <PropsTable props={[
+          { name: "visible", type: "boolean",              def: "false", desc: "Show the columns." },
+          { name: "columns", type: "number",               def: "active breakpoint", desc: "Column count. Defaults to 12, or 4 below 768px." },
+          { name: "alignTo", type: "string | HTMLElement", def: "—",     desc: "Element to align to. Drives --grid-overlay-left and --grid-overlay-width; without it the overlay spans the viewport." },
+        ]} />
+      </DocSection>
+
+      <DocSection title="gridBreakpointFor(width)" desc="The breakpoint helper the inspector reads, exported so app code can branch on the same values rather than duplicating the media queries.">
+        <PropsTable props={[
+          { name: "name",    type: "string", def: "—", desc: '"Mobile" below 768px, "Tablet" to 1023px, "Desktop" from 1024px.' },
+          { name: "columns", type: "number", def: "—", desc: "4 on mobile, 12 otherwise." },
+          { name: "gutter",  type: "number", def: "—", desc: "16 below 1024px, 24 above." },
+          { name: "margin",  type: "number", def: "—", desc: "16 at every breakpoint." },
+        ]} />
+      </DocSection>
+
       {/* ── All Span Helpers ──────────────────────────────────── */}
       <DocSection title="All Span Helpers">
         <TokenTable rows={[

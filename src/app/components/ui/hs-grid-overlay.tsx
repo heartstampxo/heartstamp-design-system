@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Grid3x3 } from "lucide-react";
 import { Btn } from "./btn";
 import { FONT_BODY, FONT_HEADING } from "./hs-popover-kit";
@@ -265,11 +265,16 @@ export function GridInspector({
     typeof window === "undefined" ? 1200 : window.innerWidth,
   );
 
+  /* The next value is derived outside the updater, and the updater stays pure.
+     React does not promise to call an updater exactly once — under StrictMode
+     it deliberately calls it twice — so notifying from inside would fire
+     onVisibleChange twice per toggle for any consumer running it. */
+  const visibleRef = useRef(visible);
   const toggle = useCallback(() => {
-    setVisible((v) => {
-      onVisibleChange?.(!v);
-      return !v;
-    });
+    const next = !visibleRef.current;
+    visibleRef.current = next;
+    setVisible(next);
+    onVisibleChange?.(next);
   }, [onVisibleChange]);
 
   useEffect(() => {

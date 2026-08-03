@@ -955,6 +955,52 @@ describe('GridOverlay / GridInspector', () => {
   });
 });
 
+describe('developer-facing docs stay in step with the code', () => {
+  const read = (p: string) => readFileSync(join(process.cwd(), p), 'utf8');
+
+  /** Prop names declared on an exported interface. */
+  const propsOf = (src: string, iface: string) => {
+    const body = src.slice(src.indexOf(`interface ${iface}`));
+    const block = body.slice(body.indexOf('{') + 1, body.indexOf('\n}'));
+    return [...block.matchAll(/^\s{2}(\w+)\??:/gm)]
+      .map((m) => m[1])
+      // Passthroughs every component takes; not worth a table row each
+      .filter((n) => !['style', 'className'].includes(n));
+  };
+
+  it('documents every prop of the components on the Grid page', () => {
+    /* Two components shipped with 11 props between them and no table at all.
+       This asserts the page names each one. */
+    const src = read('src/app/components/ui/hs-grid-overlay.tsx');
+    const page = read('src/app/App.tsx');
+    const gridSection = page.slice(page.indexOf('function PageTokensGrid'));
+
+    const undocumented: string[] = [];
+    for (const iface of ['GridOverlayProps', 'GridInspectorProps']) {
+      for (const prop of propsOf(src, iface)) {
+        if (!new RegExp(`name:\\s*"${prop}"`).test(gridSection)) {
+          undocumented.push(`${iface}.${prop}`);
+        }
+      }
+    }
+
+    expect(undocumented).toEqual([]);
+  });
+
+  it('keeps the documented breakpoint table equal to the code and the CSS', () => {
+    const page = read('src/app/App.tsx');
+    const table = page.slice(page.indexOf('const breakpoints = ['), page.indexOf('const columnExamples'));
+
+    for (const width of [375, 800, 1440]) {
+      const bp = gridBreakpointFor(width);
+      const row = table.split('\n').find((l) => l.includes(`"${bp.name}"`))!;
+      expect(row, `${bp.name} row`).toContain(`cols: ${bp.columns}`);
+      expect(row, `${bp.name} row`).toContain(`gutter: "${bp.gutter}px"`);
+      expect(row, `${bp.name} row`).toContain(`margin: "${bp.margin}px"`);
+    }
+  });
+});
+
 describe('interaction states', () => {
   const kit = () => readFileSync(join(process.cwd(), 'src/app/components/ui/hs-popover-kit.tsx'), 'utf8');
 
