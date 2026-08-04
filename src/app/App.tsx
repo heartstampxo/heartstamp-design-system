@@ -3642,7 +3642,8 @@ function PageInstallation() {
 import '@heartstampxo/design-system/tokens.css'
 
 // Import per-component CSS only for components you actually use:
-import '@heartstampxo/design-system/btn.css'   // only if using Btn`;
+import '@heartstampxo/design-system/btn.css'    // only if using Btn
+import '@heartstampxo/design-system/grid.css'   // only if using the layout grid`;
 
   const firstComponentCode = `import '@heartstampxo/design-system/tokens.css'
 import '@heartstampxo/design-system/btn.css'
@@ -3731,7 +3732,8 @@ import { Inp, Lbl, Swt } from '@heartstampxo/design-system'
 
   /* ── CSS reference table data ── */
   const cssTable = [
-    { component: "Btn", imports: ["tokens.css", "btn.css"], note: "Only component with a dedicated CSS file in v2" },
+    { component: "Btn", imports: ["tokens.css", "btn.css"], note: "Needs btn.css — all variant and size styles live there" },
+    { component: "Layout grid, GridOverlay, GridInspector", imports: ["tokens.css", "grid.css"], note: "Needs grid.css — .hs-page-grid, span helpers, and the overlay" },
     { component: "Inp, Tarea", imports: ["tokens.css"], note: "Pure inline styles — tokens.css only" },
     { component: "Lbl, Kbd, Sep", imports: ["tokens.css"], note: "Pure inline styles — tokens.css only" },
     { component: "Bdg, Avt, Alrt", imports: ["tokens.css"], note: "Pure inline styles — tokens.css only" },
@@ -4012,6 +4014,10 @@ import { Inp, Lbl, Swt } from '@heartstampxo/design-system'
           <Callout variant="danger">
             <strong>Btn renders unstyled (no background, no border-radius)</strong><br />
             You're missing <code style={mono}>btn.css</code>. Add <code style={mono}>import '@heartstampxo/design-system/btn.css'</code> at your app entry point.
+          </Callout>
+          <Callout variant="warning">
+            <strong>Grid columns don't apply, or the grid overlay shows nothing</strong><br />
+            You're missing <code style={mono}>grid.css</code>. Add <code style={mono}>import '@heartstampxo/design-system/grid.css'</code> at your app entry point. It carries <code style={mono}>.hs-page-grid</code>, the <code style={mono}>.hs-col-span-*</code> helpers, and the styles <code style={mono}>GridOverlay</code> / <code style={mono}>GridInspector</code> render against.
           </Callout>
           <Callout variant="warning">
             <strong>Components render but tokens look wrong (wrong colors, wrong font)</strong><br />

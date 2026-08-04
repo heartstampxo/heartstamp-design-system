@@ -36,7 +36,8 @@
       "require": "./dist/index.js"
     },
     "./tokens.css": "./dist/css/tokens.css",
-    "./btn.css": "./dist/css/btn.css"
+    "./btn.css": "./dist/css/btn.css",
+    "./grid.css": "./dist/css/grid.css"
   },
   "scripts": {
     "build": "vite build && node scripts/copy-dist-css.mjs",

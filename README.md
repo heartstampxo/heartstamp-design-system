@@ -20,13 +20,25 @@ yarn add @heartstampxo/design-system
 
 ## Setup
 
-### 1. Import the stylesheet
+### 1. Import the CSS
 
-Import the bundled stylesheet **once** in your app entry point (e.g. `main.tsx`):
+The library ships **no global styles** — you import only what you need. At
+minimum, import `tokens.css` once at your app entry point (e.g. `main.tsx`):
 
 ```ts
-import '@heartstampxo/design-system/design-system.css';
+import '@heartstampxo/design-system/tokens.css';
 ```
+
+Then add per-component CSS only for what you actually use:
+
+```ts
+import '@heartstampxo/design-system/btn.css';   // only if using Btn
+import '@heartstampxo/design-system/grid.css';  // only if using the layout grid
+```
+
+Everything else is inline-styled and needs `tokens.css` alone. Import
+`tokens.css` before any component CSS — the component files read its custom
+properties.
 
 ### 2. Use components
 
@@ -211,16 +223,21 @@ Install the latest released package:
 npm install @heartstampxo/design-system
 ```
 
-Or install a specific released version:
+Or pin a specific released version — see the
+[releases](https://github.com/heartstampxo/heartstamp-design-system/releases)
+for what is available:
 
 ```bash
-npm install @heartstampxo/design-system@1.12.2
+npm install @heartstampxo/design-system@2.1.32
 ```
 
-Import the CSS once near the app root:
+Import the CSS near the app root — `tokens.css` at minimum, plus a file for each
+component that has one (see [Setup](#setup)):
 
 ```ts
-import '@heartstampxo/design-system/design-system.css';
+import '@heartstampxo/design-system/tokens.css';
+import '@heartstampxo/design-system/btn.css';   // only if using Btn
+import '@heartstampxo/design-system/grid.css';  // only if using the layout grid
 ```
 
 Import components from the package root:
