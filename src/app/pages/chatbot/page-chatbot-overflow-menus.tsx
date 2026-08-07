@@ -1,5 +1,4 @@
 import React from "react";
-import { ImagePlus } from "lucide-react";
 import { DocPage, DocSection } from "../../components/docs/doc-page";
 import { Preview } from "../../components/docs/doc-preview";
 import { PropsTable } from "../../components/docs/doc-props-table";
@@ -9,6 +8,7 @@ import {
   TemplateOverflowMenu,
   ActionOverflowMenu,
   ActionOverflowMenuList,
+  ActionChecklistOverflowMenu,
   OccasionSuggestions,
   SignupOverflowMenu,
   OTPOverflowMenu,
@@ -17,24 +17,6 @@ import {
 const DESC_STYLE: React.CSSProperties = { fontSize: 14, color: "var(--color-text-secondary)", marginBottom: 16 };
 const MENU_WRAPPER_STYLE: React.CSSProperties = { width: "100%", maxWidth: 400 };
 const NOOP = () => {};
-
-// Demo reference-image button for the `inputLeading` slot. In the app this slot
-// is filled by the app's own AddReferenceImagesButton (upload + placement menu);
-// here it's a static visual so the docs show the Option A menu-input layout.
-function DemoReferenceImageButton() {
-  return (
-    <button
-      type="button"
-      aria-label="Add reference images"
-      className="shrink-0 flex items-center justify-center size-[20px] cursor-pointer opacity-70 hover:opacity-100 transition-opacity"
-      onClick={(e) => e.stopPropagation()}
-    >
-      <ImagePlus size={18} strokeWidth={2} color="var(--color-text-secondary)" />
-    </button>
-  );
-}
-
-const REFERENCE_IMAGE_SLOT = <DemoReferenceImageButton />;
 
 // ── Shared demo data ────────────────────────────────────────────────────────
 
@@ -106,17 +88,25 @@ const ACTION_CONFIG_V2 = {
   ],
 };
 
+const ACTION_CONFIG_CHECKLIST = {
+  title: "Ready to generate?",
+  subtitle: "Your card concept is ready.",
+  generateButtonLabel: "Generate Card",
+  adjustHeader: "Or, want to make changes?",
+};
+
 // ── Page ────────────────────────────────────────────────────────────────────
 
 export function PageChatbotOverflowMenus() {
   return (
     <DocPage
       title="Overflow Menus"
-      subtitle="All four overflow menu variants used in the Stampy Chatbot conversation flow."
+      subtitle="Every overflow menu variant used in the Stampy Chatbot conversation flow."
     >
       <DocSection title="Overflow — Numbered List">
         <p style={DESC_STYLE}>
-          Radio-style numbered option picker. Supports multiple pages and a free-text input row.
+          Radio-style numbered option picker. Supports multiple pages, an optional Show more…
+          action, and an optional Skip button the consumer wires up itself.
         </p>
 
         <Preview
@@ -136,18 +126,17 @@ import type { OverflowPage } from '@heartstamp/design-system';
       { num: "5", label: "Formal" },
     ],
   }]}
-  inputPlaceholder="Type your own"
   onClose={() => setOpen(false)}
   onComplete={(label) => handleAnswer(label)}
+  onSkip={() => sendMessage('skip')}
 />`}
         >
           <div style={MENU_WRAPPER_STYLE}>
             <OverflowMenu
-              pages={[{ question: "What kind of vibe are you going for?", options: VIBE_OPTIONS }]}
-              inputPlaceholder="Type your own"
+              pages={[{ question: "🤗 What kind of vibe are you going for?", options: VIBE_OPTIONS }]}
               onClose={NOOP}
               onComplete={NOOP}
-              inputLeading={REFERENCE_IMAGE_SLOT}
+              onSkip={NOOP}
             />
           </div>
         </Preview>
@@ -177,18 +166,17 @@ import type { OverflowPage } from '@heartstamp/design-system';
       ],
     },
   ]}
-  inputPlaceholder="Type your own"
   onClose={() => setOpen(false)}
   onComplete={(label) => handleAnswer(label)}
+  onSkip={() => sendMessage('skip')}
 />`}
         >
           <div style={MENU_WRAPPER_STYLE}>
             <OverflowMenu
               pages={RECIPIENT_PAGES}
-              inputPlaceholder="Type your own"
               onClose={NOOP}
               onComplete={NOOP}
-              inputLeading={REFERENCE_IMAGE_SLOT}
+              onSkip={NOOP}
             />
           </div>
         </Preview>
@@ -207,38 +195,39 @@ import type { OverflowPage } from '@heartstamp/design-system';
       { num: "5", label: "Formal" },
     ],
   }]}
-  inputPlaceholder="Type your own"
   onClose={() => setOpen(false)}
   onComplete={(label) => handleAnswer(label)}
   onShowMore={() => openFullList()}
+  onSkip={() => sendMessage('skip')}
 />`}
         >
           <div style={MENU_WRAPPER_STYLE}>
             <OverflowMenu
               pages={[{ question: "What kind of vibe are you going for?", options: VIBE_OPTIONS }]}
-              inputPlaceholder="Type your own"
               onClose={NOOP}
               onComplete={NOOP}
-              onShowMore={() => alert("Show More clicked")}
-              inputLeading={REFERENCE_IMAGE_SLOT}
+              onShowMore={() => alert("Show more clicked")}
+              onSkip={() => alert("Skip clicked")}
             />
           </div>
         </Preview>
 
         <PropsTable props={[
           { name: "pages",            type: "OverflowPage[]",        def: "(required)", required: true, desc: "Array of pages — each has a question string and options array ({ num, label })" },
-          { name: "onComplete",       type: "(label: string) => void", def: "(required)", required: true, desc: "Called with the selected option label when the user picks an item or submits free text" },
+          { name: "onComplete",       type: "(label: string) => void", def: "(required)", required: true, desc: "Called with the selected option label. On multi-page menus it fires on the last page with every page’s pick joined by “, ”." },
           { name: "onClose",          type: "() => void",            def: "(required)", required: true, desc: "Called when the × close button is tapped" },
-          { name: "inputPlaceholder", type: "string",                def: '"Type your own"',            desc: "Placeholder text for the free-text input row at the bottom" },
-          { name: "onShowMore",       type: "() => void",            def: "—",                          desc: "When provided, renders a Show More button below the list. Only shown when there is a single page." },
-          { name: "inputLeading",     type: "React.ReactNode",       def: "pencil icon",               desc: "Leading control in the free-text input row. Pass the app's reference-image button here; falls back to the pencil badge when omitted." },
+          { name: "onShowMore",       type: "() => void",            def: "—",                          desc: "When provided, renders the Show more… action in the footer. Only shown when there is a single page." },
+          { name: "isLoadingShowMore", type: "boolean",              def: "false",                      desc: "Shows a spinner in the Show more… action and blocks repeat taps while more options load" },
+          { name: "showMoreLabel",    type: "string",                def: '"Show more..."',             desc: "Copy for the show-more action, for localisation" },
+          { name: "onSkip",           type: "() => void",            def: "—",                          desc: "When provided, renders the Skip button in the footer. The consumer decides what skipping does — omit it and no Skip button is rendered." },
+          { name: "skipLabel",        type: "string",                def: '"Skip"',                     desc: "Copy for the Skip button, for localisation" },
         ]} />
       </DocSection>
 
       <DocSection title="Checklist — Multi-Select">
         <p style={DESC_STYLE}>
-          Checkbox-style multi-select. Items can be toggled, with a free-text input and skip/send
-          actions.
+          Checkbox-style multi-select. Items toggle on tap; the menu reports what is ticked
+          through onSelectionChange and the consumer submits.
         </p>
         <Preview
           title="Checklist overflow"
@@ -257,18 +246,17 @@ import type { ChecklistPage } from '@heartstamp/design-system';
       { id: "travel",  label: "Travel" },
     ],
   }]}
-  inputPlaceholder="You make the call"
   onClose={() => setOpen(false)}
-  onComplete={(selected) => handleAnswer(selected)}
+  onSelectionChange={(selected) => setPending(selected)}
+  onSkip={() => sendMessage('skip')}
 />`}
         >
           <div style={MENU_WRAPPER_STYLE}>
             <ChecklistOverflowMenu
-              pages={[{ question: "What are they into?", items: INTEREST_ITEMS }]}
-              inputPlaceholder="You make the call"
+              pages={[{ question: "🎂 What are they into?", items: INTEREST_ITEMS }]}
               onClose={NOOP}
-              onComplete={NOOP}
-              inputLeading={REFERENCE_IMAGE_SLOT}
+              onSelectionChange={NOOP}
+              onSkip={NOOP}
             />
           </div>
         </Preview>
@@ -284,31 +272,32 @@ import type { ChecklistPage } from '@heartstamp/design-system';
       { id: "gaming",  label: "Gaming" },
     ],
   }]}
-  inputPlaceholder="You make the call"
   onClose={() => setOpen(false)}
-  onComplete={(selected) => handleAnswer(selected)}
+  onSelectionChange={(selected) => setPending(selected)}
+  onSkip={() => sendMessage('skip')}
   onShowMore={() => openFullList()}
 />`}
         >
           <div style={MENU_WRAPPER_STYLE}>
             <ChecklistOverflowMenu
               pages={[{ question: "What are they into?", items: INTEREST_ITEMS }]}
-              inputPlaceholder="You make the call"
               onClose={NOOP}
-              onComplete={NOOP}
-              onShowMore={() => alert("Show More clicked")}
-              inputLeading={REFERENCE_IMAGE_SLOT}
+              onSelectionChange={NOOP}
+              onShowMore={() => alert("Show more clicked")}
+              onSkip={() => alert("Skip clicked")}
             />
           </div>
         </Preview>
 
         <PropsTable props={[
           { name: "pages",            type: "ChecklistPage[]",           def: "(required)", required: true, desc: "Array of pages — each has a question string and items array ({ id, label })" },
-          { name: "onComplete",       type: "(selected: string[]) => void", def: "(required)", required: true, desc: "Called with an array of selected labels (plus any free-text input) when the user taps Send" },
           { name: "onClose",          type: "() => void",                def: "(required)", required: true, desc: "Called when the × close button is tapped" },
-          { name: "inputPlaceholder", type: "string",                    def: '"You make the call"',         desc: "Placeholder text for the free-text input row at the bottom" },
-          { name: "onShowMore",       type: "() => void",                def: "—",                          desc: "When provided, renders a Show More button below the checklist items and above the input" },
-          { name: "inputLeading",     type: "React.ReactNode",           def: "pencil icon",                desc: "Leading control in the free-text input row. Pass the app's reference-image button here; falls back to the pencil badge when omitted." },
+          { name: "onSelectionChange", type: "(selected: string[]) => void", def: "—",              desc: "Fired on every toggle with the labels currently ticked, across all pages. The menu has no send button — mirror this into your own state and submit it from your own input." },
+          { name: "onShowMore",       type: "() => void",            def: "—",                          desc: "When provided, renders the Show more… action in the footer" },
+          { name: "isLoadingShowMore", type: "boolean",              def: "false",                      desc: "Shows a spinner in the Show more… action and blocks repeat taps while more options load" },
+          { name: "showMoreLabel",    type: "string",                def: '"Show more..."',             desc: "Copy for the show-more action, for localisation" },
+          { name: "onSkip",           type: "() => void",            def: "—",                          desc: "When provided, renders the Skip button in the footer. The consumer decides what skipping does — omit it and no Skip button is rendered." },
+          { name: "skipLabel",        type: "string",                def: '"Skip"',                     desc: "Copy for the Skip button, for localisation" },
         ]} />
       </DocSection>
 
@@ -340,19 +329,18 @@ import type { TemplateCard } from '@heartstamp/design-system';
       giftMessage: "Fuel up for your next great adventure!",
     },
   ]}
-  inputPlaceholder="Something else"
   onClose={() => setOpen(false)}
   onComplete={(label) => handleAnswer(label)}
+  onSkip={() => sendMessage('skip')}
 />`}
         >
           <div style={MENU_WRAPPER_STYLE}>
             <TemplateOverflowMenu
               header="Pick a template"
               cards={TEMPLATE_CARDS}
-              inputPlaceholder="Something else"
               onClose={NOOP}
               onComplete={NOOP}
-              inputLeading={REFERENCE_IMAGE_SLOT}
+              onSkip={NOOP}
             />
           </div>
         </Preview>
@@ -362,9 +350,9 @@ import type { TemplateCard } from '@heartstamp/design-system';
           code={`<TemplateOverflowMenu
   header="Pick a template"
   cards={[...]}
-  inputPlaceholder="Something else"
   onClose={() => setOpen(false)}
   onComplete={(label) => handleAnswer(label)}
+  onSkip={() => sendMessage('skip')}
   onShowMore={() => openAllTemplates()}
 />`}
         >
@@ -372,11 +360,10 @@ import type { TemplateCard } from '@heartstamp/design-system';
             <TemplateOverflowMenu
               header="Pick a template"
               cards={TEMPLATE_CARDS}
-              inputPlaceholder="Something else"
               onClose={NOOP}
               onComplete={NOOP}
-              onShowMore={() => alert("Show More clicked")}
-              inputLeading={REFERENCE_IMAGE_SLOT}
+              onShowMore={() => alert("Show more clicked")}
+              onSkip={() => alert("Skip clicked")}
             />
           </div>
         </Preview>
@@ -384,18 +371,20 @@ import type { TemplateCard } from '@heartstamp/design-system';
         <PropsTable props={[
           { name: "header",           type: "string",               def: "(required)", required: true, desc: "Heading text shown above the card grid" },
           { name: "cards",            type: "TemplateCard[]",        def: "(required)", required: true, desc: "Array of template cards — each has: num, title, front, insideBody, giftMessage, and optional insideHeading" },
-          { name: "onComplete",       type: "(label: string) => void", def: "(required)", required: true, desc: "Called with a formatted description string when the user selects a card or submits free text" },
+          { name: "onComplete",       type: "(label: string) => void", def: "(required)", required: true, desc: "Called with a formatted description string when the user selects a card" },
           { name: "onClose",          type: "() => void",            def: "(required)", required: true, desc: "Called when the × close button is tapped" },
-          { name: "inputPlaceholder", type: "string",                def: '"Something else"',           desc: "Placeholder for the custom text input at the bottom" },
-          { name: "onShowMore",       type: "() => void",            def: "—",                          desc: "When provided, renders a Show More button between the card grid and the custom input" },
-          { name: "inputLeading",     type: "React.ReactNode",       def: "pencil icon",               desc: "Leading control in the custom-text input row. Pass the app's reference-image button here; falls back to the pencil badge when omitted." },
+          { name: "onShowMore",       type: "() => void",            def: "—",                          desc: "When provided, renders the Show more… action in the footer" },
+          { name: "isLoadingShowMore", type: "boolean",              def: "false",                      desc: "Shows a spinner in the Show more… action and blocks repeat taps while more options load" },
+          { name: "showMoreLabel",    type: "string",                def: '"Show more..."',             desc: "Copy for the show-more action, for localisation" },
+          { name: "onSkip",           type: "() => void",            def: "—",                          desc: "When provided, renders the Skip button in the footer. The consumer decides what skipping does — omit it and no Skip button is rendered." },
+          { name: "skipLabel",        type: "string",                def: '"Skip"',                     desc: "Copy for the Skip button, for localisation" },
         ]} />
       </DocSection>
 
       <DocSection title="Action V1 — Ghost Buttons">
         <p style={DESC_STYLE}>
-          Final action panel with a generate button, horizontal &ldquo;Or Adjust&rdquo; ghost buttons, and a
-          free-text input.
+          Final action panel with a generate button and horizontal &ldquo;Or Adjust&rdquo; ghost
+          buttons.
         </p>
         <Preview
           title="ActionOverflowMenu (V1)"
@@ -409,18 +398,17 @@ import type { TemplateCard } from '@heartstamp/design-system';
     generateButtonLabel: "Generate Card",
     adjustOptions: ["Change Concept", "Start Over"],
   }}
-  inputPlaceholder="Something else"
   onClose={() => setOpen(false)}
   onGenerate={() => generateCard()}
+  onAdjust={(label) => handleChoice(label)}
 />`}
         >
           <div style={MENU_WRAPPER_STYLE}>
             <ActionOverflowMenu
               config={ACTION_CONFIG_V1}
-              inputPlaceholder="Something else"
               onClose={NOOP}
               onGenerate={NOOP}
-              inputLeading={REFERENCE_IMAGE_SLOT}
+              onAdjust={NOOP}
             />
           </div>
         </Preview>
@@ -428,15 +416,16 @@ import type { TemplateCard } from '@heartstamp/design-system';
           { name: "config",           type: "ActionMenuConfig", def: "(required)", required: true, desc: "Config object: { title, subtitle, generateButtonLabel, adjustOptions: string[] }" },
           { name: "onGenerate",       type: "() => void",       def: "(required)", required: true, desc: "Called when the primary generate button is clicked" },
           { name: "onClose",          type: "() => void",       def: "(required)", required: true, desc: "Called when the × close button is tapped" },
-          { name: "inputPlaceholder", type: "string",           def: '"Something else"',           desc: "Placeholder for the free-text input at the bottom" },
-          { name: "inputLeading",     type: "React.ReactNode",  def: "pencil icon",               desc: "Leading control in the free-text input row. Pass the app's reference-image button here; falls back to the pencil badge when omitted." },
+          { name: "onAdjust",         type: "(label: string) => void", def: "—",                   desc: "Called with the adjust option the user picked. Falls back to onClose when omitted." },
+          { name: "generateButtonLabel", type: "string",        def: "config.generateButtonLabel", desc: "Overrides the generate button copy without rebuilding config" },
+          { name: "isLoadingGenerate", type: "boolean",         def: "false",                      desc: "Shows a spinner in the generate button and disables it" },
         ]} />
       </DocSection>
 
       <DocSection title="Action V2 — Numbered List">
         <p style={DESC_STYLE}>
-          Final action panel with a generate button, a vertical numbered list of modification
-          options, and a free-text input.
+          Final action panel with a generate button and a vertical numbered list of
+          modification options.
         </p>
         <Preview
           title="ActionOverflowMenuList (V2)"
@@ -455,30 +444,84 @@ import type { TemplateCard } from '@heartstamp/design-system';
       { num: "3", label: "Try different style" },
     ],
   }}
-  inputPlaceholder="Something else"
   onClose={() => setOpen(false)}
   onGenerate={() => generateCard()}
   onComplete={(label) => handleChoice(label)}
+  onShowMore={() => openFullList()}
 />`}
         >
           <div style={MENU_WRAPPER_STYLE}>
             <ActionOverflowMenuList
               config={ACTION_CONFIG_V2}
-              inputPlaceholder="Something else"
               onClose={NOOP}
               onGenerate={NOOP}
               onComplete={NOOP}
-              inputLeading={REFERENCE_IMAGE_SLOT}
+              onShowMore={() => alert("Show more clicked")}
             />
           </div>
         </Preview>
         <PropsTable props={[
           { name: "config",           type: "ActionMenuConfig", def: "(required)", required: true, desc: "Config object: { title, subtitle, generateButtonLabel, adjustHeader?, adjustItems: {num, label}[] }" },
           { name: "onGenerate",       type: "() => void",       def: "(required)", required: true, desc: "Called when the primary generate button is clicked" },
-          { name: "onComplete",       type: "(label: string) => void", def: "(required)", required: true, desc: "Called when a list item or custom input is submitted" },
-          { name: "onClose",          type: "() => void",       def: "(required)", required: true, desc: "Called when the × close button or Skip is tapped" },
-          { name: "inputPlaceholder", type: "string",           def: '"Something else"',           desc: "Placeholder for the free-text input at the bottom" },
-          { name: "inputLeading",     type: "React.ReactNode",  def: "pencil icon",               desc: "Leading control in the free-text input row. Pass the app's reference-image button here; falls back to the pencil badge when omitted." },
+          { name: "onComplete",       type: "(label: string) => void", def: "(required)", required: true, desc: "Called with the label of the adjust-list item the user picked" },
+          { name: "onClose",          type: "() => void",       def: "(required)", required: true, desc: "Called when the × close button is tapped" },
+          { name: "onShowMore",       type: "() => void",       def: "—",                          desc: "When provided, renders the Show more… action under the list" },
+          { name: "isLoadingShowMore", type: "boolean",         def: "false",                      desc: "Shows a spinner in the Show more… action and blocks repeat taps while more options load" },
+          { name: "showMoreLabel",    type: "string",           def: '"Show more..."',             desc: "Copy for the show-more action, for localisation" },
+        ]} />
+      </DocSection>
+
+      <DocSection title="Action — Multi-Select Checklist">
+        <p style={DESC_STYLE}>
+          The Action header — title, subtitle, and primary generate button — over a multi-select
+          checklist instead of a numbered list. Like the other menus it has no send button: it
+          reports what is ticked through <code>onSelectionChange</code> and the consumer submits.
+        </p>
+        <Preview
+          title="ActionChecklistOverflowMenu"
+          height={420}
+          code={`import { ActionChecklistOverflowMenu } from '@heartstamp/design-system';
+
+<ActionChecklistOverflowMenu
+  config={{
+    title: "Ready to generate?",
+    subtitle: "Your card concept is ready.",
+    generateButtonLabel: "Generate Card",
+    adjustHeader: "Or, want to make changes?",
+  }}
+  items={[
+    { id: "cooking", label: "Cooking" },
+    { id: "golf",    label: "Golf" },
+    { id: "gaming",  label: "Gaming" },
+  ]}
+  onClose={() => setOpen(false)}
+  onGenerate={() => generateCard()}
+  onSelectionChange={(selected) => setPending(selected)}
+  onShowMore={() => openFullList()}
+/>`}
+        >
+          <div style={MENU_WRAPPER_STYLE}>
+            <ActionChecklistOverflowMenu
+              config={ACTION_CONFIG_CHECKLIST}
+              items={INTEREST_ITEMS}
+              onClose={NOOP}
+              onGenerate={NOOP}
+              onSelectionChange={NOOP}
+              onShowMore={() => alert("Show more clicked")}
+            />
+          </div>
+        </Preview>
+        <PropsTable props={[
+          { name: "config",           type: "ActionMenuConfig", def: "(required)", required: true, desc: "Config object: { title, subtitle, generateButtonLabel, adjustHeader? }. adjustItems is ignored — the items prop drives the checklist." },
+          { name: "items",            type: "{ id, label }[]",  def: "(required)", required: true, desc: "Checklist items rendered under the header" },
+          { name: "onGenerate",       type: "() => void",       def: "(required)", required: true, desc: "Called when the primary generate button is clicked" },
+          { name: "onClose",          type: "() => void",       def: "(required)", required: true, desc: "Called when the × close button is tapped" },
+          { name: "onSelectionChange", type: "(selected: string[]) => void", def: "—",             desc: "Fired on every toggle with the labels currently ticked. The menu has no send button — mirror this into your own state and submit it from your own input." },
+          { name: "generateButtonLabel", type: "string",        def: "config.generateButtonLabel", desc: "Overrides the generate button copy without rebuilding config" },
+          { name: "isLoadingGenerate", type: "boolean",         def: "false",                      desc: "Shows a spinner in the generate button and disables it" },
+          { name: "onShowMore",       type: "() => void",       def: "—",                          desc: "When provided, renders the Show more… action under the checklist" },
+          { name: "isLoadingShowMore", type: "boolean",         def: "false",                      desc: "Shows a spinner in the Show more… action and blocks repeat taps while more options load" },
+          { name: "showMoreLabel",    type: "string",           def: '"Show more..."',             desc: "Copy for the show-more action, for localisation" },
         ]} />
       </DocSection>
 

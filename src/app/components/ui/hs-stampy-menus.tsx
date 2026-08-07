@@ -2,8 +2,8 @@
 // StampyChatbot — Overflow menu components
 // ═══════════════════════════════════════════════════════════════════════════
 
-import React, { useState, useEffect } from "react";
-import { X, Pencil, ChevronRight, ChevronLeft, Mail } from "lucide-react";
+import React, { useState } from "react";
+import { X, ChevronRight, ChevronLeft, Mail } from "lucide-react";
 import { cn } from "./utils";
 import { Btn } from "./btn";
 import { Sep } from "./hs-sep";
@@ -12,7 +12,7 @@ import { Inp } from "./hs-inp";
 import { motion, AnimatePresence } from "motion/react";
 
 import { dmSans400, dmSans500 } from "./hs-stampy-constants";
-import { SEND_ARROW_PATH, CHECKMARK_PATH } from "./hs-chat-svg";
+import { CHECKMARK_PATH } from "./hs-chat-svg";
 import type {
   OverflowPage, ChecklistPage, TemplateCard, ActionMenuConfig,
 } from "./hs-chat-types";
@@ -60,80 +60,106 @@ function NumBadge({ num }: { num: string }) {
   );
 }
 
-/** Pencil input + Skip + Send row shared across all 4 overflow menu variants.
- *  Pass `inputLeading` to swap the leading pencil badge for a custom control
- *  (e.g. the app's reference-image button). */
-function OverflowInput({
-  value, onChange, onKeyDown, onSkip, onSend, placeholder, inputLeading,
+/** Underlined text action in the OverflowMenu footer (left slot). */
+function OverflowShowMoreBtn({ label, onClick, isLoading }: { label: string; onClick: () => void; isLoading?: boolean }) {
+  return (
+    <button
+      type="button"
+      className="flex items-center gap-[8px] px-[12px] py-[8px] cursor-pointer transition-opacity hover:opacity-70 disabled:cursor-not-allowed disabled:opacity-50"
+      style={{ borderRadius: "var(--radius-button)" }}
+      onClick={onClick}
+      disabled={isLoading}
+    >
+      {isLoading && (
+        <svg className="shrink-0 animate-spin" width="13" height="13" viewBox="0 0 13 13" fill="none">
+          <circle cx="6.5" cy="6.5" r="5" stroke="var(--color-brand-primary)" strokeWidth="1.5" strokeDasharray="20 12" />
+        </svg>
+      )}
+      <p className="leading-[20px] text-[15px] underline whitespace-nowrap" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{label}</p>
+    </button>
+  );
+}
+
+/** Dimmed pill action in the OverflowMenu footer (right slot). */
+function OverflowSkipBtn({ label, onClick }: { label: string; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      className="flex shrink-0 items-center justify-center gap-[4px] px-[12px] py-[6px] cursor-pointer transition-colors"
+      style={{ backgroundColor: "var(--color-brand-secondary-dim)", borderRadius: "var(--radius-button)" }}
+      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--color-element-subtle)")}
+      onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "var(--color-brand-secondary-dim)")}
+      onClick={onClick}
+    >
+      <span className="leading-[20px] text-[15px] whitespace-nowrap" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{label}</span>
+    </button>
+  );
+}
+
+/** Title + subtitle + primary action + close, shared by the two action menus so
+ *  they stay pixel-identical. Full-bleed separator sits directly under it. */
+function ActionMenuHeader({
+  config, onClose, onGenerate, isLoadingGenerate, generateButtonLabel,
 }: {
-  value: string;
-  onChange: (v: string) => void;
-  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
-  onSkip: () => void;
-  onSend: () => void;
-  placeholder: string;
-  inputLeading?: React.ReactNode;
+  config: ActionMenuConfig;
+  onClose: () => void;
+  onGenerate: () => void;
+  isLoadingGenerate?: boolean;
+  generateButtonLabel?: string;
 }) {
   return (
-    <div className="rounded-[12px] flex items-center px-[12px] py-[8px] w-full" style={{ border: "1px solid var(--color-element-subtle)" }}>
-      <div className="flex flex-1 items-center gap-[4px] min-w-0">
-        {inputLeading ?? (
-          <div className="shrink-0 size-[20px] flex items-center justify-center rounded-[4px]" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }}>
-            <Pencil size={14} color="var(--color-text-primary)" strokeWidth={2.5} />
-          </div>
-        )}
-        <input
-          type="text"
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          onKeyDown={onKeyDown}
-          placeholder={placeholder}
-          className="flex-1 bg-transparent outline-none border-none text-[14px] leading-[20px] min-w-0"
-          style={{ ...dmSans400, color: "var(--color-text-primary)" }}
-        />
-      </div>
-      <div className="flex items-center gap-[8px]">
-        <Btn type="button" variant="outline" size="sm" className="!hidden" onClick={onSkip}>Skip</Btn>
-        <Btn type="button" variant="default" size="icon-sm" onClick={onSend}>
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-            <path d={SEND_ARROW_PATH} stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
-          </svg>
+    <div className="flex items-center gap-[16px] px-[16px] py-[8px] w-full">
+      <div className="flex flex-1 gap-[12px] items-center min-w-0">
+        <div className="flex flex-col gap-[4px] flex-1 min-w-0">
+          <p className="leading-[20px] text-[15px]" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{config.title}</p>
+          <p className="leading-[17px] text-[13px]" style={{ ...dmSans400, color: "var(--color-text-secondary)" }}>{config.subtitle}</p>
+        </div>
+        <Btn onClick={onGenerate} className="shrink-0 flex items-center gap-[6px]" disabled={isLoadingGenerate}>
+          {isLoadingGenerate && <svg className="shrink-0 animate-spin" width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" strokeWidth="1.5" strokeDasharray="20 12" /></svg>}
+          {generateButtonLabel ?? config.generateButtonLabel}
         </Btn>
       </div>
+      <OverflowCloseBtn onClose={onClose} />
     </div>
   );
+}
+
+function ActionMenuSeparator() {
+  return <div className="w-full h-[1px] shrink-0" style={{ backgroundColor: "var(--color-element-subtle)" }} />;
 }
 
 // ── OverflowMenu ───────────────────────────────────────────────────────────
 
 export function OverflowMenu({
-  pages, inputPlaceholder, onClose, onComplete, onShowMore, isLoadingShowMore, inputLeading,
+  pages, onClose, onComplete, onShowMore, isLoadingShowMore, showMoreLabel = "Show more...", onSkip, skipLabel = "Skip",
 }: {
-  pages: OverflowPage[]; inputPlaceholder?: string; onClose: () => void; onComplete: (label: string) => void; onShowMore?: () => void; isLoadingShowMore?: boolean; inputLeading?: React.ReactNode;
+  pages: OverflowPage[];
+  onClose: () => void;
+  onComplete: (label: string) => void;
+  /** Renders the "Show more…" action (single-page menus only) when provided. */
+  onShowMore?: () => void;
+  isLoadingShowMore?: boolean;
+  /** Copy for the show-more action, so consumers can localise it. */
+  showMoreLabel?: string;
+  /** Renders the Skip button when provided. The consumer owns what skipping does
+   *  — send a "skip" message, close the menu, advance a flow, anything. Omit it
+   *  and no Skip button is shown. */
+  onSkip?: () => void;
+  /** Copy for the Skip button, so consumers can localise it. */
+  skipLabel?: string;
 }) {
   const totalPages = pages.length;
   const [page, setPage] = useState(1);
   const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
-  const TYPEWRITER_TARGET = inputPlaceholder ?? "Type your own";
-  const [typewriterText, setTypewriterText] = useState("");
-  const [typewriterDone, setTypewriterDone] = useState(false);
-  const [inputValue, setInputValue] = useState("");
-
-  useEffect(() => {
-    let i = 0;
-    const tick = () => {
-      i += 1;
-      setTypewriterText(TYPEWRITER_TARGET.slice(0, i));
-      if (i < TYPEWRITER_TARGET.length) { setTimeout(tick, 42 + Math.random() * 30); }
-      else { setTypewriterDone(true); setInputValue(TYPEWRITER_TARGET); }
-    };
-    const start = setTimeout(tick, 320);
-    return () => clearTimeout(start);
-  }, []);
 
   const currentPageData = pages[page - 1];
   const items = currentPageData?.options ?? [];
   const header = currentPageData?.question ?? "";
+
+  // Paging through answers is its own way forward, so the show-more escape hatch
+  // is only offered on single-page menus.
+  const showsShowMore = !!onShowMore && totalPages === 1;
+  const showsFooter = showsShowMore || !!onSkip;
 
   function handleItemClick(item: { num: string; label: string }) {
     const newLabels = [...selectedLabels, item.label];
@@ -143,97 +169,52 @@ export function OverflowMenu({
 
   return (
     <div
-      className="flex flex-col gap-[4px] items-start p-[8px] relative rounded-[12px] w-full"
-      style={{ backgroundColor: "var(--color-bg-main)", boxShadow: "var(--shadow-xs)", border: "1px solid var(--color-element-subtle)" }}
+      className="flex flex-col items-start px-[12px] py-[12px] relative rounded-[12px] w-full"
+      style={{ backgroundColor: "var(--color-bg-menus)", boxShadow: "var(--shadow-sm)", border: "1px solid var(--color-element-subtle)" }}
     >
       <AnimatePresence mode="wait">
         <motion.div
           key={page}
-          className="w-full"
+          className="flex flex-col gap-[8px] w-full"
           initial={{ opacity: 0, x: page > 1 ? 14 : -14 }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: page > 1 ? -14 : 14 }}
           transition={{ type: "spring", stiffness: 380, damping: 28 }}
         >
-          <div className="flex flex-row items-center w-full">
-            <div className="flex gap-[8px] items-center p-[8px] w-full">
-              <p className="flex-1 leading-[20px] text-[15px] min-w-0" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{header}</p>
-              <div className="flex gap-[12px] items-center shrink-0">
-                {totalPages > 1 && <OverflowPagination page={page} total={totalPages} onPrev={() => setPage(p => Math.max(1, p - 1))} onNext={() => setPage(p => Math.min(totalPages, p + 1))} />}
-                <OverflowCloseBtn onClose={onClose} />
-              </div>
+          <div className="flex gap-[16px] items-start p-[8px] w-full">
+            <p className="flex-1 leading-[20px] text-[15px] min-w-0" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{header}</p>
+            <div className="flex gap-[12px] items-center shrink-0">
+              {totalPages > 1 && <OverflowPagination page={page} total={totalPages} onPrev={() => setPage(p => Math.max(1, p - 1))} onNext={() => setPage(p => Math.min(totalPages, p + 1))} />}
+              <OverflowCloseBtn onClose={onClose} />
             </div>
           </div>
 
-          <div className={'w-full max-h-[200px] overflow-y-auto scrollbar-thin scrollbar-thumb-muted-foreground scrollbar-track-transparent'}>
+          {/* Six 36px rows fit before the list starts scrolling — the design's full height. */}
+          <div className={'w-full max-h-[216px] overflow-y-auto scrollbar-thin scrollbar-thumb-muted-foreground scrollbar-track-transparent'}>
             {items.map((item) => (
-              <div
-                key={item.num}
-                className="flex gap-[8px] items-center px-[8px] py-[6px] w-full rounded-[6px] transition-colors cursor-pointer"
-                {...hoverItem}
-                onClick={() => handleItemClick(item)}
-              >
-                <NumBadge num={item.num} />
-                <p className="flex-1 leading-[20px] text-[14px] min-w-0" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{item.label}</p>
+              <div key={item.num} className="h-[36px] w-full shrink-0">
+                <div
+                  className="flex gap-[8px] items-center px-[8px] py-[6px] w-full rounded-[6px] transition-colors cursor-pointer"
+                  {...hoverItem}
+                  onClick={() => handleItemClick(item)}
+                >
+                  <NumBadge num={item.num} />
+                  <p className="flex-1 leading-[20px] text-[15px] min-w-0 truncate" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{item.label}</p>
+                </div>
               </div>
             ))}
           </div>
         </motion.div>
       </AnimatePresence>
 
-      {onShowMore && totalPages === 1 && (
-        <button
-          className="flex items-center gap-[6px] w-full py-[6px] px-[8px] rounded-[6px] transition-colors cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
-          onMouseEnter={e => { if (!isLoadingShowMore) e.currentTarget.style.backgroundColor = "var(--color-element-subtle)"; }}
-          onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")}
-          onClick={onShowMore}
-          disabled={isLoadingShowMore}
-        >
-          {isLoadingShowMore
-            ? <svg className="shrink-0 animate-spin" width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="var(--color-brand-primary)" strokeWidth="1.5" strokeDasharray="20 12" /></svg>
-            : null}
-          <p className="text-[13px] leading-[20px]" style={{ ...dmSans500, color: "var(--color-text-secondary)" }}>Show More</p>
-        </button>
+      {showsFooter && (
+        <div className="flex items-center justify-between w-full min-h-[36px]">
+          {showsShowMore
+            ? <OverflowShowMoreBtn label={showMoreLabel} onClick={onShowMore!} isLoading={isLoadingShowMore} />
+            : <span />}
+          {onSkip && <OverflowSkipBtn label={skipLabel} onClick={onSkip} />}
+        </div>
       )}
-
-      {/* "Something else" input */}
-      <div className="rounded-[12px] flex items-center px-[12px] py-[8px] w-full" style={{ border: "1px solid var(--color-element-subtle)" }}>
-        <div className="flex flex-1 items-center gap-[4px] min-w-0">
-          {inputLeading ?? (
-            <div className="flex items-center justify-center rounded-[4px] shrink-0 size-[20px]" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }}>
-              <Pencil size={14} color="var(--color-text-primary)" strokeWidth={2.5} />
-            </div>
-          )}
-          {typewriterDone ? (
-            <input
-              className="flex-1 leading-[20px] text-[14px] min-w-0 bg-transparent outline-none border-none"
-              style={{ ...dmSans400, color: "var(--color-text-secondary)", caretColor: "var(--color-text-primary)" }}
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onFocus={() => { if (inputValue === TYPEWRITER_TARGET) setInputValue(""); }}
-              onBlur={() => { if (inputValue.trim() === "") setInputValue(TYPEWRITER_TARGET); }}
-              onKeyDown={(e) => {
-                e.stopPropagation();
-                if (e.key === "Enter" && inputValue.trim() && inputValue !== TYPEWRITER_TARGET) {
-                  onComplete([...selectedLabels, inputValue.trim()].join(", "));
-                }
-              }}
-              spellCheck={false}
-            />
-          ) : (
-            <span className="flex-1 leading-[20px] text-[14px] min-w-0 select-none" style={{ ...dmSans400, color: "var(--color-text-secondary)" }}>
-              {typewriterText}
-              <motion.span className="inline-block w-[1px] h-[12px] ml-[1px] align-middle" style={{ backgroundColor: "var(--color-text-secondary)" }} animate={{ opacity: [1, 1, 0, 0] }} transition={{ repeat: Infinity, duration: 0.7, times: [0, 0.45, 0.5, 1] }} />
-            </span>
-          )}
-        </div>
-        <div className="flex items-center gap-[8px]">
-          {totalPages > 1 && <Btn type="button" variant="outline" size="sm" onClick={() => onComplete("skip")}>Skip</Btn>}
-          <Btn type="button" variant="default" size="icon-sm" onClick={() => { const trimmed = inputValue.trim(); if (trimmed && trimmed !== TYPEWRITER_TARGET) onComplete([...selectedLabels, trimmed].join(", ")); }}>
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d={SEND_ARROW_PATH} stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" /></svg>
-          </Btn>
-        </div>
-      </div>
     </div>
   );
 }
@@ -241,52 +222,71 @@ export function OverflowMenu({
 // ── ChecklistOverflowMenu ──────────────────────────────────────────────────
 
 export function ChecklistOverflowMenu({
-  pages: checklistPages, inputPlaceholder, onClose, onComplete, onShowMore, isLoadingShowMore, inputLeading,
+  pages: checklistPages, onClose, onSelectionChange, onShowMore, isLoadingShowMore, showMoreLabel = "Show more...", onSkip, skipLabel = "Skip",
 }: {
-  pages: ChecklistPage[]; inputPlaceholder?: string; onClose: () => void; onComplete: (selected: string[]) => void; onShowMore?: () => void; isLoadingShowMore?: boolean; inputLeading?: React.ReactNode;
+  pages: ChecklistPage[];
+  onClose: () => void;
+  /** Fired on every toggle with the labels of everything currently ticked, across
+   *  all pages. The design has no send button in the menu, so the consumer owns
+   *  submission — mirror this into your own state and send it from your input. */
+  onSelectionChange?: (selected: string[]) => void;
+  /** Renders the "Show more…" action when provided. */
+  onShowMore?: () => void;
+  isLoadingShowMore?: boolean;
+  /** Copy for the show-more action, so consumers can localise it. */
+  showMoreLabel?: string;
+  /** Renders the Skip button when provided. The consumer owns what skipping does. */
+  onSkip?: () => void;
+  /** Copy for the Skip button, so consumers can localise it. */
+  skipLabel?: string;
 }) {
   const [page, setPage] = useState(0);
   const totalPages = checklistPages.length;
   const [selected, setSelected] = useState<Set<string>>(new Set());
-  const [inputValue, setInputValue] = useState("");
+
+  const labelsFor = (ids: Set<string>) =>
+    checklistPages.flatMap(p => p.items).filter(item => ids.has(item.id)).map(item => item.label);
 
   const toggleItem = (id: string) => {
-    setSelected(prev => { const next = new Set(prev); if (next.has(id)) next.delete(id); else next.add(id); return next; });
-  };
-
-  const handleSend = () => {
-    const allItems = checklistPages.flatMap(p => p.items);
-    const labels = allItems.filter(item => selected.has(item.id)).map(item => item.label);
-    const typed = inputValue.trim();
-    if (typed) labels.push(typed);
-    onComplete(labels);
+    setSelected(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      onSelectionChange?.(labelsFor(next));
+      return next;
+    });
   };
 
   const currentPageData = checklistPages[page];
 
+  const showsFooter = !!onShowMore || !!onSkip;
+
   return (
-    <div className="flex flex-col gap-[4px] items-start py-[12px] px-[8px] relative rounded-[12px] w-full" style={{ backgroundColor: "var(--color-bg-main)", boxShadow: "var(--shadow-xs)", border: "1px solid var(--color-element-subtle)" }}>
-      <div className="flex flex-col items-start w-full">
-        <div className="flex flex-row items-center w-full">
-          <div className="flex gap-[8px] items-center p-[8px] w-full">
-            <p className="flex-1 leading-[20px] text-[15px] min-w-0" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{currentPageData.question}</p>
-            <div className="flex gap-[12px] items-center shrink-0">
-              {totalPages > 1 && <OverflowPagination page={page + 1} total={totalPages} onPrev={() => setPage(p => Math.max(0, p - 1))} onNext={() => setPage(p => Math.min(totalPages - 1, p + 1))} />}
-              <OverflowCloseBtn onClose={onClose} />
-            </div>
+    <div
+      className="flex flex-col items-start px-[12px] py-[12px] relative rounded-[12px] w-full"
+      style={{ backgroundColor: "var(--color-bg-menus)", boxShadow: "var(--shadow-sm)", border: "1px solid var(--color-element-subtle)" }}
+    >
+      <div className="flex flex-col gap-[8px] items-start w-full">
+        <div className="flex gap-[16px] items-start p-[8px] w-full">
+          <p className="flex-1 leading-[20px] text-[15px] min-w-0" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{currentPageData.question}</p>
+          <div className="flex gap-[12px] items-center shrink-0">
+            {totalPages > 1 && <OverflowPagination page={page + 1} total={totalPages} onPrev={() => setPage(p => Math.max(0, p - 1))} onNext={() => setPage(p => Math.min(totalPages - 1, p + 1))} />}
+            <OverflowCloseBtn onClose={onClose} />
           </div>
         </div>
 
         <AnimatePresence mode="wait">
-          <motion.div key={page} className="w-full flex flex-col max-h-[200px] overflow-y-auto scrollbar-thin scrollbar-thumb-muted-foreground scrollbar-track-transparent" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} transition={{ type: "spring", stiffness: 380, damping: 28 }}>
+          {/* Six 36px rows fit before the list starts scrolling — the design's full height. */}
+          <motion.div key={page} className="w-full flex flex-col max-h-[216px] overflow-y-auto scrollbar-thin scrollbar-thumb-muted-foreground scrollbar-track-transparent" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} transition={{ type: "spring", stiffness: 380, damping: 28 }}>
             {currentPageData.items.map((item) => {
               const checked = selected.has(item.id);
               return (
-                <div key={item.id} className="flex gap-[8px] items-center px-[8px] py-[6px] rounded-[6px] w-full cursor-pointer transition-colors" {...hoverItem} onClick={() => toggleItem(item.id)}>
-                  <div className="relative rounded-[4px] shrink-0 size-[16px] flex items-center justify-center transition-colors duration-150" style={{ backgroundColor: checked ? "var(--color-brand-primary)" : "transparent", border: checked ? "1px solid var(--color-brand-primary)" : "1px solid var(--color-element-subtle)", boxShadow: "var(--shadow-xs)" }}>
-                    {checked && <svg width="10.7" height="7.75" viewBox="0 0 10.6633 7.74667" fill="none"><path d={CHECKMARK_PATH} stroke="var(--color-text-on-primary)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33" /></svg>}
+                <div key={item.id} className="h-[36px] w-full shrink-0">
+                  <div className="flex gap-[8px] items-center px-[8px] py-[6px] rounded-[6px] w-full cursor-pointer transition-colors" {...hoverItem} onClick={() => toggleItem(item.id)}>
+                    <div className="relative rounded-[4px] shrink-0 size-[16px] flex items-center justify-center transition-colors duration-150" style={{ backgroundColor: checked ? "var(--color-brand-primary)" : "transparent", border: checked ? "1px solid var(--color-brand-primary)" : "1px solid var(--color-element-subtle)", boxShadow: "var(--shadow-xs)" }}>
+                      {checked && <svg width="10.7" height="7.75" viewBox="0 0 10.6633 7.74667" fill="none"><path d={CHECKMARK_PATH} stroke="var(--color-text-on-primary)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33" /></svg>}
+                    </div>
+                    <p className="flex-1 leading-[20px] text-[15px] min-w-0 truncate" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{item.label}</p>
                   </div>
-                  <p className="flex-1 leading-[20px] text-[14px] min-w-0" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{item.label}</p>
                 </div>
               );
             })}
@@ -294,30 +294,14 @@ export function ChecklistOverflowMenu({
         </AnimatePresence>
       </div>
 
-      {onShowMore && (
-        <button
-          className="flex items-center gap-[6px] w-full py-[6px] px-[8px] rounded-[6px] transition-colors cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
-          onMouseEnter={e => { if (!isLoadingShowMore) e.currentTarget.style.backgroundColor = "var(--color-element-subtle)"; }}
-          onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")}
-          onClick={onShowMore}
-          disabled={isLoadingShowMore}
-        >
-          {isLoadingShowMore
-            ? <svg className="shrink-0 animate-spin" width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="var(--color-brand-primary)" strokeWidth="1.5" strokeDasharray="20 12" /></svg>
-            : null}
-          <p className="text-[13px] leading-[20px]" style={{ ...dmSans500, color: "var(--color-text-secondary)" }}>Show More</p>
-        </button>
+      {showsFooter && (
+        <div className="flex items-center justify-between w-full min-h-[36px]">
+          {onShowMore
+            ? <OverflowShowMoreBtn label={showMoreLabel} onClick={onShowMore} isLoading={isLoadingShowMore} />
+            : <span />}
+          {onSkip && <OverflowSkipBtn label={skipLabel} onClick={onSkip} />}
+        </div>
       )}
-
-      <OverflowInput
-        value={inputValue}
-        onChange={setInputValue}
-        onKeyDown={(e) => { if (e.key === "Enter") handleSend(); }}
-        onSkip={() => onComplete([])}
-        onSend={handleSend}
-        placeholder={inputPlaceholder ?? "You make the call"}
-        inputLeading={inputLeading}
-      />
     </div>
   );
 }
@@ -325,77 +309,81 @@ export function ChecklistOverflowMenu({
 // ── TemplateOverflowMenu ───────────────────────────────────────────────────
 
 export function TemplateOverflowMenu({
-  header, cards, inputPlaceholder, onClose, onComplete, onShowMore, isLoadingShowMore, inputLeading,
+  header, cards, onClose, onComplete, onShowMore, isLoadingShowMore, showMoreLabel = "Show more...", onSkip, skipLabel = "Skip",
 }: {
-  header: string; cards: TemplateCard[]; inputPlaceholder?: string; onClose: () => void; onComplete: (label: string) => void; onShowMore?: () => void; isLoadingShowMore?: boolean; inputLeading?: React.ReactNode;
+  header: string;
+  cards: TemplateCard[];
+  onClose: () => void;
+  onComplete: (label: string) => void;
+  /** Renders the "Show more…" action when provided. */
+  onShowMore?: () => void;
+  isLoadingShowMore?: boolean;
+  /** Copy for the show-more action, so consumers can localise it. */
+  showMoreLabel?: string;
+  /** Renders the Skip button when provided. The consumer owns what skipping does. */
+  onSkip?: () => void;
+  /** Copy for the Skip button, so consumers can localise it. */
+  skipLabel?: string;
 }) {
-  const [customInput, setCustomInput] = useState("");
   const CARDS_PER_PAGE = 2;
   const totalPages = Math.ceil(cards.length / CARDS_PER_PAGE);
   const [page, setPage] = useState(1);
   const pageCards = cards.slice((page - 1) * CARDS_PER_PAGE, page * CARDS_PER_PAGE);
 
-  return (
-    <div className="flex flex-col gap-[16px] py-[12px] relative rounded-[12px] w-full z-10" style={{ backgroundColor: "var(--color-bg-main)", boxShadow: "var(--shadow-xs)", border: "1px solid var(--color-element-subtle)" }}>
-      <div className="flex flex-col gap-[8px] px-[12px] w-full">
-        <div className="flex items-center gap-[16px] p-[8px] w-full">
-          <p className="flex-1 leading-[20px] text-[15px]" style={{ ...dmSans500, color: "var(--color-text-primary)", fontVariationSettings: "'opsz' 14" }}>{header}</p>
-          <div className="flex gap-[12px] items-center shrink-0">
-            {totalPages > 1 && <OverflowPagination page={page} total={totalPages} onPrev={() => setPage(p => Math.max(1, p - 1))} onNext={() => setPage(p => Math.min(totalPages, p + 1))} />}
-            <OverflowCloseBtn onClose={onClose} />
-          </div>
-        </div>
+  const showsFooter = !!onShowMore || !!onSkip;
 
-        <AnimatePresence mode="wait">
-          <motion.div key={page} className="grid grid-cols-2 gap-[12px] px-[8px] w-full" initial={{ opacity: 0, x: 14 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -14 }} transition={{ type: "spring", stiffness: 380, damping: 28 }}>
-            {pageCards.map((item) => (
+  return (
+    <div
+      className="flex flex-col gap-[8px] px-[12px] py-[12px] relative rounded-[12px] w-full z-10"
+      style={{ backgroundColor: "var(--color-bg-menus)", boxShadow: "var(--shadow-sm)", border: "1px solid var(--color-element-subtle)" }}
+    >
+      <div className="flex items-start gap-[16px] p-[8px] w-full">
+        <p className="flex-1 leading-[20px] text-[15px] min-w-0" style={{ ...dmSans500, color: "var(--color-text-primary)", fontVariationSettings: "'opsz' 14" }}>{header}</p>
+        <div className="flex gap-[12px] items-center shrink-0">
+          {totalPages > 1 && <OverflowPagination page={page} total={totalPages} onPrev={() => setPage(p => Math.max(1, p - 1))} onNext={() => setPage(p => Math.min(totalPages, p + 1))} />}
+          <OverflowCloseBtn onClose={onClose} />
+        </div>
+      </div>
+
+      <AnimatePresence mode="wait">
+        <motion.div key={page} className="flex items-start gap-[8px] w-full" initial={{ opacity: 0, x: 14 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -14 }} transition={{ type: "spring", stiffness: 380, damping: 28 }}>
+          {pageCards.map((item) => {
+            // The design renders one pre-wrapped block: "Front: …", a blank line,
+            // then "Inside: …" — same weight throughout, clipped at the card height.
+            const blocks = [
+              item.front && `Front: ${item.front}`,
+              (item.insideHeading || item.insideBody) && `Inside: ${[item.insideHeading, item.insideBody].filter(Boolean).join(" ")}`,
+            ].filter(Boolean) as string[];
+
+            return (
               <div
                 key={item.num}
-                className="relative rounded-[16px] cursor-pointer overflow-hidden transition-colors h-[224px]"
+                className="flex flex-1 h-[160px] min-w-0 flex-col items-start p-[8px] rounded-[12px] cursor-pointer overflow-hidden transition-colors"
                 style={{ border: "1px solid var(--color-element-subtle)", backgroundColor: "transparent" }}
                 onMouseEnter={e => { e.currentTarget.style.backgroundColor = "var(--color-element-subtle)"; e.currentTarget.style.borderColor = "var(--color-text-secondary)"; }}
                 onMouseLeave={e => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.borderColor = "var(--color-element-subtle)"; }}
                 onClick={() => onComplete(`${item.title}: "${item.front}" — ${item.insideHeading ?? ""} ${item.insideBody}`)}
               >
-                <div className="p-[12px] h-full flex flex-col gap-[6px] text-[13px] leading-[18px]" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>
-                  {item.front && <p className="shrink-0"><span style={{...dmSans500}}>Front:</span>{` ${item.front}`}</p>}
-                  {(item.insideHeading || item.insideBody) && <p className="flex-1 overflow-hidden"><span
-                      style={{...dmSans500}}>Inside:</span>{` ${item.insideHeading ?? ""} ${item.insideBody}`}</p>}
-                </div>
+                <p
+                  className="flex-1 min-h-0 w-full overflow-hidden text-[13px] whitespace-pre-wrap"
+                  style={{ ...dmSans400, color: "var(--color-text-primary)", lineHeight: "normal" }}
+                >
+                  {blocks.join("\n\n")}
+                </p>
               </div>
-            ))}
-          </motion.div>
-        </AnimatePresence>
-      </div>
+            );
+          })}
+        </motion.div>
+      </AnimatePresence>
 
-      {onShowMore && (
-        <div className="px-[8px] w-full">
-          <button
-            className="flex items-center justify-center gap-[6px] w-full py-[6px] px-[8px] rounded-[6px] transition-colors cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
-            onMouseEnter={e => { if (!isLoadingShowMore) e.currentTarget.style.backgroundColor = "var(--color-element-subtle)"; }}
-            onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")}
-            onClick={onShowMore}
-            disabled={isLoadingShowMore}
-          >
-            {isLoadingShowMore
-              ? <svg className="shrink-0 animate-spin" width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="var(--color-brand-primary)" strokeWidth="1.5" strokeDasharray="20 12" /></svg>
-              : null}
-            <p className="text-[13px] leading-[20px]" style={{ ...dmSans500, color: "var(--color-text-secondary)" }}>Show More</p>
-          </button>
+      {showsFooter && (
+        <div className="flex items-center justify-between pt-[8px] w-full">
+          {onShowMore
+            ? <OverflowShowMoreBtn label={showMoreLabel} onClick={onShowMore} isLoading={isLoadingShowMore} />
+            : <span />}
+          {onSkip && <OverflowSkipBtn label={skipLabel} onClick={onSkip} />}
         </div>
       )}
-
-      <div className="px-[8px] w-full">
-        <OverflowInput
-          value={customInput}
-          onChange={setCustomInput}
-          onKeyDown={(e) => { if (e.key === "Enter") onComplete(customInput.trim() || "skip"); }}
-          onSkip={() => onComplete("skip")}
-          onSend={() => onComplete(customInput.trim() || "skip")}
-          placeholder={inputPlaceholder ?? "Something else"}
-          inputLeading={inputLeading}
-        />
-      </div>
     </div>
   );
 }
@@ -403,41 +391,38 @@ export function TemplateOverflowMenu({
 // ── ActionOverflowMenu (V1 — Ghost Buttons) ────────────────────────────────
 
 export function ActionOverflowMenu({
-  config, inputPlaceholder, onClose, onGenerate, inputLeading,
+  config, onClose, onGenerate, onAdjust, isLoadingGenerate, generateButtonLabel,
 }: {
-  config: ActionMenuConfig; inputPlaceholder?: string; onClose: () => void; onGenerate: () => void; inputLeading?: React.ReactNode;
+  config: ActionMenuConfig;
+  onClose: () => void;
+  onGenerate: () => void;
+  /** Called with the adjust option the user picked. Falls back to closing the
+   *  menu when omitted, which is what this variant did before it had a callback. */
+  onAdjust?: (label: string) => void;
+  isLoadingGenerate?: boolean;
+  generateButtonLabel?: string;
 }) {
-  const [customInput, setCustomInput] = useState("");
-
   return (
-    <div className="flex flex-col gap-[4px] items-start py-[12px] relative rounded-[12px] w-full" style={{ backgroundColor: "var(--color-bg-main)", boxShadow: "var(--shadow-xs)", border: "1px solid var(--color-element-subtle)" }}>
-      <div className="flex items-center gap-[16px] px-[20px] py-[8px] w-full">
-        <div className="flex flex-col gap-[4px] flex-1 min-w-0">
-          <p className="leading-[20px] text-[15px]" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{config.title}</p>
-          <p className="leading-[20px] text-[13px]" style={{ ...dmSans400, color: "var(--color-text-secondary)" }}>{config.subtitle}</p>
-        </div>
-        <Btn onClick={onGenerate} className="shrink-0">{config.generateButtonLabel}</Btn>
-        <OverflowCloseBtn onClose={onClose} />
-      </div>
-      <div className="w-full h-[1px]" style={{ backgroundColor: "var(--color-element-subtle)" }} />
-      <div className="flex flex-col gap-[8px] px-[20px] py-[8px] w-full">
-        <p className="leading-[20px] text-[15px]" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>Or Adjust</p>
-        <div className="flex gap-[16px] items-center">
+    <div
+      className="flex flex-col gap-[16px] items-start py-[12px] relative rounded-[12px] w-full"
+      style={{ backgroundColor: "var(--color-bg-menus)", boxShadow: "var(--shadow-sm)", border: "1px solid var(--color-element-subtle)" }}
+    >
+      <ActionMenuHeader
+        config={config}
+        onClose={onClose}
+        onGenerate={onGenerate}
+        isLoadingGenerate={isLoadingGenerate}
+        generateButtonLabel={generateButtonLabel}
+      />
+      <ActionMenuSeparator />
+
+      <div className="flex flex-col gap-[8px] px-[16px] w-full">
+        <p className="leading-[20px] text-[15px]" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{config.adjustHeader ?? "Or Adjust"}</p>
+        <div className="flex flex-wrap gap-[8px] items-center">
           {(config.adjustOptions ?? []).map((label) => (
-            <Btn key={label} variant="outline" size="sm" onClick={onClose}>{label}</Btn>
+            <Btn key={label} variant="outline" size="sm" onClick={() => (onAdjust ? onAdjust(label) : onClose())}>{label}</Btn>
           ))}
         </div>
-      </div>
-      <div className="px-[8px] w-full">
-        <OverflowInput
-          value={customInput}
-          onChange={setCustomInput}
-          onKeyDown={(e) => { if (e.key === "Enter" && customInput.trim()) onClose(); }}
-          onSkip={onClose}
-          onSend={() => { if (customInput.trim()) onClose(); }}
-          placeholder={inputPlaceholder ?? "Something else"}
-          inputLeading={inputLeading}
-        />
       </div>
     </div>
   );
@@ -446,77 +431,57 @@ export function ActionOverflowMenu({
 // ── ActionOverflowMenuList (V2 — Numbered List) ────────────────────────────
 
 export function ActionOverflowMenuList({
-  config, inputPlaceholder, onClose, onGenerate, onComplete, onShowMore, isLoadingShowMore, isLoadingGenerate, generateButtonLabel, inputLeading,
+  config, onClose, onGenerate, onComplete, onShowMore, isLoadingShowMore, showMoreLabel = "Show more...", isLoadingGenerate, generateButtonLabel,
 }: {
-  config: ActionMenuConfig; inputPlaceholder?: string; onClose: () => void; onGenerate: () => void; onComplete: (label: string) => void; onShowMore?: () => void; isLoadingShowMore?: boolean; isLoadingGenerate?: boolean; generateButtonLabel?: string; inputLeading?: React.ReactNode;
+  config: ActionMenuConfig;
+  onClose: () => void;
+  onGenerate: () => void;
+  onComplete: (label: string) => void;
+  /** Renders the "Show more…" action when provided. */
+  onShowMore?: () => void;
+  isLoadingShowMore?: boolean;
+  /** Copy for the show-more action, so consumers can localise it. */
+  showMoreLabel?: string;
+  isLoadingGenerate?: boolean;
+  generateButtonLabel?: string;
 }) {
-  const [customInput, setCustomInput] = useState("");
   const adjustHeader = config.adjustHeader ?? "Or, want to make changes?";
   const items = config.adjustItems ?? [];
 
   return (
-    <div className="flex flex-col gap-[4px] items-start py-[12px] relative rounded-[12px] w-full" style={{ backgroundColor: "var(--color-bg-main)", boxShadow: "var(--shadow-xs)", border: "1px solid var(--color-element-subtle)" }}>
-      {/* bullets — Header + Separator + list */}
-      <div className="flex flex-col gap-[16px] w-full">
-        {/* Header */}
-        <div className="flex items-center gap-[16px] px-[20px] py-[8px] w-full">
-          <div className="flex flex-1 gap-[24px] items-center min-w-0">
-            <div className="flex flex-col gap-[4px] flex-1 min-w-0">
-              <p className="leading-[20px] text-[15px]" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{config.title}</p>
-              <p className="leading-[20px] text-[13px]" style={{ ...dmSans400, color: "var(--color-text-secondary)" }}>{config.subtitle}</p>
-            </div>
-            <Btn onClick={onGenerate} className="shrink-0 flex items-center gap-[6px]" disabled={isLoadingGenerate}>
-              {isLoadingGenerate && <svg className="shrink-0 animate-spin" width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" strokeWidth="1.5" strokeDasharray="20 12" /></svg>}
-              {generateButtonLabel ?? config.generateButtonLabel}
-            </Btn>
-          </div>
-          <OverflowCloseBtn onClose={onClose} />
-        </div>
-        {/* Separator */}
-        <div className="w-full h-[1px]" style={{ backgroundColor: "var(--color-element-subtle)" }} />
-        {/* "or" section */}
-        <div className="flex flex-col gap-[8px] w-full">
-          <p className="leading-[20px] text-[15px] px-[20px]" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{adjustHeader}</p>
-          <div className="flex flex-col px-[12px] w-full max-h-[200px] overflow-y-auto scrollbar-thin scrollbar-thumb-muted-foreground scrollbar-track-transparent">
+    <div
+      className="flex flex-col gap-[16px] items-start py-[12px] relative rounded-[12px] w-full"
+      style={{ backgroundColor: "var(--color-bg-menus)", boxShadow: "var(--shadow-sm)", border: "1px solid var(--color-element-subtle)" }}
+    >
+      <ActionMenuHeader
+        config={config}
+        onClose={onClose}
+        onGenerate={onGenerate}
+        isLoadingGenerate={isLoadingGenerate}
+        generateButtonLabel={generateButtonLabel}
+      />
+      <ActionMenuSeparator />
+
+      <div className="flex flex-col gap-[8px] px-[16px] w-full">
+        <p className="leading-[20px] text-[15px]" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{adjustHeader}</p>
+        <div className="flex flex-col w-full">
+          {/* Six 36px rows fit before the list starts scrolling — the design's full height. */}
+          <div className="flex flex-col w-full max-h-[216px] overflow-y-auto scrollbar-thin scrollbar-thumb-muted-foreground scrollbar-track-transparent">
             {items.map((item) => (
-              <div
-                key={item.num}
-                className="flex gap-[8px] items-center px-[8px] py-[6px] w-full rounded-[6px] transition-colors cursor-pointer"
-                {...hoverItem}
-                onClick={() => onComplete(item.label)}
-              >
-                <NumBadge num={item.num} />
-                <p className="flex-1 leading-[20px] text-[14px] min-w-0" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{item.label}</p>
+              <div key={item.num} className="h-[36px] w-full shrink-0">
+                <div
+                  className="flex gap-[8px] items-center px-[8px] py-[6px] w-full rounded-[6px] transition-colors cursor-pointer"
+                  {...hoverItem}
+                  onClick={() => onComplete(item.label)}
+                >
+                  <NumBadge num={item.num} />
+                  <p className="flex-1 leading-[20px] text-[15px] min-w-0 truncate" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{item.label}</p>
+                </div>
               </div>
             ))}
           </div>
+          {onShowMore && <OverflowShowMoreBtn label={showMoreLabel} onClick={onShowMore} isLoading={isLoadingShowMore} />}
         </div>
-      </div>
-      {onShowMore && (
-        <button
-          className="flex items-center gap-[6px] w-full py-[6px] px-[8px] rounded-[6px] transition-colors cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
-          onMouseEnter={e => { if (!isLoadingShowMore) e.currentTarget.style.backgroundColor = "var(--color-element-subtle)"; }}
-          onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")}
-          onClick={onShowMore}
-          disabled={isLoadingShowMore}
-        >
-          {isLoadingShowMore
-            ? <svg className="shrink-0 animate-spin" width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="var(--color-brand-primary)" strokeWidth="1.5" strokeDasharray="20 12" /></svg>
-            : null}
-          <p className="text-[13px] leading-[20px]" style={{ ...dmSans500, color: "var(--color-text-secondary)" }}>Show More</p>
-        </button>
-      )}
-      {/* Input */}
-      <div className="px-[8px] w-full">
-        <OverflowInput
-          value={customInput}
-          onChange={setCustomInput}
-          onKeyDown={(e) => { e.stopPropagation(); if (e.key === "Enter" && customInput.trim()) onComplete(customInput.trim()); }}
-          onSkip={onClose}
-          onSend={() => { if (customInput.trim()) onComplete(customInput.trim()); }}
-          placeholder={inputPlaceholder ?? "Something else"}
-          inputLeading={inputLeading}
-        />
       </div>
     </div>
   );
@@ -525,80 +490,72 @@ export function ActionOverflowMenuList({
 // ── ActionChecklistOverflowMenu (Action header + multi-select checklist) ──────
 
 export function ActionChecklistOverflowMenu({
-  config, items, inputPlaceholder, onClose, onGenerate, onComplete, onShowMore, isLoadingShowMore, isLoadingGenerate, generateButtonLabel, inputLeading,
+  config, items, onClose, onGenerate, onSelectionChange, onShowMore, isLoadingShowMore, showMoreLabel = "Show more...", isLoadingGenerate, generateButtonLabel,
 }: {
-  config: ActionMenuConfig; items: { id: string; label: string }[]; inputPlaceholder?: string; onClose: () => void; onGenerate: () => void; onComplete: (selected: string[]) => void; onShowMore?: () => void; isLoadingShowMore?: boolean; isLoadingGenerate?: boolean; generateButtonLabel?: string; inputLeading?: React.ReactNode;
+  config: ActionMenuConfig;
+  items: { id: string; label: string }[];
+  onClose: () => void;
+  onGenerate: () => void;
+  /** Fired on every toggle with the labels currently ticked. Like the other
+   *  menus this one has no send button, so the consumer owns submission —
+   *  mirror this into your own state and send it from your own input. */
+  onSelectionChange?: (selected: string[]) => void;
+  /** Renders the "Show more…" action when provided. */
+  onShowMore?: () => void;
+  isLoadingShowMore?: boolean;
+  /** Copy for the show-more action, so consumers can localise it. */
+  showMoreLabel?: string;
+  isLoadingGenerate?: boolean;
+  generateButtonLabel?: string;
 }) {
   const [selected, setSelected] = useState<Set<string>>(new Set());
-  const [inputValue, setInputValue] = useState("");
 
   const toggleItem = (id: string) => {
-    setSelected(prev => { const next = new Set(prev); if (next.has(id)) next.delete(id); else next.add(id); return next; });
-  };
-
-  const getSelectedLabels = () => {
-    const labels = items.filter(item => selected.has(item.id)).map(item => item.label);
-    const typed = inputValue.trim();
-    if (typed) labels.push(typed);
-    return labels;
+    setSelected(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      onSelectionChange?.(items.filter(item => next.has(item.id)).map(item => item.label));
+      return next;
+    });
   };
 
   return (
-    <div className="flex flex-col gap-[4px] items-start py-[12px] px-[8px] relative rounded-[12px] w-full" style={{ backgroundColor: "var(--color-bg-main)", boxShadow: "var(--shadow-xs)", border: "1px solid var(--color-element-subtle)" }}>
-      {/* Header */}
-      <div className="flex items-center gap-[16px] px-[20px] py-[8px] w-full">
-        <div className="flex flex-col gap-[4px] flex-1 min-w-0">
-          <p className="leading-[20px] text-[15px]" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{config.title}</p>
-          <p className="leading-[20px] text-[13px]" style={{ ...dmSans400, color: "var(--color-text-secondary)" }}>{config.subtitle}</p>
+    <div
+      className="flex flex-col gap-[16px] items-start py-[12px] relative rounded-[12px] w-full"
+      style={{ backgroundColor: "var(--color-bg-menus)", boxShadow: "var(--shadow-sm)", border: "1px solid var(--color-element-subtle)" }}
+    >
+      <ActionMenuHeader
+        config={config}
+        onClose={onClose}
+        onGenerate={onGenerate}
+        isLoadingGenerate={isLoadingGenerate}
+        generateButtonLabel={generateButtonLabel}
+      />
+      <ActionMenuSeparator />
+
+      <div className="flex flex-col gap-[8px] px-[16px] w-full">
+        {config.adjustHeader && (
+          <p className="leading-[20px] text-[15px]" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{config.adjustHeader}</p>
+        )}
+        <div className="flex flex-col w-full">
+          {/* Six 36px rows fit before the list starts scrolling — the design's full height. */}
+          <div className="flex flex-col w-full max-h-[216px] overflow-y-auto scrollbar-thin scrollbar-thumb-muted-foreground scrollbar-track-transparent">
+            {items.map((item) => {
+              const checked = selected.has(item.id);
+              return (
+                <div key={item.id} className="h-[36px] w-full shrink-0">
+                  <div className="flex gap-[8px] items-center px-[8px] py-[6px] rounded-[6px] w-full cursor-pointer transition-colors" {...hoverItem} onClick={() => toggleItem(item.id)}>
+                    <div className="relative rounded-[4px] shrink-0 size-[16px] flex items-center justify-center transition-colors duration-150" style={{ backgroundColor: checked ? "var(--color-brand-primary)" : "transparent", border: checked ? "1px solid var(--color-brand-primary)" : "1px solid var(--color-element-subtle)", boxShadow: "var(--shadow-xs)" }}>
+                      {checked && <svg width="10.7" height="7.75" viewBox="0 0 10.6633 7.74667" fill="none"><path d={CHECKMARK_PATH} stroke="var(--color-text-on-primary)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33" /></svg>}
+                    </div>
+                    <p className="flex-1 leading-[20px] text-[15px] min-w-0 truncate" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{item.label}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          {onShowMore && <OverflowShowMoreBtn label={showMoreLabel} onClick={onShowMore} isLoading={isLoadingShowMore} />}
         </div>
-        <Btn onClick={onGenerate} className="shrink-0 flex items-center gap-[6px]" disabled={isLoadingGenerate}>
-          {isLoadingGenerate && <svg className="shrink-0 animate-spin" width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" strokeWidth="1.5" strokeDasharray="20 12" /></svg>}
-          {generateButtonLabel ?? config.generateButtonLabel}
-        </Btn>
-        <OverflowCloseBtn onClose={onClose} />
-      </div>
-      {/* Separator */}
-      <div className="w-full h-[1px]" style={{ backgroundColor: "var(--color-element-subtle)" }} />
-      {/* Checklist */}
-      <div className="flex flex-col w-full px-[8px] pt-[4px] max-h-[200px] overflow-y-auto scrollbar-thin scrollbar-thumb-muted-foreground scrollbar-track-transparent">
-        {items.map((item) => {
-          const checked = selected.has(item.id);
-          return (
-            <div key={item.id} className="flex gap-[8px] items-center px-[8px] py-[6px] rounded-[6px] w-full cursor-pointer transition-colors" {...hoverItem} onClick={() => toggleItem(item.id)}>
-              <div className="relative rounded-[4px] shrink-0 size-[16px] flex items-center justify-center transition-colors duration-150" style={{ backgroundColor: checked ? "var(--color-brand-primary)" : "transparent", border: checked ? "1px solid var(--color-brand-primary)" : "1px solid var(--color-element-subtle)", boxShadow: "var(--shadow-xs)" }}>
-                {checked && <svg width="10.7" height="7.75" viewBox="0 0 10.6633 7.74667" fill="none"><path d={CHECKMARK_PATH} stroke="var(--color-text-on-primary)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33" /></svg>}
-              </div>
-              <p className="flex-1 leading-[20px] text-[14px] min-w-0" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{item.label}</p>
-            </div>
-          );
-        })}
-      </div>
-      {/* Show More */}
-      {onShowMore && (
-        <button
-          className="flex items-center gap-[6px] w-full py-[6px] px-[8px] rounded-[6px] transition-colors cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
-          onMouseEnter={e => { if (!isLoadingShowMore) e.currentTarget.style.backgroundColor = "var(--color-element-subtle)"; }}
-          onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")}
-          onClick={onShowMore}
-          disabled={isLoadingShowMore}
-        >
-          {isLoadingShowMore
-            ? <svg className="shrink-0 animate-spin" width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="var(--color-brand-primary)" strokeWidth="1.5" strokeDasharray="20 12" /></svg>
-            : null}
-          <p className="text-[13px] leading-[20px]" style={{ ...dmSans500, color: "var(--color-text-secondary)" }}>Show More</p>
-        </button>
-      )}
-      {/* Input */}
-      <div className="px-[8px] w-full">
-        <OverflowInput
-          value={inputValue}
-          onChange={setInputValue}
-          onKeyDown={(e) => { if (e.key === "Enter") onComplete(getSelectedLabels()); }}
-          onSkip={onClose}
-          onSend={() => onComplete(getSelectedLabels())}
-          placeholder={inputPlaceholder ?? "Something else"}
-          inputLeading={inputLeading}
-        />
       </div>
     </div>
   );

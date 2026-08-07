@@ -4,7 +4,6 @@
 // ═══════════════════════════════════════════════════════════════════════════
 
 import { useState, useEffect, useRef } from "react";
-import { ImagePlus } from "lucide-react";
 import { ScrollArea } from "./scroll-area";
 import { motion, AnimatePresence } from "motion/react";
 import type { ChatScript, ChatMessage } from "./hs-chat-types";
@@ -19,22 +18,6 @@ import { TadaBanner, ChatHomeScreen, ChatHeader } from "./hs-stampy-panels";
 
 // Assets are passed as props to avoid bloating the library bundle.
 // Consumers import their own assets or use the defaults from the demo page.
-
-// Demo-only reference-image button. In the real app this slot is filled by the
-// app's own AddReferenceImagesButton (which owns the upload + placement dropdown);
-// here it's a static visual so the showcase reflects the Option A layout.
-function DemoReferenceImageButton() {
-  return (
-    <button
-      type="button"
-      aria-label="Add reference images"
-      className="shrink-0 flex items-center justify-center size-[20px] cursor-pointer opacity-70 hover:opacity-100 transition-opacity"
-      onClick={(e) => e.stopPropagation()}
-    >
-      <ImagePlus size={18} strokeWidth={2} color="var(--color-text-secondary)" />
-    </button>
-  );
-}
 
 // ═══════════════════════════════════════════════════════════════════════════
 // MAIN COMPONENT: StampyChatbot
@@ -117,6 +100,9 @@ export function StampyChatbot({
   const [showMenu, setShowMenu] = useState(false);
   const [showBanner, setShowBanner] = useState(false);
   const [lastChoice, setLastChoice] = useState("");
+  // The checklist menu no longer submits for you — it reports what is ticked and
+  // the consumer sends it. Here the chat's own send button does that.
+  const [checklistSelection, setChecklistSelection] = useState<string[]>([]);
   const [themeChoice, setThemeChoice] = useState<string | null>(null);
   const [isRecording, setIsRecording] = useState(false);
   const recognitionRef = useRef<any>(null);
@@ -241,7 +227,15 @@ export function StampyChatbot({
     setMessages(prev => [...prev, { role: "user", text: msg }]); setInputValue("");
   }
 
-  function handleSend() { processMessage(inputValue.trim()); }
+  function handleSend() {
+    if (checklistSelection.length) {
+      const picked = checklistSelection.join(", ");
+      setChecklistSelection([]);
+      handleMenuComplete(picked);
+      return;
+    }
+    processMessage(inputValue.trim());
+  }
 
   // Speech recognition
   useEffect(() => {
@@ -290,28 +284,28 @@ export function StampyChatbot({
         <AnimatePresence>
           {showMenu && currentStep?.type === "overflow" && (
             <motion.div style={{ position: "absolute", bottom, left: 16, right: 16, zIndex: 20 }} {...MENU_MOTION}>
-              <OverflowMenu pages={currentStep.pages} inputPlaceholder={currentStep.inputPlaceholder} onClose={() => setShowMenu(false)} onComplete={handleMenuComplete} inputLeading={<DemoReferenceImageButton />} />
+              <OverflowMenu pages={currentStep.pages} onClose={() => setShowMenu(false)} onComplete={handleMenuComplete} onSkip={handleMenuSkip} />
             </motion.div>
           )}
         </AnimatePresence>
         <AnimatePresence>
           {showMenu && currentStep?.type === "template" && (
             <motion.div style={{ position: "absolute", bottom, left: 16, right: 16, zIndex: 20 }} {...MENU_MOTION}>
-              <TemplateOverflowMenu header={currentStep.header} cards={currentStep.cards} inputPlaceholder={currentStep.inputPlaceholder} onClose={() => setShowMenu(false)} onComplete={handleMenuComplete} />
+              <TemplateOverflowMenu header={currentStep.header} cards={currentStep.cards} onClose={() => setShowMenu(false)} onComplete={handleMenuComplete} onSkip={handleMenuSkip} />
             </motion.div>
           )}
         </AnimatePresence>
         <AnimatePresence>
           {showMenu && currentStep?.type === "action" && (
             <motion.div style={{ position: "absolute", bottom, left: 16, right: 16, zIndex: 20 }} {...MENU_MOTION}>
-              <ActionOverflowMenuList config={currentStep.config} inputPlaceholder={currentStep.inputPlaceholder} onClose={() => setShowMenu(false)} onGenerate={handleActionGenerate} onComplete={handleMenuComplete} inputLeading={<DemoReferenceImageButton />} />
+              <ActionOverflowMenuList config={currentStep.config} onClose={() => setShowMenu(false)} onGenerate={handleActionGenerate} onComplete={handleMenuComplete} />
             </motion.div>
           )}
         </AnimatePresence>
         <AnimatePresence>
           {showMenu && currentStep?.type === "checklist" && (
             <motion.div style={{ position: "absolute", bottom, left: 16, right: 16, zIndex: 20 }} {...MENU_MOTION}>
-              <ChecklistOverflowMenu pages={currentStep.pages} inputPlaceholder={currentStep.inputPlaceholder} onClose={() => setShowMenu(false)} onComplete={(selected) => { if (selected.length === 0) handleMenuSkip(); else handleMenuComplete(selected.join(", ")); }} inputLeading={<DemoReferenceImageButton />} />
+              <ChecklistOverflowMenu pages={currentStep.pages} onClose={() => setShowMenu(false)} onSelectionChange={setChecklistSelection} onSkip={handleMenuSkip} />
             </motion.div>
           )}
         </AnimatePresence>
