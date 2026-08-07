@@ -247,13 +247,14 @@ export function ChecklistOverflowMenu({
   const labelsFor = (ids: Set<string>) =>
     checklistPages.flatMap(p => p.items).filter(item => ids.has(item.id)).map(item => item.label);
 
+  // The next set is derived here rather than inside a setSelected updater: React
+  // may run an updater during the render phase, and notifying the parent from
+  // there warns about updating one component while rendering another.
   const toggleItem = (id: string) => {
-    setSelected(prev => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id); else next.add(id);
-      onSelectionChange?.(labelsFor(next));
-      return next;
-    });
+    const next = new Set(selected);
+    if (next.has(id)) next.delete(id); else next.add(id);
+    setSelected(next);
+    onSelectionChange?.(labelsFor(next));
   };
 
   const currentPageData = checklistPages[page];
@@ -510,13 +511,12 @@ export function ActionChecklistOverflowMenu({
 }) {
   const [selected, setSelected] = useState<Set<string>>(new Set());
 
+  // Derived outside a setSelected updater — see the note in ChecklistOverflowMenu.
   const toggleItem = (id: string) => {
-    setSelected(prev => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id); else next.add(id);
-      onSelectionChange?.(items.filter(item => next.has(item.id)).map(item => item.label));
-      return next;
-    });
+    const next = new Set(selected);
+    if (next.has(id)) next.delete(id); else next.add(id);
+    setSelected(next);
+    onSelectionChange?.(items.filter(item => next.has(item.id)).map(item => item.label));
   };
 
   return (
