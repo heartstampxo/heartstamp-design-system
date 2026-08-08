@@ -62,15 +62,17 @@ function NumBadge({ num }: { num: string }) {
 
 /** Underlined text action in the OverflowMenu footer (left slot).
  *  While loading it is disabled and the label stays put — the spinner is laid out
- *  inline before it (never stacked on top of it, which ghosted in Safari) and
- *  inherits the label colour via currentColor. */
+ *  inline before it (never stacked on top of it) and inherits the label colour
+ *  via currentColor.
+ *  No opacity transition and no hover state: animating opacity here made Safari
+ *  paint the pre- and post-state labels on top of each other. */
 function OverflowShowMoreBtn({ label, onClick, isLoading }: { label: string; onClick: () => void; isLoading?: boolean }) {
   return (
     <button
       type="button"
       className={cn(
-        "flex items-center gap-[6px] px-[12px] py-[8px] transition-opacity",
-        isLoading ? "cursor-not-allowed opacity-60" : "cursor-pointer hover:opacity-70",
+        "flex items-center gap-[6px] px-[12px] py-[8px]",
+        isLoading ? "cursor-not-allowed opacity-60" : "cursor-pointer",
       )}
       style={{ borderRadius: "var(--radius-button)", color: "var(--color-text-primary)" }}
       onClick={onClick}
