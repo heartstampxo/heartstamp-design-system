@@ -4,6 +4,14 @@ import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 import dts from 'vite-plugin-dts'
 
+const entries = {
+  index: path.resolve(__dirname, 'src/index.ts'),
+  core: path.resolve(__dirname, 'src/entries/core.ts'),
+  hs: path.resolve(__dirname, 'src/entries/hs.ts'),
+  'stampy-chat': path.resolve(__dirname, 'src/entries/stampy-chat.ts'),
+  'style-sidebar': path.resolve(__dirname, 'src/entries/style-sidebar.ts'),
+}
+
 export default defineConfig({
   server: {
     port: process.env.PORT ? parseInt(process.env.PORT) : 5173,
@@ -13,7 +21,7 @@ export default defineConfig({
     // Tailwind is not being actively used – do not remove them
     react(),
     tailwindcss(),
-    dts({ rollupTypes: true }),
+    dts({ entryRoot: 'src', rollupTypes: false, insertTypesEntry: true, exclude: ['src/pages/**', 'src/test/**', 'src/**/*.test.{ts,tsx}', 'src/main.tsx', 'src/app/App.tsx', 'src/app/routes.tsx', 'src/styles/**'] }),
   ],
   resolve: {
     alias: {
@@ -22,22 +30,39 @@ export default defineConfig({
     },
   },
   build: {
-    lib: {
-      entry: path.resolve(__dirname, 'src/index.ts'),
-      name: 'HeartStampUI',
-      fileName: (format) => `index.${format === 'es' ? 'mjs' : 'js'}`,
-      cssFileName: 'design-system',
-    },
+    assetsInlineLimit: 2097152,
+    copyPublicDir: false,
     rollupOptions: {
-      external: ['react', 'react-dom', 'react/jsx-runtime'],
-      output: {
-        globals: {
-          react: 'React',
-          'react-dom': 'ReactDOM',
-          'react/jsx-runtime': 'jsxRuntime'
-        }
-      }
-    }
+      external: (id: string) => {
+        // Keep only project-internal modules in the bundle; everything else
+        // (React, Radix, etc.) is imported at runtime so consumers can dedupe.
+        if (id.startsWith('.') || id.startsWith('/')) return false
+        return true
+      },
+      preserveEntrySignatures: 'strict',
+      input: entries,
+      output: [
+        {
+          format: 'es',
+          dir: 'dist',
+          entryFileNames: '[name].mjs',
+          chunkFileNames: 'chunks/[name]-[hash].mjs',
+          assetFileNames: 'assets/[name]-[hash][extname]',
+          preserveModules: true,
+          preserveModulesRoot: 'src',
+        },
+        {
+          format: 'cjs',
+          dir: 'dist',
+          entryFileNames: '[name].js',
+          chunkFileNames: 'chunks/[name]-[hash].js',
+          assetFileNames: 'assets/[name]-[hash][extname]',
+          preserveModules: true,
+          preserveModulesRoot: 'src',
+          exports: 'named',
+        },
+      ],
+    },
   },
 
   test: {

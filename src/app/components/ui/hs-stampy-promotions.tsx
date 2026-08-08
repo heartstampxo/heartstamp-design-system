@@ -6,12 +6,12 @@ import { HSEmblem } from "./hs-logo";
 import { Prg } from "./hs-prg";
 import confettiSvg from "../../../assets/confetti.svg?url";
 import likeHeart from "../../../assets/like-heart.json";
-import cardImg1 from "../../../assets/promo-cards/card-1.png";
-import cardImg2 from "../../../assets/promo-cards/card-2.png";
-import cardImg3 from "../../../assets/promo-cards/card-3.png";
-import cardImg4 from "../../../assets/promo-cards/card-4.png";
-import cardImg5 from "../../../assets/promo-cards/card-5.png";
-import cardImg6 from "../../../assets/promo-cards/card-6.png";
+import cardImg1 from "../../../assets/promo-cards/card-1.webp";
+import cardImg2 from "../../../assets/promo-cards/card-2.webp";
+import cardImg3 from "../../../assets/promo-cards/card-3.webp";
+import cardImg4 from "../../../assets/promo-cards/card-4.webp";
+import cardImg5 from "../../../assets/promo-cards/card-5.webp";
+import cardImg6 from "../../../assets/promo-cards/card-6.webp";
 
 /* ═══════════════════════════════════════════════════════
    Types

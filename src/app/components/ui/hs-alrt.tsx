@@ -1,6 +1,6 @@
 import React from "react";
 import { Info, XCircle, CheckCircle2, AlertTriangle, LucideIcon } from "lucide-react";
-import defaultStampyIcon from "../../../assets/Mascots/Social-Ready Expressions/Excited Smile.png";
+import defaultStampyIcon from "../../../assets/Mascots/Social-Ready Expressions/Excited Smile.webp";
 
 /* ═══════════════════════════════════════════════════════
    HeartStamp — Alerts

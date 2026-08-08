@@ -3,7 +3,7 @@ import { DocPage, DocSection } from "../../components/docs/doc-page";
 import { Preview } from "../../components/docs/doc-preview";
 import { PropsTable } from "../../components/docs/doc-props-table";
 import { ChatHomeScreen, OccasionSuggestions } from "../../components/ui/hs-stampy-chat";
-import chatMascotImg from "../../../assets/stampy/mascot.png";
+import chatMascotImg from "../../../assets/stampy/mascot.webp";
 
 const DESC_STYLE: React.CSSProperties = { fontSize: 14, color: "var(--muted-fg)", marginBottom: 16 };
 
@@ -25,7 +25,7 @@ export function PageChatHomeScreen() {
           code={`import { ChatHomeScreen } from '@heartstamp/design-system';
 
 <ChatHomeScreen
-  mascotSrc="/stampy/mascot.png"
+  mascotSrc="/stampy/mascot.webp"
   examplePrompts={[
     "Make a birthday card for my best friend",
     "Write a thank-you card for my boss",
