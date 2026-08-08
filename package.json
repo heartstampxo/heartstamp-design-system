@@ -35,12 +35,33 @@
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
     },
+    "./core": {
+      "types": "./dist/entries/core.d.ts",
+      "import": "./dist/core.mjs",
+      "require": "./dist/core.js"
+    },
+    "./hs": {
+      "types": "./dist/entries/hs.d.ts",
+      "import": "./dist/hs.mjs",
+      "require": "./dist/hs.js"
+    },
+    "./stampy-chat": {
+      "types": "./dist/entries/stampy-chat.d.ts",
+      "import": "./dist/stampy-chat.mjs",
+      "require": "./dist/stampy-chat.js"
+    },
+    "./style-sidebar": {
+      "types": "./dist/entries/style-sidebar.d.ts",
+      "import": "./dist/style-sidebar.mjs",
+      "require": "./dist/style-sidebar.js"
+    },
     "./tokens.css": "./dist/css/tokens.css",
     "./btn.css": "./dist/css/btn.css",
     "./grid.css": "./dist/css/grid.css"
   },
   "scripts": {
     "build": "vite build && node scripts/copy-dist-css.mjs",
+    "optimize:images": "node scripts/optimize-images.mjs",
     "build:site": "vite build --config vite.site.config.ts",
     "vercel-build": "vite build --config vite.site.config.ts",
     "dev": "vite",
@@ -51,11 +72,6 @@
     "check:release": "npm run typecheck && npm run build && npm pack --dry-run"
   },
   "dependencies": {
-    "@emotion/react": "11.14.0",
-    "@emotion/styled": "11.14.1",
-    "@mui/icons-material": "7.3.5",
-    "@mui/material": "7.3.5",
-    "@popperjs/core": "2.11.8",
     "@radix-ui/react-accordion": "1.2.3",
     "@radix-ui/react-alert-dialog": "1.1.6",
     "@radix-ui/react-aspect-ratio": "1.1.2",
@@ -87,20 +103,14 @@
     "cmdk": "1.1.1",
     "date-fns": "3.6.0",
     "embla-carousel-react": "8.6.0",
-    "fflate": "^0.8.2",
     "input-otp": "1.4.2",
     "lottie-react": "^2.4.1",
     "lucide-react": "0.487.0",
     "motion": "12.23.24",
-    "next-themes": "0.4.6",
     "react-day-picker": "9.13.0",
-    "react-dnd": "16.0.1",
-    "react-dnd-html5-backend": "16.0.1",
     "react-hook-form": "7.55.0",
     "react-resizable-panels": "2.1.7",
-    "react-responsive-masonry": "2.7.1",
     "react-router": "7.13.0",
-    "react-slick": "0.31.0",
     "recharts": "2.15.2",
     "sonner": "2.0.3",
     "tailwind-merge": "3.2.0",
@@ -115,6 +125,7 @@
     "@types/node": "^25.5.0",
     "@vitejs/plugin-react": "4.7.0",
     "jsdom": "^29.1.1",
+    "sharp": "^0.35.3",
     "tailwindcss": "4.1.12",
     "vite": "6.3.5",
     "vite-plugin-dts": "^4.5.4",

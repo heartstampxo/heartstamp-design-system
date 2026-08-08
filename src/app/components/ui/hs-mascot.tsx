@@ -4,42 +4,42 @@ import { Download, ChevronLeft, ChevronRight } from "lucide-react";
 import { Btn } from "./btn";
 
 // ── Posing Stampy ───────────────────────────────────────────
-import PS01 from "../../../assets/Mascots/Posing Stampy/Layer_1.png";
-import PS02 from "../../../assets/Mascots/Posing Stampy/Layer_1-1.png";
-import PS03 from "../../../assets/Mascots/Posing Stampy/Untitled 1.png";
-import PS04 from "../../../assets/Mascots/Posing Stampy/FLORA-Different Pose Creation 2-4f100992 1.png";
-import PS05 from "../../../assets/Mascots/Posing Stampy/Gemini_Generated_Image_exf9mqexf9mqexf9 1.png";
-import PS06 from "../../../assets/Mascots/Posing Stampy/Gemini_Generated_Image_inqi44inqi44inqi 1.png";
-import PS07 from "../../../assets/Mascots/Posing Stampy/Gemini_Generated_Image_nv3ud2nv3ud2nv3u 1.png";
+import PS01 from "../../../assets/Mascots/Posing Stampy/Layer_1.webp";
+import PS02 from "../../../assets/Mascots/Posing Stampy/Layer_1-1.webp";
+import PS03 from "../../../assets/Mascots/Posing Stampy/Untitled 1.webp";
+import PS04 from "../../../assets/Mascots/Posing Stampy/FLORA-Different Pose Creation 2-4f100992 1.webp";
+import PS05 from "../../../assets/Mascots/Posing Stampy/Gemini_Generated_Image_exf9mqexf9mqexf9 1.webp";
+import PS06 from "../../../assets/Mascots/Posing Stampy/Gemini_Generated_Image_inqi44inqi44inqi 1.webp";
+import PS07 from "../../../assets/Mascots/Posing Stampy/Gemini_Generated_Image_nv3ud2nv3ud2nv3u 1.webp";
 
 // ── Anatomy & Reference ─────────────────────────────────────
-import AN01 from "../../../assets/Mascots/Slider/Anatomy.png";
-import AN02 from "../../../assets/Mascots/Slider/Arms & Legs.png";
-import AN03 from "../../../assets/Mascots/Slider/Arms & Legs-1.png";
-import AN04 from "../../../assets/Mascots/Slider/Arms & Legs-2.png";
-import AN05 from "../../../assets/Mascots/Slider/Full Body.png";
-import AN06 from "../../../assets/Mascots/Slider/Full-Turn.png";
-import AN07 from "../../../assets/Mascots/Slider/Toolkit.png";
+import AN01 from "../../../assets/Mascots/Slider/Anatomy.webp";
+import AN02 from "../../../assets/Mascots/Slider/Arms & Legs.webp";
+import AN03 from "../../../assets/Mascots/Slider/Arms & Legs-1.webp";
+import AN04 from "../../../assets/Mascots/Slider/Arms & Legs-2.webp";
+import AN05 from "../../../assets/Mascots/Slider/Full Body.webp";
+import AN06 from "../../../assets/Mascots/Slider/Full-Turn.webp";
+import AN07 from "../../../assets/Mascots/Slider/Toolkit.webp";
 
 // ── Social Ready Poses ──────────────────────────────────────
-import SP01 from "../../../assets/Mascots/Social Ready Poses /01 - Full Body_Standing 1.png";
-import SP02 from "../../../assets/Mascots/Social Ready Poses /04 - Full Body_Hearts 1.png";
-import SP03 from "../../../assets/Mascots/Social Ready Poses /05 - Full Body_Heavy Lift 1.png";
-import SP04 from "../../../assets/Mascots/Social Ready Poses /06 - Full Body_Peek Blush 1.png";
-import SP05 from "../../../assets/Mascots/Social Ready Poses /07 - Full Body_Peek Smile 1.png";
-import SP06 from "../../../assets/Mascots/Social Ready Poses /08 - Full Body_Tear Eyes Happy 1.png";
+import SP01 from "../../../assets/Mascots/Social Ready Poses /01 - Full Body_Standing 1.webp";
+import SP02 from "../../../assets/Mascots/Social Ready Poses /04 - Full Body_Hearts 1.webp";
+import SP03 from "../../../assets/Mascots/Social Ready Poses /05 - Full Body_Heavy Lift 1.webp";
+import SP04 from "../../../assets/Mascots/Social Ready Poses /06 - Full Body_Peek Blush 1.webp";
+import SP05 from "../../../assets/Mascots/Social Ready Poses /07 - Full Body_Peek Smile 1.webp";
+import SP06 from "../../../assets/Mascots/Social Ready Poses /08 - Full Body_Tear Eyes Happy 1.webp";
 
 // ── Expressions ─────────────────────────────────────────────
-import EX01 from "../../../assets/Mascots/Social-Ready Expressions/Angry.png";
-import EX02 from "../../../assets/Mascots/Social-Ready Expressions/Excited Smile.png";
-import EX03 from "../../../assets/Mascots/Social-Ready Expressions/Laugh Cry.png";
-import EX04 from "../../../assets/Mascots/Social-Ready Expressions/Open Smile.png";
-import EX05 from "../../../assets/Mascots/Social-Ready Expressions/Rosey Smile.png";
-import EX06 from "../../../assets/Mascots/Social-Ready Expressions/Shocked.png";
-import EX07 from "../../../assets/Mascots/Social-Ready Expressions/Small Smile.png";
-import EX08 from "../../../assets/Mascots/Social-Ready Expressions/Streaming Tears.png";
-import EX09 from "../../../assets/Mascots/Social-Ready Expressions/Tears in Eyes.png";
-import EX10 from "../../../assets/Mascots/Social-Ready Expressions/Wink.png";
+import EX01 from "../../../assets/Mascots/Social-Ready Expressions/Angry.webp";
+import EX02 from "../../../assets/Mascots/Social-Ready Expressions/Excited Smile.webp";
+import EX03 from "../../../assets/Mascots/Social-Ready Expressions/Laugh Cry.webp";
+import EX04 from "../../../assets/Mascots/Social-Ready Expressions/Open Smile.webp";
+import EX05 from "../../../assets/Mascots/Social-Ready Expressions/Rosey Smile.webp";
+import EX06 from "../../../assets/Mascots/Social-Ready Expressions/Shocked.webp";
+import EX07 from "../../../assets/Mascots/Social-Ready Expressions/Small Smile.webp";
+import EX08 from "../../../assets/Mascots/Social-Ready Expressions/Streaming Tears.webp";
+import EX09 from "../../../assets/Mascots/Social-Ready Expressions/Tears in Eyes.webp";
+import EX10 from "../../../assets/Mascots/Social-Ready Expressions/Wink.webp";
 
 /* ── Types ─────────────────────────────────────────────────── */
 

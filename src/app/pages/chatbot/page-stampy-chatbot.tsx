@@ -3,9 +3,9 @@ import { Preview } from "../../components/docs/doc-preview";
 import { PropsTable } from "../../components/docs/doc-props-table";
 import { StampyChatbot } from "../../components/ui/hs-stampy-chat";
 import demoChatScript from "../../components/ui/hs-chat-demo-script";
-import chatMascotImg   from "../../../assets/stampy/mascot.png";
+import chatMascotImg   from "../../../assets/stampy/mascot.webp";
 import chatAiIconImg   from "../../../assets/stampy/ai-icon.png";
-import chatHomeBgImg   from "../../../assets/stampy/home-bg.png";
+import chatHomeBgImg   from "../../../assets/stampy/home-bg.webp";
 import stampyIconImg   from "../../../assets/stampy/icon.svg";
 import partyPopperImg  from "../../../assets/stampy/party-popper.gif";
 
@@ -35,9 +35,9 @@ const chatScript: ChatScript = {
 
 <StampyChatbot
   chatScript={chatScript}
-  mascotSrc="/stampy/mascot.png"
+  mascotSrc="/stampy/mascot.webp"
   aiIconSrc="/stampy/ai-icon.png"
-  backgroundSrc="/stampy/home-bg.png"
+  backgroundSrc="/stampy/home-bg.webp"
   stampyIconSrc="/stampy/icon.svg"
   partyPopperSrc="/stampy/party-popper.gif"
 />`;

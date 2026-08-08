@@ -21,9 +21,9 @@ import { ProfileNavDesktop } from "./profile-nav";
 import { HSEmblem } from "./hs-logo";
 import { StampyChatbot } from "./hs-stampy-chat";
 import demoChatScript from "./hs-chat-demo-script";
-import chatMascotImg    from "../../../assets/stampy/mascot.png";
+import chatMascotImg    from "../../../assets/stampy/mascot.webp";
 import chatAiIconImg    from "../../../assets/stampy/ai-icon.png";
-import chatHomeBgImg    from "../../../assets/stampy/home-bg.png";
+import chatHomeBgImg    from "../../../assets/stampy/home-bg.webp";
 import stampyIconImg    from "../../../assets/stampy/icon.svg";
 import partyPopperImg   from "../../../assets/stampy/party-popper.gif";
 

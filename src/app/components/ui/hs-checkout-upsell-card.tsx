@@ -1,6 +1,6 @@
 import React, { useCallback, useRef, useState } from "react";
 import { motion, useMotionValue, useSpring } from "motion/react";
-import stampyImg from "../../../assets/stampy/stampy-right-mascot.png";
+import stampyImg from "../../../assets/stampy/stampy-right-mascot.webp";
 import { Btn } from "./btn";
 import { HSEmblem } from "./hs-logo";
 import { Sep } from "./hs-sep";

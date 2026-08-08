@@ -5,7 +5,7 @@ import {
   useSpring,
   useTransform,
 } from "motion/react";
-import hsCoinImg from "../../../assets/hs-coin.png";
+import hsCoinImg from "../../../assets/hs-coin.webp";
 import { EASE } from "./hs-motion-utils";
 
 const SPRING = { stiffness: 120, damping: 18, mass: 0.8 };

@@ -1,6 +1,6 @@
 import React, { useId, useState } from "react";
 import { Btn } from "./btn";
-import defaultAvatar from "../../../assets/Mascots/Social-Ready Expressions/Small Smile.png";
+import defaultAvatar from "../../../assets/Mascots/Social-Ready Expressions/Small Smile.webp";
 import { FONT_BODY, FONT_HEADING } from "./hs-popover-kit";
 
 /* ═══════════════════════════════════════════════════════
