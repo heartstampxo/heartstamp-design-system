@@ -61,31 +61,30 @@ function NumBadge({ num }: { num: string }) {
 }
 
 /** Underlined text action in the OverflowMenu footer (left slot).
- *  While loading it is disabled and the spinner sits centred over the label —
- *  the label keeps its box, so the button never resizes or shunts the footer. */
+ *  While loading it is disabled and the label stays put — the spinner is laid out
+ *  inline before it (never stacked on top of it, which ghosted in Safari) and
+ *  inherits the label colour via currentColor. */
 function OverflowShowMoreBtn({ label, onClick, isLoading }: { label: string; onClick: () => void; isLoading?: boolean }) {
   return (
     <button
       type="button"
-      className="relative flex items-center px-[12px] py-[8px] cursor-pointer transition-opacity hover:opacity-70 disabled:cursor-not-allowed"
-      style={{ borderRadius: "var(--radius-button)" }}
+      className={cn(
+        "flex items-center gap-[6px] px-[12px] py-[8px] transition-opacity",
+        isLoading ? "cursor-not-allowed opacity-60" : "cursor-pointer hover:opacity-70",
+      )}
+      style={{ borderRadius: "var(--radius-button)", color: "var(--color-text-primary)" }}
       onClick={onClick}
       disabled={isLoading}
       aria-busy={isLoading}
     >
-      <p
-        className={cn("leading-[20px] text-[15px] underline whitespace-nowrap", isLoading && "invisible")}
-        style={{ ...dmSans500, color: "var(--color-text-primary)" }}
-      >
+      {isLoading && (
+        <svg className="shrink-0 animate-spin" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+          <circle cx="6.5" cy="6.5" r="5" stroke="currentColor" strokeWidth="1.5" strokeDasharray="20 12" />
+        </svg>
+      )}
+      <p className="leading-[20px] text-[15px] underline whitespace-nowrap" style={dmSans500}>
         {label}
       </p>
-      {isLoading && (
-        <span className="absolute inset-0 flex items-center justify-center">
-          <svg className="animate-spin" width="13" height="13" viewBox="0 0 13 13" fill="none">
-            <circle cx="6.5" cy="6.5" r="5" stroke="var(--color-brand-primary)" strokeWidth="1.5" strokeDasharray="20 12" />
-          </svg>
-        </span>
-      )}
     </button>
   );
 }
