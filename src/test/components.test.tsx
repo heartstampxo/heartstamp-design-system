@@ -813,6 +813,33 @@ describe('GridOverlay / GridInspector', () => {
     expect(gridBreakpointFor(1023).name).toBe('Tablet');
   });
 
+  it('widens the track to 1400px on the Wide tier, in step with tokens.css', () => {
+    /* The Wide media query lives in tokens.css, not grid.css, because it only
+       restates --grid-max-width. Two sources of truth for one breakpoint is
+       exactly the drift this asserts against: the helper below is what app
+       code branches on, and it has to agree with the CSS that actually ships. */
+    const tokens = readFileSync(join(process.cwd(), 'src/css/tokens.css'), 'utf8');
+    expect(tokens).toMatch(/--grid-max-width:\s*1200px/);
+    expect(tokens).toMatch(/@media\s*\(min-width:\s*2000px\)\s*\{\s*:root\s*\{\s*--grid-max-width:\s*1400px/s);
+
+    expect(gridBreakpointFor(2560)).toMatchObject({ name: 'Wide', columns: 12, gutter: 24, maxWidth: 1400 });
+    // Wide changes the track and nothing else, so spans stay put
+    expect(gridBreakpointFor(2560).columns).toBe(gridBreakpointFor(1440).columns);
+    expect(gridBreakpointFor(2560).gutter).toBe(gridBreakpointFor(1440).gutter);
+    expect(gridBreakpointFor(2560).margin).toBe(gridBreakpointFor(1440).margin);
+
+    // The 2000px boundary matches the media query: >= 2000 is Wide
+    expect(gridBreakpointFor(1999).name).toBe('Desktop');
+    expect(gridBreakpointFor(2000).name).toBe('Wide');
+
+    // A maximized Full HD window stays narrow; the tier is not resolution-keyed
+    expect(gridBreakpointFor(1905)).toMatchObject({ name: 'Desktop', maxWidth: 1200 });
+    // Every tier below Wide keeps the 1200px track
+    for (const w of [375, 768, 1024, 1440, 1920]) {
+      expect(gridBreakpointFor(w).maxWidth).toBe(1200);
+    }
+  });
+
   it('aligns to a target column instead of the viewport', () => {
     /* The original bug: the overlay was viewport-centred, so inside the docs
        shell (content offset by a sidebar) the columns could never line up. */
@@ -829,8 +856,19 @@ describe('GridOverlay / GridInspector', () => {
   it('spans the viewport when no target is given', () => {
     const { container } = render(<GridOverlay visible />);
     const el = container.querySelector<HTMLElement>('.hs-grid-overlay')!;
-    // No inline hooks — grid.css defaults to left:0 / width:100vw
+    // No inline hooks — grid.css supplies the left:0 / width:100% defaults
     expect(el.style.getPropertyValue('--grid-overlay-left')).toBe('');
+  });
+
+  it('sizes the viewport-mode overlay in %, not vw', () => {
+    /* 100vw includes the scrollbar; .hs-page-grid is centred by margin:auto
+       inside the content box, which does not. Mixing the two centres the guide
+       about half a scrollbar off the grid it is meant to measure, so the one
+       thing the overlay exists to prove is the thing it gets wrong. */
+    const css = readFileSync(join(process.cwd(), 'src/css/grid.css'), 'utf8');
+    const rule = css.slice(css.indexOf('.hs-grid-overlay {'), css.indexOf('.hs-grid-overlay--visible'));
+    expect(rule).toContain('var(--grid-overlay-width, 100%)');
+    expect(rule).not.toMatch(/width:\s*var\(--grid-overlay-width,\s*100vw\)/);
   });
 
   it('only shows the columns when visible', () => {
@@ -991,13 +1029,20 @@ describe('developer-facing docs stay in step with the code', () => {
     const page = read('src/app/App.tsx');
     const table = page.slice(page.indexOf('const breakpoints = ['), page.indexOf('const columnExamples'));
 
-    for (const width of [375, 800, 1440]) {
+    /* 2560 covers Wide, whose only distinguishing value is maxWidth — the card
+       renders identically to Desktop without it, so the docs would look right
+       while saying nothing. */
+    for (const width of [375, 800, 1440, 2560]) {
       const bp = gridBreakpointFor(width);
       const row = table.split('\n').find((l) => l.includes(`"${bp.name}"`))!;
       expect(row, `${bp.name} row`).toContain(`cols: ${bp.columns}`);
       expect(row, `${bp.name} row`).toContain(`gutter: "${bp.gutter}px"`);
       expect(row, `${bp.name} row`).toContain(`margin: "${bp.margin}px"`);
+      expect(row, `${bp.name} row`).toContain(`maxWidth: "${bp.maxWidth}px"`);
     }
+
+    // The card body has to actually render the max-width row, or the tier is invisible
+    expect(page).toContain('["Max width", bp.maxWidth]');
   });
 });
 

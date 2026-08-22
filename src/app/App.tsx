@@ -3330,9 +3330,10 @@ function PageTokensShadow() {
 function PageTokensGrid() {
 
   const breakpoints = [
-    { name: "Mobile",  range: "< 768px",    cols: 4,  gutter: "16px", margin: "16px" },
-    { name: "Tablet",  range: "768–1023px", cols: 12, gutter: "16px", margin: "16px" },
-    { name: "Desktop", range: "≥ 1024px",   cols: 12, gutter: "24px", margin: "16px" },
+    { name: "Mobile",  range: "< 768px",     cols: 4,  gutter: "16px", margin: "16px", maxWidth: "1200px" },
+    { name: "Tablet",  range: "768–1023px",  cols: 12, gutter: "16px", margin: "16px", maxWidth: "1200px" },
+    { name: "Desktop", range: "1024–1999px", cols: 12, gutter: "24px", margin: "16px", maxWidth: "1200px" },
+    { name: "Wide",    range: "≥ 2000px",    cols: 12, gutter: "24px", margin: "16px", maxWidth: "1400px" },
   ];
 
   const columnExamples = [
@@ -3370,15 +3371,18 @@ function PageTokensGrid() {
           { token: "--grid-columns",   value: "12",     category: "Grid", usage: "Number of columns (desktop & tablet)" },
           { token: "--grid-gutter",    value: "24px",   category: "Grid", usage: "Column gap on desktop; 16px on mobile & tablet" },
           { token: "--grid-margin",    value: "16px",   category: "Grid", usage: "Outer horizontal padding for the grid track" },
-          { token: "--grid-max-width", value: "1200px", category: "Grid", usage: "Maximum content width, centered with margin: auto" },
+          { token: "--grid-max-width", value: "1200px → 1400px", category: "Grid", usage: "Maximum content width, centered with margin: auto. Widens to 1400px at viewports ≥ 2000px" },
         ]} />
       </DocSection>
 
       {/* ── Breakpoints ───────────────────────────────────────── */}
-      <DocSection title="Breakpoints" desc="Column count adapts at two breakpoints. Gutter reduces on smaller viewports; margin stays 16px throughout.">
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
+      <DocSection title="Breakpoints" desc="Column count adapts at two breakpoints, and the track widens at a third. Gutter reduces on smaller viewports; margin stays 16px throughout. Wide is keyed on viewport width rather than screen resolution, so a 4K display at 200% scaling reports the same 1920px viewport as a Full HD one and correctly stays on Desktop.">
+        {/* auto-fit rather than a fixed 4, so the fourth card wraps instead of
+            cramping when the docs shell is narrow */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(190px, 1fr))", gap: 12 }}>
           {breakpoints.map((bp, bi) => {
-            const isDesktop = bi === 2;
+            /* Tints the two desktop-class tiers, Desktop and Wide */
+            const isDesktop = bi >= 2;
             return (
               <div key={bp.name} style={{ border: "1px solid var(--border)", borderRadius: 12, overflow: "hidden", background: "var(--bg)" }}>
                 {/* Card header with mini column preview */}
@@ -3396,7 +3400,7 @@ function PageTokensGrid() {
                 </div>
                 {/* Specs */}
                 <div style={{ padding: "14px 18px", display: "flex", flexDirection: "column", gap: 9 }}>
-                  {([["Columns", String(bp.cols)], ["Gutter", bp.gutter], ["Margin", bp.margin]] as [string, string][]).map(([k, v]) => (
+                  {([["Columns", String(bp.cols)], ["Gutter", bp.gutter], ["Margin", bp.margin], ["Max width", bp.maxWidth]] as [string, string][]).map(([k, v]) => (
                     <div key={k} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                       <span style={{ fontSize: 12, color: "var(--muted-fg)" }}>{k}</span>
                       <code style={{ fontSize: 11.5, fontFamily: "monospace", fontWeight: 600, color: "var(--fg)", background: "var(--color-element-disabled)", padding: "2px 8px", borderRadius: 4 }}>{v}</code>

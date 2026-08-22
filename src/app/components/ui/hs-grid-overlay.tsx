@@ -24,19 +24,41 @@ export interface GridBreakpoint {
   columns: number;
   gutter: number;
   margin: number;
+  /** Width of the centred track, from --grid-max-width. */
+  maxWidth: number;
 }
 
+/**
+ * The active tier for a viewport width.
+ *
+ * Wide is the one tier that differs from its neighbour only in maxWidth, which
+ * is why that field exists: without it the inspector reports Desktop and Wide
+ * identically and the readout cannot show the grid widening.
+ *
+ * The 2000px cut is a viewport measurement, not a screen-resolution one. See
+ * the note in tokens.css for why resolution is the wrong signal here.
+ */
 export function gridBreakpointFor(width: number): GridBreakpoint {
-  if (width < 768) return { name: "Mobile", columns: 4, gutter: 16, margin: 16 };
-  if (width < 1024) return { name: "Tablet", columns: 12, gutter: 16, margin: 16 };
-  return { name: "Desktop", columns: 12, gutter: 24, margin: 16 };
+  if (width < 768) return { name: "Mobile", columns: 4, gutter: 16, margin: 16, maxWidth: 1200 };
+  if (width < 1024) return { name: "Tablet", columns: 12, gutter: 16, margin: 16, maxWidth: 1200 };
+  if (width < 2000) return { name: "Desktop", columns: 12, gutter: 24, margin: 16, maxWidth: 1200 };
+  return { name: "Wide", columns: 12, gutter: 24, margin: 16, maxWidth: 1400 };
 }
 
 /** Resolves a selector or element to a node, SSR-safely. */
 const resolve = (target?: string | HTMLElement | null): HTMLElement | null => {
   if (!target) return null;
   if (typeof target !== "string") return target;
-  return typeof document === "undefined" ? null : document.querySelector<HTMLElement>(target);
+  if (typeof document === "undefined") return null;
+  /* querySelector throws on a malformed selector, and this runs inside an
+     effect — an unguarded typo in alignTo would take the overlay down with it,
+     the same failure the ResizeObserver guard below avoids. Falling back to the
+     viewport is the right degradation: the guide still draws. */
+  try {
+    return document.querySelector<HTMLElement>(target);
+  } catch {
+    return null;
+  }
 };
 
 /* ═══════════════════════════════════════════════════════
@@ -232,7 +254,13 @@ export interface GridInspectorProps {
   alignTo?: string | HTMLElement | null;
   /** Start with the overlay on. */
   defaultVisible?: boolean;
-  /** Bind a keyboard shortcut — Ctrl+G, or Cmd+G on a Mac. Default true. */
+  /**
+   * Bind a keyboard shortcut — Ctrl+G, or Cmd+G on a Mac. Default true.
+   *
+   * This calls preventDefault, and Cmd/Ctrl+G is the browser's own "find
+   * again". Pass false on anything a visitor will see, or keep the whole
+   * inspector out of the production bundle — see the note on GridInspector.
+   */
   shortcut?: boolean;
   /** Pin the panel to the top of the scroller so it stays reachable. Default true. */
   sticky?: boolean;
@@ -246,8 +274,18 @@ export interface GridInspectorProps {
 
 /**
  * Sticky bar that toggles the column guide and reports the live grid values —
- * which breakpoint is active, and the columns, gutter and margin it implies.
- * Stays put while scrolling so the grid can be studied against real content.
+ * which breakpoint is active, and the columns, gutter, margin and track width
+ * it implies. Stays put while scrolling so the grid can be studied against
+ * real content.
+ *
+ * This is a design-QA tool, not page furniture. It renders a visible control
+ * and claims Cmd/Ctrl+G, so gate it out of production rather than shipping it
+ * on a live landing page:
+ *
+ *   {process.env.NODE_ENV !== "production" && <GridInspector alignTo="main" />}
+ *
+ * GridOverlay on its own carries no shortcut and no UI, so that is the piece
+ * to reach for behind your own toggle.
  */
 export function GridInspector({
   alignTo,
@@ -320,7 +358,11 @@ export function GridInspector({
               <>
                 <span style={strongStyle}>{bp.name}</span> · {viewport}px ·{" "}
                 <span style={strongStyle}>{bp.columns}</span> columns ·{" "}
-                {bp.gutter}px gutter · {bp.margin}px margin
+                {bp.gutter}px gutter · {bp.margin}px margin ·{" "}
+                {/* The track width is the whole difference between Desktop and
+                    Wide, so it has to be on the readout for the tier to be
+                    legible at all. */}
+                <span style={strongStyle}>{bp.maxWidth}px</span> track
               </>
             ) : (
               description

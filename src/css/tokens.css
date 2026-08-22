@@ -203,6 +203,25 @@
   --btn-secondary-ghost-hover-bdr: rgba(36, 36, 35, 0.15);
 }
 
+/*
+ * Wide tier — the track widens to 1400px on large displays.
+ *
+ * Keyed on viewport width, not screen resolution: a 4K panel at 200% scaling
+ * reports the same 1920px viewport as a Full HD panel at 100%, and a
+ * resolution query would also widen the track inside a half-width window and
+ * overflow it. 2000px sits clear of a maximized Full HD window (~1905px) and
+ * of a maximized 2K one (~2545px); 1920px would straddle the former, since
+ * macOS overlay scrollbars leave the full width where Windows does not.
+ *
+ * Columns and gutter are unchanged, so the extra 200px all goes to column
+ * width (75.3px → 92px) and the span helpers are unaffected.
+ */
+@media (min-width: 2000px) {
+  :root {
+    --grid-max-width: 1400px;
+  }
+}
+
 .dark {
   /* ── Colors (dark mode overrides) ───────────────────────── */
   --bg:                #141414;
