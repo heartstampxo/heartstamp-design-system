@@ -5753,9 +5753,10 @@ export default function App() {
           </div>
         </aside>
 
-        {/* MAIN */}
-        <main style={{ flex: 1, overflowY: "auto", padding: "28px 24px", transition: "background 0.15s ease, color 0.15s ease", ...mainStyle }}>
-          <div style={{ maxWidth: 1140, margin: "0 auto" }}>
+        {/* MAIN — the content column IS the grid track (1200px, 1400px on the
+            wide tier), so pages align with the GridInspector overlay. */}
+        <main style={{ flex: 1, overflowY: "auto", padding: "28px 0", transition: "background 0.15s ease, color 0.15s ease", ...mainStyle }}>
+          <div style={{ maxWidth: "var(--grid-max-width, 1200px)", margin: "0 auto", padding: "0 var(--grid-margin, 16px)" }}>
             <PageComp id={page} />
           </div>
         </main>

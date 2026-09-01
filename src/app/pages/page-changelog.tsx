@@ -30,6 +30,15 @@ const TAG_STYLES: Record<string, { bg: string; color: string }> = {
 
 const RELEASES: Release[] = [
   {
+    version: "2.1.52", date: "1 Sep 2026",
+    title: "Docs site on the grid",
+    tags: ["fix", "design"],
+    items: [
+      "On wide viewports the grid overlay stayed at 1200px while the inspector readout correctly said 1400px: the docs app never imported tokens.css, which carries the 2000px media override for --grid-max-width. The grid tokens and wide-tier media query now also live in the docs theme.css.",
+      "The docs content column now rides the grid track itself: --grid-max-width wide with the grid's 16px margins (was a hardcoded 1140px), so pages widen to 1400px on the wide tier and align with the GridInspector overlay.",
+    ],
+  },
+  {
     version: "2.1.51", date: "1 Sep 2026",
     title: "Token audit: Tailwind values and docs chrome",
     tags: ["tokens", "docs"],
