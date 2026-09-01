@@ -34,7 +34,7 @@ export function PageChatBubbles() {
         <Preview
           title="Working spinner"
           height={90}
-          code={`import { WorkingSpinner } from '@heartstamp/design-system';
+          code={`import { WorkingSpinner } from '@heartstampxo/design-system';
 
 <WorkingSpinner text="Working on your request..." delay={0} />`}
         >
@@ -56,7 +56,7 @@ export function PageChatBubbles() {
         <Preview
           title="Stampy message bubble"
           height={110}
-          code={`import { StampyBubble } from '@heartstamp/design-system';
+          code={`import { StampyBubble } from '@heartstampxo/design-system';
 
 <StampyBubble
   text="I can definitely help you put together a great birthday card. To get started:"
@@ -84,7 +84,7 @@ export function PageChatBubbles() {
         <Preview
           title="Bubble button"
           height={100}
-          code={`import { BubbleButton } from '@heartstamp/design-system';
+          code={`import { BubbleButton } from '@heartstampxo/design-system';
 
 // Available (not yet selected)
 <BubbleButton label="What kind of vibe are you going for?" isUsed={false} onClick={() => handleSelect("vibe")} />
@@ -112,7 +112,7 @@ export function PageChatBubbles() {
         <Preview
           title="User message bubble"
           height={80}
-          code={`import { UserBubble } from '@heartstamp/design-system';
+          code={`import { UserBubble } from '@heartstampxo/design-system';
 
 <UserBubble text="I'm making a card for my girlfriend that will make her laugh for her birthday" />`}
         >
@@ -133,7 +133,7 @@ export function PageChatBubbles() {
         <Preview
           title="Style carousel"
           height={200}
-          code={`import { StyleCarousel } from '@heartstamp/design-system';
+          code={`import { StyleCarousel } from '@heartstampxo/design-system';
 import { useState } from 'react';
 
 function StyleCarouselDemo() {
@@ -160,7 +160,7 @@ function StyleCarouselDemo() {
         <Preview
           title="Tada banner"
           height={160}
-          code={`import { TadaBanner } from '@heartstamp/design-system';
+          code={`import { TadaBanner } from '@heartstampxo/design-system';
 
 <TadaBanner
   loadingDuration={8000}

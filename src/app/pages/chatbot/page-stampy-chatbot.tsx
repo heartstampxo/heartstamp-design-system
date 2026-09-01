@@ -9,8 +9,8 @@ import chatHomeBgImg   from "../../../assets/stampy/home-bg.webp";
 import stampyIconImg   from "../../../assets/stampy/icon.svg";
 import partyPopperImg  from "../../../assets/stampy/party-popper.gif";
 
-const DEMO_CODE = `import { StampyChatbot } from '@heartstamp/design-system';
-import type { ChatScript } from '@heartstamp/design-system';
+const DEMO_CODE = `import { StampyChatbot } from '@heartstampxo/design-system';
+import type { ChatScript } from '@heartstampxo/design-system';
 
 const chatScript: ChatScript = {
   examplePrompts: [

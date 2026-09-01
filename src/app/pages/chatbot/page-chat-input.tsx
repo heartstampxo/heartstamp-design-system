@@ -21,7 +21,7 @@ export function PageChatInput() {
         <Preview
           title="Chat home input"
           height={140}
-          code={`import { ChatHomeInput } from '@heartstamp/design-system';
+          code={`import { ChatHomeInput } from '@heartstampxo/design-system';
 
 <ChatHomeInput
   placeholder="Ask, search or create your card"
@@ -46,7 +46,7 @@ export function PageChatInput() {
         <Preview
           title="Chat conversation input"
           height={140}
-          code={`import { ChatConversationInput } from '@heartstamp/design-system';
+          code={`import { ChatConversationInput } from '@heartstampxo/design-system';
 
 <ChatConversationInput
   aiIconSrc="/stampy/ai-icon.png"

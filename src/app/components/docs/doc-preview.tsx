@@ -31,20 +31,19 @@ interface PreviewProps {
 
 /**
  * Rewrite every `from '@/components/ui/xxx'` (or double-quoted) import
- * to `from '@heartstamp/design-system'`, then merge any duplicate import
+ * to `from '@heartstampxo/design-system'`, then merge any duplicate import
  * lines into a single consolidated import statement.
  */
 function normalizeImports(code: string | undefined): string {
   if (!code) return "";
-  // Step 1 — swap local paths to the npm package
-  const swapped = code.replace(
-    /from\s+(['"])@\/components\/ui\/[^'"]+\1/g,
-    "from '@heartstamp/design-system'"
-  );
+  const PKG = "@heartstampxo/design-system";
+  // Step 1 — swap local paths (and the retired @heartstamp scope) to the npm package
+  const swapped = code
+    .replace(/from\s+(['"])@\/components\/ui\/[^'"]+\1/g, `from '${PKG}'`)
+    .replace(/@heartstamp\/design-system/g, PKG);
 
-  // Step 2 — merge multiple `import { … } from '@heartstamp/design-system'` lines
+  // Step 2 — merge multiple `import { … } from '@heartstampxo/design-system'` lines
   const lines = swapped.split("\n");
-  const PKG = "@heartstamp/design-system";
   const hsLines: number[] = [];
 
   lines.forEach((line, i) => {

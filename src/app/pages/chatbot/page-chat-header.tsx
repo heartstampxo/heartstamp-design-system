@@ -33,7 +33,7 @@ export function PageChatHeader() {
         <Preview
           title="Chat header — default"
           height={120}
-          code={`import { ChatHeader } from '@heartstamp/design-system';
+          code={`import { ChatHeader } from '@heartstampxo/design-system';
 import { useState } from 'react';
 
 const [expanded, setExpanded] = useState(false);
@@ -67,7 +67,7 @@ const [expanded, setExpanded] = useState(false);
         <Preview
           title="Chat header — expanded"
           height={120}
-          code={`import { ChatHeader } from '@heartstamp/design-system';
+          code={`import { ChatHeader } from '@heartstampxo/design-system';
 
 // Pass expanded={true} to show the collapse icon instead of expand
 <ChatHeader

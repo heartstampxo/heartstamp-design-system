@@ -112,8 +112,8 @@ export function PageChatbotOverflowMenus() {
         <Preview
           title="Overflow menu"
           height={320}
-          code={`import { OverflowMenu } from '@heartstamp/design-system';
-import type { OverflowPage } from '@heartstamp/design-system';
+          code={`import { OverflowMenu } from '@heartstampxo/design-system';
+import type { OverflowPage } from '@heartstampxo/design-system';
 
 <OverflowMenu
   pages={[{
@@ -144,7 +144,7 @@ import type { OverflowPage } from '@heartstamp/design-system';
         <Preview
           title="Multi-page overflow (paginated)"
           height={320}
-          code={`import { OverflowMenu } from '@heartstamp/design-system';
+          code={`import { OverflowMenu } from '@heartstampxo/design-system';
 
 // Pass multiple pages to enable pagination arrows
 <OverflowMenu
@@ -232,8 +232,8 @@ import type { OverflowPage } from '@heartstamp/design-system';
         <Preview
           title="Checklist overflow"
           height={380}
-          code={`import { ChecklistOverflowMenu } from '@heartstamp/design-system';
-import type { ChecklistPage } from '@heartstamp/design-system';
+          code={`import { ChecklistOverflowMenu } from '@heartstampxo/design-system';
+import type { ChecklistPage } from '@heartstampxo/design-system';
 
 <ChecklistOverflowMenu
   pages={[{
@@ -308,8 +308,8 @@ import type { ChecklistPage } from '@heartstamp/design-system';
         <Preview
           title="Template card picker"
           height={440}
-          code={`import { TemplateOverflowMenu } from '@heartstamp/design-system';
-import type { TemplateCard } from '@heartstamp/design-system';
+          code={`import { TemplateOverflowMenu } from '@heartstampxo/design-system';
+import type { TemplateCard } from '@heartstampxo/design-system';
 
 <TemplateOverflowMenu
   header="Pick a template"
@@ -389,7 +389,7 @@ import type { TemplateCard } from '@heartstamp/design-system';
         <Preview
           title="ActionOverflowMenu (V1)"
           height={240}
-          code={`import { ActionOverflowMenu } from '@heartstamp/design-system';
+          code={`import { ActionOverflowMenu } from '@heartstampxo/design-system';
 
 <ActionOverflowMenu
   config={{
@@ -430,7 +430,7 @@ import type { TemplateCard } from '@heartstamp/design-system';
         <Preview
           title="ActionOverflowMenuList (V2)"
           height={420}
-          code={`import { ActionOverflowMenuList } from '@heartstamp/design-system';
+          code={`import { ActionOverflowMenuList } from '@heartstampxo/design-system';
 
 <ActionOverflowMenuList
   config={{
@@ -480,7 +480,7 @@ import type { TemplateCard } from '@heartstamp/design-system';
         <Preview
           title="ActionChecklistOverflowMenu"
           height={420}
-          code={`import { ActionChecklistOverflowMenu } from '@heartstamp/design-system';
+          code={`import { ActionChecklistOverflowMenu } from '@heartstampxo/design-system';
 
 <ActionChecklistOverflowMenu
   config={{
@@ -533,7 +533,7 @@ import type { TemplateCard } from '@heartstamp/design-system';
         <Preview
           title="SignupOverflowMenu"
           height={500}
-          code={`import { SignupOverflowMenu } from '@heartstamp/design-system';
+          code={`import { SignupOverflowMenu } from '@heartstampxo/design-system';
 
 <SignupOverflowMenu
   onClose={() => setOpen(false)}
@@ -581,7 +581,7 @@ import type { TemplateCard } from '@heartstamp/design-system';
         <Preview
           title="OTPOverflowMenu"
           height={460}
-          code={`import { OTPOverflowMenu } from '@heartstamp/design-system';
+          code={`import { OTPOverflowMenu } from '@heartstampxo/design-system';
 
 <OTPOverflowMenu
   buttonLabel="Verify"
@@ -626,7 +626,7 @@ import type { TemplateCard } from '@heartstamp/design-system';
         <Preview
           title="Occasion suggestions"
           height={260}
-          code={`import { OccasionSuggestions } from '@heartstamp/design-system';
+          code={`import { OccasionSuggestions } from '@heartstampxo/design-system';
 
 <OccasionSuggestions
   suggestions={["Birthday", "Thank you", "Anniversary", "Graduation"]}

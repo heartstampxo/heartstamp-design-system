@@ -22,7 +22,7 @@ export function PageChatHomeScreen() {
           title="Chat home screen"
           height={210}
           fullWidth
-          code={`import { ChatHomeScreen } from '@heartstamp/design-system';
+          code={`import { ChatHomeScreen } from '@heartstampxo/design-system';
 
 <ChatHomeScreen
   mascotSrc="/stampy/mascot.webp"
@@ -51,7 +51,7 @@ export function PageChatHomeScreen() {
         <Preview
           title="Occasion suggestions"
           height={220}
-          code={`import { OccasionSuggestions } from '@heartstamp/design-system';
+          code={`import { OccasionSuggestions } from '@heartstampxo/design-system';
 
 <OccasionSuggestions
   suggestions={["Birthday", "Thank you", "Anniversary", "Graduation"]}

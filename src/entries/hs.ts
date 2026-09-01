@@ -59,5 +59,6 @@ export * from '../app/components/ui/hs-shipping-method-card';
 export * from '../app/components/ui/hs-checkout-upsell-card';
 export * from '../app/components/ui/hs-order-summary-card';
 export * from '../app/components/ui/hs-website-nav';
+export * from '../app/components/ui/hs-website-nav-v2'; /* testing phase */
 export * from '../app/components/ui/profile-nav';
 export * from '../app/components/ui/stepper';

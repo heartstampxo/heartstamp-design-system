@@ -7,6 +7,7 @@ import { Stepper as StepperComp, HorizontalSwapStepper, type StepDef } from "./c
 import { TopNavDesktop, TopNavMobile } from "./components/ui/hs-nav";
 import { EditorTopNav, EditorTopNavDesktop } from "./components/ui/hs-editor-nav";
 import { WebsiteNav, WebsiteNavMobile } from "./components/ui/hs-website-nav";
+import { WebsiteNavV2 } from "./components/ui/hs-website-nav-v2";
 import { ColorPicker } from "./components/ui/hs-color-picker";
 import { PillTabs } from "./components/ui/hs-pill-tabs";
 import { Footer } from "./components/ui/hs-footer";
@@ -251,7 +252,7 @@ function PageButton() {
     <DocSection title="Brand Buttons" desc="Pre-styled lg buttons for third-party sign-in and sharing flows. Each ships with its own brand colour, hover state, and logo — drop them in without any extra configuration.">
       <Preview
         title="Brand buttons"
-        code={`import { AppleBtn, GoogleBtn, AmazonBtn, LinkBtn } from "@/components/ui/hs-brand-btn";\n\n{/* Payment / auth row */}\n<div style={{ display: "flex", gap: "var(--space-3)" }}>\n  <AppleBtn />\n  <GoogleBtn />\n</div>\n\n{/* Additional brand buttons */}\n<AmazonBtn />\n<LinkBtn />`}
+        code={`import { AppleBtn, GoogleBtn, AmazonBtn, LinkBtn } from "@heartstampxo/design-system";\n\n{/* Payment / auth row */}\n<div style={{ display: "flex", gap: "var(--space-3)" }}>\n  <AppleBtn />\n  <GoogleBtn />\n</div>\n\n{/* Additional brand buttons */}\n<AmazonBtn />\n<LinkBtn />`}
         height={220}
       >
         <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-3)" }}>
@@ -529,7 +530,7 @@ function PageKbd() {
     <DocPage title="Kbd" subtitle="Displays a keyboard key or shortcut. Use KbdGroup to combine multiple keys." sourceSlug="kbd">
 
       <DocSection title="Single Key" desc="Use Kbd to display a single keyboard key.">
-        <Preview title="Single key" code={`import { Kbd } from "@/components/ui/hs-kbd";\n\n<Kbd>⌘</Kbd>\n<Kbd>K</Kbd>\n<Kbd>Enter</Kbd>\n<Kbd>Esc</Kbd>`}>
+        <Preview title="Single key" code={`import { Kbd } from "@heartstampxo/design-system";\n\n<Kbd>⌘</Kbd>\n<Kbd>K</Kbd>\n<Kbd>Enter</Kbd>\n<Kbd>Esc</Kbd>`}>
           <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
             <Kbd>⌘</Kbd>
             <Kbd>K</Kbd>
@@ -540,7 +541,7 @@ function PageKbd() {
       </DocSection>
 
       <DocSection title="Group" desc="Mac: symbol and key combined in one badge. Windows: full shortcut in one badge.">
-        <Preview title="Key group" code={`import { Kbd } from "@/components/ui/hs-kbd";\n\n// Mac\n<Kbd>⌘K</Kbd>\n\n// Windows\n<Kbd>Ctrl+P</Kbd>`}>
+        <Preview title="Key group" code={`import { Kbd } from "@heartstampxo/design-system";\n\n// Mac\n<Kbd>⌘K</Kbd>\n\n// Windows\n<Kbd>Ctrl+P</Kbd>`}>
           <div style={{ display: "flex", alignItems: "center", gap: "var(--space-5)" }}>
             <Kbd>⌘K</Kbd>
             <Kbd>Ctrl+P</Kbd>
@@ -1000,7 +1001,7 @@ function PageCard() {
     >
       <Preview
         title="Payment method card"
-        code={`import { PaymentMethodCard } from "@/components/ui/hs-payment-method-card";\n\n<PaymentMethodCard brand="visa"       type="Credit" lastFour="6754" expiry="05/2027" selected />\n<PaymentMethodCard brand="visa"       type="Debit"  lastFour="5644" expiry="09/2026" />\n<PaymentMethodCard brand="mastercard" type="Credit" lastFour="1234" expiry="11/2028" />\n<PaymentMethodCard brand="amex"       type="Credit" lastFour="5678" expiry="03/2026" />\n<PaymentMethodCard brand="discover"   type="Debit"  lastFour="9012" expiry="08/2027" />\n<PaymentMethodCard brand="unionpay"   type="Credit" lastFour="3456" expiry="06/2029" />`}
+        code={`import { PaymentMethodCard } from "@heartstampxo/design-system";\n\n<PaymentMethodCard brand="visa"       type="Credit" lastFour="6754" expiry="05/2027" selected />\n<PaymentMethodCard brand="visa"       type="Debit"  lastFour="5644" expiry="09/2026" />\n<PaymentMethodCard brand="mastercard" type="Credit" lastFour="1234" expiry="11/2028" />\n<PaymentMethodCard brand="amex"       type="Credit" lastFour="5678" expiry="03/2026" />\n<PaymentMethodCard brand="discover"   type="Debit"  lastFour="9012" expiry="08/2027" />\n<PaymentMethodCard brand="unionpay"   type="Credit" lastFour="3456" expiry="06/2029" />`}
         height={520}
       >
         <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)", width: "100%" }}>
@@ -1044,7 +1045,7 @@ function PageCard() {
     >
       <Preview
         title="Shipping method card"
-        code={`import { ShippingMethodCard } from "@/components/ui/hs-shipping-method-card";\n\n<ShippingMethodCard tag="Economy"  name="Standard Shipping"  estimate="Arrives Oct 15–17" price="Free"  selected />\n<ShippingMethodCard tag="Standard" name="Express Shipping"  estimate="Arrives Oct 12–13" price="$4.99" />\n<ShippingMethodCard tag="Rush"     name="Overnight Shipping" estimate="Arrives Oct 11"    price="$9.99" />`}
+        code={`import { ShippingMethodCard } from "@heartstampxo/design-system";\n\n<ShippingMethodCard tag="Economy"  name="Standard Shipping"  estimate="Arrives Oct 15–17" price="Free"  selected />\n<ShippingMethodCard tag="Standard" name="Express Shipping"  estimate="Arrives Oct 12–13" price="$4.99" />\n<ShippingMethodCard tag="Rush"     name="Overnight Shipping" estimate="Arrives Oct 11"    price="$9.99" />`}
         height={420}
       >
         <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)", width: "100%" }}>
@@ -1083,7 +1084,7 @@ function PageCard() {
     >
       <Preview
         title="Checkout upsell card"
-        code={`import { CheckoutUpsellCard } from "@/components/ui/hs-checkout-upsell-card";\n\n<CheckoutUpsellCard\n  onAdd={(qty) => console.log("add", qty)}\n  onDismiss={() => console.log("dismissed")}\n/>`}
+        code={`import { CheckoutUpsellCard } from "@heartstampxo/design-system";\n\n<CheckoutUpsellCard\n  onAdd={(qty) => console.log("add", qty)}\n  onDismiss={() => console.log("dismissed")}\n/>`}
         height={260}
       >
         <CheckoutUpsellCard
@@ -1114,7 +1115,7 @@ function PageCard() {
     <DocSection title="Order summary card">
       <Preview
         title="Order summary card"
-        code={`import { OrderSummaryCard } from "@/components/ui/hs-order-summary-card";\n\n<OrderSummaryCard\n  shippingPrice="$3.50"\n  onChangeAddress={() => {}}\n  onChangeShipping={() => {}}\n  lineItems={[\n    { label: "1x Cards", price: "$6.99" },\n    { label: "1x Super Card", price: "$3.00" },\n    { label: "Shipping", price: "$3.45" },\n  ]}\n  subtotal="$13.44"\n  taxes="$0.00"\n  total="$13.44"\n/>`}
+        code={`import { OrderSummaryCard } from "@heartstampxo/design-system";\n\n<OrderSummaryCard\n  shippingPrice="$3.50"\n  onChangeAddress={() => {}}\n  onChangeShipping={() => {}}\n  lineItems={[\n    { label: "1x Cards", price: "$6.99" },\n    { label: "1x Super Card", price: "$3.00" },\n    { label: "Shipping", price: "$3.45" },\n  ]}\n  subtotal="$13.44"\n  taxes="$0.00"\n  total="$13.44"\n/>`}
         height={600}
         contentAlign="start"
       >
@@ -1316,7 +1317,7 @@ function PageToast() {
   return <DocPage title="Toast" subtitle="A succinct message that is displayed temporarily." sourceSlug="toast">
     <DocSection title="Live Demo">
       <Callout variant="info">Click a button to trigger a toast notification.</Callout>
-      <Preview title="Toast demo" code={`import { useToast } from "@/hooks/use-toast";\n\nconst { toast } = useToast();\n\ntoast({\n  title: "Scheduled: Catch up",\n  description: "Friday, February 10, 2023 at 5:57 PM",\n});\n\n// With variant:\ntoast({ variant: "destructive", title: "Error", description: "Something went wrong." });`} height={140}>
+      <Preview title="Toast demo" code={`import { Toaster } from "@heartstampxo/design-system";\nimport { toast } from "sonner";\n\n// Mount <Toaster /> once at the app root, then fire from anywhere:\ntoast("Scheduled: Catch up", {\n  description: "Friday, February 10, 2023 at 5:57 PM",\n});\n\ntoast.error("Something went wrong.");\ntoast.success("Card saved.");`} height={140}>
         <div style={{ position: "relative", zIndex: 0 }}>
           <div style={{ display: "flex", gap: "var(--space-2)", flexWrap: "wrap", justifyContent: "center" }}>
             {[["default", "Default"], ["success", "Success"], ["error", "Destructive"], ["warning", "Warning"]].map(([t, l]) => (
@@ -1839,7 +1840,7 @@ function PageProgress() {
 function PageCalendar() {
   return <DocPage title="Calendar" subtitle="A date field component that allows users to enter and edit date." sourceSlug="calendar">
     <DocSection title="Default">
-      <Preview title="Calendar" code={`import { Calendar } from "@/components/ui/calendar";\n\nexport function CalendarDemo() {\n  const [date, setDate] = React.useState<Date | undefined>(new Date());\n  return (\n    <Calendar\n      mode="single"\n      selected={date}\n      onSelect={setDate}\n      className="rounded-md border"\n    />\n  );\n}`} height={280}>
+      <Preview title="Calendar" code={`import { Calendar } from "@heartstampxo/design-system";\n\nexport function CalendarDemo() {\n  const [date, setDate] = React.useState<Date | undefined>(new Date());\n  return (\n    <Calendar\n      mode="single"\n      selected={date}\n      onSelect={setDate}\n      className="rounded-md border"\n    />\n  );\n}`} height={280}>
         <CalMini />
       </Preview>
     </DocSection>
@@ -2118,7 +2119,7 @@ function PageStepper() {
 ═══════════════════════════════════════════════════════════ */
 function PageFooter() {
   const autoCode =
-`import { Footer } from "@/components/ui/hs-footer";
+`import { Footer } from "@heartstampxo/design-system";
 
 <Footer />`;
 
@@ -2151,12 +2152,12 @@ function PageFooter() {
 ═══════════════════════════════════════════════════════════ */
 function PageTopNav() {
   const desktopCode =
-`import { TopNavDesktop } from "@/components/ui/hs-nav";
+`import { TopNavDesktop } from "@heartstampxo/design-system";
 
 <TopNavDesktop />`;
 
   const mobileCode =
-`import { TopNavMobile } from "@/components/ui/hs-nav";
+`import { TopNavMobile } from "@heartstampxo/design-system";
 
 // Tap the hamburger (≡) to open the slide-out drawer
 <TopNavMobile />`;
@@ -2200,22 +2201,22 @@ function PageTopNav() {
 
 function PageEditorTopNav() {
   const basicCode =
-`import { EditorTopNav } from "@/components/ui/hs-editor-nav";
+`import { EditorTopNav } from "@heartstampxo/design-system";
 
 <EditorTopNav />`;
 
   const cartCode =
-`import { EditorTopNav } from "@/components/ui/hs-editor-nav";
+`import { EditorTopNav } from "@heartstampxo/design-system";
 
 <EditorTopNav cartCount={3} />`;
 
   const desktopCode =
-`import { EditorTopNavDesktop } from "@/components/ui/hs-editor-nav";
+`import { EditorTopNavDesktop } from "@heartstampxo/design-system";
 
 <EditorTopNavDesktop />`;
 
   const desktopCartCode =
-`import { EditorTopNavDesktop } from "@/components/ui/hs-editor-nav";
+`import { EditorTopNavDesktop } from "@heartstampxo/design-system";
 
 <EditorTopNavDesktop cartCount={3} zoom={70} credits={50} />`;
 
@@ -2298,8 +2299,8 @@ function PageWebsiteNav() {
     const stripProp      = !showCategoryStrip ? ` showCategoryStrip={false}` : "";
     const invitationProp = !showInvitationBtn ? ` showInvitationBtn={false}` : "";
     return auth
-      ? `import { WebsiteNav } from "@/components/ui/hs-website-nav";\n\n<WebsiteNav${bgProp}${stripProp}${invitationProp} isLoggedIn credits={50} cartCount={2} avatarSrc="https://i.pravatar.cc/80?img=68" avatarInitials="JS" />`
-      : `import { WebsiteNav } from "@/components/ui/hs-website-nav";\n\n<WebsiteNav${bgProp}${stripProp}${invitationProp} />`;
+      ? `import { WebsiteNav } from "@heartstampxo/design-system";\n\n<WebsiteNav${bgProp}${stripProp}${invitationProp} isLoggedIn credits={50} cartCount={2} avatarSrc="https://i.pravatar.cc/80?img=68" avatarInitials="JS" />`
+      : `import { WebsiteNav } from "@heartstampxo/design-system";\n\n<WebsiteNav${bgProp}${stripProp}${invitationProp} />`;
   };
 
   const bgToggle = (
@@ -2331,6 +2332,31 @@ function PageWebsiteNav() {
       subtitle={`Top navigation bar for the HeartStamp website. Adapts between a logged-out variant with Log in / Sign up actions and a logged-in variant with credits, favorites, and an avatar. Use the frosted background (bgVariant="default") on the homepage where the nav overlays hero content, and the solid background (bgVariant="solid") on all inner pages.`}
       sourceSlug="hs-website-nav"
     >
+      {/* New navigation — WebsiteNavV2, in validation */}
+      <DocSection
+        title="New Navigation"
+        desc="WebsiteNavV2, built from the new Figma spec: brand lockup, prominent search, Get the App and Reminders actions, language / notifications / cart buttons, and a category strip with the Ask Stampy chip. Both rows ride the marketing grid track. The current WebsiteNav below stays the production component until this one graduates."
+        action={
+          <span style={{
+            fontSize: 10, fontWeight: "var(--font-weight-bold, 700)" as any, padding: "2px 8px", borderRadius: "var(--radius-full)",
+            background: LABEL_COLORS.beta.bg, color: LABEL_COLORS.beta.color,
+            textTransform: "uppercase" as const, letterSpacing: ".04em", whiteSpace: "nowrap" as const,
+          }}>Testing phase</span>
+        }
+      >
+        <Preview
+          title="WebsiteNavV2 · testing"
+          code={`import { WebsiteNavV2 } from "@heartstampxo/design-system";\n\n<WebsiteNavV2\n  avatarSrc="https://i.pravatar.cc/80?img=68"\n  onSearch={openSpotlight}      // also bound to ⌘K / Ctrl+K\n  onCategoryHover={openMegaPanel}\n  onAskStampy={openStampy}\n/>`}
+          height={320}
+          fullWidth
+          canvasBg="var(--color-bg-editor)"
+        >
+          <div style={{ width: "100%", alignSelf: "stretch" }}>
+            <WebsiteNavV2 sticky={false} avatarSrc="https://i.pravatar.cc/80?img=68" />
+          </div>
+        </Preview>
+      </DocSection>
+
       <DocSection
         title="Logged Out"
         desc="Default state shown to unauthenticated visitors. Includes the logo, search, Invitation button, cart, and auth actions."
@@ -2377,7 +2403,7 @@ function PageWebsiteNav() {
       >
         <Preview
           title="Website Nav Mobile · logged out"
-          code={`import { WebsiteNavMobile } from "@/components/ui/hs-website-nav";\n\n<WebsiteNavMobile cartCount={2}${solidBg ? ` bgVariant="solid"` : ""}${!showInvitationBtn ? " showInvitationBtn={false}" : ""} />`}
+          code={`import { WebsiteNavMobile } from "@heartstampxo/design-system";\n\n<WebsiteNavMobile cartCount={2}${solidBg ? ` bgVariant="solid"` : ""}${!showInvitationBtn ? " showInvitationBtn={false}" : ""} />`}
           height={560}
           canvasBg="var(--color-bg-editor)"
         >
@@ -2399,7 +2425,7 @@ function PageWebsiteNav() {
       >
         <Preview
           title="Website Nav Mobile · logged in"
-          code={`import { WebsiteNavMobile } from "@/components/ui/hs-website-nav";\n\n<WebsiteNavMobile isLoggedIn credits={50} cartCount={2} avatarSrc="https://i.pravatar.cc/80?img=68" avatarInitials="JS"${solidBg ? ` bgVariant="solid"` : ""}${!showInvitationBtn ? " showInvitationBtn={false}" : ""} />`}
+          code={`import { WebsiteNavMobile } from "@heartstampxo/design-system";\n\n<WebsiteNavMobile isLoggedIn credits={50} cartCount={2} avatarSrc="https://i.pravatar.cc/80?img=68" avatarInitials="JS"${solidBg ? ` bgVariant="solid"` : ""}${!showInvitationBtn ? " showInvitationBtn={false}" : ""} />`}
           height={640}
           canvasBg="var(--color-bg-editor)"
         >
@@ -2415,7 +2441,7 @@ function PageWebsiteNav() {
       >
         <Preview
           title="Website Nav Mobile · search"
-          code={`import { WebsiteNavMobile } from "@/components/ui/hs-website-nav";\n\n<WebsiteNavMobile initialView="search" />`}
+          code={`import { WebsiteNavMobile } from "@heartstampxo/design-system";\n\n<WebsiteNavMobile initialView="search" />`}
           height={360}
           canvasBg="var(--color-bg-editor)"
         >
@@ -4452,7 +4478,7 @@ function PageLogos() {
     );
   }
 
-  const embedCode = `import { HSLogo, HSEmblem, HSLockup } from "@/components/ui/hs-logo";
+  const embedCode = `import { HSLogo, HSEmblem, HSLockup } from "@heartstampxo/design-system";
 
 // Unified component
 <HSLogo type="emblem" color="brand" height={64} />
@@ -5275,7 +5301,7 @@ import { ProfileNav } from "@/components/ui/profile-nav";
 />`;
 
   const mobileCode =
-`import { ProfileNavMobile } from "@/components/ui/profile-nav";
+`import { ProfileNavMobile } from "@heartstampxo/design-system";
 
 <ProfileNavMobile
   user={{ name: "Jason Williams", email: "jasonwilliams@gmail.com" }}
@@ -5340,7 +5366,7 @@ function PagePillTabs() {
       <DocSection title="Default" desc="Renders at the width of its container. Constrain with a wrapper or the style prop.">
         <Preview
           title="2 tabs"
-          code={`import { PillTabs } from "@heartstamp/design-system";\nimport { useState } from "react";\n\nfunction Demo() {\n  const [tab, setTab] = useState("type");\n  return (\n    <div style={{ width: 295 }}>\n      <PillTabs\n        value={tab}\n        onValueChange={setTab}\n        tabs={[\n          { value: "type",   label: "Type"   },\n          { value: "upload", label: "Upload" },\n        ]}\n      />\n    </div>\n  );\n}`}
+          code={`import { PillTabs } from "@heartstampxo/design-system";\nimport { useState } from "react";\n\nfunction Demo() {\n  const [tab, setTab] = useState("type");\n  return (\n    <div style={{ width: 295 }}>\n      <PillTabs\n        value={tab}\n        onValueChange={setTab}\n        tabs={[\n          { value: "type",   label: "Type"   },\n          { value: "upload", label: "Upload" },\n        ]}\n      />\n    </div>\n  );\n}`}
         >
           <div style={{ width: 295 }}>
             <PillTabs
@@ -5356,7 +5382,7 @@ function PagePillTabs() {
 
         <Preview
           title="3 tabs"
-          code={`import { PillTabs } from "@heartstamp/design-system";\nimport { useState } from "react";\n\nfunction Demo() {\n  const [tab, setTab] = useState("draw");\n  return (\n    <div style={{ width: 295 }}>\n      <PillTabs\n        value={tab}\n        onValueChange={setTab}\n        tabs={[\n          { value: "draw",   label: "Draw"   },\n          { value: "upload", label: "Upload" },\n          { value: "type",   label: "Type"   },\n        ]}\n      />\n    </div>\n  );\n}`}
+          code={`import { PillTabs } from "@heartstampxo/design-system";\nimport { useState } from "react";\n\nfunction Demo() {\n  const [tab, setTab] = useState("draw");\n  return (\n    <div style={{ width: 295 }}>\n      <PillTabs\n        value={tab}\n        onValueChange={setTab}\n        tabs={[\n          { value: "draw",   label: "Draw"   },\n          { value: "upload", label: "Upload" },\n          { value: "type",   label: "Type"   },\n        ]}\n      />\n    </div>\n  );\n}`}
         >
           <div style={{ width: 295 }}>
             <PillTabs
@@ -5375,7 +5401,7 @@ function PagePillTabs() {
       <DocSection title="Icon" desc='variant="icon" — content-sized tabs with a Lucide icon on the left. Pass any ReactNode as icon on each tab item.'>
         <Preview
           title="3 tabs with icons"
-          code={`import { PillTabs } from "@heartstamp/design-system";\nimport { Box, FileText, PackageCheck } from "lucide-react";\nimport { useState } from "react";\n\nfunction Demo() {\n  const [tab, setTab] = useState("all");\n  return (\n    <PillTabs\n      variant="icon"\n      value={tab}\n      onValueChange={setTab}\n      tabs={[\n        { value: "all",       label: "All",             icon: <Box size={16} strokeWidth={1.5} /> },\n        { value: "drafts",    label: "My Drafts",       icon: <FileText size={16} strokeWidth={1.5} /> },\n        { value: "completed", label: "Order Completed", icon: <PackageCheck size={16} strokeWidth={1.5} /> },\n      ]}\n    />\n  );\n}`}
+          code={`import { PillTabs } from "@heartstampxo/design-system";\nimport { Box, FileText, PackageCheck } from "lucide-react";\nimport { useState } from "react";\n\nfunction Demo() {\n  const [tab, setTab] = useState("all");\n  return (\n    <PillTabs\n      variant="icon"\n      value={tab}\n      onValueChange={setTab}\n      tabs={[\n        { value: "all",       label: "All",             icon: <Box size={16} strokeWidth={1.5} /> },\n        { value: "drafts",    label: "My Drafts",       icon: <FileText size={16} strokeWidth={1.5} /> },\n        { value: "completed", label: "Order Completed", icon: <PackageCheck size={16} strokeWidth={1.5} /> },\n      ]}\n    />\n  );\n}`}
         >
           <PillTabs
             variant="icon"
@@ -5393,7 +5419,7 @@ function PagePillTabs() {
       <DocSection title="Badge" desc='variant="badge" — content-sized tabs with a filled square badge on the left. Active tab shows a primary-coloured badge; inactive tabs show a subtle badge.'>
         <Preview
           title="3 tabs with badge"
-          code={`import { PillTabs } from "@heartstamp/design-system";\nimport { useState } from "react";\n\nfunction Demo() {\n  const [tab, setTab] = useState("all");\n  return (\n    <PillTabs\n      variant="badge"\n      value={tab}\n      onValueChange={setTab}\n      tabs={[\n        { value: "all",       label: "All",             count: 2  },\n        { value: "drafts",    label: "My Drafts",       count: 4  },\n        { value: "completed", label: "Order Completed", count: 12 },\n      ]}\n    />\n  );\n}`}
+          code={`import { PillTabs } from "@heartstampxo/design-system";\nimport { useState } from "react";\n\nfunction Demo() {\n  const [tab, setTab] = useState("all");\n  return (\n    <PillTabs\n      variant="badge"\n      value={tab}\n      onValueChange={setTab}\n      tabs={[\n        { value: "all",       label: "All",             count: 2  },\n        { value: "drafts",    label: "My Drafts",       count: 4  },\n        { value: "completed", label: "Order Completed", count: 12 },\n      ]}\n    />\n  );\n}`}
         >
           <PillTabs
             variant="badge"
@@ -5411,7 +5437,7 @@ function PagePillTabs() {
       <DocSection title="Count" desc='variant="count" — content-sized tabs with an inline count badge. Use for lists filtered by category where the item count adds context.'>
         <Preview
           title="3 tabs with counts"
-          code={`import { PillTabs } from "@heartstamp/design-system";\nimport { useState } from "react";\n\nfunction Demo() {\n  const [tab, setTab] = useState("all");\n  return (\n    <PillTabs\n      variant="count"\n      value={tab}\n      onValueChange={setTab}\n      tabs={[\n        { value: "all",       label: "All",             count: 30 },\n        { value: "drafts",    label: "My Drafts",       count: 8  },\n        { value: "completed", label: "Order Completed", count: 6  },\n      ]}\n    />\n  );\n}`}
+          code={`import { PillTabs } from "@heartstampxo/design-system";\nimport { useState } from "react";\n\nfunction Demo() {\n  const [tab, setTab] = useState("all");\n  return (\n    <PillTabs\n      variant="count"\n      value={tab}\n      onValueChange={setTab}\n      tabs={[\n        { value: "all",       label: "All",             count: 30 },\n        { value: "drafts",    label: "My Drafts",       count: 8  },\n        { value: "completed", label: "Order Completed", count: 6  },\n      ]}\n    />\n  );\n}`}
         >
           <PillTabs
             variant="count"
@@ -5488,7 +5514,7 @@ function PageColorPicker() {
       <DocSection title="As Popover" desc="Pass anchorRect + onClose to position it fixed below a trigger button. Use getBoundingClientRect() on the trigger ref.">
         <Preview
           title="Popover usage"
-          code={`import { ColorPicker } from "@heartstamp/design-system";\nimport { useState, useRef } from "react";\n\nfunction Demo() {\n  const [open, setOpen] = useState(false);\n  const [color, setColor] = useState("#3A4A24");\n  const btnRef = useRef<HTMLButtonElement>(null);\n\n  return (\n    <>\n      <button\n        ref={btnRef}\n        onClick={() => setOpen(true)}\n        style={{ width: 32, height: 32, borderRadius: "50%", background: color, border: "1px solid var(--border)" }}\n      />\n      {open && (\n        <ColorPicker\n          color={color}\n          onChange={setColor}\n          anchorRect={btnRef.current?.getBoundingClientRect()}\n          onClose={() => setOpen(false)}\n        />\n      )}\n    </>\n  );\n}`}
+          code={`import { ColorPicker } from "@heartstampxo/design-system";\nimport { useState, useRef } from "react";\n\nfunction Demo() {\n  const [open, setOpen] = useState(false);\n  const [color, setColor] = useState("#3A4A24");\n  const btnRef = useRef<HTMLButtonElement>(null);\n\n  return (\n    <>\n      <button\n        ref={btnRef}\n        onClick={() => setOpen(true)}\n        style={{ width: 32, height: 32, borderRadius: "50%", background: color, border: "1px solid var(--border)" }}\n      />\n      {open && (\n        <ColorPicker\n          color={color}\n          onChange={setColor}\n          anchorRect={btnRef.current?.getBoundingClientRect()}\n          onClose={() => setOpen(false)}\n        />\n      )}\n    </>\n  );\n}`}
         >
           <ColorPickerPopoverDemo />
         </Preview>

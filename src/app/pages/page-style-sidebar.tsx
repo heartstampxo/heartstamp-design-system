@@ -19,7 +19,7 @@ export function PageStyleSidebar() {
           title="Editor Sidebar"
           height={820}
           fullWidth
-          code={`import { StyleSidebar } from "@heartstamp/design-system";\n\nfunction Example() {\n  const [open, setOpen] = useState(false);\n  const [selected, setSelected] = useState(null);\n\n  return (\n    <div style={{ height: 820 }}>\n      <StyleSidebar\n        open={open}\n        onOpenChange={setOpen}\n        selected={selected}\n        onSelect={setSelected}\n        onApply={(id) => setOpen(false)}\n      />\n    </div>\n  );\n}`}
+          code={`import { StyleSidebar } from "@heartstampxo/design-system";\n\nfunction Example() {\n  const [open, setOpen] = useState(false);\n  const [selected, setSelected] = useState(null);\n\n  return (\n    <div style={{ height: 820 }}>\n      <StyleSidebar\n        open={open}\n        onOpenChange={setOpen}\n        selected={selected}\n        onSelect={setSelected}\n        onApply={(id) => setOpen(false)}\n      />\n    </div>\n  );\n}`}
         >
           <div style={{ width: "100%", height: 820, background: "var(--color-bg-editor)" }}>
             <StyleSidebar
@@ -51,7 +51,7 @@ export function PageStyleSidebar() {
           title="Mobile Bottom Nav"
           height={900}
           defaultViewport="mobile"
-          code={`import { StyleSidebarMobile } from "@heartstamp/design-system";\n\nfunction Example() {\n  const [activeNav, setActiveNav] = useState(undefined);\n\n  return (\n    <StyleSidebarMobile\n      activeNav={activeNav}\n      onNavChange={setActiveNav}\n    />\n  );\n}`}
+          code={`import { StyleSidebarMobile } from "@heartstampxo/design-system";\n\nfunction Example() {\n  const [activeNav, setActiveNav] = useState(undefined);\n\n  return (\n    <StyleSidebarMobile\n      activeNav={activeNav}\n      onNavChange={setActiveNav}\n    />\n  );\n}`}
         >
           {/* iPhone 14 Pro ratio — 393 × 852pt */}
           <div style={{ width: 393, height: 852, background: "var(--color-bg-editor)", overflow: "hidden" }}>

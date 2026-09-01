@@ -30,6 +30,17 @@ const TAG_STYLES: Record<string, { bg: string; color: string }> = {
 
 const RELEASES: Release[] = [
   {
+    version: "2.1.53", date: "1 Sep 2026",
+    title: "WebsiteNavV2 (testing phase)",
+    tags: ["feature", "design"],
+    items: [
+      "Next-generation website navigation, in validation on the Website Navigation page: typewriter search pill with ⌘K shortcut, Apple-mark Get the App, Reminders, language / notifications / cart buttons, category strip with mega-panel hover hooks, and the Ask Stampy AI chip with twin sheen sweeps.",
+      "Dogfoods HSLogo, Kbd, and Avt; both rows ride the marketing grid track; reduced-motion disables the caret and sheens.",
+      "HSLogo no longer clips its edge-to-edge artwork at small sizes (overflow: visible on all variants).",
+      "Copy-paste audit across every component page: all 57 code-sample imports now use @heartstampxo/design-system (the pre-rename @heartstamp scope and internal @/ paths are gone), the copy button's import rewriter targets the right package, the Toast sample uses the real Toaster + sonner API instead of a nonexistent useToast hook, and all 48 sampled symbols are verified against the built package exports.",
+    ],
+  },
+  {
     version: "2.1.52", date: "1 Sep 2026",
     title: "Docs site on the grid",
     tags: ["fix", "design"],

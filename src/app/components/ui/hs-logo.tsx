@@ -15,6 +15,12 @@ import lockupDark from "../../../assets/type=Lockup, color=brand, Theme=Dark.svg
 export type LogoColor = "brand" | "brand-dark" | "dark" | "light";
 export type LogoType  = "emblem" | "lockup";
 
+/* The artwork runs exactly edge-to-edge in its viewBox (x/y touch 0 and the
+   max), so sub-pixel rounding at small render sizes can shave the outermost
+   anti-aliased pixels — the logo looks "cut" on some devices and zoom
+   levels. overflow: visible lets those pixels paint instead of clipping. */
+const EDGE_SAFE: React.CSSProperties = { display: "block", overflow: "visible" };
+
 export interface HSLogoProps {
   type?:      LogoType;
   color?:     LogoColor;
@@ -278,7 +284,7 @@ function Emblem({ color, height }: { color: LogoColor; height: number }) {
   if (color === "dark") {
     const w = height * (239 / 241);
     return (
-      <svg width={w} height={height} viewBox="0 0 239 241" fill="none" aria-label="HeartStamp emblem">
+      <svg width={w} height={height} viewBox="0 0 239 241" fill="none" aria-label="HeartStamp emblem" style={EDGE_SAFE}>
         <path d={HEART_239} fill="#242423" />
         <path d={H_DARK}    fill="#FFFFFF" />
       </svg>
@@ -287,7 +293,7 @@ function Emblem({ color, height }: { color: LogoColor; height: number }) {
 
   if (color === "light") {
     return (
-      <svg width={height} height={height} viewBox="0 0 240 241" fill="none" aria-label="HeartStamp emblem">
+      <svg width={height} height={height} viewBox="0 0 240 241" fill="none" aria-label="HeartStamp emblem" style={EDGE_SAFE}>
         <path d={LIGHT_MARK}     fill="#FFFFFF" />
         <path d={LIGHT_COMBINED} fill="#FFFFFF" />
       </svg>
@@ -296,7 +302,7 @@ function Emblem({ color, height }: { color: LogoColor; height: number }) {
 
   // brand
   return (
-    <svg width={height} height={height} viewBox="0 0 240 241" fill="none" aria-label="HeartStamp emblem">
+    <svg width={height} height={height} viewBox="0 0 240 241" fill="none" aria-label="HeartStamp emblem" style={EDGE_SAFE}>
       <path d={HEART_240} fill="#BE1D2C" />
       <path d={H_BRAND}   fill="#FFFFFF" />
     </svg>
@@ -372,6 +378,7 @@ function Lockup({ color, height }: { color: LogoColor; height: number }) {
         viewBox="0 0 456 114"
         fill="none"
         aria-label="HeartStamp"
+        style={EDGE_SAFE}
       >
         <path d={LOCKUP_HEART} fill={heart} />
         {LOCKUP_LETTERS.map((d, i) => <path key={i} d={d} fill={fg} />)}
