@@ -5741,14 +5741,14 @@ export default function App() {
                 transition: "left .22s cubic-bezier(.4,0,.2,1)",
               }
             : {
-                width: sidebarOpen ? 320 : 0,
+                width: sidebarOpen ? 280 : 0,
                 overflow: "hidden",
                 borderRight: sidebarOpen ? "1px solid var(--border)" : "none",
                 transition: "width .22s cubic-bezier(.4,0,.2,1)",
               }
           )
         }}>
-          <div style={{ width: isMobile ? 280 : 320, flexShrink: 0, height: "100%", display: "flex", flexDirection: "column" }}>
+          <div style={{ width: 280, flexShrink: 0, height: "100%", display: "flex", flexDirection: "column" }}>
             <Sidebar active={page} onSelect={(p: string) => setPage(p)} onClose={isMobile ? () => setSidebarOpen(false) : undefined} />
           </div>
         </aside>
