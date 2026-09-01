@@ -34,9 +34,14 @@ export function Sidebar({ active, onSelect, onClose }: SidebarProps) {
     />
   );
 
-  // Build nav link buttons — when grouped=true, inserts sub-group divider labels
+  // Build nav link buttons — when grouped=true, inserts sub-group divider labels.
+  // Rows sit in a menu-style list: 2px gaps, inset so the rounded hover clears the edges.
+  const listStyle: React.CSSProperties = {
+    display: "flex", flexDirection: "column",
+    gap: "var(--space-0-5)", padding: "0 var(--space-2)",
+  };
   const navLinks = (items: { id: string; title: string; label?: string; group?: string }[], grouped = false) => {
-    if (!grouped) return <>{items.map(navRow)}</>;
+    if (!grouped) return <div style={listStyle}>{items.map(navRow)}</div>;
 
     const nodes: React.ReactNode[] = [];
     let lastGroup = "";
@@ -50,7 +55,7 @@ export function Sidebar({ active, onSelect, onClose }: SidebarProps) {
             color: "var(--color-text-disabled)",
             textTransform: "uppercase",
             letterSpacing: ".06em",
-            padding: "var(--space-3) var(--space-4) var(--space-1)",
+            padding: "var(--space-3) var(--space-2) var(--space-1)",
             marginTop: nodes.length > 0 ? "var(--space-1)" : 0,
           }}>
             {item.group}
@@ -59,7 +64,7 @@ export function Sidebar({ active, onSelect, onClose }: SidebarProps) {
       }
       nodes.push(navRow(item));
     });
-    return <>{nodes}</>;
+    return <div style={listStyle}>{nodes}</div>;
   };
 
   // When searching: flat list, no accordion
