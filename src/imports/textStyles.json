@@ -1,126 +1,253 @@
-{
-  "fileName": "HeartStamp Library",
-  "textStyles": [
-    {
-      "name": "H1",
-      "fontFamily": "Stack Sans Text",
-      "fontWeight": "Bold",
-      "fontSize": 56,
-      "letterSpacing": {
-        "unit": "PERCENT",
-        "value": 0
-      },
-      "textCase": "ORIGINAL"
-    },
-    {
-      "name": "H2",
-      "fontFamily": "Stack Sans Text",
-      "fontWeight": "SemiBold",
-      "fontSize": 40,
-      "letterSpacing": {
-        "unit": "PERCENT",
-        "value": 0
-      },
-      "textCase": "ORIGINAL"
-    },
-    {
-      "name": "H3",
-      "fontFamily": "Stack Sans Text",
-      "fontWeight": "Regular",
-      "fontSize": 36,
-      "letterSpacing": {
-        "unit": "PERCENT",
-        "value": -4
-      },
-      "textCase": "ORIGINAL"
-    },
-    {
-      "name": "H4",
-      "fontFamily": "Stack Sans Text",
-      "fontWeight": "Regular",
-      "fontSize": 20,
-      "letterSpacing": {
-        "unit": "PERCENT",
-        "value": -2
-      },
-      "textCase": "ORIGINAL"
-    },
-    {
-      "name": "H5",
-      "fontFamily": "Stack Sans Text",
-      "fontWeight": "Regular",
-      "fontSize": 18,
-      "letterSpacing": {
-        "unit": "PERCENT",
-        "value": 0
-      },
-      "textCase": "ORIGINAL"
-    },
-    {
-      "name": "Subheadline",
-      "fontFamily": "Stack Sans Text",
-      "fontWeight": "Light",
-      "fontSize": 24,
-      "letterSpacing": {
-        "unit": "PERCENT",
-        "value": 0
-      },
-      "textCase": "ORIGINAL"
-    },
-    {
-      "name": "Body - 15",
-      "fontFamily": "DM Sans",
-      "fontWeight": "Regular",
-      "fontSize": 15,
-      "letterSpacing": {
-        "unit": "PERCENT",
-        "value": 0
-      },
-      "textCase": "ORIGINAL"
-    },
-    {
-      "name": "Label - 15",
-      "fontFamily": "DM Sans",
-      "fontWeight": "Medium",
-      "fontSize": 15,
-      "letterSpacing": {
-        "unit": "PERCENT",
-        "value": 0
-      },
-      "textCase": "ORIGINAL"
-    },
-    {
-      "name": "Label SB - 15",
-      "fontFamily": "DM Sans",
-      "fontWeight": "SemiBold",
-      "fontSize": 15,
-      "letterSpacing": {
-        "unit": "PERCENT",
-        "value": 0
-      },
-      "textCase": "ORIGINAL"
-    },
-    {
-      "name": "Label - 12",
-      "fontFamily": "DM Sans",
-      "fontWeight": "Medium",
-      "fontSize": 12,
-      "letterSpacing": {
-        "unit": "PERCENT",
-        "value": 0
-      },
-      "textCase": "ORIGINAL"
-    },
-    {
-      "name": "Body - 13",
-      "fontFamily": "DM Sans",
-      "fontWeight": "Regular",
-      "fontSize": 13,
-      "letterSpacing": {
-        "unit": "PERCENT",
-        "value": 0
-      },
-      "textCase": "ORIGINAL"
-    }
-  ]
-}
+[
+  {
+    "name": "Heading 1/Bold",
+    "fontFamily": "Stack Sans Text",
+    "fontStyle": "Bold",
+    "fontSize": 56,
+    "lineHeight": "64px",
+    "letterSpacing": "0%"
+  },
+  {
+    "name": "Heading 1/Regular",
+    "fontFamily": "Stack Sans Text",
+    "fontStyle": "Regular",
+    "fontSize": 56,
+    "lineHeight": "64px",
+    "letterSpacing": "0%"
+  },
+  {
+    "name": "Heading 1/Medium",
+    "fontFamily": "Stack Sans Text",
+    "fontStyle": "Medium",
+    "fontSize": 56,
+    "lineHeight": "64px",
+    "letterSpacing": "0%"
+  },
+  {
+    "name": "Heading 2/Semi Bold",
+    "fontFamily": "Stack Sans Text",
+    "fontStyle": "SemiBold",
+    "fontSize": 40,
+    "lineHeight": "48px",
+    "letterSpacing": "0%"
+  },
+  {
+    "name": "Heading 2/Regular",
+    "fontFamily": "Stack Sans Text",
+    "fontStyle": "Regular",
+    "fontSize": 40,
+    "lineHeight": "48px",
+    "letterSpacing": "0%"
+  },
+  {
+    "name": "Heading 2/Medium",
+    "fontFamily": "Stack Sans Text",
+    "fontStyle": "Medium",
+    "fontSize": 40,
+    "lineHeight": "48px",
+    "letterSpacing": "0%"
+  },
+  {
+    "name": "Heading 2/Bold",
+    "fontFamily": "Stack Sans Text",
+    "fontStyle": "Bold",
+    "fontSize": 40,
+    "lineHeight": "48px",
+    "letterSpacing": "0%"
+  },
+  {
+    "name": "Heading 3/Regular",
+    "fontFamily": "Stack Sans Text",
+    "fontStyle": "Regular",
+    "fontSize": 36,
+    "lineHeight": "42px",
+    "letterSpacing": "0px"
+  },
+  {
+    "name": "Heading 3/Medium",
+    "fontFamily": "Stack Sans Text",
+    "fontStyle": "Medium",
+    "fontSize": 36,
+    "lineHeight": "42px",
+    "letterSpacing": "0%"
+  },
+  {
+    "name": "Heading 3/Bold",
+    "fontFamily": "Stack Sans Text",
+    "fontStyle": "Bold",
+    "fontSize": 36,
+    "lineHeight": "42px",
+    "letterSpacing": "0%"
+  },
+  {
+    "name": "Heading 4/Regular",
+    "fontFamily": "Stack Sans Text",
+    "fontStyle": "Regular",
+    "fontSize": 20,
+    "lineHeight": "28px",
+    "letterSpacing": "0px"
+  },
+  {
+    "name": "Heading 4/Medium",
+    "fontFamily": "Stack Sans Text",
+    "fontStyle": "Medium",
+    "fontSize": 20,
+    "lineHeight": "28px",
+    "letterSpacing": "0%"
+  },
+  {
+    "name": "Heading 4/Bold",
+    "fontFamily": "Stack Sans Text",
+    "fontStyle": "Bold",
+    "fontSize": 20,
+    "lineHeight": "28px",
+    "letterSpacing": "0%"
+  },
+  {
+    "name": "Heading 5/Regular",
+    "fontFamily": "Stack Sans Text",
+    "fontStyle": "Regular",
+    "fontSize": 18,
+    "lineHeight": "28px",
+    "letterSpacing": "0%"
+  },
+  {
+    "name": "Heading 5/Medium",
+    "fontFamily": "Stack Sans Text",
+    "fontStyle": "Medium",
+    "fontSize": 18,
+    "lineHeight": "28px",
+    "letterSpacing": "0%"
+  },
+  {
+    "name": "Heading 5/Bold",
+    "fontFamily": "Stack Sans Text",
+    "fontStyle": "Bold",
+    "fontSize": 18,
+    "lineHeight": "28px",
+    "letterSpacing": "0%"
+  },
+  {
+    "name": "Heading 6/Regular",
+    "fontFamily": "Stack Sans Text",
+    "fontStyle": "Regular",
+    "fontSize": 16,
+    "lineHeight": "24px",
+    "letterSpacing": "0%"
+  },
+  {
+    "name": "Heading 6/Medium",
+    "fontFamily": "Stack Sans Text",
+    "fontStyle": "Medium",
+    "fontSize": 16,
+    "lineHeight": "24px",
+    "letterSpacing": "0%"
+  },
+  {
+    "name": "Heading 6/Bold",
+    "fontFamily": "Stack Sans Text",
+    "fontStyle": "Bold",
+    "fontSize": 16,
+    "lineHeight": "24px",
+    "letterSpacing": "0%"
+  },
+  {
+    "name": "Subheadline/Light",
+    "fontFamily": "Stack Sans Text",
+    "fontStyle": "Light",
+    "fontSize": 24,
+    "lineHeight": "32px",
+    "letterSpacing": "0%"
+  },
+  {
+    "name": "Subheadline/Medium",
+    "fontFamily": "Stack Sans Text",
+    "fontStyle": "Medium",
+    "fontSize": 24,
+    "lineHeight": "32px",
+    "letterSpacing": "0%"
+  },
+  {
+    "name": "Body 15/Regular",
+    "fontFamily": "DM Sans",
+    "fontStyle": "Regular",
+    "fontSize": 15,
+    "lineHeight": "20px",
+    "letterSpacing": "0%"
+  },
+  {
+    "name": "Body 13/Regular",
+    "fontFamily": "DM Sans",
+    "fontStyle": "Regular",
+    "fontSize": 13,
+    "lineHeight": "auto",
+    "letterSpacing": "0%"
+  },
+  {
+    "name": "Body 13/Bold",
+    "fontFamily": "DM Sans",
+    "fontStyle": "Bold",
+    "fontSize": 13,
+    "lineHeight": "auto",
+    "letterSpacing": "0%"
+  },
+  {
+    "name": "Label 15/Medium",
+    "fontFamily": "DM Sans",
+    "fontStyle": "Medium",
+    "fontSize": 15,
+    "lineHeight": "20px",
+    "letterSpacing": "0%"
+  },
+  {
+    "name": "Label 15/Semi Bold",
+    "fontFamily": "DM Sans",
+    "fontStyle": "SemiBold",
+    "fontSize": 15,
+    "lineHeight": "auto",
+    "letterSpacing": "0%"
+  },
+  {
+    "name": "Label 12/Medium",
+    "fontFamily": "DM Sans",
+    "fontStyle": "Medium",
+    "fontSize": 12,
+    "lineHeight": "18px",
+    "letterSpacing": "0%"
+  },
+  {
+    "name": "Label 12/Bold",
+    "fontFamily": "DM Sans",
+    "fontStyle": "Bold",
+    "fontSize": 12,
+    "lineHeight": "18px",
+    "letterSpacing": "0%"
+  },
+  {
+    "name": "Promo/Subheadline",
+    "fontFamily": "Oldstyle Italic",
+    "fontStyle": "HPLHS",
+    "fontSize": 32,
+    "lineHeight": "40px",
+    "letterSpacing": "0%",
+    "description": "Promotional subheadline — supporting text, taglines"
+  },
+  {
+    "name": "Promo/Accent",
+    "fontFamily": "Oldstyle Italic",
+    "fontStyle": "HPLHS",
+    "fontSize": 24,
+    "lineHeight": "32px",
+    "letterSpacing": "2%",
+    "description": "Promotional accent text — quotes, pull quotes, decorative labels"
+  },
+  {
+    "name": "Promo/Caption",
+    "fontFamily": "Oldstyle Italic",
+    "fontStyle": "HPLHS",
+    "fontSize": 18,
+    "lineHeight": "26px",
+    "letterSpacing": "1%",
+    "description": "Promotional caption — small decorative text, fine print with flair"
+  }
+]
