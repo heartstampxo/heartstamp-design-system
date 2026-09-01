@@ -4,7 +4,7 @@ import { Preview } from "../../components/docs/doc-preview";
 import { PropsTable } from "../../components/docs/doc-props-table";
 import { ChatHeader } from "../../components/ui/hs-stampy-chat";
 
-const DESC_STYLE: React.CSSProperties = { fontSize: 14, color: "var(--muted-fg)", marginBottom: 16 };
+const DESC_STYLE: React.CSSProperties = { fontSize: "var(--font-size-body-15)", color: "var(--muted-fg)", marginBottom: 16 };
 
 const DEMO_CONVERSATIONS = [
   { id: "1", name: "Jack's Birthday Bi..." },

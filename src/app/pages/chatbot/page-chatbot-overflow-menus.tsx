@@ -14,7 +14,7 @@ import {
   OTPOverflowMenu,
 } from "../../components/ui/hs-stampy-chat";
 
-const DESC_STYLE: React.CSSProperties = { fontSize: 14, color: "var(--color-text-secondary)", marginBottom: 16 };
+const DESC_STYLE: React.CSSProperties = { fontSize: "var(--font-size-body-15)", color: "var(--color-text-secondary)", marginBottom: 16 };
 const MENU_WRAPPER_STYLE: React.CSSProperties = { width: "100%", maxWidth: 400 };
 const NOOP = () => {};
 

@@ -117,11 +117,11 @@ export function ChatHomeScreen({
           <img alt="Stampy mascot" src={mascotSrc} style={{ width: 52, height: 52, objectFit: "contain", flexShrink: 0 }} />
         )}
         <div style={{ display: "flex", flexDirection: "column", gap: 4, flex: 1, minWidth: 0 }}>
-          <p style={{ margin: 0, fontSize: 18, fontWeight: 600, lineHeight: "28px", ...dmSans500, color: "var(--color-text-primary)" }}>
+          <p style={{ margin: 0, fontSize: "var(--font-size-h5, 18px)", fontWeight: 600, lineHeight: "var(--line-height-h5, 28px)", ...dmSans500, color: "var(--color-text-primary)" }}>
             Hi there! I'm Stampy
           </p>
           <div className="pointer-events-none select-none" style={{ minHeight: 20 }}>
-            <span style={{ fontSize: 15, lineHeight: "20px", ...dmSans400, color: "var(--color-text-secondary)" }}>
+            <span style={{ fontSize: "var(--font-size-body-15, 15px)", lineHeight: "var(--line-height-body-15, 20px)", ...dmSans400, color: "var(--color-text-secondary)" }}>
               Try: {displayText}
               <motion.span
                 style={{ display: "inline-block", width: "1.5px", height: "13px", marginLeft: "1px", verticalAlign: "middle", backgroundColor: "var(--color-text-secondary)" }}

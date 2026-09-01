@@ -133,8 +133,8 @@ function TabsTrigger({
         height: 29,
         padding: "4px var(--space-4)",      /* 4px 16px */
         borderRadius: "var(--radius-lg)",   /* 8px */
-        fontSize: 15,
-        fontWeight: 500,
+        fontSize: "var(--font-size-label-15, 15px)",
+        fontWeight: "var(--font-weight-label-15, 500)" as React.CSSProperties["fontWeight"],
         fontFamily: "var(--font-family-body)",
         whiteSpace: "nowrap" as const,
         cursor: "pointer",

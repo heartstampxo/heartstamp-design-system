@@ -147,8 +147,8 @@ export const pillFieldStyle: React.CSSProperties = {
   border: SUBTLE_BORDER,
   color: "var(--color-text-primary, #242423)",
   fontFamily: FONT_BODY,
-  fontSize: 14,
-  fontWeight: "var(--font-weight-body-13, 400)" as React.CSSProperties["fontWeight"],
+  fontSize: "var(--font-size-inp, 15px)",
+  fontWeight: "var(--font-weight-body-15, 400)" as React.CSSProperties["fontWeight"],
 };
 
 /** Full-width 44px primary commit action, and its top spacing. */
@@ -156,20 +156,20 @@ export const panelCtaStyle: React.CSSProperties = {
   width: "100%",
   height: 44,
   borderRadius: "var(--radius-button, 25px)",
-  fontSize: 15,
+  fontSize: "var(--font-size-btn-lg, 15px)",
 };
 
 export const panelCtaWrapStyle: React.CSSProperties = { paddingTop: "var(--space-1-5, 6px)" };
 
 /* ── Shared text roles ──────────────────────────────────────────── */
 
-/** Panel heading — 19px in the heading face. */
+/** Panel heading: H5 in the heading face. */
 export const panelTitleStyle: React.CSSProperties = {
   margin: 0,
   color: "var(--color-text-primary, #242423)",
   fontFamily: FONT_HEADING,
-  fontSize: 19,
-  fontWeight: 600,
+  fontSize: "var(--font-size-h5, 18px)",
+  fontWeight: "var(--font-weight-semibold, 600)" as React.CSSProperties["fontWeight"],
 };
 
 /** Explanatory copy under a panel heading. */

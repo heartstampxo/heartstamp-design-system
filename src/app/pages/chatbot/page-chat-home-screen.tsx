@@ -5,7 +5,7 @@ import { PropsTable } from "../../components/docs/doc-props-table";
 import { ChatHomeScreen, OccasionSuggestions } from "../../components/ui/hs-stampy-chat";
 import chatMascotImg from "../../../assets/stampy/mascot.webp";
 
-const DESC_STYLE: React.CSSProperties = { fontSize: 14, color: "var(--muted-fg)", marginBottom: 16 };
+const DESC_STYLE: React.CSSProperties = { fontSize: "var(--font-size-body-15)", color: "var(--muted-fg)", marginBottom: 16 };
 
 export function PageChatHomeScreen() {
   return (

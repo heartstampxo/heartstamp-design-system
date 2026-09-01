@@ -140,7 +140,7 @@ export function MascotCard({ label, src, filename }: MascotAsset) {
         gap: 8,
       }}>
         <span style={{
-          fontSize: 12, fontWeight: 500, color: "var(--muted-fg)",
+          fontSize: "var(--font-size-label-12, 12px)", fontWeight: "var(--font-weight-label-12, 500)" as any, color: "var(--muted-fg)",
           overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
         }}>
           {label}
@@ -254,8 +254,8 @@ export function AnatomySlider({ slides }: { slides: MascotAsset[] }) {
         gap: 12,
       }}>
         <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-          <span style={{ fontSize: 13, fontWeight: 600, color: "var(--fg)" }}>{slides[index].label}</span>
-          <span style={{ fontSize: 11, color: "var(--muted-fg)" }}>{index + 1} / {slides.length}</span>
+          <span style={{ fontSize: "var(--font-size-body-13, 13px)", fontWeight: "var(--font-weight-semibold, 600)" as any, color: "var(--fg)" }}>{slides[index].label}</span>
+          <span style={{ fontSize: "var(--font-size-label-12, 12px)", color: "var(--muted-fg)" }}>{index + 1} / {slides.length}</span>
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>

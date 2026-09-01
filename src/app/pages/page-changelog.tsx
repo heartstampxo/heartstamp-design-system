@@ -30,6 +30,17 @@ const TAG_STYLES: Record<string, { bg: string; color: string }> = {
 
 const RELEASES: Release[] = [
   {
+    version: "2.1.43", date: "1 Sep 2026",
+    title: "Hardcoded font-size sweep",
+    tags: ["tokens", "fix"],
+    items: [
+      "Published components now use type tokens: chat bubbles and popover fields moved off 14px to Body 15 / input tokens, panel titles snapped to H5, tabs and mascot labels to the Label tokens.",
+      "Docs: chatbot page descriptions and the remaining 14px labels mapped to Body 15 / Label 15.",
+      "Changelog page body copy bumped to Body 15 and Label SB 15 for readability.",
+      "Badge numerals (10px) remain an intentional sub-label exception, documented in code.",
+    ],
+  },
+  {
     version: "2.1.42", date: "1 Sep 2026",
     title: "Changelog page",
     tags: ["docs"],
@@ -214,17 +225,17 @@ export function PageChangelog() {
                     {r.tags.map(t => <TagBadge key={t} tag={t} />)}
                   </span>
                 </div>
-                <div style={{ fontSize: 14.5, fontWeight: 600, color: "var(--fg)", marginBottom: 6 }}>{r.title}</div>
+                <div style={{ fontSize: "var(--font-size-label-sb-15)", fontWeight: "var(--font-weight-label-sb-15)" as any, color: "var(--fg)", marginBottom: 6 }}>{r.title}</div>
                 <ul style={{ margin: 0, paddingLeft: 18, display: "flex", flexDirection: "column", gap: 4 }}>
                   {r.items.map(item => (
-                    <li key={item} style={{ fontSize: 12.5, color: "var(--muted-fg)", lineHeight: 1.55 }}>{item}</li>
+                    <li key={item} style={{ fontSize: "var(--font-size-body-15)", fontWeight: "var(--font-weight-body-15)" as any, color: "var(--muted-fg)", lineHeight: 1.55 }}>{item}</li>
                   ))}
                 </ul>
               </div>
             ))}
           </div>
         </div>
-        <p style={{ fontSize: 11.5, color: "var(--muted-fg)", margin: "24px 0 0", lineHeight: 1.6 }}>
+        <p style={{ fontSize: "var(--font-size-body-15)", fontWeight: "var(--font-weight-body-15)" as any, color: "var(--muted-fg)", margin: "24px 0 0", lineHeight: 1.6 }}>
           Earlier history (v1.x: the Stampy chatbot suite, pill tabs, profile nav, style sidebar, and the original component set) lives in the{" "}
           <a href="https://github.com/heartstampxo/heartstamp-design-system/commits/main" target="_blank" rel="noreferrer" style={{ color: "var(--accent)" }}>
             GitHub commit log

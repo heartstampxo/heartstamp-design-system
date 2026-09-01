@@ -143,7 +143,7 @@ export function StampyBubble({
     >
       <div
         className="rounded-[12px] px-[12px] py-[8px] max-w-[85%] sm:max-w-[440px] flex flex-col gap-[12px]"
-        style={{ backgroundColor: bubbleBg, ...dmSans400, fontSize: 14, color: "var(--color-text-primary)", lineHeight: "1.5" }}
+        style={{ backgroundColor: bubbleBg, ...dmSans400, fontSize: "var(--font-size-body-15, 15px)", color: "var(--color-text-primary)", lineHeight: "1.5" }}
       >
         <div className="leading-[20px] text-[15px] whitespace-pre-wrap">{text}</div>
         {buttons?.length ? (
@@ -173,7 +173,7 @@ export function UserBubble({ text, delay }: { text: React.ReactNode; delay?: num
     >
       <div
         className="rounded-[12px] px-[12px] py-[8px] max-w-[85%] sm:max-w-[440px]"
-        style={{ backgroundColor: bubbleBg, ...dmSans400, fontSize: 14, color: "var(--color-text-primary)", lineHeight: "1.5" }}
+        style={{ backgroundColor: bubbleBg, ...dmSans400, fontSize: "var(--font-size-body-15, 15px)", color: "var(--color-text-primary)", lineHeight: "1.5" }}
       >
         <div className="leading-[20px] text-[15px] whitespace-pre-wrap">{text}</div>
       </div>

@@ -1577,7 +1577,7 @@ function PageHoverCard() {
           <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
             <Avt src="https://github.com/shadcn.png" fallback="SC" size={44} />
             <div>
-              <div style={{ fontWeight: 700, fontSize: 14, color: "var(--fg)", marginBottom: 2 }}>@shadcn</div>
+              <div style={{ fontWeight: "var(--font-weight-bold)" as any, fontSize: "var(--font-size-label-15)", color: "var(--fg)", marginBottom: 2 }}>@shadcn</div>
               <div style={{ fontSize: 12, color: "var(--muted-fg)", lineHeight: 1.5 }}>Creator of shadcn/ui. Building design systems.</div>
               <div style={{ fontSize: 11, color: "var(--muted-fg)", marginTop: "var(--space-1-5)", display: "flex", alignItems: "center", gap: 4 }}><Calendar size={11} />Joined April 2023</div>
             </div>
@@ -3479,7 +3479,7 @@ function PageTokensGrid() {
                 {/* Card header with mini column preview */}
                 <div style={{ padding: "16px 18px 14px", borderBottom: "1px solid var(--border)", background: isDesktop ? "var(--color-brand-primary-dim)" : "var(--muted)" }}>
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-                    <span style={{ fontSize: 14, fontWeight: 700, color: "var(--fg)" }}>{bp.name}</span>
+                    <span style={{ fontSize: "var(--font-size-label-15)", fontWeight: "var(--font-weight-bold)" as any, color: "var(--fg)" }}>{bp.name}</span>
                     <code style={{ fontSize: 10, fontFamily: "monospace", color: isDesktop ? "var(--color-brand-primary)" : "var(--muted-fg)", padding: "2px 7px", borderRadius: 999, background: "var(--bg)", border: "1px solid var(--border)" }}>{bp.range}</code>
                   </div>
                   {/* Mini columns */}
@@ -4844,7 +4844,7 @@ function PageTheming() {
             <div key={group} style={{ marginBottom: 28 }}>
               <div style={{ display: "flex", alignItems: "center", marginBottom: 8 }}>
                 <SectionBar />
-                <span style={{ fontWeight: 700, fontSize: 14, color: "var(--fg)", marginRight: 10 }}>{group}</span>
+                <span style={{ fontWeight: "var(--font-weight-bold)" as any, fontSize: "var(--font-size-label-15)", color: "var(--fg)", marginRight: 10 }}>{group}</span>
                 <span style={{ fontSize: 11.5, color: "var(--muted-fg)", lineHeight: 1.4 }}>{GROUP_DESCRIPTIONS[group]}</span>
               </div>
               <div style={{ border: "1px solid var(--border)", borderRadius: 10, overflow: "hidden" }}>
