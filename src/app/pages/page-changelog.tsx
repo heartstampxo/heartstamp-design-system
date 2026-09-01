@@ -30,6 +30,14 @@ const TAG_STYLES: Record<string, { bg: string; color: string }> = {
 
 const RELEASES: Release[] = [
   {
+    version: "2.1.49", date: "1 Sep 2026",
+    title: "Docs body text on tokens",
+    tags: ["tokens", "docs"],
+    items: [
+      "Page subtitles were hardcoded at 14px in the shared DocPage component; they now use Body 15, and section descriptions use the Body 13 token.",
+    ],
+  },
+  {
     version: "2.1.46 – 2.1.48", date: "1 Sep 2026",
     title: "Sidebar spacing",
     tags: ["design"],

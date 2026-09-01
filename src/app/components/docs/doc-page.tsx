@@ -68,7 +68,7 @@ export function DocPage({ title, subtitle, sourceSlug, figmaUrl, children, style
           </div>
         </div>
         {subtitle && (
-          <p style={{ margin: "0 0 16px", fontSize: 14, color: "var(--muted-fg)", lineHeight: 1.7, maxWidth: 540 }}>{subtitle}</p>
+          <p style={{ margin: "0 0 16px", fontSize: "var(--font-size-body-15)", fontWeight: "var(--font-weight-body-15)" as React.CSSProperties["fontWeight"], color: "var(--muted-fg)", lineHeight: 1.7, maxWidth: 560 }}>{subtitle}</p>
         )}
         <div style={{ height: 1, background: "var(--border)" }} />
       </div>
@@ -98,7 +98,7 @@ export function DocSection({ title, desc, action, children }: DocSectionProps) {
             <h2 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: "var(--fg)" }}>{title}</h2>
             <CopySectionLinkButton sectionId={id} />
           </div>
-          {desc && <p style={{ margin: "4px 0 0", fontSize: 13, color: "var(--muted-fg)" }}>{desc}</p>}
+          {desc && <p style={{ margin: "4px 0 0", fontSize: "var(--font-size-body-13)", fontWeight: "var(--font-weight-body-13)" as React.CSSProperties["fontWeight"], color: "var(--muted-fg)" }}>{desc}</p>}
         </div>
         {action && <div style={{ flexShrink: 0 }}>{action}</div>}
       </div>
