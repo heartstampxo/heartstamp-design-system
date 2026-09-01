@@ -128,13 +128,13 @@ function PageButton() {
             color: "var(--muted-fg)", letterSpacing: ".01em"
           };
           const row = (label: string, children: React.ReactNode) => (
-            <div key={label} style={{ display: "flex", alignItems: "center", gap: 10, width: "100%" }}>
+            <div key={label} style={{ display: "flex", alignItems: "center", gap: "var(--space-2-5)", width: "100%" }}>
               <span style={labelStyle}>{label}</span>
               {children}
             </div>
           );
           return (
-            <div style={{ display: "flex", flexDirection: "column", gap: 14, width: "100%", padding: "4px 0" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-3-5)", width: "100%", padding: "4px 0" }}>
               {row("Primary", <>
                 <Btn size="sm" variant="default">Button</Btn>
                 <Btn variant="default">Button</Btn>
@@ -201,7 +201,7 @@ function PageButton() {
         const sizes: ("sm"|"default"|"lg")[] = ["sm", "default", "lg"];
         return (
           <>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", marginBottom: "var(--space-2)" }}>
               <Tabs value={iconSize} onValueChange={(v) => setIconSize(v as typeof iconSize)}>
                 <TabsList>
                   {sizes.map(s => <TabsTrigger key={s} value={s}>{s}</TabsTrigger>)}
@@ -209,9 +209,9 @@ function PageButton() {
               </Tabs>
             </div>
             <Preview title="Icon buttons" code={code}>
-              <div style={{ display: "flex", flexDirection: "column", gap: 12, width: "100%", padding: "4px 0" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)", width: "100%", padding: "4px 0" }}>
                 {rows.map(({ label, variant, icon, text }) => (
-                  <div key={label} style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <div key={label} style={{ display: "flex", alignItems: "center", gap: "var(--space-2-5)" }}>
                     <span style={labelStyle}>{label}</span>
                     <Btn variant={variant} size={iconSize}>{icon}{text}</Btn>
                     <Btn variant={variant} size={iconOnlySize}>{icon}</Btn>
@@ -232,7 +232,7 @@ function PageButton() {
         const code = `<Btn${sizeStr} loading>\n  Please wait\n</Btn>`;
         return (
           <>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", marginBottom: "var(--space-2)" }}>
               <Tabs value={loadSize} onValueChange={(v) => setLoadSize(v as typeof loadSize)}>
                 <TabsList>
                   {sizes.map(s => <TabsTrigger key={s} value={s}>{s}</TabsTrigger>)}
@@ -251,7 +251,7 @@ function PageButton() {
     <DocSection title="Brand Buttons" desc="Pre-styled lg buttons for third-party sign-in and sharing flows. Each ships with its own brand colour, hover state, and logo — drop them in without any extra configuration.">
       <Preview
         title="Brand buttons"
-        code={`import { AppleBtn, GoogleBtn, AmazonBtn, LinkBtn } from "@/components/ui/hs-brand-btn";\n\n{/* Payment / auth row */}\n<div style={{ display: "flex", gap: 12 }}>\n  <AppleBtn />\n  <GoogleBtn />\n</div>\n\n{/* Additional brand buttons */}\n<AmazonBtn />\n<LinkBtn />`}
+        code={`import { AppleBtn, GoogleBtn, AmazonBtn, LinkBtn } from "@/components/ui/hs-brand-btn";\n\n{/* Payment / auth row */}\n<div style={{ display: "flex", gap: "var(--space-3)" }}>\n  <AppleBtn />\n  <GoogleBtn />\n</div>\n\n{/* Additional brand buttons */}\n<AmazonBtn />\n<LinkBtn />`}
         height={220}
       >
         <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-3)" }}>
@@ -282,8 +282,8 @@ function PageButton() {
       ]} />
     </DocSection>
     <DocSection title="Design Tokens" desc="Every visual property is driven by --color-* semantic tokens from tokens.css. Override these in your theme to restyle every button variant at once.">
-      <div style={{ border: "1px solid var(--color-element-subtle)", borderRadius: 12, overflow: "hidden" }}>
-        <div style={{ background: "var(--muted)", padding: "8px 16px", display: "grid", gridTemplateColumns: "1.4fr 1fr 1fr 1.6fr", gap: 12, fontSize: 10.5, fontWeight: 700, color: "var(--muted-fg)", textTransform: "uppercase", letterSpacing: ".04em", borderBottom: "1px solid var(--color-element-subtle)" }}>
+      <div style={{ border: "1px solid var(--color-element-subtle)", borderRadius: "var(--radius-2xl)", overflow: "hidden" }}>
+        <div style={{ background: "var(--muted)", padding: "8px 16px", display: "grid", gridTemplateColumns: "1.4fr 1fr 1fr 1.6fr", gap: "var(--space-3)", fontSize: 10.5, fontWeight: "var(--font-weight-bold, 700)" as any, color: "var(--muted-fg)", textTransform: "uppercase", letterSpacing: ".04em", borderBottom: "1px solid var(--color-element-subtle)" }}>
           <span>Token</span><span>Light value</span><span>Category</span><span>Usage</span>
         </div>
         {[
@@ -307,11 +307,11 @@ function PageButton() {
           { token: "--color-text-on-primary",       value: "#ffffff",                 cat: "Color",      usage: "Text — default & destructive variants" },
           { token: "--color-text-on-secondary",     value: "#ffffff",                 cat: "Color",      usage: "Text — secondary variant" },
         ].map((row, i, arr) => (
-          <div key={row.token} style={{ padding: "10px 16px", display: "grid", gridTemplateColumns: "1.4fr 1fr 1fr 1.6fr", gap: 12, alignItems: "center", borderBottom: i < arr.length - 1 ? "1px solid var(--color-element-subtle)" : "none", background: i % 2 === 0 ? "var(--bg)" : "var(--muted)" }}>
+          <div key={row.token} style={{ padding: "10px 16px", display: "grid", gridTemplateColumns: "1.4fr 1fr 1fr 1.6fr", gap: "var(--space-3)", alignItems: "center", borderBottom: i < arr.length - 1 ? "1px solid var(--color-element-subtle)" : "none", background: i % 2 === 0 ? "var(--bg)" : "var(--muted)" }}>
             <code style={{ fontSize: 11, fontFamily: "monospace", color: "var(--color-brand-primary)" }}>{row.token}</code>
-            <code style={{ fontSize: 11, fontFamily: "monospace", color: "var(--fg)", background: "var(--color-element-disabled)", padding: "2px var(--space-1-5)", borderRadius: 4 }}>{row.value}</code>
+            <code style={{ fontSize: 11, fontFamily: "monospace", color: "var(--fg)", background: "var(--color-element-disabled)", padding: "2px var(--space-1-5)", borderRadius: "var(--radius-xs)" }}>{row.value}</code>
             <span style={{ fontSize: 11.5, color: "var(--muted-fg)" }}>{row.cat}</span>
-            <span style={{ fontSize: 12, color: "var(--muted-fg)" }}>{row.usage}</span>
+            <span style={{ fontSize: "var(--font-size-label-12)", color: "var(--muted-fg)" }}>{row.usage}</span>
           </div>
         ))}
       </div>
@@ -393,7 +393,7 @@ function PageInput() {
       </Preview>
     </DocSection>
     <DocSection title="Complete Form" desc="A real-world form combining Input, Select, Textarea, and Button components — all wired to design tokens.">
-      <Preview title="Feedback form" height={520} code={`function FeedbackForm() {\n  const [name, setName] = useState("");\n  const [category, setCategory] = useState("");\n\n  return (\n    <div style={{\n      background: "var(--bg-input)", borderRadius: 16,\n      border: "1px solid var(--border)", width: 420,\n      display: "flex", flexDirection: "column",\n      overflow: "hidden", position: "relative"\n    }}>\n\n      {/* Close button */}\n      <button style={{\n        position: "absolute", top: 16, right: 16,\n        background: "none", border: "none", cursor: "pointer",\n        opacity: 0.5, color: "var(--fg)", padding: 4\n      }}>\n        <X size={14} style={{ display: "block" }} />\n      </button>\n\n      {/* Fields */}\n      <div style={{ display: "flex", flexDirection: "column",\n        gap: 20, padding: "24px 24px 0" }}>\n        <div>\n          <Label>Name</Label>\n          <Input placeholder="Your Name"\n            value={name} onChange={e => setName(e.target.value)} />\n        </div>\n        <div>\n          <Label>Category</Label>\n          <Select\n            options={[\n              { value: "design",  label: "Design Request" },\n              { value: "bug",     label: "Bug Report" },\n              { value: "feature", label: "Feature Request" },\n            ]}\n            placeholder="Design Request"\n            value={category}\n            onChange={setCategory}\n          />\n        </div>\n        <div>\n          <Label>Tell us more</Label>\n          <Textarea placeholder="Enter address" rows={4} />\n        </div>\n      </div>\n\n      {/* Action bar */}\n      <div style={{\n        display: "flex", gap: 24, padding: "14px 24px",\n        borderTop: "1px solid var(--border)", marginTop: 32\n      }}>\n        <Button variant="outline" style={{ flex: 1 }}>Cancel</Button>\n        <Button style={{ flex: 1 }}>Submit Feedback</Button>\n      </div>\n    </div>\n  );\n}`}>
+      <Preview title="Feedback form" height={520} code={`function FeedbackForm() {\n  const [name, setName] = useState("");\n  const [category, setCategory] = useState("");\n\n  return (\n    <div style={{\n      background: "var(--bg-input)", borderRadius: 16,\n      border: "1px solid var(--border)", width: 420,\n      display: "flex", flexDirection: "column",\n      overflow: "hidden", position: "relative"\n    }}>\n\n      {/* Close button */}\n      <button style={{\n        position: "absolute", top: 16, right: 16,\n        background: "none", border: "none", cursor: "pointer",\n        opacity: 0.5, color: "var(--fg)", padding: 4\n      }}>\n        <X size={14} style={{ display: "block" }} />\n      </button>\n\n      {/* Fields */}\n      <div style={{ display: "flex", flexDirection: "column",\n        gap: "var(--space-5)", padding: "24px 24px 0" }}>\n        <div>\n          <Label>Name</Label>\n          <Input placeholder="Your Name"\n            value={name} onChange={e => setName(e.target.value)} />\n        </div>\n        <div>\n          <Label>Category</Label>\n          <Select\n            options={[\n              { value: "design",  label: "Design Request" },\n              { value: "bug",     label: "Bug Report" },\n              { value: "feature", label: "Feature Request" },\n            ]}\n            placeholder="Design Request"\n            value={category}\n            onChange={setCategory}\n          />\n        </div>\n        <div>\n          <Label>Tell us more</Label>\n          <Textarea placeholder="Enter address" rows={4} />\n        </div>\n      </div>\n\n      {/* Action bar */}\n      <div style={{\n        display: "flex", gap: "var(--space-6)", padding: "14px 24px",\n        borderTop: "1px solid var(--border)", marginTop: 32\n      }}>\n        <Button variant="outline" style={{ flex: 1 }}>Cancel</Button>\n        <Button style={{ flex: 1 }}>Submit Feedback</Button>\n      </div>\n    </div>\n  );\n}`}>
         {(() => {
           const [name, setName] = useState("");
           const [category, setCategory] = useState("");
@@ -409,7 +409,7 @@ function PageInput() {
                 position: "absolute", top: "var(--space-4)", right: "var(--space-4)", background: "none",
                 border: "none", cursor: "pointer", opacity: 0.5,
                 color: "var(--fg)", padding: "var(--space-1)", display: "flex",
-                alignItems: "center", justifyContent: "center", borderRadius: 4
+                alignItems: "center", justifyContent: "center", borderRadius: "var(--radius-xs)"
               }}>
                 <IcoLink name="X"><X size={14} style={{ display: "block" }} /></IcoLink>
               </button>
@@ -465,8 +465,8 @@ function PageInput() {
       ]} />
     </DocSection>
     <DocSection title="Design Tokens" desc="All visual properties of the Input are driven by CSS token variables. Override these in your theme to restyle every input state at once.">
-      <div style={{ border: "1px solid var(--border)", borderRadius: 12, overflow: "hidden" }}>
-        <div style={{ background: "var(--muted)", padding: "8px 16px", display: "grid", gridTemplateColumns: "1.4fr 1fr 1fr 1.6fr", gap: 12, fontSize: 10.5, fontWeight: 700, color: "var(--muted-fg)", textTransform: "uppercase", letterSpacing: ".04em", borderBottom: "1px solid var(--border)" }}>
+      <div style={{ border: "1px solid var(--border)", borderRadius: "var(--radius-2xl)", overflow: "hidden" }}>
+        <div style={{ background: "var(--muted)", padding: "8px 16px", display: "grid", gridTemplateColumns: "1.4fr 1fr 1fr 1.6fr", gap: "var(--space-3)", fontSize: 10.5, fontWeight: "var(--font-weight-bold, 700)" as any, color: "var(--muted-fg)", textTransform: "uppercase", letterSpacing: ".04em", borderBottom: "1px solid var(--border)" }}>
           <span>Token</span><span>Value</span><span>Category</span><span>Usage</span>
         </div>
         {[
@@ -481,11 +481,11 @@ function PageInput() {
           { token: "--secondary",             value: "var(--secondary)",     cat: "Color",       usage: "Border color — focus state" },
           { token: "--state-error",           value: "var(--state-error)",   cat: "Color",       usage: "Border color — error state" },
         ].map((row, i) => (
-          <div key={row.token} style={{ padding: "10px 16px", display: "grid", gridTemplateColumns: "1.4fr 1fr 1fr 1.6fr", gap: 12, alignItems: "center", borderBottom: i < 9 ? "1px solid var(--border)" : "none", background: i % 2 === 0 ? "var(--bg)" : "var(--muted)" }}>
+          <div key={row.token} style={{ padding: "10px 16px", display: "grid", gridTemplateColumns: "1.4fr 1fr 1fr 1.6fr", gap: "var(--space-3)", alignItems: "center", borderBottom: i < 9 ? "1px solid var(--border)" : "none", background: i % 2 === 0 ? "var(--bg)" : "var(--muted)" }}>
             <code style={{ fontSize: 11, fontFamily: "monospace", color: "var(--accent)" }}>{row.token}</code>
-            <code style={{ fontSize: 11, fontFamily: "monospace", color: "var(--fg)", background: "var(--color-element-disabled)", padding: "2px var(--space-1-5)", borderRadius: 4 }}>{row.value}</code>
+            <code style={{ fontSize: 11, fontFamily: "monospace", color: "var(--fg)", background: "var(--color-element-disabled)", padding: "2px var(--space-1-5)", borderRadius: "var(--radius-xs)" }}>{row.value}</code>
             <span style={{ fontSize: 11.5, color: "var(--muted-fg)" }}>{row.cat}</span>
-            <span style={{ fontSize: 12, color: "var(--muted-fg)" }}>{row.usage}</span>
+            <span style={{ fontSize: "var(--font-size-label-12)", color: "var(--muted-fg)" }}>{row.usage}</span>
           </div>
         ))}
       </div>
@@ -583,7 +583,7 @@ function PageLabel() {
     </DocSection>
     <DocSection title="With Checkbox">
       <Preview title="Label + Checkbox" code={`<div className="flex items-center gap-2">\n  <Checkbox id="terms" />\n  <Label htmlFor="terms">Accept terms and conditions</Label>\n</div>`}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
           <Cbx checked={false} onChange={() => { }} />
           <Lbl style={{ marginBottom: 0 }}>Accept terms and conditions</Lbl>
         </div>
@@ -639,7 +639,7 @@ function PageCheckbox() {
     </DocSection>
     <DocSection title="Disabled">
       <Preview title="Disabled" code={`<Checkbox disabled />`}>
-        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-2)" }}>
           <Cbx checked={false} onChange={() => { }} label="Disabled unchecked" disabled />
           <Cbx checked={true} onChange={() => { }} label="Disabled checked" disabled />
         </div>
@@ -662,7 +662,7 @@ function PageRadioGroup() {
   return <DocPage title="Radio Group" subtitle="A set of checkable buttons — only one can be checked at a time." sourceSlug="radio-group">
     <DocSection title="Default">
       <Preview title="Radio Group" code={`<RadioGroup defaultValue="option1">\n  <RadioGroupItem value="option1" id="r1" /><Label htmlFor="r1">Default</Label>\n  <RadioGroupItem value="option2" id="r2" /><Label htmlFor="r2">Comfortable</Label>\n  <RadioGroupItem value="option3" id="r3" /><Label htmlFor="r3">Compact</Label>\n</RadioGroup>`}>
-        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-2-5)" }}>
           {opts.map(o => <Rdo key={o.v} checked={v === o.v} onChange={() => setV(o.v)} label={o.l} />)}
         </div>
       </Preview>
@@ -725,12 +725,12 @@ function PageSwitch() {
         }>
           <div style={{ display: "flex", gap: "var(--space-8)", flexWrap: "wrap" }}>
             <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>
-              <div style={{ fontSize: 10.5, fontWeight: 700, color: "var(--muted-fg)", textTransform: "uppercase", letterSpacing: ".06em", marginBottom: "var(--space-1)" }}>sm</div>
+              <div style={{ fontSize: 10.5, fontWeight: "var(--font-weight-bold, 700)" as any, color: "var(--muted-fg)", textTransform: "uppercase", letterSpacing: ".06em", marginBottom: "var(--space-1)" }}>sm</div>
               <Swt size="sm" checked={false} onChange={() => {}} label="Disabled off" disabled />
               <Swt size="sm" checked={true}  onChange={() => {}} label="Disabled on"  disabled />
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>
-              <div style={{ fontSize: 10.5, fontWeight: 700, color: "var(--muted-fg)", textTransform: "uppercase", letterSpacing: ".06em", marginBottom: "var(--space-1)" }}>lg</div>
+              <div style={{ fontSize: 10.5, fontWeight: "var(--font-weight-bold, 700)" as any, color: "var(--muted-fg)", textTransform: "uppercase", letterSpacing: ".06em", marginBottom: "var(--space-1)" }}>lg</div>
               <Swt size="lg" checked={false} onChange={() => {}} label="Disabled off" disabled />
               <Swt size="lg" checked={true}  onChange={() => {}} label="Disabled on"  disabled />
             </div>
@@ -759,7 +759,7 @@ function PageSlider() {
     <DocSection title="Default">
       <Preview title="Slider" code={`<Slider defaultValue={[33]} max={100} step={1} />`}>
         <div style={{ width: 280 }}>
-          <div style={{ marginBottom: 8, fontSize: 12, color: "var(--muted-fg)" }}>Value: {v}</div>
+          <div style={{ marginBottom: "var(--space-2)", fontSize: "var(--font-size-label-12)", color: "var(--muted-fg)" }}>Value: {v}</div>
           <Sldr value={v} onChange={setV} />
         </div>
       </Preview>
@@ -767,7 +767,7 @@ function PageSlider() {
     <DocSection title="With Steps">
       <Preview title="Step slider" code={`<Slider defaultValue={[50]} max={100} step={10} />`}>
         <div style={{ width: 280 }}>
-          <div style={{ marginBottom: 8, fontSize: 12, color: "var(--muted-fg)" }}>Value: {v} (step: 10)</div>
+          <div style={{ marginBottom: "var(--space-2)", fontSize: "var(--font-size-label-12)", color: "var(--muted-fg)" }}>Value: {v} (step: 10)</div>
           <Sldr value={Math.round(v / 10) * 10} onChange={(val: number) => setV(Math.round(val / 10) * 10)} />
         </div>
       </Preview>
@@ -796,10 +796,10 @@ function PageToggle() {
     </DocSection>
     <DocSection title="Text Formatting">
       <Preview title="Formatting group" code={`<Toggle aria-label="Bold"><Bold /></Toggle>\n<Toggle aria-label="Italic"><Italic /></Toggle>\n<Toggle aria-label="Underline"><Underline /></Toggle>`}>
-        <div style={{ display: "flex", gap: 4 }}>
-          <Tgl pressed={bold} onToggle={() => setBold(v => !v)}><span style={{ fontWeight: 700, fontSize: 13 }}>B</span></Tgl>
-          <Tgl pressed={ital} onToggle={() => setItal(v => !v)}><span style={{ fontStyle: "italic", fontSize: 13 }}>I</span></Tgl>
-          <Tgl pressed={under} onToggle={() => setUnder(v => !v)}><span style={{ textDecoration: "underline", fontSize: 13 }}>U</span></Tgl>
+        <div style={{ display: "flex", gap: "var(--space-1)" }}>
+          <Tgl pressed={bold} onToggle={() => setBold(v => !v)}><span style={{ fontWeight: "var(--font-weight-bold, 700)" as any, fontSize: "var(--font-size-body-13)" }}>B</span></Tgl>
+          <Tgl pressed={ital} onToggle={() => setItal(v => !v)}><span style={{ fontStyle: "italic", fontSize: "var(--font-size-body-13)" }}>I</span></Tgl>
+          <Tgl pressed={under} onToggle={() => setUnder(v => !v)}><span style={{ textDecoration: "underline", fontSize: "var(--font-size-body-13)" }}>U</span></Tgl>
         </div>
       </Preview>
     </DocSection>
@@ -820,11 +820,11 @@ function PageToggleGroup() {
   return <DocPage title="Toggle Group" subtitle="A set of two-state buttons that can be toggled on or off." sourceSlug="toggle-group">
     <DocSection title="Single Selection">
       <Preview title="Alignment group" code={`<ToggleGroup type="single" defaultValue="center">\n  <ToggleGroupItem value="left">Left</ToggleGroupItem>\n  <ToggleGroupItem value="center">Center</ToggleGroupItem>\n  <ToggleGroupItem value="right">Right</ToggleGroupItem>\n</ToggleGroup>`}>
-        <div style={{ display: "flex", gap: 2, border: "1px solid var(--border)", borderRadius: 8, padding: 3 }}>
+        <div style={{ display: "flex", gap: "var(--space-0-5)", border: "1px solid var(--border)", borderRadius: "var(--radius-lg)", padding: 3 }}>
           {["left", "center", "right"].map(a => (
             <button key={a} onClick={() => setV(a)} style={{
-              padding: "var(--space-1-5) 14px", borderRadius: 6, border: "none", cursor: "pointer",
-              fontSize: 12, fontWeight: 500, background: v === a ? "var(--fg)" : "transparent", color: v === a ? "var(--bg)" : "var(--muted-fg)",
+              padding: "var(--space-1-5) 14px", borderRadius: "var(--radius-sm)", border: "none", cursor: "pointer",
+              fontSize: "var(--font-size-label-12)", fontWeight: "var(--font-weight-medium, 500)" as any, background: v === a ? "var(--fg)" : "transparent", color: v === a ? "var(--bg)" : "var(--muted-fg)",
               transition: "all .15s", textTransform: "capitalize"
             }}>{a}</button>
           ))}
@@ -854,9 +854,9 @@ function PageBadge() {
     </DocSection>
     <DocSection title="With Icons">
       <Preview title="Badge + icon" code={`<Badge><Star className="mr-1 h-3 w-3" />Featured</Badge>`}>
-        <Bdg><IcoLink name="Star"><Star size={10} style={{ marginRight: 4 }} /></IcoLink>Featured</Bdg>
-        <Bdg variant="secondary"><IcoLink name="Bell"><Bell size={10} style={{ marginRight: 4 }} /></IcoLink>3 New</Bdg>
-        <Bdg variant="destructive"><AlertCircle size={10} style={{ marginRight: 4 }} />Error</Bdg>
+        <Bdg><IcoLink name="Star"><Star size={10} style={{ marginRight: "var(--space-1)" }} /></IcoLink>Featured</Bdg>
+        <Bdg variant="secondary"><IcoLink name="Bell"><Bell size={10} style={{ marginRight: "var(--space-1)" }} /></IcoLink>3 New</Bdg>
+        <Bdg variant="destructive"><AlertCircle size={10} style={{ marginRight: "var(--space-1)" }} />Error</Bdg>
       </Preview>
     </DocSection>
     <DocSection title="Props">
@@ -1174,21 +1174,21 @@ function PageSeparator() {
   return <DocPage title="Separator" subtitle="Visually or semantically separates content." sourceSlug="separator">
     <DocSection title="Horizontal">
       <Preview title="Horizontal" code={`<Separator />`}>
-        <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 12 }}>
-          <p style={{ fontSize: 13, color: "var(--fg)" }}>HeartStamp DS</p>
+        <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>
+          <p style={{ fontSize: "var(--font-size-body-13)", color: "var(--fg)" }}>HeartStamp DS</p>
           <Sep />
-          <p style={{ fontSize: 12, color: "var(--muted-fg)" }}>Components · Design Tokens · Theming</p>
+          <p style={{ fontSize: "var(--font-size-label-12)", color: "var(--muted-fg)" }}>Components · Design Tokens · Theming</p>
         </div>
       </Preview>
     </DocSection>
     <DocSection title="Vertical">
       <Preview title="Vertical" code={`<Separator orientation="vertical" />`}>
-        <div style={{ display: "flex", alignItems: "center", gap: 16, height: 40 }}>
-          <span style={{ fontSize: 13, color: "var(--fg)" }}>Blog</span>
+        <div style={{ display: "flex", alignItems: "center", gap: "var(--space-4)", height: 40 }}>
+          <span style={{ fontSize: "var(--font-size-body-13)", color: "var(--fg)" }}>Blog</span>
           <Sep orientation="vertical" style={{ height: "100%" }} />
-          <span style={{ fontSize: 13, color: "var(--fg)" }}>Docs</span>
+          <span style={{ fontSize: "var(--font-size-body-13)", color: "var(--fg)" }}>Docs</span>
           <Sep orientation="vertical" style={{ height: "100%" }} />
-          <span style={{ fontSize: 13, color: "var(--fg)" }}>Source</span>
+          <span style={{ fontSize: "var(--font-size-body-13)", color: "var(--fg)" }}>Source</span>
         </div>
       </Preview>
     </DocSection>
@@ -1208,7 +1208,7 @@ function PageScrollArea() {
     <DocSection title="Vertical">
       <Preview title="Vertical scroll" code={`<ScrollArea className="h-[200px] w-[350px] rounded-md border p-4">\n  {items.map(tag => <div key={tag}>{tag}</div>)}\n</ScrollArea>`}>
         <ScrollBox height={180} style={{ width: "100%", maxWidth: 350 }}>
-          {tags.map(t => <div key={t} style={{ padding: "var(--space-1-5) 0", borderBottom: "1px solid var(--border)", fontSize: 13, color: "var(--muted-fg)" }}>{t}</div>)}
+          {tags.map(t => <div key={t} style={{ padding: "var(--space-1-5) 0", borderBottom: "1px solid var(--border)", fontSize: "var(--font-size-body-13)", color: "var(--muted-fg)" }}>{t}</div>)}
         </ScrollBox>
       </Preview>
     </DocSection>
@@ -1228,12 +1228,12 @@ function PageAspectRatio() {
       <Preview title="16:9 ratio" code={`<AspectRatio ratio={16 / 9}>\n  <img src="..." alt="..." className="rounded-md object-cover" />\n</AspectRatio>`} height={200}>
         <div style={{ width: "100%", maxWidth: 400 }}>
           <div style={{
-            aspectRatio: "16/9", background: "var(--muted)", borderRadius: 10, overflow: "hidden",
+            aspectRatio: "16/9", background: "var(--muted)", borderRadius: "var(--radius-xl)", overflow: "hidden",
             display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid var(--border)"
           }}>
             <div style={{ textAlign: "center", color: "var(--muted-fg)" }}>
-              <Monitor size={32} style={{ marginBottom: 8, opacity: .4 }} />
-              <div style={{ fontSize: 12 }}>16 / 9</div>
+              <Monitor size={32} style={{ marginBottom: "var(--space-2)", opacity: .4 }} />
+              <div style={{ fontSize: "var(--font-size-label-12)" }}>16 / 9</div>
             </div>
           </div>
         </div>
@@ -1252,7 +1252,7 @@ function PageAlert() {
   return <DocPage title="Alert" subtitle="Displays a callout for user attention." sourceSlug="alert">
     <DocSection title="Variants">
       <Preview title="All variants" code={`<Alert>\n  <Terminal className="h-4 w-4" />\n  <AlertTitle>Heads up!</AlertTitle>\n  <AlertDescription>You can add components using the CLI.</AlertDescription>\n</Alert>\n\n<Alert variant="destructive">\n  <AlertCircle className="h-4 w-4" />\n  <AlertTitle>Error</AlertTitle>\n  <AlertDescription>Your session has expired.</AlertDescription>\n</Alert>`} height={220}>
-        <div style={{ display: "flex", flexDirection: "column", gap: 10, width: "100%", maxWidth: 440 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-2-5)", width: "100%", maxWidth: 440 }}>
           <Alrt variant="default" title="Heads up!">You can add components to your app using the CLI.</Alrt>
           <Alrt variant="success" title="Success">Component installed successfully.</Alrt>
           <Alrt variant="warning" title="Warning">Your free tier limit is almost reached.</Alrt>
@@ -1318,22 +1318,22 @@ function PageToast() {
       <Callout variant="info">Click a button to trigger a toast notification.</Callout>
       <Preview title="Toast demo" code={`import { useToast } from "@/hooks/use-toast";\n\nconst { toast } = useToast();\n\ntoast({\n  title: "Scheduled: Catch up",\n  description: "Friday, February 10, 2023 at 5:57 PM",\n});\n\n// With variant:\ntoast({ variant: "destructive", title: "Error", description: "Something went wrong." });`} height={140}>
         <div style={{ position: "relative", zIndex: 0 }}>
-          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center" }}>
+          <div style={{ display: "flex", gap: "var(--space-2)", flexWrap: "wrap", justifyContent: "center" }}>
             {[["default", "Default"], ["success", "Success"], ["error", "Destructive"], ["warning", "Warning"]].map(([t, l]) => (
               <Btn key={t} variant="outline" onClick={() => add(t)}>{l}</Btn>
             ))}
           </div>
-          <div style={{ position: "fixed", bottom: 20, right: 20, display: "flex", flexDirection: "column", gap: 8, zIndex: 999, maxWidth: 320, pointerEvents: "none" }}>
+          <div style={{ position: "fixed", bottom: 20, right: 20, display: "flex", flexDirection: "column", gap: "var(--space-2)", zIndex: 999, maxWidth: 320, pointerEvents: "none" }}>
             {toasts.map((t: any) => (
               <div key={t.id} style={{
-                background: "var(--bg)", border: "1px solid var(--border)", borderRadius: 10,
+                background: "var(--bg)", border: "1px solid var(--border)", borderRadius: "var(--radius-xl)",
                 padding: "12px 16px", boxShadow: "0 8px 24px rgba(0,0,0,.15)",
-                animation: "slideIn .25s ease", display: "flex", alignItems: "flex-start", gap: 10, pointerEvents: "all"
+                animation: "slideIn .25s ease", display: "flex", alignItems: "flex-start", gap: "var(--space-2-5)", pointerEvents: "all"
               }}>
                 {t.icon}
-                <div><div style={{ fontSize: 13, fontWeight: 600, color: "var(--fg)" }}>{t.title}</div>
-                  <div style={{ fontSize: 12, color: "var(--muted-fg)", marginTop: 2 }}>{t.desc}</div></div>
-                <button onClick={() => setToasts(ts => ts.filter((x: any) => x.id !== t.id))} style={{ marginLeft: "auto", background: "none", border: "none", cursor: "pointer", color: "var(--muted-fg)", padding: 2 }}><IcoLink name="X"><X size={12} /></IcoLink></button>
+                <div><div style={{ fontSize: "var(--font-size-body-13)", fontWeight: "var(--font-weight-semibold, 600)" as any, color: "var(--fg)" }}>{t.title}</div>
+                  <div style={{ fontSize: "var(--font-size-label-12)", color: "var(--muted-fg)", marginTop: "var(--space-0-5)" }}>{t.desc}</div></div>
+                <button onClick={() => setToasts(ts => ts.filter((x: any) => x.id !== t.id))} style={{ marginLeft: "auto", background: "none", border: "none", cursor: "pointer", color: "var(--muted-fg)", padding: "var(--space-0-5)" }}><IcoLink name="X"><X size={12} /></IcoLink></button>
               </div>
             ))}
           </div>
@@ -1384,7 +1384,7 @@ function PageDialog() {
         <Btn onClick={() => setOpen(true)}>Edit Profile</Btn>
         <Dlg open={open} onClose={() => setOpen(false)} title="Edit Profile"
           footer={<><Btn variant="outline" onClick={() => setOpen(false)}>Cancel</Btn><Btn onClick={() => setOpen(false)}>Save changes</Btn></>}>
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-2-5)" }}>
             <div><Lbl>Name</Lbl><Inp placeholder="Your name" /></div>
             <div><Lbl>Username</Lbl><Inp placeholder="@username" /></div>
           </div>
@@ -1415,7 +1415,7 @@ function PageSheet() {
   return <DocPage title="Sheet" subtitle="Extends the Dialog component to display content that complements the main content of the screen." sourceSlug="sheet">
     <DocSection title="Sides">
       <Preview title="Sheet sides" code={`<Sheet direction="right">\n  <SheetTrigger asChild><Button variant="outline">Open Right</Button></SheetTrigger>\n  <SheetContent>\n    <SheetHeader><SheetTitle>Edit profile</SheetTitle></SheetHeader>\n  </SheetContent>\n</Sheet>`} height={120}>
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center" }}>
+        <div style={{ display: "flex", gap: "var(--space-2)", flexWrap: "wrap", justifyContent: "center" }}>
           {(["top", "right", "bottom", "left"] as const).map(s => (
             <Btn key={s} variant="outline" onClick={() => { setSide(s); setOpen(true); }}>
               Open {s.charAt(0).toUpperCase() + s.slice(1)}
@@ -1460,7 +1460,7 @@ function PageTooltip() {
   return <DocPage title="Tooltip" subtitle="A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it." sourceSlug="tooltip">
     <DocSection title="Default">
       <Preview title="Tooltip" code={`<TooltipProvider>\n  <Tooltip>\n    <TooltipTrigger asChild>\n      <Button variant="outline" size="icon"><Plus /></Button>\n    </TooltipTrigger>\n    <TooltipContent><p>Add to library</p></TooltipContent>\n  </Tooltip>\n</TooltipProvider>`}>
-        <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+        <div style={{ display: "flex", gap: "var(--space-3)", alignItems: "center" }}>
           <Tip label="Add to library"><Btn variant="outline" size="icon"><IcoLink name="Plus"><Plus size={16} /></IcoLink></Btn></Tip>
           <Tip label="Delete item"><Btn variant="outline" size="icon"><IcoLink name="Trash2"><Trash2 size={16} /></IcoLink></Btn></Tip>
           <Tip label="Edit profile"><Btn variant="outline" size="icon"><IcoLink name="Edit"><Edit size={16} /></IcoLink></Btn></Tip>
@@ -1471,7 +1471,7 @@ function PageTooltip() {
     <DocSection title="With Text Trigger">
       <Preview title="Text tooltip" code={`<Tooltip><TooltipTrigger>Hover me</TooltipTrigger>\n  <TooltipContent><p>This is a tooltip</p></TooltipContent>\n</Tooltip>`}>
         <Tip label="This shows a helpful hint">
-          <span style={{ borderBottom: "1px dashed var(--muted-fg)", cursor: "help", fontSize: 13, color: "var(--muted-fg)" }}>Hover over me</span>
+          <span style={{ borderBottom: "1px dashed var(--muted-fg)", cursor: "help", fontSize: "var(--font-size-body-13)", color: "var(--muted-fg)" }}>Hover over me</span>
         </Tip>
       </Preview>
     </DocSection>
@@ -1490,7 +1490,7 @@ function PagePopover() {
     <DocSection title="Default">
       <Preview title="Popover" code={`<Popover>\n  <PopoverTrigger asChild>\n    <Button variant="outline">Open popover</Button>\n  </PopoverTrigger>\n  <PopoverContent className="w-80">\n    <div className="grid gap-4">\n      <Label>Width</Label>\n      <Input defaultValue="100%" />\n    </div>\n  </PopoverContent>\n</Popover>`} height={160}>
         <Ppvr trigger={<Btn variant="outline">Open dimensions</Btn>} title="Dimensions">
-          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-2)" }}>
             <div><Lbl>Width</Lbl><Inp placeholder="100%" /></div>
             <div><Lbl>Max. width</Lbl><Inp placeholder="300px" /></div>
             <div><Lbl>Height</Lbl><Inp placeholder="25px" /></div>
@@ -1550,9 +1550,9 @@ function PageContextMenu() {
           { label: "Save as…", icon: <FileText size={13} /> }, { label: "Copy", icon: <Copy size={13} /> }, { separator: true },
           { label: "Inspect", icon: <IcoLink name="Search"><Search size={13} /></IcoLink> }]}>
           <div style={{
-            width: 300, height: 100, border: "2px dashed var(--border)", borderRadius: 10,
+            width: 300, height: 100, border: "2px dashed var(--border)", borderRadius: "var(--radius-xl)",
             display: "flex", alignItems: "center", justifyContent: "center",
-            fontSize: 13, color: "var(--muted-fg)", userSelect: "none", cursor: "context-menu"
+            fontSize: "var(--font-size-body-13)", color: "var(--muted-fg)", userSelect: "none", cursor: "context-menu"
           }}>
             Right-click here
           </div>
@@ -1574,12 +1574,12 @@ function PageHoverCard() {
     <DocSection title="Default">
       <Preview title="Hover card" code={`<HoverCard>\n  <HoverCardTrigger asChild>\n    <Button variant="link">@nextjs</Button>\n  </HoverCardTrigger>\n  <HoverCardContent>\n    <div className="flex gap-4">\n      <Avatar />\n      <div><h4>@nextjs</h4><p>The React framework.</p></div>\n    </div>\n  </HoverCardContent>\n</HoverCard>`}>
         <HvrCard trigger={<Btn variant="link">@shadcn</Btn>}>
-          <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
+          <div style={{ display: "flex", gap: "var(--space-3)", alignItems: "flex-start" }}>
             <Avt src="https://github.com/shadcn.png" fallback="SC" size={44} />
             <div>
-              <div style={{ fontWeight: "var(--font-weight-bold)" as any, fontSize: "var(--font-size-label-15)", color: "var(--fg)", marginBottom: 2 }}>@shadcn</div>
-              <div style={{ fontSize: 12, color: "var(--muted-fg)", lineHeight: 1.5 }}>Creator of shadcn/ui. Building design systems.</div>
-              <div style={{ fontSize: 11, color: "var(--muted-fg)", marginTop: "var(--space-1-5)", display: "flex", alignItems: "center", gap: 4 }}><Calendar size={11} />Joined April 2023</div>
+              <div style={{ fontWeight: "var(--font-weight-bold)" as any, fontSize: "var(--font-size-label-15)", color: "var(--fg)", marginBottom: "var(--space-0-5)" }}>@shadcn</div>
+              <div style={{ fontSize: "var(--font-size-label-12)", color: "var(--muted-fg)", lineHeight: 1.5 }}>Creator of shadcn/ui. Building design systems.</div>
+              <div style={{ fontSize: 11, color: "var(--muted-fg)", marginTop: "var(--space-1-5)", display: "flex", alignItems: "center", gap: "var(--space-1)" }}><Calendar size={11} />Joined April 2023</div>
             </div>
           </div>
         </HvrCard>
@@ -1667,7 +1667,7 @@ function PageTabs() {
 
     {/* ── Props ────────────────────────────────────────────────── */}
     <DocSection title="Props">
-      <div style={{ fontSize: 13, fontWeight: 600, color: "var(--fg)", marginBottom: "var(--space-2)" }}>Tabs</div>
+      <div style={{ fontSize: "var(--font-size-body-13)", fontWeight: "var(--font-weight-semibold, 600)" as any, color: "var(--fg)", marginBottom: "var(--space-2)" }}>Tabs</div>
       <PropsTable props={[
         { name: "defaultValue", type: "string", desc: "Initial active tab (uncontrolled)." },
         { name: "value", type: "string", desc: "Controlled active tab value." },
@@ -1675,18 +1675,18 @@ function PageTabs() {
         { name: "orientation", type: '"horizontal" | "vertical"', def: '"horizontal"', desc: "Orientation of the tabs component." },
         { name: "activationMode", type: '"automatic" | "manual"', def: '"automatic"', desc: "Whether a tab is activated on focus or requires an explicit click." },
       ]} />
-      <div style={{ fontSize: 13, fontWeight: 600, color: "var(--fg)", margin: "var(--space-5) 0 var(--space-2)" }}>TabsList</div>
+      <div style={{ fontSize: "var(--font-size-body-13)", fontWeight: "var(--font-weight-semibold, 600)" as any, color: "var(--fg)", margin: "var(--space-5) 0 var(--space-2)" }}>TabsList</div>
       <PropsTable props={[
         { name: "style", type: "React.CSSProperties", desc: "Inline styles merged onto the list container." },
         { name: "children", type: "ReactNode", desc: "Should contain one or more TabsTrigger elements." },
       ]} />
-      <div style={{ fontSize: 13, fontWeight: 600, color: "var(--fg)", margin: "var(--space-5) 0 var(--space-2)" }}>TabsTrigger</div>
+      <div style={{ fontSize: "var(--font-size-body-13)", fontWeight: "var(--font-weight-semibold, 600)" as any, color: "var(--fg)", margin: "var(--space-5) 0 var(--space-2)" }}>TabsTrigger</div>
       <PropsTable props={[
         { name: "value", type: "string", required: true, desc: "Unique value matching the TabsContent it controls." },
         { name: "disabled", type: "boolean", def: "false", desc: "Prevents the user from interacting with this tab." },
         { name: "style", type: "React.CSSProperties", desc: "Inline styles merged onto the trigger button." },
       ]} />
-      <div style={{ fontSize: 13, fontWeight: 600, color: "var(--fg)", margin: "var(--space-5) 0 var(--space-2)" }}>TabsContent</div>
+      <div style={{ fontSize: "var(--font-size-body-13)", fontWeight: "var(--font-weight-semibold, 600)" as any, color: "var(--fg)", margin: "var(--space-5) 0 var(--space-2)" }}>TabsContent</div>
       <PropsTable props={[
         { name: "value", type: "string", required: true, desc: "Matches the TabsTrigger value this panel belongs to." },
         { name: "forceMount", type: "boolean", desc: "Keep the content mounted in the DOM even when inactive." },
@@ -1729,9 +1729,9 @@ function PageCollapsible() {
       <Preview title="Collapsible" code={`<Collapsible>\n  <CollapsibleTrigger>Can I use this in my project?</CollapsibleTrigger>\n  <CollapsibleContent>Yes. Free to use for personal and commercial projects.</CollapsibleContent>\n</Collapsible>`} height={160}>
         <div style={{ width: "100%", maxWidth: 420 }}>
           <Collapsible trigger="@peduarte starred 3 repositories">
-            <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-1)" }}>
               {["@radix-ui/primitives", "@radix-ui/colors", "@stitches/react"].map(r => (
-                <div key={r} style={{ padding: "var(--space-1-5) 0", borderBottom: "1px solid var(--border)", fontSize: 13, color: "var(--muted-fg)", fontFamily: "monospace" }}>{r}</div>
+                <div key={r} style={{ padding: "var(--space-1-5) 0", borderBottom: "1px solid var(--border)", fontSize: "var(--font-size-body-13)", color: "var(--muted-fg)", fontFamily: "monospace" }}>{r}</div>
               ))}
             </div>
           </Collapsible>
@@ -1777,7 +1777,7 @@ function PageSkeleton() {
   return <DocPage title="Skeleton" subtitle="Use to show a placeholder while content is loading." sourceSlug="skeleton">
     <DocSection title="Default">
       <Preview title="Skeleton" code={`<Skeleton className="w-[100px] h-[20px] rounded-full" />`} height={100}>
-        <div style={{ display: "flex", flexDirection: "column", gap: 8, width: 280 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-2)", width: 280 }}>
           <Skl style={{ height: 16, width: "80%" }} />
           <Skl style={{ height: 12, width: "60%" }} />
           <Skl style={{ height: 12, width: "70%" }} />
@@ -1786,7 +1786,7 @@ function PageSkeleton() {
     </DocSection>
     <DocSection title="Card Skeleton">
       <Preview title="Card loading state" code={`<div className="flex items-center space-x-4">\n  <Skeleton className="h-12 w-12 rounded-full" />\n  <div className="space-y-2">\n    <Skeleton className="h-4 w-[250px]" />\n    <Skeleton className="h-4 w-[200px]" />\n  </div>\n</div>`}>
-        <div style={{ display: "flex", gap: 12, alignItems: "center", width: 280 }}>
+        <div style={{ display: "flex", gap: "var(--space-3)", alignItems: "center", width: 280 }}>
           <Skl style={{ width: 44, height: 44, borderRadius: "50%", flexShrink: 0 }} />
           <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "var(--space-1-5)" }}>
             <Skl style={{ height: 14, width: "75%" }} />
@@ -1812,9 +1812,9 @@ function PageProgress() {
   return <DocPage title="Progress" subtitle="Displays an indicator showing the completion progress of a task." sourceSlug="progress">
     <DocSection title="Default">
       <Preview title="Progress" code={`<Progress value={60} />`}>
-        <div style={{ width: 280, display: "flex", flexDirection: "column", gap: 12 }}>
+        <div style={{ width: 280, display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>
           <div>
-            <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: "var(--muted-fg)", marginBottom: "var(--space-1-5)" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", fontSize: "var(--font-size-label-12)", color: "var(--muted-fg)", marginBottom: "var(--space-1-5)" }}>
               <span>Progress</span><span>{v}%</span>
             </div>
             <Prg value={v} />
@@ -1866,12 +1866,12 @@ function PageBreadcrumb() {
     </DocSection>
     <DocSection title="Custom Separator">
       <Preview title="Custom separator" code={`<BreadcrumbSeparator><Slash /></BreadcrumbSeparator>`}>
-        <nav style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 13 }}>
+        <nav style={{ display: "flex", alignItems: "center", gap: "var(--space-1)", fontSize: "var(--font-size-body-13)" }}>
           {["Home", "Docs", "Components", "Breadcrumb"].map((item, i, arr) => (
-            <span key={i} style={{ display: "flex", alignItems: "center", gap: 4 }}>
+            <span key={i} style={{ display: "flex", alignItems: "center", gap: "var(--space-1)" }}>
               {i > 0 && <span style={{ color: "var(--muted-fg)" }}>/</span>}
               {i < arr.length - 1 ? <a href="#" onClick={e => e.preventDefault()} style={{ color: "var(--muted-fg)", textDecoration: "none" }}>{item}</a>
-                : <span style={{ color: "var(--fg)", fontWeight: 500 }}>{item}</span>}
+                : <span style={{ color: "var(--fg)", fontWeight: "var(--font-weight-medium, 500)" as any }}>{item}</span>}
             </span>
           ))}
         </nav>
@@ -1891,9 +1891,9 @@ function PagePagination() {
   return <DocPage title="Pagination" subtitle="Pagination with page navigation, next and previous links." sourceSlug="pagination">
     <DocSection title="Default">
       <Preview title="Pagination" code={`<Pagination>\n  <PaginationContent>\n    <PaginationItem><PaginationPrevious href="#" /></PaginationItem>\n    <PaginationItem><PaginationLink href="#">1</PaginationLink></PaginationItem>\n    <PaginationItem><PaginationLink href="#" isActive>2</PaginationLink></PaginationItem>\n    <PaginationItem><PaginationLink href="#">3</PaginationLink></PaginationItem>\n    <PaginationItem><PaginationEllipsis /></PaginationItem>\n    <PaginationItem><PaginationNext href="#" /></PaginationItem>\n  </PaginationContent>\n</Pagination>`}>
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "var(--space-3)" }}>
           <Pgn total={10} current={page} onChange={setPage} />
-          <span style={{ fontSize: 12, color: "var(--muted-fg)" }}>Page {page} of 10</span>
+          <span style={{ fontSize: "var(--font-size-label-12)", color: "var(--muted-fg)" }}>Page {page} of 10</span>
         </div>
       </Preview>
     </DocSection>
@@ -1919,23 +1919,23 @@ function PageNavMenu() {
     <DocSection title="Default">
       <Preview title="Navigation Menu" code={`<NavigationMenu>\n  <NavigationMenuList>\n    <NavigationMenuItem>\n      <NavigationMenuTrigger>Getting started</NavigationMenuTrigger>\n      <NavigationMenuContent>...</NavigationMenuContent>\n    </NavigationMenuItem>\n    <NavigationMenuItem>\n      <NavigationMenuLink href="/docs">Documentation</NavigationMenuLink>\n    </NavigationMenuItem>\n  </NavigationMenuList>\n</NavigationMenu>`} height={160}>
         <div style={{ position: "relative" }}>
-          <div style={{ display: "flex", gap: 2, background: "var(--muted)", padding: 4, borderRadius: 8, border: "1px solid var(--border)" }}>
+          <div style={{ display: "flex", gap: "var(--space-0-5)", background: "var(--muted)", padding: "var(--space-1)", borderRadius: "var(--radius-lg)", border: "1px solid var(--border)" }}>
             {items.map(item => (
               <div key={item.label} style={{ position: "relative" }}>
                 <button onClick={() => setActive(active === item.label ? null : item.label)} style={{
-                  padding: "var(--space-1-5) 12px", borderRadius: 6, border: "none", background: active === item.label ? "var(--state-hover)" : "transparent",
-                  color: active === item.label ? "var(--fg)" : "var(--muted-fg)", cursor: "pointer", fontSize: 13, fontWeight: 500,
-                  display: "flex", alignItems: "center", gap: 4
+                  padding: "var(--space-1-5) 12px", borderRadius: "var(--radius-sm)", border: "none", background: active === item.label ? "var(--state-hover)" : "transparent",
+                  color: active === item.label ? "var(--fg)" : "var(--muted-fg)", cursor: "pointer", fontSize: "var(--font-size-body-13)", fontWeight: "var(--font-weight-medium, 500)" as any,
+                  display: "flex", alignItems: "center", gap: "var(--space-1)"
                 }}>
                   {item.label}{(item as any).children && <ChevronDown size={12} style={{ transition: ".2s", transform: active === item.label ? "rotate(180deg)" : "none" }} />}
                 </button>
                 {active === item.label && (item as any).children && (
                   <div style={{
                     position: "absolute", top: "calc(100% + 4px)", left: 0, background: "var(--bg-menus)", border: "1px solid var(--border)",
-                    borderRadius: 12, boxShadow: "0 8px 24px rgba(0,0,0,.12)", padding: "4px 0", minWidth: 160, zIndex: 50
+                    borderRadius: "var(--radius-2xl)", boxShadow: "0 8px 24px rgba(0,0,0,.12)", padding: "4px 0", minWidth: 160, zIndex: 50
                   }}>
                     {(item as any).children.map((c: string) => <a key={c} href="#" onClick={e => { e.preventDefault(); setActive(null); }}
-                      style={{ display: "block", padding: "7px 14px", fontSize: 13, color: "var(--fg)", textDecoration: "none" }}>{c}</a>)}
+                      style={{ display: "block", padding: "7px 14px", fontSize: "var(--font-size-body-13)", color: "var(--fg)", textDecoration: "none" }}>{c}</a>)}
                   </div>
                 )}
               </div>
@@ -2488,7 +2488,7 @@ function TokenColorSwatch({ name, value, variable }: { name: string; value: stri
   const isLightColor = value.startsWith("rgba") || isLight(value);
   return (
     <div style={{
-      border: "1px solid var(--color-element-subtle)", borderRadius: 12, overflow: "hidden",
+      border: "1px solid var(--color-element-subtle)", borderRadius: "var(--radius-2xl)", overflow: "hidden",
       background: "var(--bg)", transition: "box-shadow 0.15s ease"
     }}>
       {/* Full-bleed color block */}
@@ -2499,19 +2499,19 @@ function TokenColorSwatch({ name, value, variable }: { name: string; value: stri
       }} />
       {/* Info */}
       <div style={{ padding: "10px 12px 12px" }}>
-        <div style={{ fontSize: 12.5, fontWeight: 600, color: "var(--fg)", marginBottom: 3, lineHeight: 1.3 }}>{name}</div>
+        <div style={{ fontSize: 12.5, fontWeight: "var(--font-weight-semibold, 600)" as any, color: "var(--fg)", marginBottom: 3, lineHeight: 1.3 }}>{name}</div>
         <div style={{
           fontSize: 10.5, fontFamily: "monospace", color: "var(--muted-fg)",
-          marginBottom: 8, wordBreak: "break-all", lineHeight: 1.5
+          marginBottom: "var(--space-2)", wordBreak: "break-all", lineHeight: 1.5
         }}>{value}</div>
         <div style={{
           fontSize: 10, fontFamily: "monospace", color: "var(--accent)",
-          marginBottom: 10, wordBreak: "break-all", lineHeight: 1.4, opacity: 0.85
+          marginBottom: "var(--space-2-5)", wordBreak: "break-all", lineHeight: 1.4, opacity: 0.85
         }}>{variable}</div>
         <button onClick={() => copy(variable)} style={{
           width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 5,
-          padding: "5px 0", borderRadius: 6, border: "1px solid var(--color-element-subtle)",
-          background: "transparent", cursor: "pointer", fontSize: 11, fontWeight: 500,
+          padding: "5px 0", borderRadius: "var(--radius-sm)", border: "1px solid var(--color-element-subtle)",
+          background: "transparent", cursor: "pointer", fontSize: 11, fontWeight: "var(--font-weight-medium, 500)" as any,
           color: copied ? "var(--color-text-primary)" : "var(--muted-fg)", fontFamily: "inherit",
           transition: "all 0.15s ease"
         }}>
@@ -2530,20 +2530,20 @@ function PageTokensColor() {
 
   return (
     <DocPage title="Color Tokens" subtitle="The complete color system for HeartStamp DS — two full palettes (Light & Dark) connected to every component, text, and surface in the product.">
-      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 24 }}>
+      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "var(--space-6)" }}>
         <span style={{ fontSize: 11.5, color: "var(--muted-fg)" }}>
           {Object.values(tokens).reduce((a, g) => a + Object.keys(g).length, 0)} tokens · {dark ? "🌙 Dark" : "☀️ Light"} mode — toggle in the top nav
         </span>
       </div>
 
       {groups.map(group => (
-        <section key={group} style={{ marginBottom: 40 }}>
-          <div style={{ marginBottom: 16 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: "var(--space-1-5)" }}>
-              <div style={{ width: 3, height: 18, borderRadius: 99, background: "var(--accent)" }} />
-              <h2 style={{ margin: 0, fontSize: 17, fontWeight: 700, color: "var(--fg)" }}>{group}</h2>
+        <section key={group} style={{ marginBottom: "var(--space-10)" }}>
+          <div style={{ marginBottom: "var(--space-4)" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2-5)", marginBottom: "var(--space-1-5)" }}>
+              <div style={{ width: 3, height: 18, borderRadius: "var(--radius-full)", background: "var(--accent)" }} />
+              <h2 style={{ margin: 0, fontSize: 17, fontWeight: "var(--font-weight-bold, 700)" as any, color: "var(--fg)" }}>{group}</h2>
               <span style={{
-                fontSize: 10.5, fontWeight: 600, padding: "2px 8px", borderRadius: 999,
+                fontSize: 10.5, fontWeight: "var(--font-weight-semibold, 600)" as any, padding: "2px 8px", borderRadius: "var(--radius-full)",
                 background: "var(--accent-subtle)", color: "var(--accent)"
               }}>{Object.keys(tokens[group]).length} tokens</span>
             </div>
@@ -2554,7 +2554,7 @@ function PageTokensColor() {
           <div style={{
             display: "grid",
             gridTemplateColumns: "repeat(auto-fill, minmax(170px, 1fr))",
-            gap: 12
+            gap: "var(--space-3)"
           }}>
             {Object.entries(tokens[group]).map(([name, value]) => (
               <TokenColorSwatch
@@ -2570,16 +2570,16 @@ function PageTokensColor() {
       ))}
 
       {/* CSS Variables reference */}
-      <section style={{ marginBottom: 8 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
-          <div style={{ width: 3, height: 18, borderRadius: 99, background: "var(--accent)" }} />
-          <h2 style={{ margin: 0, fontSize: 17, fontWeight: 700, color: "var(--fg)" }}>CSS Variable Reference</h2>
+      <section style={{ marginBottom: "var(--space-2)" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2-5)", marginBottom: "var(--space-3)" }}>
+          <div style={{ width: 3, height: 18, borderRadius: "var(--radius-full)", background: "var(--accent)" }} />
+          <h2 style={{ margin: 0, fontSize: 17, fontWeight: "var(--font-weight-bold, 700)" as any, color: "var(--fg)" }}>CSS Variable Reference</h2>
         </div>
-        <div style={{ background: "#09090b", border: "1px solid #27272a", borderRadius: 8, overflow: "hidden", fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
+        <div style={{ background: "#09090b", border: "1px solid #27272a", borderRadius: "var(--radius-lg)", overflow: "hidden", fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
           <div style={{ padding: "0 16px", borderBottom: "1px solid #27272a", display: "flex", alignItems: "center", minHeight: 40 }}>
-            <span style={{ fontSize: 12, color: "#71717a" }}>tokens.css</span>
+            <span style={{ fontSize: "var(--font-size-label-12)", color: "#71717a" }}>tokens.css</span>
           </div>
-          <pre style={{ margin: 0, padding: 20, fontSize: 11.5, lineHeight: 1.9, fontFamily: "inherit", overflowX: "auto" }}>
+          <pre style={{ margin: 0, padding: "var(--space-5)", fontSize: 11.5, lineHeight: 1.9, fontFamily: "inherit", overflowX: "auto" }}>
             <span style={{ color: "#c084fc" }}>:root</span>
             <span style={{ color: "#e6edf3" }}>{" {"}</span>
             {"\n"}
@@ -2666,26 +2666,26 @@ function JsonTokenSection({ lightTokens, darkTokens }: { lightTokens: Record<str
   };
 
   return (
-    <section style={{ marginBottom: 8, marginTop: 32 }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
-        <div style={{ width: 3, height: 18, borderRadius: 99, background: "var(--accent)" }} />
-        <h2 style={{ margin: 0, fontSize: 17, fontWeight: 700, color: "var(--fg)" }}>JSON Token Source</h2>
-        <span style={{ fontSize: 11, color: "var(--muted-fg)", marginLeft: 4 }}>
+    <section style={{ marginBottom: "var(--space-2)", marginTop: "var(--space-8)" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2-5)", marginBottom: "var(--space-3)" }}>
+        <div style={{ width: 3, height: 18, borderRadius: "var(--radius-full)", background: "var(--accent)" }} />
+        <h2 style={{ margin: 0, fontSize: 17, fontWeight: "var(--font-weight-bold, 700)" as any, color: "var(--fg)" }}>JSON Token Source</h2>
+        <span style={{ fontSize: 11, color: "var(--muted-fg)", marginLeft: "var(--space-1)" }}>
           — mirrors the <code style={{ fontFamily: "monospace", fontSize: 11, color: "var(--accent)" }}>color-tokens.json</code> file exactly
         </span>
       </div>
 
-      <div style={{ background: "#09090b", border: "1px solid #27272a", borderRadius: 8, overflow: "hidden", fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
+      <div style={{ background: "#09090b", border: "1px solid #27272a", borderRadius: "var(--radius-lg)", overflow: "hidden", fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
         <div style={{ padding: "0 8px 0 16px", borderBottom: "1px solid #27272a", display: "flex", alignItems: "center", gap: "var(--space-1-5)", minHeight: 40 }}>
-          <span style={{ fontSize: 12, color: "#71717a", flex: 1 }}>
+          <span style={{ fontSize: "var(--font-size-label-12)", color: "#71717a", flex: 1 }}>
             color-tokens.json <span style={{ opacity: 0.5 }}>({jsonMode} mode)</span>
           </span>
-          <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "var(--space-1)" }}>
             {(["light", "dark"] as const).map(m => (
               <button key={m} onClick={() => setJsonMode(m)} style={{
                 padding: "3px 12px", borderRadius: 20, border: "1px solid",
                 borderColor: jsonMode === m ? "#3f3f46" : "transparent",
-                cursor: "pointer", fontSize: 11, fontWeight: 500, fontFamily: "inherit",
+                cursor: "pointer", fontSize: 11, fontWeight: "var(--font-weight-medium, 500)" as any, fontFamily: "inherit",
                 background: jsonMode === m ? "#18181b" : "transparent",
                 color: jsonMode === m ? "#e4e4e7" : "#71717a",
                 transition: "all 0.15s ease"
@@ -2708,8 +2708,8 @@ function JsonTokenSection({ lightTokens, darkTokens }: { lightTokens: Record<str
       </div>
 
       {/* Flat reference table */}
-      <div style={{ marginTop: 20, border: "1px solid var(--border)", borderRadius: 12, overflow: "hidden" }}>
-        <div style={{ background: "var(--muted)", padding: "8px 16px", display: "grid", gridTemplateColumns: "1.2fr 0.6fr 1.2fr 1.2fr", gap: 12, fontSize: 10.5, fontWeight: 700, color: "var(--muted-fg)", textTransform: "uppercase", letterSpacing: ".04em", borderBottom: "1px solid var(--border)" }}>
+      <div style={{ marginTop: "var(--space-5)", border: "1px solid var(--border)", borderRadius: "var(--radius-2xl)", overflow: "hidden" }}>
+        <div style={{ background: "var(--muted)", padding: "8px 16px", display: "grid", gridTemplateColumns: "1.2fr 0.6fr 1.2fr 1.2fr", gap: "var(--space-3)", fontSize: 10.5, fontWeight: "var(--font-weight-bold, 700)" as any, color: "var(--muted-fg)", textTransform: "uppercase", letterSpacing: ".04em", borderBottom: "1px solid var(--border)" }}>
           <span>Group / Name</span>
           <span>$type</span>
           <span>$value</span>
@@ -2718,16 +2718,16 @@ function JsonTokenSection({ lightTokens, darkTokens }: { lightTokens: Record<str
         {Object.entries(tokens).flatMap(([group, values]) =>
           Object.entries(values).map(([name, value], idx) => (
             <div key={`${group}-${name}`} style={{
-              padding: "10px 16px", display: "grid", gridTemplateColumns: "1.2fr 0.6fr 1.2fr 1.2fr", gap: 12, alignItems: "center",
+              padding: "10px 16px", display: "grid", gridTemplateColumns: "1.2fr 0.6fr 1.2fr 1.2fr", gap: "var(--space-3)", alignItems: "center",
               borderBottom: "1px solid var(--border)", background: idx % 2 === 0 ? "var(--bg)" : "var(--muted)"
             }}>
               <div>
-                <span style={{ fontSize: 10, fontWeight: 600, color: "var(--muted-fg)", textTransform: "uppercase", letterSpacing: ".05em" }}>{group} / </span>
-                <span style={{ fontSize: 12, fontWeight: 600, color: "var(--fg)" }}>{name}</span>
+                <span style={{ fontSize: 10, fontWeight: "var(--font-weight-semibold, 600)" as any, color: "var(--muted-fg)", textTransform: "uppercase", letterSpacing: ".05em" }}>{group} / </span>
+                <span style={{ fontSize: "var(--font-size-label-12)", fontWeight: "var(--font-weight-semibold, 600)" as any, color: "var(--fg)" }}>{name}</span>
               </div>
               <code style={{ fontSize: 11, fontFamily: "monospace", color: "#ffa657" }}>"color"</code>
               <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
-                <span style={{ width: 14, height: 14, borderRadius: 4, background: value, border: "1px solid rgba(0,0,0,0.1)", flexShrink: 0 }} />
+                <span style={{ width: 14, height: 14, borderRadius: "var(--radius-xs)", background: value, border: "1px solid rgba(0,0,0,0.1)", flexShrink: 0 }} />
                 <code style={{ fontSize: 11, fontFamily: "monospace", color: "var(--fg)", wordBreak: "break-all" }}>{value}</code>
               </div>
               <code style={{ fontSize: 10.5, fontFamily: "monospace", color: "var(--accent)", wordBreak: "break-all" }}>
@@ -2746,14 +2746,14 @@ type TokenRow = { token: string; value: string; category: string; usage: string 
 function TokenTable({ rows }: { rows: TokenRow[] }) {
   const cols = "200px 200px 130px 1fr";
   return (
-    <div style={{ border: "1px solid var(--border)", borderRadius: 12, overflow: "hidden" }}>
+    <div style={{ border: "1px solid var(--border)", borderRadius: "var(--radius-2xl)", overflow: "hidden" }}>
       <div style={{
         display: "grid", gridTemplateColumns: cols,
         background: "var(--muted)", borderBottom: "1px solid var(--border)",
         padding: "10px 20px",
       }}>
         {["TOKEN", "VALUE", "CATEGORY", "USAGE"].map(h => (
-          <span key={h} style={{ fontSize: 10.5, fontWeight: 700, color: "var(--muted-fg)", textTransform: "uppercase" as const, letterSpacing: ".06em" }}>{h}</span>
+          <span key={h} style={{ fontSize: 10.5, fontWeight: "var(--font-weight-bold, 700)" as any, color: "var(--muted-fg)", textTransform: "uppercase" as const, letterSpacing: ".06em" }}>{h}</span>
         ))}
       </div>
       {rows.map((r, i) => (
@@ -2763,8 +2763,8 @@ function TokenTable({ rows }: { rows: TokenRow[] }) {
           background: i % 2 === 0 ? "var(--bg)" : "var(--muted)",
           borderBottom: i < rows.length - 1 ? "1px solid var(--border)" : "none",
         }}>
-          <code style={{ fontSize: 12, fontFamily: "monospace", color: "var(--accent)", paddingRight: 12 }}>{r.token}</code>
-          <div style={{ paddingRight: 12 }}>
+          <code style={{ fontSize: "var(--font-size-label-12)", fontFamily: "monospace", color: "var(--accent)", paddingRight: "var(--space-3)" }}>{r.token}</code>
+          <div style={{ paddingRight: "var(--space-3)" }}>
             <code style={{
               fontSize: 11.5, fontFamily: "monospace", color: "var(--fg)",
               background: "var(--color-element-disabled)", padding: "3px 8px",
@@ -2772,8 +2772,8 @@ function TokenTable({ rows }: { rows: TokenRow[] }) {
               whiteSpace: "pre-wrap" as const, wordBreak: "break-all" as const,
             }}>{r.value}</code>
           </div>
-          <span style={{ fontSize: 13, color: "var(--fg)", paddingRight: 12 }}>{r.category}</span>
-          <span style={{ fontSize: 13, color: "var(--muted-fg)", lineHeight: 1.5 }}>{r.usage}</span>
+          <span style={{ fontSize: "var(--font-size-body-13)", color: "var(--fg)", paddingRight: "var(--space-3)" }}>{r.category}</span>
+          <span style={{ fontSize: "var(--font-size-body-13)", color: "var(--muted-fg)", lineHeight: 1.5 }}>{r.usage}</span>
         </div>
       ))}
     </div>
@@ -2817,67 +2817,67 @@ function PageTokensTypography() {
         <p style={{ ...bodyFF, fontSize: "var(--font-size-body-13)", fontWeight: "var(--font-weight-body-13)" as any, color: "var(--muted-fg)", margin: "0 0 12px" }}>
           We do not ship any typography styles by default. This page is an example of how you can use token variables to style your text.
         </p>
-        <div style={{ border: "1px solid var(--border)", borderRadius: 12, padding: "36px 40px", background: "var(--bg)", display: "flex", flexDirection: "column", gap: 0 }}>
+        <div style={{ border: "1px solid var(--border)", borderRadius: "var(--radius-2xl)", padding: "36px 40px", background: "var(--bg)", display: "flex", flexDirection: "column", gap: 0 }}>
 
           {/* H1 */}
-          <div style={{ display: "flex", alignItems: "flex-start", gap: 16, marginBottom: 12 }}>
+          <div style={{ display: "flex", alignItems: "flex-start", gap: "var(--space-4)", marginBottom: "var(--space-3)" }}>
             <h1 style={{ ...headingFF, flex: 1, fontSize: "var(--font-size-h1)", fontWeight: "var(--font-weight-h1)" as any, letterSpacing: "var(--letter-spacing-h1)", color: "var(--fg)", lineHeight: 1.05, margin: 0 }}>
               Taxing Laughter: The Joke Tax Chronicles
             </h1>
-            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "var(--accent-subtle)", color: "var(--accent)", padding: "2px 7px", borderRadius: 99, letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>H1 · --font-size-h1 · 56px · Bold</span>
+            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "var(--accent-subtle)", color: "var(--accent)", padding: "2px 7px", borderRadius: "var(--radius-full)", letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>H1 · --font-size-h1 · 56px · Bold</span>
           </div>
 
           {/* Subheadline */}
-          <div style={{ display: "flex", alignItems: "flex-start", gap: 16, marginBottom: 28 }}>
+          <div style={{ display: "flex", alignItems: "flex-start", gap: "var(--space-4)", marginBottom: "var(--space-7)" }}>
             <p style={{ ...headingFF, flex: 1, fontSize: "var(--font-size-subheadline)", fontWeight: "var(--font-weight-subheadline)" as any, letterSpacing: "var(--letter-spacing-subheadline)", color: "var(--muted-fg)", lineHeight: 1.45, margin: 0 }}>
               Once upon a time, in a far-off land, there was a very lazy king who spent all day lounging on his throne. One day, his advisors came to him with a problem: the kingdom was running out of money.
             </p>
-            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "var(--accent-subtle)", color: "var(--accent)", padding: "2px 7px", borderRadius: 99, letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>Subheadline · 24px · Light</span>
+            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "var(--accent-subtle)", color: "var(--accent)", padding: "2px 7px", borderRadius: "var(--radius-full)", letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>Subheadline · 24px · Light</span>
           </div>
 
           {/* Subheadline MD */}
-          <div style={{ display: "flex", alignItems: "flex-start", gap: 16, marginBottom: 28 }}>
+          <div style={{ display: "flex", alignItems: "flex-start", gap: "var(--space-4)", marginBottom: "var(--space-7)" }}>
             <p style={{ ...headingFF, flex: 1, fontSize: "var(--font-size-subheadline-md)", fontWeight: "var(--font-weight-subheadline-md)" as any, letterSpacing: "var(--letter-spacing-subheadline-md)", color: "var(--muted-fg)", lineHeight: 1.45, margin: 0 }}>
               Once upon a time, in a far-off land, there was a very lazy king who spent all day lounging on his throne. One day, his advisors came to him with a problem: the kingdom was running out of money.
             </p>
-            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "var(--accent-subtle)", color: "var(--accent)", padding: "2px 7px", borderRadius: 99, letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>Subheadline MD · 24px · Medium</span>
+            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "var(--accent-subtle)", color: "var(--accent)", padding: "2px 7px", borderRadius: "var(--radius-full)", letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>Subheadline MD · 24px · Medium</span>
           </div>
 
           <div style={{ height: 1, background: "var(--border)", margin: "0 0 24px" }} />
 
           {/* H3 */}
-          <div style={{ display: "flex", alignItems: "flex-start", gap: 16, marginBottom: 12 }}>
+          <div style={{ display: "flex", alignItems: "flex-start", gap: "var(--space-4)", marginBottom: "var(--space-3)" }}>
             <h3 style={{ ...headingFF, flex: 1, fontSize: "var(--font-size-h3)", fontWeight: "var(--font-weight-h3)" as any, letterSpacing: "var(--letter-spacing-h3)", color: "var(--fg)", lineHeight: 1.15, margin: 0 }}>
               The King's Plan
             </h3>
-            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "var(--accent-subtle)", color: "var(--accent)", padding: "2px 7px", borderRadius: 99, letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>H3 · --font-size-h3 · 36px · Regular · 0em</span>
+            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "var(--accent-subtle)", color: "var(--accent)", padding: "2px 7px", borderRadius: "var(--radius-full)", letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>H3 · --font-size-h3 · 36px · Regular · 0em</span>
           </div>
 
           {/* Body 15 with link */}
-          <div style={{ display: "flex", alignItems: "flex-start", gap: 16, marginBottom: 16 }}>
+          <div style={{ display: "flex", alignItems: "flex-start", gap: "var(--space-4)", marginBottom: "var(--space-4)" }}>
             <p style={{ ...bodyFF, flex: 1, fontSize: "var(--font-size-body-15)", fontWeight: "var(--font-weight-body-15)" as any, color: "var(--fg)", lineHeight: 1.65, margin: 0 }}>
               The king thought long and hard, and finally came up with{" "}
               <span style={{ textDecoration: "underline", fontWeight: "var(--font-weight-label-15)" as any }}>a brilliant plan</span>: he would tax the jokes in the kingdom.
             </p>
-            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "var(--accent-subtle)", color: "var(--accent)", padding: "2px 7px", borderRadius: 99, letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>Body · 15 · --font-size-body-15 · 400</span>
+            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "var(--accent-subtle)", color: "var(--accent)", padding: "2px 7px", borderRadius: "var(--radius-full)", letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>Body · 15 · --font-size-body-15 · 400</span>
           </div>
 
           {/* Blockquote */}
-          <div style={{ display: "flex", alignItems: "flex-start", gap: 16, marginBottom: 24 }}>
-            <blockquote style={{ flex: 1, borderLeft: "3px solid var(--border)", paddingLeft: 16, margin: 0 }}>
+          <div style={{ display: "flex", alignItems: "flex-start", gap: "var(--space-4)", marginBottom: "var(--space-6)" }}>
+            <blockquote style={{ flex: 1, borderLeft: "3px solid var(--border)", paddingLeft: "var(--space-4)", margin: 0 }}>
               <p style={{ ...bodyFF, fontSize: "var(--font-size-body-15)", fontWeight: "var(--font-weight-body-15)" as any, fontStyle: "italic", color: "var(--muted-fg)", lineHeight: 1.65, margin: 0 }}>
                 "After all," he said, "everyone enjoys a good joke, so it's only fair that they should pay for the privilege."
               </p>
             </blockquote>
-            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "var(--accent-subtle)", color: "var(--accent)", padding: "2px 7px", borderRadius: 99, letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>Body · 15 · italic · left-border</span>
+            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "var(--accent-subtle)", color: "var(--accent)", padding: "2px 7px", borderRadius: "var(--radius-full)", letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>Body · 15 · italic · left-border</span>
           </div>
 
           {/* H4 */}
-          <div style={{ display: "flex", alignItems: "flex-start", gap: 16, marginBottom: 12 }}>
+          <div style={{ display: "flex", alignItems: "flex-start", gap: "var(--space-4)", marginBottom: "var(--space-3)" }}>
             <h4 style={{ ...headingFF, flex: 1, fontSize: "var(--font-size-h4)", fontWeight: "var(--font-weight-h4)" as any, letterSpacing: "var(--letter-spacing-h4)", color: "var(--fg)", lineHeight: 1.3, margin: 0 }}>
               The Joke Tax
             </h4>
-            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "var(--accent-subtle)", color: "var(--accent)", padding: "2px 7px", borderRadius: 99, letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>H4 · --font-size-h4 · 20px · Regular · 0em</span>
+            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "var(--accent-subtle)", color: "var(--accent)", padding: "2px 7px", borderRadius: "var(--radius-full)", letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>H4 · --font-size-h4 · 20px · Regular · 0em</span>
           </div>
 
           <p style={{ ...bodyFF, fontSize: "var(--font-size-body-15)", fontWeight: "var(--font-weight-body-15)" as any, color: "var(--fg)", lineHeight: 1.65, margin: "0 0 12px" }}>
@@ -2885,8 +2885,8 @@ function PageTokensTypography() {
           </p>
 
           {/* List — Label 15 */}
-          <div style={{ display: "flex", alignItems: "flex-start", gap: 16, marginBottom: 16 }}>
-            <ul style={{ flex: 1, margin: 0, paddingLeft: 20, display: "flex", flexDirection: "column", gap: "var(--space-1-5)" }}>
+          <div style={{ display: "flex", alignItems: "flex-start", gap: "var(--space-4)", marginBottom: "var(--space-4)" }}>
+            <ul style={{ flex: 1, margin: 0, paddingLeft: "var(--space-5)", display: "flex", flexDirection: "column", gap: "var(--space-1-5)" }}>
               {[
                 { item: "1st level of puns", detail: ": 5 gold coins" },
                 { item: "2nd level of jokes", detail: ": 10 gold coins" },
@@ -2897,7 +2897,7 @@ function PageTokensTypography() {
                 </li>
               ))}
             </ul>
-            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "var(--accent-subtle)", color: "var(--accent)", padding: "2px 7px", borderRadius: 99, letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>Label · 15 · --font-weight-label-15 · 500</span>
+            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "var(--accent-subtle)", color: "var(--accent)", padding: "2px 7px", borderRadius: "var(--radius-full)", letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>Label · 15 · --font-weight-label-15 · 500</span>
           </div>
 
           <p style={{ ...bodyFF, fontSize: "var(--font-size-body-15)", fontWeight: "var(--font-weight-body-15)" as any, color: "var(--fg)", lineHeight: 1.65, margin: "0 0 24px" }}>
@@ -2905,59 +2905,59 @@ function PageTokensTypography() {
           </p>
 
           {/* H5 */}
-          <div style={{ display: "flex", alignItems: "flex-start", gap: 16, marginBottom: 12 }}>
+          <div style={{ display: "flex", alignItems: "flex-start", gap: "var(--space-4)", marginBottom: "var(--space-3)" }}>
             <h5 style={{ ...headingFF, flex: 1, fontSize: "var(--font-size-h5)", fontWeight: "var(--font-weight-h5)" as any, letterSpacing: "var(--letter-spacing-h5)", color: "var(--fg)", lineHeight: 1.35, margin: 0 }}>
               Jokester's Revolt
             </h5>
-            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "var(--accent-subtle)", color: "var(--accent)", padding: "2px 7px", borderRadius: 99, letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>H5 · --font-size-h5 · 18px · Regular · 0em</span>
+            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "var(--accent-subtle)", color: "var(--accent)", padding: "2px 7px", borderRadius: "var(--radius-full)", letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>H5 · --font-size-h5 · 18px · Regular · 0em</span>
           </div>
 
           {/* Label SB 15 */}
-          <div style={{ display: "flex", alignItems: "flex-start", gap: 16, marginBottom: 16 }}>
+          <div style={{ display: "flex", alignItems: "flex-start", gap: "var(--space-4)", marginBottom: "var(--space-4)" }}>
             <p style={{ ...bodyFF, flex: 1, fontSize: "var(--font-size-label-sb-15)", fontWeight: "var(--font-weight-label-sb-15)" as any, color: "var(--fg)", lineHeight: 1.65, margin: 0 }}>
               Jokester began sneaking into the castle in the middle of the night and leaving jokes all over the place: under the king's pillow, in his soup, even in the royal toilet.
             </p>
-            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "var(--accent-subtle)", color: "var(--accent)", padding: "2px 7px", borderRadius: 99, letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>Label SB · 15 · --font-weight-label-sb-15 · 600</span>
+            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "var(--accent-subtle)", color: "var(--accent)", padding: "2px 7px", borderRadius: "var(--radius-full)", letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>Label SB · 15 · --font-weight-label-sb-15 · 600</span>
           </div>
 
           {/* Body 13 */}
-          <div style={{ display: "flex", alignItems: "flex-start", gap: 16, marginBottom: 24 }}>
+          <div style={{ display: "flex", alignItems: "flex-start", gap: "var(--space-4)", marginBottom: "var(--space-6)" }}>
             <p style={{ ...bodyFF, flex: 1, fontSize: "var(--font-size-body-13)", fontWeight: "var(--font-weight-body-13)" as any, color: "var(--muted-fg)", lineHeight: 1.65, margin: 0 }}>
               The king was furious, but he couldn't seem to stop Jokester. And so, in the end, the joke tax was repealed, and the kingdom lived happily ever after — at least until the next royal decree.
             </p>
-            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "var(--accent-subtle)", color: "var(--accent)", padding: "2px 7px", borderRadius: 99, letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>Body · 13 · --font-size-body-13 · 400</span>
+            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "var(--accent-subtle)", color: "var(--accent)", padding: "2px 7px", borderRadius: "var(--radius-full)", letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>Body · 13 · --font-size-body-13 · 400</span>
           </div>
 
           {/* Body 13 Bold */}
-          <div style={{ display: "flex", alignItems: "flex-start", gap: 16, marginBottom: 24 }}>
+          <div style={{ display: "flex", alignItems: "flex-start", gap: "var(--space-4)", marginBottom: "var(--space-6)" }}>
             <p style={{ ...bodyFF, flex: 1, fontSize: "var(--font-size-body-13-bd)", fontWeight: "var(--font-weight-body-13-bd)" as any, color: "var(--muted-fg)", lineHeight: 1.65, margin: 0 }}>
               The king was furious, but he couldn't seem to stop Jokester. And so, in the end, the joke tax was repealed, and the kingdom lived happily ever after — at least until the next royal decree.
             </p>
-            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "var(--accent-subtle)", color: "var(--accent)", padding: "2px 7px", borderRadius: 99, letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>Body · 13 Bold · --font-size-body-13-bd · 700</span>
+            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "var(--accent-subtle)", color: "var(--accent)", padding: "2px 7px", borderRadius: "var(--radius-full)", letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>Body · 13 Bold · --font-size-body-13-bd · 700</span>
           </div>
 
           {/* Label 12 — tag row */}
-          <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 16, paddingTop: 16, borderTop: "1px solid var(--border)" }}>
-            <div style={{ flex: 1, display: "flex", gap: 8, flexWrap: "wrap" as const }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "var(--space-4)", marginBottom: "var(--space-4)", paddingTop: "var(--space-4)", borderTop: "1px solid var(--border)" }}>
+            <div style={{ flex: 1, display: "flex", gap: "var(--space-2)", flexWrap: "wrap" as const }}>
               {["HeartStamp DS", "Typography", "Figma Library", "textStyles.json"].map(tag => (
-                <span key={tag} style={{ ...bodyFF, fontSize: "var(--font-size-label-12)", fontWeight: "var(--font-weight-label-12)" as any, color: "var(--muted-fg)", background: "var(--muted)", padding: "3px 10px", borderRadius: 99, border: "1px solid var(--border)" }}>
+                <span key={tag} style={{ ...bodyFF, fontSize: "var(--font-size-label-12)", fontWeight: "var(--font-weight-label-12)" as any, color: "var(--muted-fg)", background: "var(--muted)", padding: "3px 10px", borderRadius: "var(--radius-full)", border: "1px solid var(--border)" }}>
                   {tag}
                 </span>
               ))}
             </div>
-            <span style={{ flexShrink: 0, fontSize: 9.5, fontFamily: "monospace", background: "var(--accent-subtle)", color: "var(--accent)", padding: "2px 7px", borderRadius: 99, letterSpacing: ".02em", whiteSpace: "nowrap" }}>Label · 12 · --font-size-label-12 · 500</span>
+            <span style={{ flexShrink: 0, fontSize: 9.5, fontFamily: "monospace", background: "var(--accent-subtle)", color: "var(--accent)", padding: "2px 7px", borderRadius: "var(--radius-full)", letterSpacing: ".02em", whiteSpace: "nowrap" }}>Label · 12 · --font-size-label-12 · 500</span>
           </div>
 
           {/* Label 12 Bold — tag row */}
-          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-            <div style={{ flex: 1, display: "flex", gap: 8, flexWrap: "wrap" as const }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "var(--space-4)" }}>
+            <div style={{ flex: 1, display: "flex", gap: "var(--space-2)", flexWrap: "wrap" as const }}>
               {["HeartStamp DS", "Typography", "Figma Library", "textStyles.json"].map(tag => (
-                <span key={tag} style={{ ...bodyFF, fontSize: "var(--font-size-label-12-bd)", fontWeight: "var(--font-weight-label-12-bd)" as any, color: "var(--muted-fg)", background: "var(--muted)", padding: "3px 10px", borderRadius: 99, border: "1px solid var(--border)" }}>
+                <span key={tag} style={{ ...bodyFF, fontSize: "var(--font-size-label-12-bd)", fontWeight: "var(--font-weight-label-12-bd)" as any, color: "var(--muted-fg)", background: "var(--muted)", padding: "3px 10px", borderRadius: "var(--radius-full)", border: "1px solid var(--border)" }}>
                   {tag}
                 </span>
               ))}
             </div>
-            <span style={{ flexShrink: 0, fontSize: 9.5, fontFamily: "monospace", background: "var(--accent-subtle)", color: "var(--accent)", padding: "2px 7px", borderRadius: 99, letterSpacing: ".02em", whiteSpace: "nowrap" }}>Label · 12 Bold · --font-size-label-12-bd · 700</span>
+            <span style={{ flexShrink: 0, fontSize: 9.5, fontFamily: "monospace", background: "var(--accent-subtle)", color: "var(--accent)", padding: "2px 7px", borderRadius: "var(--radius-full)", letterSpacing: ".02em", whiteSpace: "nowrap" }}>Label · 12 Bold · --font-size-label-12-bd · 700</span>
           </div>
 
         </div>
@@ -2965,66 +2965,66 @@ function PageTokensTypography() {
 
       {/* Font Families */}
       <DocSection title="Font Families">
-        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>
           {/* Heading */}
-          <div style={{ border: "1px solid var(--border)", borderRadius: 12, padding: "24px 28px", background: "var(--bg)" }}>
-            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
+          <div style={{ border: "1px solid var(--border)", borderRadius: "var(--radius-2xl)", padding: "24px 28px", background: "var(--bg)" }}>
+            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "var(--space-4)", flexWrap: "wrap" }}>
               <div style={{ flex: 1 }}>
-                <div style={{ ...headingFF, fontSize: 36, fontWeight: 700, color: "var(--fg)", marginBottom: 8, lineHeight: 1.1 }}>Aa Bb Cc Dd Ee 0–9</div>
-                <div style={{ ...headingFF, fontSize: 15, fontWeight: 300, color: "var(--muted-fg)", marginBottom: "var(--space-1-5)" }}>The quick brown fox jumps over the lazy dog.</div>
+                <div style={{ ...headingFF, fontSize: "var(--font-size-h3)", fontWeight: "var(--font-weight-bold, 700)" as any, color: "var(--fg)", marginBottom: "var(--space-2)", lineHeight: 1.1 }}>Aa Bb Cc Dd Ee 0–9</div>
+                <div style={{ ...headingFF, fontSize: "var(--font-size-body-15)", fontWeight: "var(--font-weight-light, 300)" as any, color: "var(--muted-fg)", marginBottom: "var(--space-1-5)" }}>The quick brown fox jumps over the lazy dog.</div>
                 <div style={{ fontSize: 11.5, color: "var(--muted-fg)" }}>Headings · H1 through H6, Subheadline</div>
               </div>
               <div style={{ flexShrink: 0, minWidth: 210 }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: "var(--fg)", marginBottom: "var(--space-1-5)" }}>Stack Sans Text</div>
-                <code style={{ fontSize: 11, fontFamily: "monospace", color: "var(--accent)", display: "block", marginBottom: 4 }}>--font-family-heading</code>
+                <div style={{ fontSize: "var(--font-size-body-13)", fontWeight: "var(--font-weight-bold, 700)" as any, color: "var(--fg)", marginBottom: "var(--space-1-5)" }}>Stack Sans Text</div>
+                <code style={{ fontSize: 11, fontFamily: "monospace", color: "var(--accent)", display: "block", marginBottom: "var(--space-1)" }}>--font-family-heading</code>
                 <div style={{ fontSize: 10.5, color: "var(--muted-fg)", fontFamily: "monospace", lineHeight: 1.6 }}>'Stack Sans Text', 'Instrument Sans',<br/>system-ui, sans-serif</div>
-                <div style={{ marginTop: 8, display: "inline-flex", alignItems: "center", gap: 4, fontSize: 10.5, padding: "2px 8px", borderRadius: 99, background: "var(--accent-subtle)", color: "var(--accent)" }}>Licensed · Figma Library</div>
+                <div style={{ marginTop: "var(--space-2)", display: "inline-flex", alignItems: "center", gap: "var(--space-1)", fontSize: 10.5, padding: "2px 8px", borderRadius: "var(--radius-full)", background: "var(--accent-subtle)", color: "var(--accent)" }}>Licensed · Figma Library</div>
               </div>
             </div>
           </div>
           {/* Body */}
-          <div style={{ border: "1px solid var(--border)", borderRadius: 12, padding: "24px 28px", background: "var(--bg)" }}>
-            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
+          <div style={{ border: "1px solid var(--border)", borderRadius: "var(--radius-2xl)", padding: "24px 28px", background: "var(--bg)" }}>
+            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "var(--space-4)", flexWrap: "wrap" }}>
               <div style={{ flex: 1 }}>
-                <div style={{ ...bodyFF, fontSize: 36, fontWeight: 500, color: "var(--fg)", marginBottom: 8, lineHeight: 1.1 }}>Aa Bb Cc Dd Ee 0–9</div>
-                <div style={{ ...bodyFF, fontSize: 15, fontWeight: 400, color: "var(--muted-fg)", marginBottom: "var(--space-1-5)" }}>The quick brown fox jumps over the lazy dog.</div>
+                <div style={{ ...bodyFF, fontSize: "var(--font-size-h3)", fontWeight: "var(--font-weight-medium, 500)" as any, color: "var(--fg)", marginBottom: "var(--space-2)", lineHeight: 1.1 }}>Aa Bb Cc Dd Ee 0–9</div>
+                <div style={{ ...bodyFF, fontSize: "var(--font-size-body-15)", fontWeight: "var(--font-weight-regular, 400)" as any, color: "var(--muted-fg)", marginBottom: "var(--space-1-5)" }}>The quick brown fox jumps over the lazy dog.</div>
                 <div style={{ fontSize: 11.5, color: "var(--muted-fg)" }}>Body, Labels, UI — inputs, buttons, captions</div>
               </div>
               <div style={{ flexShrink: 0, minWidth: 210 }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: "var(--fg)", marginBottom: "var(--space-1-5)" }}>DM Sans</div>
-                <code style={{ fontSize: 11, fontFamily: "monospace", color: "var(--accent)", display: "block", marginBottom: 4 }}>--font-family-body</code>
+                <div style={{ fontSize: "var(--font-size-body-13)", fontWeight: "var(--font-weight-bold, 700)" as any, color: "var(--fg)", marginBottom: "var(--space-1-5)" }}>DM Sans</div>
+                <code style={{ fontSize: 11, fontFamily: "monospace", color: "var(--accent)", display: "block", marginBottom: "var(--space-1)" }}>--font-family-body</code>
                 <div style={{ fontSize: 10.5, color: "var(--muted-fg)", fontFamily: "monospace", lineHeight: 1.6 }}>'DM Sans', system-ui, sans-serif</div>
-                <div style={{ marginTop: 8, display: "inline-flex", alignItems: "center", gap: 4, fontSize: 10.5, padding: "2px 8px", borderRadius: 99, background: "rgba(16,185,129,0.1)", color: "#10b981" }}>Google Fonts · Open Source</div>
+                <div style={{ marginTop: "var(--space-2)", display: "inline-flex", alignItems: "center", gap: "var(--space-1)", fontSize: 10.5, padding: "2px 8px", borderRadius: "var(--radius-full)", background: "rgba(16,185,129,0.1)", color: "#10b981" }}>Google Fonts · Open Source</div>
               </div>
             </div>
           </div>
           {/* Promo */}
-          <div style={{ border: "1px solid var(--border)", borderRadius: 12, padding: "24px 28px", background: "var(--bg)" }}>
-            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
+          <div style={{ border: "1px solid var(--border)", borderRadius: "var(--radius-2xl)", padding: "24px 28px", background: "var(--bg)" }}>
+            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "var(--space-4)", flexWrap: "wrap" }}>
               <div style={{ flex: 1 }}>
-                <div style={{ ...promoFF, fontSize: 36, fontWeight: 400, color: "var(--fg)", marginBottom: 8, lineHeight: 1.1 }}>Aa Bb Cc Dd Ee 0–9</div>
-                <div style={{ ...promoFF, fontSize: 17, fontWeight: 400, color: "var(--muted-fg)", marginBottom: "var(--space-1-5)" }}>The quick brown fox jumps over the lazy dog.</div>
+                <div style={{ ...promoFF, fontSize: "var(--font-size-h3)", fontWeight: "var(--font-weight-regular, 400)" as any, color: "var(--fg)", marginBottom: "var(--space-2)", lineHeight: 1.1 }}>Aa Bb Cc Dd Ee 0–9</div>
+                <div style={{ ...promoFF, fontSize: 17, fontWeight: "var(--font-weight-regular, 400)" as any, color: "var(--muted-fg)", marginBottom: "var(--space-1-5)" }}>The quick brown fox jumps over the lazy dog.</div>
                 <div style={{ fontSize: 11.5, color: "var(--muted-fg)" }}>Promo styles · decorative subheadlines, accents, captions</div>
               </div>
               <div style={{ flexShrink: 0, minWidth: 210 }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: "var(--fg)", marginBottom: "var(--space-1-5)" }}>Oldstyle Italic HPLHS</div>
-                <code style={{ fontSize: 11, fontFamily: "monospace", color: "var(--accent)", display: "block", marginBottom: 4 }}>--font-family-promo</code>
+                <div style={{ fontSize: "var(--font-size-body-13)", fontWeight: "var(--font-weight-bold, 700)" as any, color: "var(--fg)", marginBottom: "var(--space-1-5)" }}>Oldstyle Italic HPLHS</div>
+                <code style={{ fontSize: 11, fontFamily: "monospace", color: "var(--accent)", display: "block", marginBottom: "var(--space-1)" }}>--font-family-promo</code>
                 <div style={{ fontSize: 10.5, color: "var(--muted-fg)", fontFamily: "monospace", lineHeight: 1.6 }}>'Oldstyle Italic HPLHS',<br/>'EB Garamond', Georgia, serif</div>
-                <div style={{ marginTop: 8, display: "inline-flex", alignItems: "center", gap: 4, fontSize: 10.5, padding: "2px 8px", borderRadius: 99, background: "rgba(16,185,129,0.1)", color: "#10b981" }}>Free (HPLHS) · not bundled yet, EB Garamond fallback</div>
+                <div style={{ marginTop: "var(--space-2)", display: "inline-flex", alignItems: "center", gap: "var(--space-1)", fontSize: 10.5, padding: "2px 8px", borderRadius: "var(--radius-full)", background: "rgba(16,185,129,0.1)", color: "#10b981" }}>Free (HPLHS) · not bundled yet, EB Garamond fallback</div>
               </div>
             </div>
           </div>
           {/* Mono */}
-          <div style={{ border: "1px solid var(--border)", borderRadius: 12, padding: "24px 28px", background: "var(--bg)" }}>
-            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
+          <div style={{ border: "1px solid var(--border)", borderRadius: "var(--radius-2xl)", padding: "24px 28px", background: "var(--bg)" }}>
+            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "var(--space-4)", flexWrap: "wrap" }}>
               <div style={{ flex: 1 }}>
-                <div style={{ ...monoFF, fontSize: 30, fontWeight: 400, color: "var(--fg)", marginBottom: 8, lineHeight: 1.1 }}>{"Aa 01 <> == => !=="}</div>
-                <div style={{ ...monoFF, fontSize: 13, color: "var(--muted-fg)", marginBottom: "var(--space-1-5)" }}>{'const ds = "HeartStamp";'}</div>
+                <div style={{ ...monoFF, fontSize: 30, fontWeight: "var(--font-weight-regular, 400)" as any, color: "var(--fg)", marginBottom: "var(--space-2)", lineHeight: 1.1 }}>{"Aa 01 <> == => !=="}</div>
+                <div style={{ ...monoFF, fontSize: "var(--font-size-body-13)", color: "var(--muted-fg)", marginBottom: "var(--space-1-5)" }}>{'const ds = "HeartStamp";'}</div>
                 <div style={{ fontSize: 11.5, color: "var(--muted-fg)" }}>Code blocks, token values, keyboard shortcuts</div>
               </div>
               <div style={{ flexShrink: 0, minWidth: 210 }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: "var(--fg)", marginBottom: "var(--space-1-5)" }}>Monospace</div>
-                <code style={{ fontSize: 11, fontFamily: "monospace", color: "var(--accent)", display: "block", marginBottom: 4 }}>--font-family-mono</code>
+                <div style={{ fontSize: "var(--font-size-body-13)", fontWeight: "var(--font-weight-bold, 700)" as any, color: "var(--fg)", marginBottom: "var(--space-1-5)" }}>Monospace</div>
+                <code style={{ fontSize: 11, fontFamily: "monospace", color: "var(--accent)", display: "block", marginBottom: "var(--space-1)" }}>--font-family-mono</code>
                 <div style={{ fontSize: 10.5, color: "var(--muted-fg)", fontFamily: "monospace", lineHeight: 1.6 }}>ui-monospace, 'Cascadia Code',<br/>monospace</div>
               </div>
             </div>
@@ -3034,24 +3034,24 @@ function PageTokensTypography() {
 
       {/* Heading Text Styles */}
       <DocSection title="Heading Text Styles" desc="Stack Sans Text · sourced from HeartStamp Figma Library · textStyles.json. The first weight is the element default; extra variants pair the size and line-height tokens with the --font-weight-* scale.">
-        <div style={{ border: "1px solid var(--border)", borderRadius: 12, overflow: "hidden" }}>
-          <div style={{ background: "var(--muted)", padding: "10px 20px", display: "grid", gridTemplateColumns: "110px 1fr 56px 110px 64px 64px", gap: 12, fontSize: 10.5, fontWeight: 700, color: "var(--muted-fg)", textTransform: "uppercase" as const, letterSpacing: ".04em", borderBottom: "1px solid var(--border)" }}>
+        <div style={{ border: "1px solid var(--border)", borderRadius: "var(--radius-2xl)", overflow: "hidden" }}>
+          <div style={{ background: "var(--muted)", padding: "10px 20px", display: "grid", gridTemplateColumns: "110px 1fr 56px 110px 64px 64px", gap: "var(--space-3)", fontSize: 10.5, fontWeight: "var(--font-weight-bold, 700)" as any, color: "var(--muted-fg)", textTransform: "uppercase" as const, letterSpacing: ".04em", borderBottom: "1px solid var(--border)" }}>
             <span>Style</span><span>Preview</span><span>Size</span><span>Weight</span><span>Line H</span><span>Tracking</span>
           </div>
           {headingStyles.map((s, i) => (
             <div key={s.name} style={{
-              padding: "18px 20px", display: "grid", gridTemplateColumns: "110px 1fr 56px 110px 64px 64px", gap: 12, alignItems: "center",
+              padding: "18px 20px", display: "grid", gridTemplateColumns: "110px 1fr 56px 110px 64px 64px", gap: "var(--space-3)", alignItems: "center",
               borderBottom: i < headingStyles.length - 1 ? "1px solid var(--border)" : "none",
               background: i % 2 === 0 ? "var(--bg)" : "var(--muted)"
             }}>
               <div>
-                <div style={{ fontSize: 12, fontWeight: 700, color: "var(--fg)", marginBottom: 3 }}>{s.name}</div>
+                <div style={{ fontSize: "var(--font-size-label-12)", fontWeight: "var(--font-weight-bold, 700)" as any, color: "var(--fg)", marginBottom: 3 }}>{s.name}</div>
                 <code style={{ fontSize: 10, fontFamily: "monospace", color: "var(--accent)" }}>{s.sToken}</code>
               </div>
               <div style={{ overflow: "hidden" }}>
                 <span style={{ ...headingFF, fontSize: Math.min(s.size, 36), fontWeight: s.weight, letterSpacing: s.ls, color: "var(--fg)", lineHeight: 1.1, display: "block", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>HeartStamp</span>
               </div>
-              <div style={{ fontSize: 12, fontFamily: "monospace", color: "var(--fg)" }}>{s.size}px</div>
+              <div style={{ fontSize: "var(--font-size-label-12)", fontFamily: "monospace", color: "var(--fg)" }}>{s.size}px</div>
               <div style={{ fontSize: 11, color: "var(--muted-fg)", lineHeight: 1.5 }}>
                 {s.figmaWeight} <span style={{ fontFamily: "monospace", color: "var(--accent)", fontSize: 10 }}>{s.weight}</span>
                 {s.variants && <><br/><span style={{ fontSize: 10, opacity: 0.8 }}>{s.variants}</span></>}
@@ -3065,24 +3065,24 @@ function PageTokensTypography() {
 
       {/* Body Text Styles */}
       <DocSection title="Body & Label Text Styles" desc="DM Sans — sourced from HeartStamp Figma Library · textStyles.json">
-        <div style={{ border: "1px solid var(--border)", borderRadius: 12, overflow: "hidden" }}>
-          <div style={{ background: "var(--muted)", padding: "10px 20px", display: "grid", gridTemplateColumns: "150px 1fr 64px 90px 64px 1fr", gap: 12, fontSize: 10.5, fontWeight: 700, color: "var(--muted-fg)", textTransform: "uppercase" as const, letterSpacing: ".04em", borderBottom: "1px solid var(--border)" }}>
+        <div style={{ border: "1px solid var(--border)", borderRadius: "var(--radius-2xl)", overflow: "hidden" }}>
+          <div style={{ background: "var(--muted)", padding: "10px 20px", display: "grid", gridTemplateColumns: "150px 1fr 64px 90px 64px 1fr", gap: "var(--space-3)", fontSize: 10.5, fontWeight: "var(--font-weight-bold, 700)" as any, color: "var(--muted-fg)", textTransform: "uppercase" as const, letterSpacing: ".04em", borderBottom: "1px solid var(--border)" }}>
             <span>Style</span><span>Preview</span><span>Size</span><span>Weight</span><span>Line H</span><span>Usage</span>
           </div>
           {bodyStyles.map((s, i) => (
             <div key={s.name} style={{
-              padding: "14px 20px", display: "grid", gridTemplateColumns: "150px 1fr 64px 90px 64px 1fr", gap: 12, alignItems: "center",
+              padding: "14px 20px", display: "grid", gridTemplateColumns: "150px 1fr 64px 90px 64px 1fr", gap: "var(--space-3)", alignItems: "center",
               borderBottom: i < bodyStyles.length - 1 ? "1px solid var(--border)" : "none",
               background: i % 2 === 0 ? "var(--bg)" : "var(--muted)"
             }}>
               <div>
-                <div style={{ fontSize: 12, fontWeight: 700, color: "var(--fg)", marginBottom: 3 }}>{s.name}</div>
+                <div style={{ fontSize: "var(--font-size-label-12)", fontWeight: "var(--font-weight-bold, 700)" as any, color: "var(--fg)", marginBottom: 3 }}>{s.name}</div>
                 <code style={{ fontSize: 10, fontFamily: "monospace", color: "var(--accent)" }}>{s.sToken}</code>
               </div>
               <div>
                 <span style={{ ...bodyFF, fontSize: s.size, fontWeight: s.weight, color: "var(--fg)" }}>The quick brown fox</span>
               </div>
-              <div style={{ fontSize: 12, fontFamily: "monospace", color: "var(--fg)" }}>{s.size}px</div>
+              <div style={{ fontSize: "var(--font-size-label-12)", fontFamily: "monospace", color: "var(--fg)" }}>{s.size}px</div>
               <div style={{ fontSize: 11, color: "var(--muted-fg)", lineHeight: 1.5 }}>{s.figmaWeight}<br/><span style={{ fontFamily: "monospace", color: "var(--accent)", fontSize: 10 }}>{s.weight}</span></div>
               <div style={{ fontSize: 11, fontFamily: "monospace", color: "var(--muted-fg)" }}>{s.lh}</div>
               <div style={{ fontSize: 11, color: "var(--muted-fg)", lineHeight: 1.5 }}>{s.usage}</div>
@@ -3093,24 +3093,24 @@ function PageTokensTypography() {
 
       {/* Promo Text Styles */}
       <DocSection title="Promo Text Styles" desc="Oldstyle Italic HPLHS · decorative promotional styles from textStyles.json. The face is free (HPLHS) but not bundled yet; previews render the EB Garamond italic fallback until it ships via @font-face.">
-        <div style={{ border: "1px solid var(--border)", borderRadius: 12, overflow: "hidden" }}>
-          <div style={{ background: "var(--muted)", padding: "10px 20px", display: "grid", gridTemplateColumns: "150px 1fr 64px 64px 64px 1fr", gap: 12, fontSize: 10.5, fontWeight: 700, color: "var(--muted-fg)", textTransform: "uppercase" as const, letterSpacing: ".04em", borderBottom: "1px solid var(--border)" }}>
+        <div style={{ border: "1px solid var(--border)", borderRadius: "var(--radius-2xl)", overflow: "hidden" }}>
+          <div style={{ background: "var(--muted)", padding: "10px 20px", display: "grid", gridTemplateColumns: "150px 1fr 64px 64px 64px 1fr", gap: "var(--space-3)", fontSize: 10.5, fontWeight: "var(--font-weight-bold, 700)" as any, color: "var(--muted-fg)", textTransform: "uppercase" as const, letterSpacing: ".04em", borderBottom: "1px solid var(--border)" }}>
             <span>Style</span><span>Preview</span><span>Size</span><span>Line H</span><span>Tracking</span><span>Usage</span>
           </div>
           {promoStyles.map((s, i) => (
             <div key={s.name} style={{
-              padding: "16px 20px", display: "grid", gridTemplateColumns: "150px 1fr 64px 64px 64px 1fr", gap: 12, alignItems: "center",
+              padding: "16px 20px", display: "grid", gridTemplateColumns: "150px 1fr 64px 64px 64px 1fr", gap: "var(--space-3)", alignItems: "center",
               borderBottom: i < promoStyles.length - 1 ? "1px solid var(--border)" : "none",
               background: i % 2 === 0 ? "var(--bg)" : "var(--muted)"
             }}>
               <div>
-                <div style={{ fontSize: 12, fontWeight: 700, color: "var(--fg)", marginBottom: 3 }}>{s.name}</div>
+                <div style={{ fontSize: "var(--font-size-label-12)", fontWeight: "var(--font-weight-bold, 700)" as any, color: "var(--fg)", marginBottom: 3 }}>{s.name}</div>
                 <code style={{ fontSize: 10, fontFamily: "monospace", color: "var(--accent)" }}>{s.sToken}</code>
               </div>
               <div style={{ overflow: "hidden" }}>
                 <span style={{ ...promoFF, fontSize: Math.min(s.size, 28), letterSpacing: s.ls, color: "var(--fg)", lineHeight: 1.2, display: "block", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>Sealed with a heart</span>
               </div>
-              <div style={{ fontSize: 12, fontFamily: "monospace", color: "var(--fg)" }}>{s.size}px</div>
+              <div style={{ fontSize: "var(--font-size-label-12)", fontFamily: "monospace", color: "var(--fg)" }}>{s.size}px</div>
               <div style={{ fontSize: 11, fontFamily: "monospace", color: "var(--muted-fg)" }}>{s.lh}</div>
               <div style={{ fontSize: 11, fontFamily: "monospace", color: "var(--muted-fg)" }}>{s.ls}</div>
               <div style={{ fontSize: 11, color: "var(--muted-fg)", lineHeight: 1.5 }}>{s.usage}</div>
@@ -3236,8 +3236,8 @@ function PageTokensSpacing() {
         <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-1-5)" }}>
           {scale.map((s, i) => (
             <div key={s.name} style={{
-              display: "flex", alignItems: "center", gap: 14, padding: "8px 14px",
-              borderRadius: 8, background: i % 2 === 0 ? "var(--muted)" : "transparent",
+              display: "flex", alignItems: "center", gap: "var(--space-3-5)", padding: "8px 14px",
+              borderRadius: "var(--radius-lg)", background: i % 2 === 0 ? "var(--muted)" : "transparent",
               border: "1px solid transparent"
             }}>
               <span style={{ fontSize: 11, fontFamily: "monospace", color: "var(--muted-fg)", width: 24, flexShrink: 0, textAlign: "right" }}>{s.name}</span>
@@ -3247,27 +3247,27 @@ function PageTokensSpacing() {
                 borderRadius: 2, flexShrink: 0, border: s.px === 0 ? "1px dashed var(--border)" : "none",
                 minWidth: s.px === 0 ? 16 : 0
               }} />
-              <span style={{ fontSize: 11.5, fontWeight: 600, color: "var(--fg)", fontFamily: "monospace", marginLeft: 4 }}>{s.value}</span>
+              <span style={{ fontSize: 11.5, fontWeight: "var(--font-weight-semibold, 600)" as any, color: "var(--fg)", fontFamily: "monospace", marginLeft: "var(--space-1)" }}>{s.value}</span>
             </div>
           ))}
         </div>
       </DocSection>
 
       <DocSection title="Component Spacing" desc="Specific padding and gap values applied to individual components — use these variables for pixel-perfect fidelity.">
-        <div style={{ border: "1px solid var(--border)", borderRadius: 12, overflow: "hidden" }}>
-          <div style={{ background: "var(--muted)", padding: "8px 16px", display: "grid", gridTemplateColumns: "1fr 100px 1fr 1fr", gap: 12, fontSize: 10.5, fontWeight: 700, color: "var(--muted-fg)", textTransform: "uppercase", letterSpacing: ".04em", borderBottom: "1px solid var(--border)" }}>
+        <div style={{ border: "1px solid var(--border)", borderRadius: "var(--radius-2xl)", overflow: "hidden" }}>
+          <div style={{ background: "var(--muted)", padding: "8px 16px", display: "grid", gridTemplateColumns: "1fr 100px 1fr 1fr", gap: "var(--space-3)", fontSize: 10.5, fontWeight: "var(--font-weight-bold, 700)" as any, color: "var(--muted-fg)", textTransform: "uppercase", letterSpacing: ".04em", borderBottom: "1px solid var(--border)" }}>
             <span>Component</span><span>Value</span><span>Variable</span><span>Description</span>
           </div>
           {componentSpacing.map((item, i) => (
             <div key={item.component} style={{
-              padding: "12px 16px", display: "grid", gridTemplateColumns: "1fr 100px 1fr 1fr", gap: 12, alignItems: "center",
+              padding: "12px 16px", display: "grid", gridTemplateColumns: "1fr 100px 1fr 1fr", gap: "var(--space-3)", alignItems: "center",
               borderBottom: i < componentSpacing.length - 1 ? "1px solid var(--border)" : "none",
               background: i % 2 === 0 ? "var(--bg)" : "var(--muted)"
             }}>
-              <span style={{ fontSize: 12.5, fontWeight: 500, color: "var(--fg)" }}>{item.component}</span>
-              <code style={{ fontSize: 11, fontFamily: "monospace", color: "var(--fg)", background: "var(--color-element-disabled)", padding: "2px var(--space-1-5)", borderRadius: 4 }}>{item.value}</code>
+              <span style={{ fontSize: 12.5, fontWeight: "var(--font-weight-medium, 500)" as any, color: "var(--fg)" }}>{item.component}</span>
+              <code style={{ fontSize: 11, fontFamily: "monospace", color: "var(--fg)", background: "var(--color-element-disabled)", padding: "2px var(--space-1-5)", borderRadius: "var(--radius-xs)" }}>{item.value}</code>
               <code style={{ fontSize: 10.5, fontFamily: "monospace", color: "var(--accent)" }}>{item.variable}</code>
-              <span style={{ fontSize: 12, color: "var(--muted-fg)" }}>{item.desc}</span>
+              <span style={{ fontSize: "var(--font-size-label-12)", color: "var(--muted-fg)" }}>{item.desc}</span>
             </div>
           ))}
         </div>
@@ -3326,9 +3326,9 @@ function PageTokensRadius() {
   return (
     <DocPage title="Radius Tokens" subtitle="Border radius values applied across every component surface for consistent rounding.">
       <DocSection title="Border Radius">
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: 12 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: "var(--space-3)" }}>
           {radii.map(r => (
-            <div key={r.name} style={{ border: "1px solid var(--border)", borderRadius: 10, padding: "16px", background: "var(--bg)", display: "flex", flexDirection: "column", gap: 10 }}>
+            <div key={r.name} style={{ border: "1px solid var(--border)", borderRadius: "var(--radius-xl)", padding: "16px", background: "var(--bg)", display: "flex", flexDirection: "column", gap: "var(--space-2-5)" }}>
               <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: 64 }}>
                 <div style={{
                   width: 52, height: 52, background: "#242423",
@@ -3337,9 +3337,9 @@ function PageTokensRadius() {
                 }} />
               </div>
               <div>
-                <div style={{ fontSize: 12.5, fontWeight: 600, color: "var(--fg)", marginBottom: 3 }}>{r.name}</div>
-                <code style={{ fontSize: 11, fontFamily: "monospace", color: "var(--accent)", display: "block", marginBottom: 4 }}>{r.variable}</code>
-                <div style={{ fontSize: 12, fontFamily: "monospace", fontWeight: 700, color: "#242423", marginBottom: "var(--space-1-5)" }}>{r.value}</div>
+                <div style={{ fontSize: 12.5, fontWeight: "var(--font-weight-semibold, 600)" as any, color: "var(--fg)", marginBottom: 3 }}>{r.name}</div>
+                <code style={{ fontSize: 11, fontFamily: "monospace", color: "var(--accent)", display: "block", marginBottom: "var(--space-1)" }}>{r.variable}</code>
+                <div style={{ fontSize: "var(--font-size-label-12)", fontFamily: "monospace", fontWeight: "var(--font-weight-bold, 700)" as any, color: "#242423", marginBottom: "var(--space-1-5)" }}>{r.value}</div>
                 <div style={{ fontSize: 10.5, color: "var(--muted-fg)", lineHeight: 1.5 }}>{r.usage}</div>
               </div>
             </div>
@@ -3379,11 +3379,11 @@ function PageTokensShadow() {
   return (
     <DocPage title="Shadow Tokens" subtitle="Box shadow values used across floating surfaces, interactive states, and depth layers.">
       <DocSection title="Box Shadow">
-        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>
           {shadows.map(s => (
-            <div key={s.name} style={{ border: "1px solid var(--border)", borderRadius: 10, padding: "18px 20px", background: "var(--bg)", display: "flex", alignItems: "center", gap: 20, flexWrap: "wrap" }}>
+            <div key={s.name} style={{ border: "1px solid var(--border)", borderRadius: "var(--radius-xl)", padding: "18px 20px", background: "var(--bg)", display: "flex", alignItems: "center", gap: "var(--space-5)", flexWrap: "wrap" }}>
               <div style={{
-                width: 64, height: 48, background: "var(--bg)", borderRadius: 8,
+                width: 64, height: 48, background: "var(--bg)", borderRadius: "var(--radius-lg)",
                 border: "1px solid var(--border)",
                 boxShadow: s.value,
                 flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center"
@@ -3391,12 +3391,12 @@ function PageTokensShadow() {
                 <span style={{ fontSize: 9, color: "var(--muted-fg)", fontFamily: "monospace" }}>{s.name}</span>
               </div>
               <div style={{ flex: 1, minWidth: 140 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-                  <span style={{ fontSize: 13, fontWeight: 600, color: "var(--fg)" }}>{s.name}</span>
+                <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", marginBottom: "var(--space-1)" }}>
+                  <span style={{ fontSize: "var(--font-size-body-13)", fontWeight: "var(--font-weight-semibold, 600)" as any, color: "var(--fg)" }}>{s.name}</span>
                   <code style={{ fontSize: 10.5, fontFamily: "monospace", color: "var(--accent)" }}>{s.variable}</code>
                 </div>
-                <code style={{ fontSize: 11, fontFamily: "monospace", color: "var(--muted-fg)", display: "block", marginBottom: 4 }}>{s.value}</code>
-                <div style={{ fontSize: 12, color: "var(--muted-fg)" }}>{s.usage}</div>
+                <code style={{ fontSize: 11, fontFamily: "monospace", color: "var(--muted-fg)", display: "block", marginBottom: "var(--space-1)" }}>{s.value}</code>
+                <div style={{ fontSize: "var(--font-size-label-12)", color: "var(--muted-fg)" }}>{s.usage}</div>
               </div>
             </div>
           ))}
@@ -3436,10 +3436,10 @@ function PageTokensGrid() {
   ];
 
   const codeBlockStyle: React.CSSProperties = {
-    background: "#09090b", border: "1px solid #27272a", borderRadius: 8, overflow: "hidden",
+    background: "#09090b", border: "1px solid #27272a", borderRadius: "var(--radius-lg)", overflow: "hidden",
   };
   const preStyle: React.CSSProperties = {
-    margin: 0, padding: "14px 16px", fontSize: 12, lineHeight: 1.75,
+    margin: 0, padding: "14px 16px", fontSize: "var(--font-size-label-12)", lineHeight: 1.75,
     fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace", color: "#e4e4e7", overflowX: "auto",
   };
   const codeLabelStyle: React.CSSProperties = {
@@ -3470,17 +3470,17 @@ function PageTokensGrid() {
       <DocSection title="Breakpoints" desc="Column count adapts at two breakpoints, and the track widens at a third. Gutter reduces on smaller viewports; margin stays 16px throughout. Wide is keyed on viewport width rather than screen resolution, so a 4K display at 200% scaling reports the same 1920px viewport as a Full HD one and correctly stays on Desktop.">
         {/* auto-fit rather than a fixed 4, so the fourth card wraps instead of
             cramping when the docs shell is narrow */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(190px, 1fr))", gap: 12 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(190px, 1fr))", gap: "var(--space-3)" }}>
           {breakpoints.map((bp, bi) => {
             /* Tints the two desktop-class tiers, Desktop and Wide */
             const isDesktop = bi >= 2;
             return (
-              <div key={bp.name} style={{ border: "1px solid var(--border)", borderRadius: 12, overflow: "hidden", background: "var(--bg)" }}>
+              <div key={bp.name} style={{ border: "1px solid var(--border)", borderRadius: "var(--radius-2xl)", overflow: "hidden", background: "var(--bg)" }}>
                 {/* Card header with mini column preview */}
                 <div style={{ padding: "16px 18px 14px", borderBottom: "1px solid var(--border)", background: isDesktop ? "var(--color-brand-primary-dim)" : "var(--muted)" }}>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "var(--space-3)" }}>
                     <span style={{ fontSize: "var(--font-size-label-15)", fontWeight: "var(--font-weight-bold)" as any, color: "var(--fg)" }}>{bp.name}</span>
-                    <code style={{ fontSize: 10, fontFamily: "monospace", color: isDesktop ? "var(--color-brand-primary)" : "var(--muted-fg)", padding: "2px 7px", borderRadius: 999, background: "var(--bg)", border: "1px solid var(--border)" }}>{bp.range}</code>
+                    <code style={{ fontSize: 10, fontFamily: "monospace", color: isDesktop ? "var(--color-brand-primary)" : "var(--muted-fg)", padding: "2px 7px", borderRadius: "var(--radius-full)", background: "var(--bg)", border: "1px solid var(--border)" }}>{bp.range}</code>
                   </div>
                   {/* Mini columns */}
                   <div style={{ display: "grid", gridTemplateColumns: `repeat(${bp.cols}, 1fr)`, gap: 3 }}>
@@ -3493,8 +3493,8 @@ function PageTokensGrid() {
                 <div style={{ padding: "14px 18px", display: "flex", flexDirection: "column", gap: 9 }}>
                   {([["Columns", String(bp.cols)], ["Gutter", bp.gutter], ["Margin", bp.margin], ["Max width", bp.maxWidth]] as [string, string][]).map(([k, v]) => (
                     <div key={k} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                      <span style={{ fontSize: 12, color: "var(--muted-fg)" }}>{k}</span>
-                      <code style={{ fontSize: 11.5, fontFamily: "monospace", fontWeight: 600, color: "var(--fg)", background: "var(--color-element-disabled)", padding: "2px 8px", borderRadius: 4 }}>{v}</code>
+                      <span style={{ fontSize: "var(--font-size-label-12)", color: "var(--muted-fg)" }}>{k}</span>
+                      <code style={{ fontSize: 11.5, fontFamily: "monospace", fontWeight: "var(--font-weight-semibold, 600)" as any, color: "var(--fg)", background: "var(--color-element-disabled)", padding: "2px 8px", borderRadius: "var(--radius-xs)" }}>{v}</code>
                     </div>
                   ))}
                 </div>
@@ -3507,10 +3507,10 @@ function PageTokensGrid() {
       {/* ── Column Spans ──────────────────────────────────────── */}
       <DocSection title="Column Spans" desc="Span helpers for .hs-page-grid children. Desktop is 12 columns; spans ≥ 5 collapse to full width on mobile.">
         {/* Numbered ruler — same gap as span rows so they align */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(12, 1fr)", gap: 6, marginBottom: 6 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(12, 1fr)", gap: "var(--space-1-5)", marginBottom: "var(--space-1-5)" }}>
           {Array.from({ length: 12 }, (_, i) => (
             <div key={i} style={{ height: 26, background: "var(--color-brand-primary-dim)", border: "1px solid rgba(190,29,44,0.2)", borderRadius: 5, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <span style={{ fontSize: 9.5, fontWeight: 700, color: "var(--color-brand-primary)", fontFamily: "monospace" }}>{i + 1}</span>
+              <span style={{ fontSize: 9.5, fontWeight: "var(--font-weight-bold, 700)" as any, color: "var(--color-brand-primary)", fontFamily: "monospace" }}>{i + 1}</span>
             </div>
           ))}
         </div>
@@ -3518,24 +3518,24 @@ function PageTokensGrid() {
         {/* Span rows */}
         <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
           {columnExamples.map(ex => (
-            <div key={ex.cls} style={{ display: "grid", gridTemplateColumns: "repeat(12, 1fr)", gap: 6 }}>
+            <div key={ex.cls} style={{ display: "grid", gridTemplateColumns: "repeat(12, 1fr)", gap: "var(--space-1-5)" }}>
               {/* Filled portion */}
               <div style={{
                 gridColumn: ex.colSpan,
-                borderRadius: 7,
+                borderRadius: "var(--radius-md)",
                 background: "var(--color-brand-primary-dim)",
                 borderLeft: "3px solid var(--color-brand-primary)",
                 display: "flex", alignItems: "center", justifyContent: "space-between",
-                padding: "9px 12px 9px 10px", gap: 8, minHeight: 46,
+                padding: "9px 12px 9px 10px", gap: "var(--space-2)", minHeight: 46,
               }}>
-                <span style={{ fontSize: 12.5, fontWeight: 600, color: "var(--fg)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{ex.label}</span>
-                <code style={{ fontSize: 10, fontFamily: "monospace", color: "var(--color-brand-primary)", whiteSpace: "nowrap", flexShrink: 0, background: "rgba(190,29,44,0.1)", padding: "2px 6px", borderRadius: 4 }}>.{ex.cls}</code>
+                <span style={{ fontSize: 12.5, fontWeight: "var(--font-weight-semibold, 600)" as any, color: "var(--fg)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{ex.label}</span>
+                <code style={{ fontSize: 10, fontFamily: "monospace", color: "var(--color-brand-primary)", whiteSpace: "nowrap", flexShrink: 0, background: "rgba(190,29,44,0.1)", padding: "2px 6px", borderRadius: "var(--radius-xs)" }}>.{ex.cls}</code>
               </div>
               {/* Empty portion */}
               {ex.cols < 12 && (
                 <div style={{
                   gridColumn: `span ${12 - ex.cols}`,
-                  borderRadius: 7,
+                  borderRadius: "var(--radius-md)",
                   background: "var(--muted)",
                   border: "1px dashed var(--border)",
                   display: "flex", alignItems: "center", justifyContent: "center",
@@ -3551,7 +3551,7 @@ function PageTokensGrid() {
 
       {/* ── Usage ─────────────────────────────────────────────── */}
       <DocSection title="Usage" desc="Import grid.css after tokens.css, then wrap your page content in .hs-page-grid and apply span classes to children.">
-        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-2-5)" }}>
           {[
             { label: "Import",
               code: `@import "@heartstampxo/design-system/tokens.css";\n@import "@heartstampxo/design-system/grid.css";` },
@@ -3568,7 +3568,7 @@ function PageTokensGrid() {
 
       {/* ── Grid Overlay ──────────────────────────────────────── */}
       <DocSection title="Grid Overlay" desc="The column guide used for design QA, driven by the sticky inspector at the top of this page. Columns render at z-index 9000 in a red tint. Toggle with the button or ⌘/Ctrl+G.">
-        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-2-5)" }}>
           {[
             { label: "HTML",
               code: `<div class="hs-grid-overlay hs-grid-overlay--visible">\n  <div class="hs-grid-overlay__track">\n    <div class="hs-grid-overlay__col"></div> <!-- × 12 -->\n  </div>\n</div>` },
@@ -3694,16 +3694,16 @@ function PageIntro() {
         </div>
       ))}
     </div>
-    <div style={{ marginBottom: 12, marginTop: 36, fontSize: "var(--font-size-label-sb-15)", fontWeight: "var(--font-weight-label-sb-15)" as any, color: "var(--color-text-primary)", textTransform: "capitalize", letterSpacing: "normal" }}>All {componentCount} components</div>
+    <div style={{ marginBottom: "var(--space-3)", marginTop: 36, fontSize: "var(--font-size-label-sb-15)", fontWeight: "var(--font-weight-label-sb-15)" as any, color: "var(--color-text-primary)", textTransform: "capitalize", letterSpacing: "normal" }}>All {componentCount} components</div>
     <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-1-5)" }}>
       {NAV.flatMap(g => g.items).filter(i => !["intro", "install", "theming"].includes(i.id)).map(item => (
         <span key={item.id} style={{
-          padding: "3px 10px", border: "1px solid var(--border)", borderRadius: 6, fontSize: 12,
+          padding: "3px 10px", border: "1px solid var(--border)", borderRadius: "var(--radius-sm)", fontSize: "var(--font-size-label-12)",
           fontFamily: "monospace", color: "var(--muted-fg)", display: "flex", alignItems: "center", gap: 5
         }}>
           {item.title}
           {(item as any).label && <span style={{
-            fontSize: 9, fontWeight: 700, padding: "1px 4px", borderRadius: 999,
+            fontSize: 9, fontWeight: "var(--font-weight-bold, 700)" as any, padding: "1px 4px", borderRadius: "var(--radius-full)",
             background: LABEL_COLORS[(item as any).label].bg, color: LABEL_COLORS[(item as any).label].color, textTransform: "uppercase"
           }}>{(item as any).label}</span>}
         </span>
@@ -3746,7 +3746,7 @@ import { Btn, Bdg } from '@heartstampxo/design-system'
 
 export default function App() {
   return (
-    <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+    <div style={{ display: 'flex', gap: "var(--space-2)", alignItems: 'center' }}>
       <Btn variant="default">Get started</Btn>
       <Btn variant="primary-ghost">Learn more</Btn>
       <Btn variant="outline">Outline</Btn>
@@ -3806,23 +3806,23 @@ import { Inp, Lbl, Swt } from '@heartstampxo/design-system'
     width: 28, height: 28, borderRadius: "50%",
     background: "var(--color-brand-primary)", color: "var(--color-text-on-primary)",
     display: "flex", alignItems: "center", justifyContent: "center",
-    fontSize: 13, fontWeight: 700, flexShrink: 0, marginTop: 2,
+    fontSize: "var(--font-size-body-13)", fontWeight: "var(--font-weight-bold, 700)" as any, flexShrink: 0, marginTop: "var(--space-0-5)",
   };
 
   const stepRowStyle: React.CSSProperties = {
-    display: "flex", alignItems: "flex-start", gap: 16, marginBottom: 40,
+    display: "flex", alignItems: "flex-start", gap: "var(--space-4)", marginBottom: "var(--space-10)",
   };
 
   const sectionTitleStyle: React.CSSProperties = {
-    fontSize: 18, fontWeight: 700, color: "var(--color-text-primary)", letterSpacing: "-.02em", marginBottom: 4,
+    fontSize: "var(--font-size-h5)", fontWeight: "var(--font-weight-bold, 700)" as any, color: "var(--color-text-primary)", letterSpacing: "-.02em", marginBottom: "var(--space-1)",
   };
 
   const bodyStyle: React.CSSProperties = {
-    fontSize: 13, color: "var(--color-text-secondary)", lineHeight: 1.7, marginBottom: 16,
+    fontSize: "var(--font-size-body-13)", color: "var(--color-text-secondary)", lineHeight: 1.7, marginBottom: "var(--space-4)",
   };
 
   const mono: React.CSSProperties = {
-    fontFamily: "monospace", background: "var(--color-element-subtle)", padding: "1px 5px", borderRadius: 4,
+    fontFamily: "monospace", background: "var(--color-element-subtle)", padding: "1px 5px", borderRadius: "var(--radius-xs)",
   };
 
   /* ── CSS reference table data ── */
@@ -3850,22 +3850,22 @@ import { Inp, Lbl, Swt } from '@heartstampxo/design-system'
     <div>
       {/* ── Header ── */}
       <div style={{ marginBottom: 36 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", marginBottom: 10 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", marginBottom: "var(--space-2-5)" }}>
           <h1 style={{ margin: 0, fontSize: 34, fontWeight: 900, color: "var(--color-text-primary)", letterSpacing: "-.03em", lineHeight: 1.1 }}>
             Installation
           </h1>
           <CopyLinkButton />
         </div>
-        <p style={{ margin: 0, fontSize: 15, color: "var(--color-text-secondary)", lineHeight: 1.7, maxWidth: 600 }}>
+        <p style={{ margin: 0, fontSize: "var(--font-size-body-15)", color: "var(--color-text-secondary)", lineHeight: 1.7, maxWidth: 600 }}>
           Add <code style={mono}>@heartstampxo/design-system</code> to your React project in four steps.
           The library ships zero global CSS — components are self-contained and won't interfere with your app's existing styles.
         </p>
       </div>
 
-      <div style={{ height: 1, background: "var(--color-element-subtle)", marginBottom: 24 }} />
+      <div style={{ height: 1, background: "var(--color-element-subtle)", marginBottom: "var(--space-6)" }} />
 
       {/* ── What's new ── */}
-      <div style={{ marginBottom: 32 }}>
+      <div style={{ marginBottom: "var(--space-8)" }}>
         <Callout variant="info">
           <strong>What's new in v2.1.0</strong><br />
           · New button variants: <code style={{ fontFamily: "monospace" }}>primary-ghost</code> (brand tint bg + brand text) and <code style={{ fontFamily: "monospace" }}>secondary-ghost</code> (neutral tint bg + secondary text)<br />
@@ -3875,7 +3875,7 @@ import { Inp, Lbl, Swt } from '@heartstampxo/design-system'
         </Callout>
       </div>
 
-      <div style={{ height: 1, background: "var(--color-element-subtle)", marginBottom: 40 }} />
+      <div style={{ height: 1, background: "var(--color-element-subtle)", marginBottom: "var(--space-10)" }} />
 
       {/* ── Step 1 — Prerequisites ── */}
       <div style={stepRowStyle}>
@@ -3886,20 +3886,20 @@ import { Inp, Lbl, Swt } from '@heartstampxo/design-system'
             Make sure your project meets these requirements before installing.
           </div>
 
-          <div style={{ border: "1px solid var(--color-element-subtle)", borderRadius: 10, overflow: "hidden", marginBottom: 20 }}>
-            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+          <div style={{ border: "1px solid var(--color-element-subtle)", borderRadius: "var(--radius-xl)", overflow: "hidden", marginBottom: "var(--space-5)" }}>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "var(--font-size-body-13)" }}>
               <thead>
                 <tr style={{ background: "var(--muted)", borderBottom: "1px solid var(--color-element-subtle)" }}>
                   {["Dependency", "Version", "Notes"].map(h => (
-                    <th key={h} style={{ padding: "9px 16px", textAlign: "left", fontWeight: 600, color: "var(--color-text-secondary)", fontSize: 11, textTransform: "uppercase", letterSpacing: ".05em" }}>{h}</th>
+                    <th key={h} style={{ padding: "9px 16px", textAlign: "left", fontWeight: "var(--font-weight-semibold, 600)" as any, color: "var(--color-text-secondary)", fontSize: 11, textTransform: "uppercase", letterSpacing: ".05em" }}>{h}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
                 {prereqs.map((r, i) => (
                   <tr key={r.label} style={{ borderBottom: i < prereqs.length - 1 ? "1px solid var(--color-element-subtle)" : "none" }}>
-                    <td style={{ padding: "10px 16px", fontWeight: 600, color: "var(--color-text-primary)", fontFamily: "monospace" }}>{r.label}</td>
-                    <td style={{ padding: "10px 16px", color: "var(--color-brand-primary)", fontFamily: "monospace", fontWeight: 600 }}>{r.req}</td>
+                    <td style={{ padding: "10px 16px", fontWeight: "var(--font-weight-semibold, 600)" as any, color: "var(--color-text-primary)", fontFamily: "monospace" }}>{r.label}</td>
+                    <td style={{ padding: "10px 16px", color: "var(--color-brand-primary)", fontFamily: "monospace", fontWeight: "var(--font-weight-semibold, 600)" as any }}>{r.req}</td>
                     <td style={{ padding: "10px 16px", color: "var(--color-text-secondary)" }}>{r.note}</td>
                   </tr>
                 ))}
@@ -3923,7 +3923,7 @@ import { Inp, Lbl, Swt } from '@heartstampxo/design-system'
 
           <CodeBlock code={npmrc} filename=".npmrc" />
 
-          <div style={{ marginTop: 14, display: "flex", flexDirection: "column", gap: 10 }}>
+          <div style={{ marginTop: "var(--space-3-5)", display: "flex", flexDirection: "column", gap: "var(--space-2-5)" }}>
             <Callout variant="info">
               <strong>Generating a GitHub PAT</strong><br />
               Go to <strong>GitHub → Settings → Developer settings → Personal access tokens</strong>.
@@ -3950,15 +3950,15 @@ import { Inp, Lbl, Swt } from '@heartstampxo/design-system'
 
           <InstallBlock commands={installPkg} />
 
-          <div style={{ marginTop: 20 }}>
-            <div style={{ fontSize: 15, fontWeight: 600, color: "var(--color-text-primary)", marginBottom: 8 }}>Import CSS</div>
+          <div style={{ marginTop: "var(--space-5)" }}>
+            <div style={{ fontSize: "var(--font-size-body-15)", fontWeight: "var(--font-weight-semibold, 600)" as any, color: "var(--color-text-primary)", marginBottom: "var(--space-2)" }}>Import CSS</div>
             <div style={bodyStyle}>
               The library ships <strong>no global styles</strong>. You import only what you need. At minimum, import{" "}
               <code style={mono}>tokens.css</code> once at your app entry point. For each component that has
               a dedicated CSS file, import that file too.
             </div>
             <CodeBlock code={importTokens} filename="main.tsx" />
-            <div style={{ marginTop: 12 }}>
+            <div style={{ marginTop: "var(--space-3)" }}>
               <Callout variant="success">
                 <strong>Why no global CSS bundle?</strong><br />
                 v1 shipped a monolithic <code style={mono}>design-system.css</code> that included Tailwind preflight and bare-element
@@ -3982,7 +3982,7 @@ import { Inp, Lbl, Swt } from '@heartstampxo/design-system'
           </div>
 
           <Preview title="Btn + Bdg" code={firstComponentCode} filename="App.tsx" height={68}>
-            <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+            <div style={{ display: "flex", gap: "var(--space-2)", alignItems: "center", flexWrap: "wrap" }}>
               <Btn variant="default">Get started</Btn>
               <Btn variant="primary-ghost">Learn more</Btn>
               <Btn variant="outline">Outline</Btn>
@@ -3990,9 +3990,9 @@ import { Inp, Lbl, Swt } from '@heartstampxo/design-system'
             </div>
           </Preview>
 
-          <div style={{ marginTop: 20 }}>
-            <div style={{ fontSize: 15, fontWeight: 600, color: "var(--color-text-primary)", marginBottom: 8 }}>
-              Inline-styled components (most <code style={{ fontFamily: "monospace", fontSize: 13 }}>hs-*</code> components)
+          <div style={{ marginTop: "var(--space-5)" }}>
+            <div style={{ fontSize: "var(--font-size-body-15)", fontWeight: "var(--font-weight-semibold, 600)" as any, color: "var(--color-text-primary)", marginBottom: "var(--space-2)" }}>
+              Inline-styled components (most <code style={{ fontFamily: "monospace", fontSize: "var(--font-size-body-13)" }}>hs-*</code> components)
             </div>
             <div style={bodyStyle}>
               The majority of components use <strong>inline styles driven entirely by CSS custom properties</strong>.
@@ -4006,41 +4006,41 @@ import { Inp, Lbl, Swt } from '@heartstampxo/design-system'
       <div style={{ height: 1, background: "var(--color-element-subtle)", margin: "0 0 40px" }} />
 
       {/* ── CSS Import Reference ── */}
-      <div style={{ marginBottom: 40 }}>
-        <div style={{ fontSize: 22, fontWeight: 800, color: "var(--color-text-primary)", letterSpacing: "-.02em", marginBottom: 6 }}>CSS Import Reference</div>
-        <div style={{ fontSize: 13, color: "var(--color-text-secondary)", marginBottom: 20, lineHeight: 1.6 }}>
+      <div style={{ marginBottom: "var(--space-10)" }}>
+        <div style={{ fontSize: 22, fontWeight: 800, color: "var(--color-text-primary)", letterSpacing: "-.02em", marginBottom: "var(--space-1-5)" }}>CSS Import Reference</div>
+        <div style={{ fontSize: "var(--font-size-body-13)", color: "var(--color-text-secondary)", marginBottom: "var(--space-5)", lineHeight: 1.6 }}>
           Which CSS files does each component need? The table below shows the minimum imports per component group.
           Import only what you use — unused CSS files have no effect but add unnecessary weight.
         </div>
 
-        <div style={{ border: "1px solid var(--color-element-subtle)", borderRadius: 10, overflow: "hidden" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+        <div style={{ border: "1px solid var(--color-element-subtle)", borderRadius: "var(--radius-xl)", overflow: "hidden" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "var(--font-size-body-13)" }}>
             <thead>
               <tr style={{ background: "var(--color-bg-muted)", borderBottom: "1px solid var(--color-element-subtle)" }}>
                 {["Component(s)", "Required CSS imports", "Notes"].map(h => (
-                  <th key={h} style={{ padding: "9px 16px", textAlign: "left", fontWeight: 600, color: "var(--color-text-secondary)", fontSize: 11, textTransform: "uppercase", letterSpacing: ".05em" }}>{h}</th>
+                  <th key={h} style={{ padding: "9px 16px", textAlign: "left", fontWeight: "var(--font-weight-semibold, 600)" as any, color: "var(--color-text-secondary)", fontSize: 11, textTransform: "uppercase", letterSpacing: ".05em" }}>{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {cssTable.map((r, i) => (
                 <tr key={r.component} style={{ borderBottom: i < cssTable.length - 1 ? "1px solid var(--color-element-subtle)" : "none" }}>
-                  <td style={{ padding: "10px 16px", fontWeight: 600, color: "var(--color-text-primary)", fontFamily: "monospace", whiteSpace: "nowrap" }}>{r.component}</td>
+                  <td style={{ padding: "10px 16px", fontWeight: "var(--font-weight-semibold, 600)" as any, color: "var(--color-text-primary)", fontFamily: "monospace", whiteSpace: "nowrap" }}>{r.component}</td>
                   <td style={{ padding: "10px 16px" }}>
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-1-5)" }}>
                       {r.imports.map(imp => (
-                        <span key={imp} style={{ fontFamily: "monospace", fontSize: 12, background: "var(--color-brand-primary-dim)", color: "var(--color-brand-primary)", padding: "2px 7px", borderRadius: 4 }}>{imp}</span>
+                        <span key={imp} style={{ fontFamily: "monospace", fontSize: "var(--font-size-label-12)", background: "var(--color-brand-primary-dim)", color: "var(--color-brand-primary)", padding: "2px 7px", borderRadius: "var(--radius-xs)" }}>{imp}</span>
                       ))}
                     </div>
                   </td>
-                  <td style={{ padding: "10px 16px", color: "var(--color-text-secondary)", fontSize: 12 }}>{r.note}</td>
+                  <td style={{ padding: "10px 16px", color: "var(--color-text-secondary)", fontSize: "var(--font-size-label-12)" }}>{r.note}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
 
-        <div style={{ marginTop: 14 }}>
+        <div style={{ marginTop: "var(--space-3-5)" }}>
           <Callout variant="info">
             More components will get dedicated CSS files in future releases. Watch the changelog — when a component gets its own CSS file, the inline-style version will be kept for one major version as a deprecated fallback.
           </Callout>
@@ -4048,9 +4048,9 @@ import { Inp, Lbl, Swt } from '@heartstampxo/design-system'
       </div>
 
       {/* ── Dark Mode ── */}
-      <div style={{ marginBottom: 40 }}>
-        <div style={{ fontSize: 22, fontWeight: 800, color: "var(--color-text-primary)", letterSpacing: "-.02em", marginBottom: 6 }}>Dark Mode</div>
-        <div style={{ fontSize: 13, color: "var(--color-text-secondary)", marginBottom: 20, lineHeight: 1.6 }}>
+      <div style={{ marginBottom: "var(--space-10)" }}>
+        <div style={{ fontSize: 22, fontWeight: 800, color: "var(--color-text-primary)", letterSpacing: "-.02em", marginBottom: "var(--space-1-5)" }}>Dark Mode</div>
+        <div style={{ fontSize: "var(--font-size-body-13)", color: "var(--color-text-secondary)", marginBottom: "var(--space-5)", lineHeight: 1.6 }}>
           All design tokens have dark-mode overrides defined in <code style={mono}>tokens.css</code> under the <code style={mono}>.dark</code> class.
           Apply the class to <code style={mono}>{'<html>'}</code> or any ancestor element to activate dark mode for that subtree.
           No extra configuration needed — the CSS handles everything.
@@ -4059,14 +4059,14 @@ import { Inp, Lbl, Swt } from '@heartstampxo/design-system'
       </div>
 
       {/* ── TypeScript ── */}
-      <div style={{ marginBottom: 40 }}>
-        <div style={{ fontSize: 22, fontWeight: 800, color: "var(--color-text-primary)", letterSpacing: "-.02em", marginBottom: 6 }}>TypeScript</div>
-        <div style={{ fontSize: 13, color: "var(--color-text-secondary)", marginBottom: 20, lineHeight: 1.6 }}>
+      <div style={{ marginBottom: "var(--space-10)" }}>
+        <div style={{ fontSize: 22, fontWeight: 800, color: "var(--color-text-primary)", letterSpacing: "-.02em", marginBottom: "var(--space-1-5)" }}>TypeScript</div>
+        <div style={{ fontSize: "var(--font-size-body-13)", color: "var(--color-text-secondary)", marginBottom: "var(--space-5)", lineHeight: 1.6 }}>
           The package ships full TypeScript types. All component props, variants, and sizes are typed and exported.
           No <code style={mono}>@types</code> package needed.
         </div>
         <CodeBlock code={tsUsageCode} filename="example.tsx" />
-        <div style={{ marginTop: 12 }}>
+        <div style={{ marginTop: "var(--space-3)" }}>
           <Callout variant="info">
             Type exports follow the pattern <code style={mono}>BtnVariant</code>, <code style={mono}>BtnSize</code>, <code style={mono}>BdgVariant</code>, etc.
             All prop interfaces extend the relevant HTML element's attributes, so you can pass any native HTML prop (e.g. <code style={mono}>onClick</code>, <code style={mono}>disabled</code>, <code style={mono}>aria-*</code>) directly.
@@ -4075,13 +4075,13 @@ import { Inp, Lbl, Swt } from '@heartstampxo/design-system'
       </div>
 
       {/* ── Design System Philosophy ── */}
-      <div style={{ marginBottom: 40 }}>
-        <div style={{ fontSize: 22, fontWeight: 800, color: "var(--color-text-primary)", letterSpacing: "-.02em", marginBottom: 6 }}>How the Design System Works</div>
-        <div style={{ fontSize: 13, color: "var(--color-text-secondary)", marginBottom: 20, lineHeight: 1.6 }}>
+      <div style={{ marginBottom: "var(--space-10)" }}>
+        <div style={{ fontSize: 22, fontWeight: 800, color: "var(--color-text-primary)", letterSpacing: "-.02em", marginBottom: "var(--space-1-5)" }}>How the Design System Works</div>
+        <div style={{ fontSize: "var(--font-size-body-13)", color: "var(--color-text-secondary)", marginBottom: "var(--space-5)", lineHeight: 1.6 }}>
           HeartStamp components are <strong>black-box primitives</strong>. You import and use them — you do not style them.
           All visual decisions (spacing, color, radius, typography) live inside the design system and are owned by the design system team.
         </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-2-5)" }}>
           <Callout variant="info">
             <strong>Don't override component internals.</strong><br />
             If a component has a visual problem — wrong padding, incorrect color, missing state — that's a design system issue.
@@ -4098,10 +4098,10 @@ import { Inp, Lbl, Swt } from '@heartstampxo/design-system'
       <div style={{ height: 1, background: "var(--color-element-subtle)", margin: "0 0 40px" }} />
 
       {/* ── Troubleshooting ── */}
-      <div style={{ marginBottom: 8 }}>
-        <div style={{ fontSize: 22, fontWeight: 800, color: "var(--color-text-primary)", letterSpacing: "-.02em", marginBottom: 6 }}>Troubleshooting</div>
-        <div style={{ fontSize: 13, color: "var(--color-text-secondary)", marginBottom: 20, lineHeight: 1.6 }}>Common issues and how to fix them.</div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+      <div style={{ marginBottom: "var(--space-2)" }}>
+        <div style={{ fontSize: 22, fontWeight: 800, color: "var(--color-text-primary)", letterSpacing: "-.02em", marginBottom: "var(--space-1-5)" }}>Troubleshooting</div>
+        <div style={{ fontSize: "var(--font-size-body-13)", color: "var(--color-text-secondary)", marginBottom: "var(--space-5)", lineHeight: 1.6 }}>Common issues and how to fix them.</div>
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>
           <Callout variant="danger">
             <strong>Module not found: @heartstampxo/design-system</strong><br />
             You're missing the registry config. Make sure <code style={mono}>.npmrc</code> is in your project root with the correct scope registry and a valid GitHub PAT. Then re-run install.
@@ -4173,8 +4173,8 @@ function IcoLink({ name, children }: { name: string; children: React.ReactNode }
           position: "absolute", bottom: "calc(100% + 6px)", left: "50%",
           transform: "translateX(-50%)",
           background: "var(--fg)", color: "var(--bg)",
-          borderRadius: 6, padding: "4px 8px",
-          fontSize: 11, fontWeight: 500,
+          borderRadius: "var(--radius-sm)", padding: "4px 8px",
+          fontSize: 11, fontWeight: "var(--font-weight-medium, 500)" as any,
           whiteSpace: "nowrap", zIndex: 100,
           display: "flex", alignItems: "center", gap: "var(--space-1-5)",
           pointerEvents: "none",
@@ -4244,7 +4244,7 @@ function PageIcons() {
   return (
     <div>
       {/* Header */}
-      <div style={{ marginBottom: 24 }}>
+      <div style={{ marginBottom: "var(--space-6)" }}>
         <h1 style={{ fontSize: "var(--font-size-h1)", fontWeight: "var(--font-weight-heading)", color: "var(--fg)", margin: 0 }}>
           Icons
         </h1>
@@ -4255,7 +4255,7 @@ function PageIcons() {
       </div>
 
       {/* Search + Figma link */}
-      <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)", marginBottom: 20 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)", marginBottom: "var(--space-5)" }}>
         <div style={{ flex: 1, position: "relative" }}>
           <Search size={13} style={{
             position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)",
@@ -4265,7 +4265,7 @@ function PageIcons() {
             placeholder="Search icons…"
             value={query}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setQuery(e.target.value)}
-            style={{ paddingLeft: 32 }}
+            style={{ paddingLeft: "var(--space-8)" }}
           />
         </div>
         <Btn variant="outline" size="lg" onClick={() => window.open("https://www.figma.com/community/plugin/1233659525460777155/lucide-icons", "_blank")}>
@@ -4289,7 +4289,7 @@ function PageIcons() {
       <div style={{
         display: "grid",
         gridTemplateColumns: "repeat(auto-fill, minmax(96px, 1fr))",
-        gap: 12,
+        gap: "var(--space-3)",
       }}>
         {filtered.map(([name, Icon]) => {
           const isCopied = copied === name;
@@ -4303,7 +4303,7 @@ function PageIcons() {
                 alignItems: "center", justifyContent: "center",
                 gap: "var(--space-1-5)", padding: "12px var(--space-1-5)",
                 height: 80,
-                borderRadius: 8,
+                borderRadius: "var(--radius-lg)",
                 border: `1px solid ${isCopied ? "var(--color-brand-primary)" : "var(--border)"}`,
                 background: isCopied ? "var(--color-brand-primary-dim)" : "var(--bg)",
                 color: isCopied ? "var(--color-brand-primary)" : "var(--fg)",
@@ -4402,9 +4402,9 @@ function PageLogos() {
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
         style={{
-          display: "inline-flex", alignItems: "center", gap: 4,
-          padding: "5px 11px", borderRadius: 999, cursor: "pointer",
-          fontSize: 12, fontWeight: 500, lineHeight: 1,
+          display: "inline-flex", alignItems: "center", gap: "var(--space-1)",
+          padding: "5px 11px", borderRadius: "var(--radius-full)", cursor: "pointer",
+          fontSize: "var(--font-size-label-12)", fontWeight: "var(--font-weight-medium, 500)" as any, lineHeight: 1,
           border: `1px solid ${inv ? "rgba(255,255,255,0.22)" : "var(--border)"}`,
           background: hover
             ? (inv ? "rgba(255,255,255,0.12)" : "var(--color-element-subtle)")
@@ -4427,7 +4427,7 @@ function PageLogos() {
     logoHeight: number;
   }) {
     return (
-      <div style={{ display: "grid", gridTemplateColumns: `repeat(${variants.length}, 1fr)`, borderRadius: 12, border: "1px solid var(--border)", overflow: "hidden" }}>
+      <div style={{ display: "grid", gridTemplateColumns: `repeat(${variants.length}, 1fr)`, borderRadius: "var(--radius-2xl)", border: "1px solid var(--border)", overflow: "hidden" }}>
         {variants.map(({ color, bg, inv, label }, i) => (
           <div key={color} style={{
             background: bg,
@@ -4439,8 +4439,8 @@ function PageLogos() {
             <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
               {renderLogo({ color, bg, inv, label })}
             </div>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 20, gap: 8 }}>
-              <span style={{ fontSize: 12, color: inv ? "rgba(255,255,255,0.45)" : "var(--muted-fg)" }}>{label}</span>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: "var(--space-5)", gap: "var(--space-2)" }}>
+              <span style={{ fontSize: "var(--font-size-label-12)", color: inv ? "rgba(255,255,255,0.45)" : "var(--muted-fg)" }}>{label}</span>
               <div style={{ display: "flex", gap: 5 }}>
                 <FilePill label="SVG" onClick={() => dlSvg(type, color)} inv={inv} />
                 <FilePill label="PNG" onClick={() => dlPng(type, color)} inv={inv} />
@@ -4479,19 +4479,19 @@ function PageLogos() {
       </DocSection>
 
       <DocSection title="Lockup" desc="Horizontal combination of the heart icon and the HeartStamp wordmark.">
-        <div style={{ borderRadius: 12, border: "1px solid var(--border)", overflow: "hidden" }}>
+        <div style={{ borderRadius: "var(--radius-2xl)", border: "1px solid var(--border)", overflow: "hidden" }}>
           {LOCKUP_VARIANTS.map(({ color, bg, inv, label }, i) => (
             <div key={color} style={{
               background: bg,
               borderBottom: i < LOCKUP_VARIANTS.length - 1 ? "1px solid var(--border)" : undefined,
               padding: "28px 32px",
-              display: "flex", alignItems: "center", gap: 16,
+              display: "flex", alignItems: "center", gap: "var(--space-4)",
             }}>
               <div style={{ flex: 1 }}>
                 <HSLockup color={color} height={40} />
               </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
-                <span style={{ fontSize: 12, color: inv ? "rgba(255,255,255,0.45)" : "var(--muted-fg)" }}>{label}</span>
+              <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2-5)", flexShrink: 0 }}>
+                <span style={{ fontSize: "var(--font-size-label-12)", color: inv ? "rgba(255,255,255,0.45)" : "var(--muted-fg)" }}>{label}</span>
                 <div style={{ display: "flex", gap: 5 }}>
                   <FilePill label="SVG" onClick={() => dlSvg("lockup", color)} inv={inv} />
                   <FilePill label="PNG" onClick={() => dlPng("lockup", color)} inv={inv} />
@@ -4504,7 +4504,7 @@ function PageLogos() {
 
       <DocSection title="Usage">
         <Preview title="Logo · usage" code={embedCode} height={120}>
-          <div style={{ display: "flex", alignItems: "center", gap: 24, flexWrap: "wrap", padding: "0 var(--space-4)" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "var(--space-6)", flexWrap: "wrap", padding: "0 var(--space-4)" }}>
             <HSEmblem color="brand" height={56} />
             <HSLockup color="brand" height={40} />
             <HSLockup color="dark"  height={40} />
@@ -4715,10 +4715,10 @@ function PageTheming() {
     <div style={{ width: 14, height: 14, borderRadius: 3, background: color, border: `1px solid rgba(${dark ? "255,255,255" : "0,0,0"},.14)`, flexShrink: 0 }} />
   );
   const TH = ({ children }: { children: React.ReactNode }) => (
-    <th style={{ padding: "8px 14px", textAlign: "left" as const, fontWeight: 600, color: "var(--muted-fg)", fontSize: 10.5, textTransform: "uppercase" as const, letterSpacing: ".04em" }}>{children}</th>
+    <th style={{ padding: "8px 14px", textAlign: "left" as const, fontWeight: "var(--font-weight-semibold, 600)" as any, color: "var(--muted-fg)", fontSize: 10.5, textTransform: "uppercase" as const, letterSpacing: ".04em" }}>{children}</th>
   );
   const SectionBar = () => (
-    <div style={{ width: 3, height: 16, borderRadius: 99, background: "var(--accent)", marginRight: 8, flexShrink: 0 }} />
+    <div style={{ width: 3, height: 16, borderRadius: "var(--radius-full)", background: "var(--accent)", marginRight: "var(--space-2)", flexShrink: 0 }} />
   );
   const ModePill = ({ current, onChange }: { current: "light" | "dark"; onChange: (v: "light" | "dark") => void }) => (
     <Tabs value={current} onValueChange={(v) => onChange(v as "light" | "dark")}>
@@ -4739,53 +4739,53 @@ function PageTheming() {
       {/* ══ 1. Architecture ═══════════════════════════════════ */}
       <DocSection title="Token Architecture" desc="How design decisions flow from brand primitives through to every rendered component.">
         <Callout variant="info">
-          HeartStamp uses <strong>two independent token layers</strong>: (1) <code style={{ fontFamily: "monospace", fontSize: 12 }}>LIGHT_THEME</code> / <code style={{ fontFamily: "monospace", fontSize: 12 }}>DARK_THEME</code> — mode-aware color variables injected on the app root at runtime, and (2) <code style={{ fontFamily: "monospace", fontSize: 12 }}>SHARED_TOKENS</code> — structural values (radius, shadow, spacing, typography) that are identical in both modes and merged into each theme map.
+          HeartStamp uses <strong>two independent token layers</strong>: (1) <code style={{ fontFamily: "monospace", fontSize: "var(--font-size-label-12)" }}>LIGHT_THEME</code> / <code style={{ fontFamily: "monospace", fontSize: "var(--font-size-label-12)" }}>DARK_THEME</code> — mode-aware color variables injected on the app root at runtime, and (2) <code style={{ fontFamily: "monospace", fontSize: "var(--font-size-label-12)" }}>SHARED_TOKENS</code> — structural values (radius, shadow, spacing, typography) that are identical in both modes and merged into each theme map.
         </Callout>
 
         {/* Architecture flow diagram */}
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10, padding: "28px 0 20px" }}>
-          <div style={{ display: "flex", gap: 12 }}>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "var(--space-2-5)", padding: "28px 0 20px" }}>
+          <div style={{ display: "flex", gap: "var(--space-3)" }}>
             {[{ hex: "#BE1D2C", label: "Brand Primary" }, { hex: "#242423", label: "Brand Secondary" }].map(({ hex, label }) => (
               <div key={hex} style={{
-                padding: "10px 20px", borderRadius: 10, border: "2px solid var(--accent)",
+                padding: "10px 20px", borderRadius: "var(--radius-xl)", border: "2px solid var(--accent)",
                 background: "var(--accent-subtle)", textAlign: "center" as const, minWidth: 130,
               }}>
-                <div style={{ width: 24, height: 24, borderRadius: 6, background: hex, margin: "0 auto var(--space-1-5)", border: "1px solid rgba(0,0,0,.1)" }} />
+                <div style={{ width: 24, height: 24, borderRadius: "var(--radius-sm)", background: hex, margin: "0 auto var(--space-1-5)", border: "1px solid rgba(0,0,0,.1)" }} />
                 <div style={{ fontWeight: 800, fontSize: 12.5, color: "var(--accent)", fontFamily: "monospace" }}>{hex}</div>
-                <div style={{ fontSize: 11, color: "var(--muted-fg)", marginTop: 2 }}>{label}</div>
+                <div style={{ fontSize: 11, color: "var(--muted-fg)", marginTop: "var(--space-0-5)" }}>{label}</div>
               </div>
             ))}
           </div>
-          <div style={{ fontSize: 18, color: "var(--muted-fg)", lineHeight: 1 }}>↓</div>
-          <div style={{ display: "flex", gap: 12, flexWrap: "wrap" as const, justifyContent: "center" }}>
+          <div style={{ fontSize: "var(--font-size-h5)", color: "var(--muted-fg)", lineHeight: 1 }}>↓</div>
+          <div style={{ display: "flex", gap: "var(--space-3)", flexWrap: "wrap" as const, justifyContent: "center" }}>
             {[
               { label: "LIGHT_THEME",   sub: "22 color vars",                    badge: "light", badgeColor: "#f59e0b" },
               { label: "DARK_THEME",    sub: "22 color vars",                    badge: "dark",  badgeColor: "#818cf8" },
               { label: "SHARED_TOKENS", sub: "Radius · Shadow · Type · Btn · Inp", badge: "both",  badgeColor: "#34d399" },
             ].map(({ label, sub, badge, badgeColor }) => (
               <div key={label} style={{
-                padding: "10px 16px", borderRadius: 10, border: "1px solid var(--border)",
+                padding: "10px 16px", borderRadius: "var(--radius-xl)", border: "1px solid var(--border)",
                 background: "var(--bg)", textAlign: "center" as const, minWidth: 120,
               }}>
-                <div style={{ fontWeight: 700, fontSize: 12.5, color: "var(--fg)", marginBottom: 4, fontFamily: "monospace" }}>{label}</div>
+                <div style={{ fontWeight: "var(--font-weight-bold, 700)" as any, fontSize: 12.5, color: "var(--fg)", marginBottom: "var(--space-1)", fontFamily: "monospace" }}>{label}</div>
                 <div style={{ fontSize: 11, color: "var(--muted-fg)", marginBottom: "var(--space-1-5)" }}>{sub}</div>
-                <span style={{ fontSize: 9.5, fontWeight: 700, padding: "2px 7px", borderRadius: 999, background: `${badgeColor}22`, color: badgeColor, textTransform: "uppercase" as const }}>{badge}</span>
+                <span style={{ fontSize: 9.5, fontWeight: "var(--font-weight-bold, 700)" as any, padding: "2px 7px", borderRadius: "var(--radius-full)", background: `${badgeColor}22`, color: badgeColor, textTransform: "uppercase" as const }}>{badge}</span>
               </div>
             ))}
           </div>
-          <div style={{ fontSize: 18, color: "var(--muted-fg)", lineHeight: 1 }}>↓</div>
+          <div style={{ fontSize: "var(--font-size-h5)", color: "var(--muted-fg)", lineHeight: 1 }}>↓</div>
           <div style={{
-            padding: "10px 28px", borderRadius: 10, border: "1px solid var(--border)",
+            padding: "10px 28px", borderRadius: "var(--radius-xl)", border: "1px solid var(--border)",
             background: "var(--bg)", textAlign: "center" as const,
           }}>
-            <div style={{ fontWeight: 700, fontSize: 12.5, color: "var(--fg)", marginBottom: 3 }}>CSS Variables injected on <code style={{ fontFamily: "monospace", fontSize: 12, color: "#a78bfa" }}>#root</code></div>
+            <div style={{ fontWeight: "var(--font-weight-bold, 700)" as any, fontSize: 12.5, color: "var(--fg)", marginBottom: 3 }}>CSS Variables injected on <code style={{ fontFamily: "monospace", fontSize: "var(--font-size-label-12)", color: "#a78bfa" }}>#root</code></div>
             <div style={{ fontSize: 11, color: "var(--muted-fg)" }}>inline <code style={{ fontFamily: "monospace", fontSize: 11 }}>style</code> object applied at runtime — no class toggle, no build step</div>
           </div>
-          <div style={{ fontSize: 18, color: "var(--muted-fg)", lineHeight: 1 }}>↓</div>
+          <div style={{ fontSize: "var(--font-size-h5)", color: "var(--muted-fg)", lineHeight: 1 }}>↓</div>
           <div style={{ display: "flex", gap: "var(--space-1-5)", flexWrap: "wrap" as const, justifyContent: "center", maxWidth: 540 }}>
             {["Btn","Inp","Lbl","Bdg","Avt","Alrt","Crd","Sel","Swt","Cbx","Rdo","Sldr","Prg","Skl","Tbl","Acc","Dlg","Tip","Cmd","…"].map(c => (
               <div key={c} style={{
-                padding: "4px 10px", borderRadius: 6, border: "1px solid var(--border)",
+                padding: "4px 10px", borderRadius: "var(--radius-sm)", border: "1px solid var(--border)",
                 fontSize: 11, fontFamily: "monospace", color: "var(--muted-fg)", background: "var(--bg)",
               }}>{c}</div>
             ))}
@@ -4793,7 +4793,7 @@ function PageTheming() {
         </div>
 
         {/* Two-layer description cards */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-3)" }}>
           {[
             {
               title: "Layer 1 — Color Tokens", badge: "Mode-aware", badgeColor: "#38bdf8",
@@ -4816,14 +4816,14 @@ function PageTheming() {
               ],
             },
           ].map(({ title, badge, badgeColor, items }) => (
-            <div key={title} style={{ padding: 16, borderRadius: 10, border: "1px solid var(--border)", background: "var(--bg)" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-                <span style={{ fontWeight: 700, fontSize: 13, color: "var(--fg)" }}>{title}</span>
-                <span style={{ fontSize: 9.5, fontWeight: 700, padding: "2px 7px", borderRadius: 999, background: `${badgeColor}22`, color: badgeColor, textTransform: "uppercase" as const }}>{badge}</span>
+            <div key={title} style={{ padding: "var(--space-4)", borderRadius: "var(--radius-xl)", border: "1px solid var(--border)", background: "var(--bg)" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", marginBottom: "var(--space-2-5)" }}>
+                <span style={{ fontWeight: "var(--font-weight-bold, 700)" as any, fontSize: "var(--font-size-body-13)", color: "var(--fg)" }}>{title}</span>
+                <span style={{ fontSize: 9.5, fontWeight: "var(--font-weight-bold, 700)" as any, padding: "2px 7px", borderRadius: "var(--radius-full)", background: `${badgeColor}22`, color: badgeColor, textTransform: "uppercase" as const }}>{badge}</span>
               </div>
-              <ul style={{ margin: 0, paddingLeft: 16 }}>
+              <ul style={{ margin: 0, paddingLeft: "var(--space-4)" }}>
                 {items.map((item, i) => (
-                  <li key={i} style={{ fontSize: 12, color: "var(--muted-fg)", marginBottom: 4, lineHeight: 1.5 }}>{item}</li>
+                  <li key={i} style={{ fontSize: "var(--font-size-label-12)", color: "var(--muted-fg)", marginBottom: "var(--space-1)", lineHeight: 1.5 }}>{item}</li>
                 ))}
               </ul>
             </div>
@@ -4833,21 +4833,21 @@ function PageTheming() {
 
       {/* ══ 2. Color Token Groups ═══════════════════════════════ */}
       <DocSection title="Color Token Groups" desc="All 5 semantic color groups — token name, CSS variable, resolved value, and swatch. Toggle between modes to compare.">
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 20, padding: "10px 14px", borderRadius: 10, border: "1px solid var(--border)", background: "var(--muted)", width: "fit-content" }}>
-          <span style={{ fontSize: 12.5, fontWeight: 500, color: "var(--fg)" }}>Showing:</span>
+        <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", marginBottom: "var(--space-5)", padding: "10px 14px", borderRadius: "var(--radius-xl)", border: "1px solid var(--border)", background: "var(--muted)", width: "fit-content" }}>
+          <span style={{ fontSize: 12.5, fontWeight: "var(--font-weight-medium, 500)" as any, color: "var(--fg)" }}>Showing:</span>
           <ModePill current={tokenMode} onChange={setTokenMode} />
         </div>
         {Object.keys(LIGHT_TOKENS).map(group => {
           const tokens = tokenMode === "light" ? LIGHT_TOKENS : DARK_TOKENS;
           const isDark  = tokenMode === "dark";
           return (
-            <div key={group} style={{ marginBottom: 28 }}>
-              <div style={{ display: "flex", alignItems: "center", marginBottom: 8 }}>
+            <div key={group} style={{ marginBottom: "var(--space-7)" }}>
+              <div style={{ display: "flex", alignItems: "center", marginBottom: "var(--space-2)" }}>
                 <SectionBar />
-                <span style={{ fontWeight: "var(--font-weight-bold)" as any, fontSize: "var(--font-size-label-15)", color: "var(--fg)", marginRight: 10 }}>{group}</span>
+                <span style={{ fontWeight: "var(--font-weight-bold)" as any, fontSize: "var(--font-size-label-15)", color: "var(--fg)", marginRight: "var(--space-2-5)" }}>{group}</span>
                 <span style={{ fontSize: 11.5, color: "var(--muted-fg)", lineHeight: 1.4 }}>{GROUP_DESCRIPTIONS[group]}</span>
               </div>
-              <div style={{ border: "1px solid var(--border)", borderRadius: 10, overflow: "hidden" }}>
+              <div style={{ border: "1px solid var(--border)", borderRadius: "var(--radius-xl)", overflow: "hidden" }}>
                 <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12.5 }}>
                   <thead>
                     <tr style={{ background: "var(--muted)", borderBottom: "1px solid var(--border)" }}>
@@ -4858,7 +4858,7 @@ function PageTheming() {
                     {Object.entries(tokens[group]).map(([name, value], i) => (
                       <tr key={name} style={{ background: i % 2 === 0 ? "var(--bg)" : "var(--muted)", borderBottom: "1px solid var(--border)" }}>
                         <td style={{ padding: "8px 14px" }}>
-                          <code style={{ fontFamily: "monospace", fontSize: 12, fontWeight: 600, color: "var(--fg)" }}>{name}</code>
+                          <code style={{ fontFamily: "monospace", fontSize: "var(--font-size-label-12)", fontWeight: "var(--font-weight-semibold, 600)" as any, color: "var(--fg)" }}>{name}</code>
                         </td>
                         <td style={{ padding: "8px 14px" }}>
                           <code style={{ fontFamily: "monospace", fontSize: 11, color: "var(--accent)" }}>
@@ -4887,13 +4887,13 @@ function PageTheming() {
           Shared tokens describe <em>geometry and scale</em>, not color — so they never need a light/dark variant. Radius, shadow, button sizing, typography, and input geometry all live here.
         </Callout>
         {SHARED_SECTIONS.map(({ group, rows }) => (
-          <div key={group} style={{ marginBottom: 20 }}>
-            <div style={{ display: "flex", alignItems: "center", marginBottom: 8 }}>
+          <div key={group} style={{ marginBottom: "var(--space-5)" }}>
+            <div style={{ display: "flex", alignItems: "center", marginBottom: "var(--space-2)" }}>
               <SectionBar />
-              <span style={{ fontWeight: 700, fontSize: 13, color: "var(--fg)" }}>{group}</span>
+              <span style={{ fontWeight: "var(--font-weight-bold, 700)" as any, fontSize: "var(--font-size-body-13)", color: "var(--fg)" }}>{group}</span>
             </div>
-            <div style={{ border: "1px solid var(--border)", borderRadius: 10, overflow: "hidden" }}>
-              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+            <div style={{ border: "1px solid var(--border)", borderRadius: "var(--radius-xl)", overflow: "hidden" }}>
+              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "var(--font-size-label-12)" }}>
                 <thead>
                   <tr style={{ background: "var(--muted)", borderBottom: "1px solid var(--border)" }}>
                     <TH>CSS Variable</TH><TH>Value</TH><TH>Usage</TH>
@@ -4904,7 +4904,7 @@ function PageTheming() {
                     <tr key={cssVar} style={{ background: i % 2 === 0 ? "var(--bg)" : "var(--muted)", borderBottom: "1px solid var(--border)" }}>
                       <td style={{ padding: "7px 14px" }}><code style={{ fontFamily: "monospace", fontSize: 11, color: "var(--accent)" }}>{cssVar}</code></td>
                       <td style={{ padding: "7px 14px" }}><code style={{ fontFamily: "monospace", fontSize: 11, color: "var(--fg)" }}>{value}</code></td>
-                      <td style={{ padding: "7px 14px", color: "var(--muted-fg)", fontSize: 12, lineHeight: 1.4 }}>{usage}</td>
+                      <td style={{ padding: "7px 14px", color: "var(--muted-fg)", fontSize: "var(--font-size-label-12)", lineHeight: 1.4 }}>{usage}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -4917,11 +4917,11 @@ function PageTheming() {
       {/* ══ 4. Live Theme Playground ════════════════════════════ */}
       <DocSection title="Live Theme Playground" desc="Pick brand colors and watch them cascade across every HeartStamp component in real time. Copy the generated CSS to apply globally.">
         <Callout variant="warning">
-          Changes here are local to this demo. Copy the generated CSS snippet below and paste it into your root stylesheet, or update the values in <code style={{ fontFamily: "monospace", fontSize: 12 }}>theme.ts</code> directly.
+          Changes here are local to this demo. Copy the generated CSS snippet below and paste it into your root stylesheet, or update the values in <code style={{ fontFamily: "monospace", fontSize: "var(--font-size-label-12)" }}>theme.ts</code> directly.
         </Callout>
 
         {/* Live Preview — single browser-chrome frame */}
-        <div style={{ border: "1px solid rgba(36,36,35,0.1)", borderRadius: 12, overflow: "hidden", marginBottom: 14, boxShadow: "0 1px 4px rgba(0,0,0,0.07)" }}>
+        <div style={{ border: "1px solid rgba(36,36,35,0.1)", borderRadius: "var(--radius-2xl)", overflow: "hidden", marginBottom: "var(--space-3-5)", boxShadow: "0 1px 4px rgba(0,0,0,0.07)" }}>
 
           {/* Title bar: mac dots + path + LIVE badge */}
           <div style={{
@@ -4930,36 +4930,36 @@ function PageTheming() {
           }}>
             <span style={{ width: 9, height: 9, borderRadius: "50%", background: "#ff5f56", marginRight: "var(--space-1-5)", flexShrink: 0 }} />
             <span style={{ width: 9, height: 9, borderRadius: "50%", background: "#febc2e", marginRight: "var(--space-1-5)", flexShrink: 0 }} />
-            <span style={{ width: 9, height: 9, borderRadius: "50%", background: "#27c840", marginRight: 12, flexShrink: 0 }} />
+            <span style={{ width: 9, height: 9, borderRadius: "50%", background: "#27c840", marginRight: "var(--space-3)", flexShrink: 0 }} />
             <span style={{ fontSize: 11, color: "#6e6d6a", fontFamily: "monospace", flex: 1 }}>
               live-preview · {primary.toUpperCase()} / {secondary.toUpperCase()} · {demoMode}
             </span>
-            <span style={{ fontSize: 10, color: "#27c840", fontWeight: 600, letterSpacing: ".03em" }}>● LIVE</span>
+            <span style={{ fontSize: 10, color: "#27c840", fontWeight: "var(--font-weight-semibold, 600)" as any, letterSpacing: ".03em" }}>● LIVE</span>
           </div>
 
           {/* Controls row: brand swatches + preview toggle — inside the frame */}
           <div style={{
             background: "var(--bg)", borderBottom: "1px solid rgba(36,36,35,0.06)",
             padding: "24px 32px", display: "flex", alignItems: "center",
-            justifyContent: "space-between", flexWrap: "wrap" as const, gap: 16,
+            justifyContent: "space-between", flexWrap: "wrap" as const, gap: "var(--space-4)",
           }}>
-            <div style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
+            <div style={{ display: "flex", gap: "var(--space-4)", alignItems: "flex-start" }}>
               {[
                 { color: DFLT_PRIMARY,   label: "Brand Primary",   token: "--accent" },
                 { color: DFLT_SECONDARY, label: "Brand Secondary", token: "--secondary" },
               ].map(({ color, label, token }) => (
-                <div key={token} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
-                  <div style={{ width: 36, height: 36, borderRadius: 8, background: color, flexShrink: 0, border: "1px solid rgba(36,36,35,0.1)", marginTop: 2 }} />
+                <div key={token} style={{ display: "flex", gap: "var(--space-2-5)", alignItems: "flex-start" }}>
+                  <div style={{ width: 36, height: 36, borderRadius: "var(--radius-lg)", background: color, flexShrink: 0, border: "1px solid rgba(36,36,35,0.1)", marginTop: "var(--space-0-5)" }} />
                   <div>
-                    <div style={{ fontSize: 10.5, fontWeight: 700, color: "#6e6d6a", textTransform: "uppercase" as const, letterSpacing: ".05em", marginBottom: 3 }}>{label}</div>
-                    <code style={{ fontFamily: "monospace", fontSize: 12, color: "var(--fg)", fontWeight: 700, display: "block", lineHeight: 1.4 }}>{color.toUpperCase()}</code>
+                    <div style={{ fontSize: 10.5, fontWeight: "var(--font-weight-bold, 700)" as any, color: "#6e6d6a", textTransform: "uppercase" as const, letterSpacing: ".05em", marginBottom: 3 }}>{label}</div>
+                    <code style={{ fontFamily: "monospace", fontSize: "var(--font-size-label-12)", color: "var(--fg)", fontWeight: "var(--font-weight-bold, 700)" as any, display: "block", lineHeight: 1.4 }}>{color.toUpperCase()}</code>
                     <code style={{ fontFamily: "monospace", fontSize: 10, color: "#a78bfa", lineHeight: 1.4 }}>{token}</code>
                   </div>
                 </div>
               ))}
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <span style={{ fontSize: 11, color: "#6e6d6a", fontWeight: 500, marginRight: 2 }}>Preview:</span>
+            <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
+              <span style={{ fontSize: 11, color: "#6e6d6a", fontWeight: "var(--font-weight-medium, 500)" as any, marginRight: "var(--space-0-5)" }}>Preview:</span>
               <Tabs value={demoMode} onValueChange={(v) => setDemoMode(v as typeof demoMode)} style={{ display: "contents" }}>
                 <TabsList>
                   <TabsTrigger value="light">☀️ Light</TabsTrigger>
@@ -4971,60 +4971,60 @@ function PageTheming() {
 
           {/* Component preview area */}
           <div style={{ ...(liveVars as React.CSSProperties), background: "var(--bg)", padding: "24px 32px 32px", transition: "background 0.25s" }}>
-            <div style={{ display: "flex", flexWrap: "wrap" as const, gap: 20, alignItems: "flex-start" }}>
+            <div style={{ display: "flex", flexWrap: "wrap" as const, gap: "var(--space-5)", alignItems: "flex-start" }}>
 
               {/* Sign-in form card */}
               <div style={{
-                background: "var(--bg)", border: "1px solid rgba(36,36,35,0.1)", borderRadius: 12,
+                background: "var(--bg)", border: "1px solid rgba(36,36,35,0.1)", borderRadius: "var(--radius-2xl)",
                 width: 330, minWidth: 260, flexShrink: 0, boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
                 padding: "21px 21px 28px",
               }}>
-                <div style={{ fontWeight: 700, fontSize: 15, color: "var(--fg)", marginBottom: "var(--space-1-5)" }}>Sign in</div>
-                <div style={{ fontSize: 12.5, color: "var(--muted-fg)", marginBottom: 20 }}>Enter your credentials to continue.</div>
-                <div style={{ marginBottom: 12 }}>
-                  <Lbl style={{ display: "block", marginBottom: 4, fontSize: 13 }}>Email</Lbl>
+                <div style={{ fontWeight: "var(--font-weight-bold, 700)" as any, fontSize: "var(--font-size-body-15)", color: "var(--fg)", marginBottom: "var(--space-1-5)" }}>Sign in</div>
+                <div style={{ fontSize: 12.5, color: "var(--muted-fg)", marginBottom: "var(--space-5)" }}>Enter your credentials to continue.</div>
+                <div style={{ marginBottom: "var(--space-3)" }}>
+                  <Lbl style={{ display: "block", marginBottom: "var(--space-1)", fontSize: "var(--font-size-body-13)" }}>Email</Lbl>
                   <Inp placeholder="you@example.com" style={{ width: "100%", boxSizing: "border-box" as const }} />
                 </div>
-                <div style={{ marginBottom: 20 }}>
-                  <Lbl style={{ display: "block", marginBottom: 4, fontSize: 13 }}>Password</Lbl>
+                <div style={{ marginBottom: "var(--space-5)" }}>
+                  <Lbl style={{ display: "block", marginBottom: "var(--space-1)", fontSize: "var(--font-size-body-13)" }}>Password</Lbl>
                   <Inp type="password" placeholder="••••••••" style={{ width: "100%", boxSizing: "border-box" as const }} />
                 </div>
-                <div style={{ display: "flex", gap: 8 }}>
+                <div style={{ display: "flex", gap: "var(--space-2)" }}>
                   <Btn variant="default" style={{ flex: 1 }}>Sign in</Btn>
                   <Btn variant="outline">Cancel</Btn>
                 </div>
               </div>
 
               {/* Right column */}
-              <div style={{ display: "flex", flexDirection: "column", gap: 16, flex: 1, minWidth: 260 }}>
-                <div style={{ background: "var(--bg)", border: "1px solid rgba(36,36,35,0.1)", borderRadius: 12, padding: "17px 17px 20px", boxShadow: "0 1px 3px rgba(0,0,0,0.1)" }}>
-                  <div style={{ fontSize: 10.5, fontWeight: 700, color: "#6e6d6a", textTransform: "uppercase" as const, letterSpacing: ".06em", marginBottom: 12 }}>Buttons</div>
-                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap" as const, marginBottom: 8 }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)", flex: 1, minWidth: 260 }}>
+                <div style={{ background: "var(--bg)", border: "1px solid rgba(36,36,35,0.1)", borderRadius: "var(--radius-2xl)", padding: "17px 17px 20px", boxShadow: "0 1px 3px rgba(0,0,0,0.1)" }}>
+                  <div style={{ fontSize: 10.5, fontWeight: "var(--font-weight-bold, 700)" as any, color: "#6e6d6a", textTransform: "uppercase" as const, letterSpacing: ".06em", marginBottom: "var(--space-3)" }}>Buttons</div>
+                  <div style={{ display: "flex", gap: "var(--space-2)", flexWrap: "wrap" as const, marginBottom: "var(--space-2)" }}>
                     <Btn variant="default" size="sm">Primary</Btn>
                     <Btn variant="secondary" size="sm">Secondary</Btn>
                     <Btn variant="outline" size="sm">Outline</Btn>
                   </div>
-                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap" as const }}>
+                  <div style={{ display: "flex", gap: "var(--space-2)", flexWrap: "wrap" as const }}>
                     <Btn variant="default" size="sm" disabled>Disabled</Btn>
                     <Btn variant="link" size="sm">Link style</Btn>
                   </div>
                 </div>
-                <div style={{ background: "var(--bg)", border: "1px solid rgba(36,36,35,0.1)", borderRadius: 12, padding: "17px 17px 20px", boxShadow: "0 1px 3px rgba(0,0,0,0.1)" }}>
-                  <div style={{ fontSize: 10.5, fontWeight: 700, color: "#6e6d6a", textTransform: "uppercase" as const, letterSpacing: ".06em", marginBottom: 12 }}>Badges</div>
-                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap" as const, marginBottom: 14 }}>
+                <div style={{ background: "var(--bg)", border: "1px solid rgba(36,36,35,0.1)", borderRadius: "var(--radius-2xl)", padding: "17px 17px 20px", boxShadow: "0 1px 3px rgba(0,0,0,0.1)" }}>
+                  <div style={{ fontSize: 10.5, fontWeight: "var(--font-weight-bold, 700)" as any, color: "#6e6d6a", textTransform: "uppercase" as const, letterSpacing: ".06em", marginBottom: "var(--space-3)" }}>Badges</div>
+                  <div style={{ display: "flex", gap: "var(--space-2)", flexWrap: "wrap" as const, marginBottom: "var(--space-3-5)" }}>
                     <Bdg variant="default">Default</Bdg>
                     <Bdg variant="secondary">Secondary</Bdg>
                     <Bdg variant="outline">Outline</Bdg>
                   </div>
-                  <div style={{ fontSize: 10.5, fontWeight: 700, color: "#6e6d6a", textTransform: "uppercase" as const, letterSpacing: ".06em", marginBottom: 10 }}>Controls</div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <div style={{ fontSize: 10.5, fontWeight: "var(--font-weight-bold, 700)" as any, color: "#6e6d6a", textTransform: "uppercase" as const, letterSpacing: ".06em", marginBottom: "var(--space-2-5)" }}>Controls</div>
+                  <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)" }}>
                     <Swt checked onChange={() => {}} />
                     <Cbx defaultChecked id="th-cbx-demo" />
-                    <Lbl htmlFor="th-cbx-demo" style={{ fontSize: 13 }}>Enable feature</Lbl>
+                    <Lbl htmlFor="th-cbx-demo" style={{ fontSize: "var(--font-size-body-13)" }}>Enable feature</Lbl>
                   </div>
                 </div>
-                <div style={{ background: "var(--bg)", border: "1px solid rgba(36,36,35,0.1)", borderRadius: 12, padding: "17px 17px 20px", boxShadow: "0 1px 3px rgba(0,0,0,0.1)" }}>
-                  <div style={{ fontSize: 10.5, fontWeight: 700, color: "#6e6d6a", textTransform: "uppercase" as const, letterSpacing: ".06em", marginBottom: 10 }}>Alert</div>
+                <div style={{ background: "var(--bg)", border: "1px solid rgba(36,36,35,0.1)", borderRadius: "var(--radius-2xl)", padding: "17px 17px 20px", boxShadow: "0 1px 3px rgba(0,0,0,0.1)" }}>
+                  <div style={{ fontSize: 10.5, fontWeight: "var(--font-weight-bold, 700)" as any, color: "#6e6d6a", textTransform: "uppercase" as const, letterSpacing: ".06em", marginBottom: "var(--space-2-5)" }}>Alert</div>
                   <Alrt variant="default" title="Theme applied">Brand colors are cascading live.</Alrt>
                 </div>
               </div>
@@ -5033,12 +5033,12 @@ function PageTheming() {
         </div>
 
         {/* Generated CSS snippet */}
-        <div style={{ background: "#09090b", border: "1px solid #27272a", borderRadius: 8, overflow: "hidden", fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
+        <div style={{ background: "#09090b", border: "1px solid #27272a", borderRadius: "var(--radius-lg)", overflow: "hidden", fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
           <div style={{
             padding: "0 8px 0 16px", borderBottom: "1px solid #27272a",
             display: "flex", alignItems: "center", minHeight: 40,
           }}>
-            <span style={{ fontSize: 12, color: "#71717a", flex: 1, fontFamily: "inherit" }}>
+            <span style={{ fontSize: "var(--font-size-label-12)", color: "#71717a", flex: 1, fontFamily: "inherit" }}>
               theme-override.css <span style={{ opacity: 0.5 }}>— generated from your selection above</span>
             </span>
             <button onClick={copySnippet} style={{
@@ -5077,7 +5077,7 @@ function PageTheming() {
       {/* ══ 5. Applying the Theme ═══════════════════════════════ */}
       <DocSection title="Applying the Theme in Code" desc="How HeartStamp injects CSS variables at runtime — no Tailwind dark-mode class, no build-time step.">
         <Callout variant="info">
-          HeartStamp does <strong>not</strong> use a <code style={{ fontFamily: "monospace", fontSize: 12 }}>.dark</code> class or Tailwind dark variants. Every CSS variable is written directly to the root element's <code style={{ fontFamily: "monospace", fontSize: 12 }}>style</code> attribute, guaranteeing they are always in scope with no selector specificity conflicts.
+          HeartStamp does <strong>not</strong> use a <code style={{ fontFamily: "monospace", fontSize: "var(--font-size-label-12)" }}>.dark</code> class or Tailwind dark variants. Every CSS variable is written directly to the root element's <code style={{ fontFamily: "monospace", fontSize: "var(--font-size-label-12)" }}>style</code> attribute, guaranteeing they are always in scope with no selector specificity conflicts.
         </Callout>
         <CodeBlock filename="App.tsx (simplified)" code={`import { DARK_THEME, LIGHT_THEME } from "./theme";
 
@@ -5099,9 +5099,9 @@ function App() {
     </div>
   );
 }`} />
-        <div style={{ marginTop: 16 }}>
-          <div style={{ fontWeight: 700, fontSize: 13, color: "var(--fg)", marginBottom: 8 }}>Alternative: Pure CSS file override</div>
-          <p style={{ fontSize: 13, color: "var(--muted-fg)", marginBottom: 10, lineHeight: 1.6 }}>
+        <div style={{ marginTop: "var(--space-4)" }}>
+          <div style={{ fontWeight: "var(--font-weight-bold, 700)" as any, fontSize: "var(--font-size-body-13)", color: "var(--fg)", marginBottom: "var(--space-2)" }}>Alternative: Pure CSS file override</div>
+          <p style={{ fontSize: "var(--font-size-body-13)", color: "var(--muted-fg)", marginBottom: "var(--space-2-5)", lineHeight: 1.6 }}>
             For non-React or static projects, paste overrides into a CSS file after the base token import. You only need to redeclare the variables you want to change — everything else inherits from the base.
           </p>
           <CodeBlock filename="globals.css" code={`/* Import HeartStamp base tokens */
@@ -5137,11 +5137,11 @@ function App() {
 
       {/* ���═ 6. Consuming Tokens ═════════════════════════════════ */}
       <DocSection title="Consuming Tokens in Components" desc="Correct patterns for referencing HeartStamp CSS variables inside your own custom components.">
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 20 }}>
-          <div style={{ borderRadius: 10, overflow: "hidden", border: "1px solid rgba(52,211,153,0.3)" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-3)", marginBottom: "var(--space-5)" }}>
+          <div style={{ borderRadius: "var(--radius-xl)", overflow: "hidden", border: "1px solid rgba(52,211,153,0.3)" }}>
             <div style={{ padding: "8px 14px", background: "rgba(52,211,153,0.08)", borderBottom: "1px solid rgba(52,211,153,0.2)", display: "flex", alignItems: "center", gap: "var(--space-1-5)" }}>
               <CheckCircle2 size={14} style={{ color: "#34d399" }} />
-              <span style={{ fontSize: 12, fontWeight: 600, color: "#34d399" }}>Do — use CSS variables</span>
+              <span style={{ fontSize: "var(--font-size-label-12)", fontWeight: "var(--font-weight-semibold, 600)" as any, color: "#34d399" }}>Do — use CSS variables</span>
             </div>
             <CodeBlock code={`// ✅ Every color pulled from theme tokens
 <div style={{
@@ -5162,10 +5162,10 @@ const [hov, setHov] = useState(false);
 }} onMouseEnter={() => setHov(true)}
    onMouseLeave={() => setHov(false)} />`} />
           </div>
-          <div style={{ borderRadius: 10, overflow: "hidden", border: "1px solid rgba(239,68,68,0.3)" }}>
+          <div style={{ borderRadius: "var(--radius-xl)", overflow: "hidden", border: "1px solid rgba(239,68,68,0.3)" }}>
             <div style={{ padding: "8px 14px", background: "rgba(239,68,68,0.08)", borderBottom: "1px solid rgba(239,68,68,0.2)", display: "flex", alignItems: "center", gap: "var(--space-1-5)" }}>
               <XCircle size={14} style={{ color: "#ef4444" }} />
-              <span style={{ fontSize: 12, fontWeight: 600, color: "#ef4444" }}>Don't — hardcode values</span>
+              <span style={{ fontSize: "var(--font-size-label-12)", fontWeight: "var(--font-weight-semibold, 600)" as any, color: "#ef4444" }}>Don't — hardcode values</span>
             </div>
             <CodeBlock code={`// ❌ Hardcoded values ignore all theme changes
 <div style={{
@@ -5186,8 +5186,8 @@ const [hov, setHov] = useState(false);
           </div>
         </div>
 
-        <div style={{ fontWeight: 700, fontSize: 13, color: "var(--fg)", marginBottom: 10 }}>Available token namespaces</div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(215px, 1fr))", gap: 8 }}>
+        <div style={{ fontWeight: "var(--font-weight-bold, 700)" as any, fontSize: "var(--font-size-body-13)", color: "var(--fg)", marginBottom: "var(--space-2-5)" }}>Available token namespaces</div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(215px, 1fr))", gap: "var(--space-2)" }}>
           {[
             { prefix: "var(--accent)",      full: "--accent / --accent-hover / --accent-pressed / --accent-subtle",       desc: "Brand primary — buttons, links, focus rings" },
             { prefix: "var(--secondary)",   full: "--secondary / --secondary-hover / --secondary-pressed / --secondary-subtle", desc: "Brand secondary — contrast actions" },
@@ -5204,8 +5204,8 @@ const [hov, setHov] = useState(false);
             { prefix: "var(--font-weight-*)", full: "--font-weight-light → --font-weight-bold (300–700)",                desc: "Weight scale — pair with any size token" },
             { prefix: "var(--heart)",       full: "--heart",                                                             desc: "Brand heart lockup accent — decorative" },
           ].map(({ prefix, full, desc }) => (
-            <div key={prefix} style={{ padding: "10px 12px", borderRadius: 8, border: "1px solid var(--border)", background: "var(--bg)" }}>
-              <code style={{ fontFamily: "monospace", fontSize: 11, color: "var(--accent)", display: "block", marginBottom: 2 }}>{prefix}</code>
+            <div key={prefix} style={{ padding: "10px 12px", borderRadius: "var(--radius-lg)", border: "1px solid var(--border)", background: "var(--bg)" }}>
+              <code style={{ fontFamily: "monospace", fontSize: 11, color: "var(--accent)", display: "block", marginBottom: "var(--space-0-5)" }}>{prefix}</code>
               <div style={{ fontSize: 10, color: "var(--muted-fg)", fontFamily: "monospace", marginBottom: 5, lineHeight: 1.4, opacity: 0.85 }}>{full}</div>
               <span style={{ fontSize: 11.5, color: "var(--muted-fg)", lineHeight: 1.4 }}>{desc}</span>
             </div>
@@ -5215,8 +5215,8 @@ const [hov, setHov] = useState(false);
 
       {/* ══ 7. Full Token Reference ═════════════════════════════ */}
       <DocSection title="Full Color Variable Reference" desc="Every CSS variable used internally by HeartStamp components — with light value, dark value, swatch, and semantic description.">
-        <div style={{ border: "1px solid var(--border)", borderRadius: 12, overflow: "hidden" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+        <div style={{ border: "1px solid var(--border)", borderRadius: "var(--radius-2xl)", overflow: "hidden" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "var(--font-size-label-12)" }}>
             <thead>
               <tr style={{ background: "var(--muted)", borderBottom: "1px solid var(--border)" }}>
                 <TH>CSS Variable</TH><TH>Description</TH><TH>Light</TH><TH>Dark</TH>
@@ -5231,7 +5231,7 @@ const [hov, setHov] = useState(false);
                     <td style={{ padding: "8px 14px", whiteSpace: "nowrap" as const }}>
                       <code style={{ fontFamily: "monospace", fontSize: 11, color: "var(--accent)" }}>{v}</code>
                     </td>
-                    <td style={{ padding: "8px 14px", color: "var(--muted-fg)", fontSize: 12, lineHeight: 1.4 }}>{desc}</td>
+                    <td style={{ padding: "8px 14px", color: "var(--muted-fg)", fontSize: "var(--font-size-label-12)", lineHeight: 1.4 }}>{desc}</td>
                     <td style={{ padding: "8px 14px" }}>
                       <div style={{ display: "flex", alignItems: "center", gap: "var(--space-1-5)" }}>
                         {isColorVal(lightVal) && <Swatch color={lightVal} />}
@@ -5678,19 +5678,19 @@ export default function App() {
 
       {/* TOPBAR */}
       <header style={{
-        height: 52, display: "flex", alignItems: "center", gap: 12, padding: "0 16px",
+        height: 52, display: "flex", alignItems: "center", gap: "var(--space-3)", padding: "0 16px",
         borderBottom: "1px solid var(--border)", background: dark ? "rgba(20,20,20,.92)" : "rgba(255,255,255,.92)",
         backdropFilter: "blur(12px)", position: "sticky", top: 0, zIndex: 50, flexShrink: 0
       }}>
         <button onClick={() => setSidebarOpen(o => !o)} style={{
           background: "none", border: "none", cursor: "pointer",
-          color: "var(--fg)", padding: 4, borderRadius: 6, display: "flex"
+          color: "var(--fg)", padding: "var(--space-1)", borderRadius: "var(--radius-sm)", display: "flex"
         }}>
           {sidebarOpen ? <X size={17} /> : <Menu size={17} />}
         </button>
 
         {/* SVG Logo */}
-        <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", flexShrink: 0 }}>
           <svg width="136" height="18" viewBox="0 0 203 28" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g clipPath="url(#clip0_435_257377)">
               <path d="M22.1595 3.1948C20.8678 1.73163 19.2691 1 17.3646 1C15.4425 1 13.6914 1.92386 12.1093 3.77044L12 3.88916L11.8907 3.77044C10.3086 1.92386 8.55753 1 6.63541 1C4.7309 1 3.13223 1.73163 1.84046 3.1948C0.613861 4.60968 0 6.2827 0 8.21166C0 11.0743 0.847941 13.9447 2.54262 16.8228C4.17332 19.6207 6.22359 21.832 8.69445 23.4566C9.03338 23.6807 9.5501 23.9784 10.2446 24.3486C11.0836 24.7825 11.8057 25 12 25C12.1943 25 12.9164 24.7825 13.7554 24.3486C14.4499 23.9784 14.9666 23.6807 15.3055 23.4566C17.7764 21.832 19.8267 19.6207 21.4574 16.8228C23.1521 13.9447 24 11.0743 24 8.21166C24 6.2827 23.3861 4.60968 22.1595 3.1948Z" fill="#BE1D2C" />
@@ -5700,8 +5700,8 @@ export default function App() {
             <defs><clipPath id="clip0_435_257377"><rect width="24" height="24" fill="white" transform="translate(0 1)" /></clipPath></defs>
           </svg>
           <span style={{
-            fontSize: 10, padding: "2px 7px", borderRadius: 999, background: "var(--muted)",
-            color: "var(--muted-fg)", border: "1px solid var(--border)", fontWeight: 600
+            fontSize: 10, padding: "2px 7px", borderRadius: "var(--radius-full)", background: "var(--muted)",
+            color: "var(--muted-fg)", border: "1px solid var(--border)", fontWeight: "var(--font-weight-semibold, 600)" as any
           }}>v{pkg.version}</span>
         </div>
 

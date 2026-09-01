@@ -45,17 +45,17 @@ const LU = LucideIcons as unknown as Record<
 
 // ── Shared inline style constants ────────────────────────────────
 const SEL: React.CSSProperties = {
-  width: "100%", padding: "8px 10px", fontSize: 13, lineHeight: 1.4,
+  width: "100%", padding: "8px 10px", fontSize: "var(--font-size-body-13)", lineHeight: 1.4,
   fontFamily: "var(--font-family-body, 'DM Sans', system-ui, sans-serif)",
-  border: "1px solid var(--color-element-subtle)", borderRadius: 8,
+  border: "1px solid var(--color-element-subtle)", borderRadius: "var(--radius-lg)",
   background: "var(--color-bg-input)", color: "var(--color-text-primary)",
   cursor: "pointer", outline: "none",
 };
 
-const FIELD: React.CSSProperties = { display: "flex", flexDirection: "column", gap: 6 };
+const FIELD: React.CSSProperties = { display: "flex", flexDirection: "column", gap: "var(--space-1-5)" };
 
 const LABEL_STYLE: React.CSSProperties = {
-  fontSize: 12, fontWeight: 500, color: "var(--color-text-secondary)",
+  fontSize: "var(--font-size-label-12)", fontWeight: "var(--font-weight-medium, 500)" as any, color: "var(--color-text-secondary)",
   fontFamily: "var(--font-family-body, 'DM Sans', system-ui, sans-serif)",
 };
 
@@ -112,7 +112,7 @@ export function BtnBuilder() {
     isDisabled?: boolean,
   ) => (
     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", minHeight: 32 }}>
-      <span style={{ fontSize: 13, color: "var(--color-text-primary)", fontFamily: "var(--font-family-body, 'DM Sans', system-ui, sans-serif)" }}>
+      <span style={{ fontSize: "var(--font-size-body-13)", color: "var(--color-text-primary)", fontFamily: "var(--font-family-body, 'DM Sans', system-ui, sans-serif)" }}>
         {label}
       </span>
       <Swt checked={checked} onChange={onChange} disabled={isDisabled} />
@@ -120,14 +120,14 @@ export function BtnBuilder() {
   );
 
   return (
-    <div style={{ display: "flex", border: "1px solid var(--color-element-subtle)", borderRadius: 12, overflow: "hidden" }}>
+    <div style={{ display: "flex", border: "1px solid var(--color-element-subtle)", borderRadius: "var(--radius-2xl)", overflow: "hidden" }}>
 
       {/* ── Left: controls ──────────────────────────────────── */}
       <div style={{
         width: 220, flexShrink: 0,
         borderRight: "1px solid var(--color-element-subtle)",
         padding: "20px 16px",
-        display: "flex", flexDirection: "column", gap: 14,
+        display: "flex", flexDirection: "column", gap: "var(--space-3-5)",
         background: "var(--color-bg-main)",
       }}>
 
@@ -161,7 +161,7 @@ export function BtnBuilder() {
           <span style={LABEL_STYLE}>Icon</span>
 
           {/* None + preset grid */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 4 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "var(--space-1)" }}>
             {(() => {
               const active = iconName === "none";
               return (
@@ -169,7 +169,7 @@ export function BtnBuilder() {
                   onClick={() => { setIconName("none"); setIconPos("none"); setCustomIcon(""); }}
                   style={{
                     display: "flex", alignItems: "center", justifyContent: "center",
-                    padding: "8px 2px", borderRadius: 6, cursor: "pointer",
+                    padding: "8px 2px", borderRadius: "var(--radius-sm)", cursor: "pointer",
                     border: `1px solid ${active ? "var(--color-brand-primary)" : "var(--color-element-subtle)"}`,
                     background: active ? "var(--color-brand-primary-dim)" : "transparent",
                   }}
@@ -192,7 +192,7 @@ export function BtnBuilder() {
                   style={{
                     display: "flex", flexDirection: "column", alignItems: "center",
                     justifyContent: "center", gap: 3, padding: "6px 2px",
-                    borderRadius: 6, cursor: "pointer",
+                    borderRadius: "var(--radius-sm)", cursor: "pointer",
                     border: `1px solid ${active ? "var(--color-brand-primary)" : "var(--color-element-subtle)"}`,
                     background: active ? "var(--color-brand-primary-dim)" : "transparent",
                   }}

@@ -95,14 +95,14 @@ export function Preview({ title, code, filename, children, height = 160, default
 
 
   return (
-    <div style={{ border: "1px solid var(--border)", borderRadius: 12, marginBottom: 20 }}>
+    <div style={{ border: "1px solid var(--border)", borderRadius: "var(--radius-2xl)", marginBottom: "var(--space-5)" }}>
       {/* toolbar */}
       <div style={{
         display: "flex", alignItems: "center", justifyContent: "space-between",
         padding: "var(--space-1-5) 10px", background: "var(--muted)", borderBottom: "1px solid var(--border)",
         borderRadius: "12px 12px 0 0",
       }}>
-        <span style={{ fontSize: 11, color: "var(--muted-fg)", fontWeight: 500, maxWidth: 180, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+        <span style={{ fontSize: 11, color: "var(--muted-fg)", fontWeight: "var(--font-weight-medium, 500)" as any, maxWidth: 180, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
           {title}
         </span>
         <Tabs value={tab} onValueChange={setTab} style={{ display: "contents" }}>
@@ -111,7 +111,7 @@ export function Preview({ title, code, filename, children, height = 160, default
             <TabsTrigger value="code"><Code2 size={11} /> Code</TabsTrigger>
           </TabsList>
         </Tabs>
-        <div style={{ display: "flex", alignItems: "center", gap: 2 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "var(--space-0-5)" }}>
           {VIEWPORTS.map(v => (
             <button key={v.id} onClick={() => setVp(v.id as "mobile" | "tablet" | "desktop" | "full")} title={v.w} style={{
               width: 24, height: 24, borderRadius: 5, border: "none", cursor: "pointer",
@@ -147,7 +147,7 @@ export function Preview({ title, code, filename, children, height = 160, default
           }}>
             <div style={{
               maxWidth: vpW, width: "100%", transition: "max-width .3s",
-              borderRadius: 8,
+              borderRadius: "var(--radius-lg)",
               overflow: "visible",
             }}>
               <div style={{

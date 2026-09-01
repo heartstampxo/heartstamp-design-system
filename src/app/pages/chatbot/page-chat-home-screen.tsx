@@ -5,7 +5,7 @@ import { PropsTable } from "../../components/docs/doc-props-table";
 import { ChatHomeScreen, OccasionSuggestions } from "../../components/ui/hs-stampy-chat";
 import chatMascotImg from "../../../assets/stampy/mascot.webp";
 
-const DESC_STYLE: React.CSSProperties = { fontSize: "var(--font-size-body-15)", color: "var(--muted-fg)", marginBottom: 16 };
+const DESC_STYLE: React.CSSProperties = { fontSize: "var(--font-size-body-15)", color: "var(--muted-fg)", marginBottom: "var(--space-4)" };
 
 export function PageChatHomeScreen() {
   return (
@@ -59,7 +59,7 @@ export function PageChatHomeScreen() {
   onClose={() => setShowSuggestions(false)}
 />`}
         >
-          <div style={{ width: "100%", maxWidth: 420, padding: 16 }}>
+          <div style={{ width: "100%", maxWidth: 420, padding: "var(--space-4)" }}>
             <OccasionSuggestions />
           </div>
         </Preview>

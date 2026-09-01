@@ -39,11 +39,11 @@ function OverflowPagination({ page, total, onPrev, onNext }: {
   page: number; total: number; onPrev: () => void; onNext: () => void;
 }) {
   return (
-    <div className="flex gap-[4px] items-center">
+    <div className="flex gap-[var(--space-1)] items-center">
       <button className="flex items-center justify-center size-[16px] cursor-pointer opacity-60 hover:opacity-100 transition-opacity disabled:opacity-30" onClick={onPrev} disabled={page === 1}>
         <ChevronLeft size={16} strokeWidth={1.5} absoluteStrokeWidth style={{ color: "var(--color-text-secondary)" }} />
       </button>
-      <p className="leading-normal text-[13px]" style={{ ...dmSans400, color: "var(--color-text-secondary)" }}>{page} of {total}</p>
+      <p className="leading-normal text-[length:var(--font-size-body-13)]" style={{ ...dmSans400, color: "var(--color-text-secondary)" }}>{page} of {total}</p>
       <button className="flex items-center justify-center size-[16px] cursor-pointer opacity-60 hover:opacity-100 transition-opacity disabled:opacity-30" onClick={onNext} disabled={page === total}>
         <ChevronRight size={16} strokeWidth={1.5} absoluteStrokeWidth style={{ color: "var(--color-text-secondary)" }} />
       </button>
@@ -54,8 +54,8 @@ function OverflowPagination({ page, total, onPrev, onNext }: {
 /** Numbered pill badge used in OverflowMenu and ActionOverflowMenuList */
 function NumBadge({ num }: { num: string }) {
   return (
-    <div className="flex items-center justify-center rounded-[4px] shrink-0 w-[20px]" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }}>
-      <p className="leading-[20px] text-[14px] text-center w-full" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{num}</p>
+    <div className="flex items-center justify-center rounded-[var(--radius-xs)] shrink-0 w-[20px]" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }}>
+      <p className="leading-[var(--line-height-body-15)] text-[length:var(--font-size-body-15)] text-center w-full" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{num}</p>
     </div>
   );
 }
@@ -71,7 +71,7 @@ function OverflowShowMoreBtn({ label, onClick, isLoading }: { label: string; onC
     <button
       type="button"
       className={cn(
-        "flex items-center gap-[6px] px-[12px] py-[8px]",
+        "flex items-center gap-[var(--space-1-5)] px-[var(--space-3)] py-[var(--space-2)]",
         isLoading ? "cursor-not-allowed opacity-60" : "cursor-pointer",
       )}
       style={{ borderRadius: "var(--radius-button)", color: "var(--color-text-primary)" }}
@@ -84,7 +84,7 @@ function OverflowShowMoreBtn({ label, onClick, isLoading }: { label: string; onC
           <circle cx="6.5" cy="6.5" r="5" stroke="currentColor" strokeWidth="1.5" strokeDasharray="20 12" />
         </svg>
       )}
-      <p className="leading-[20px] text-[15px] underline whitespace-nowrap" style={dmSans500}>
+      <p className="leading-[var(--line-height-body-15)] text-[length:var(--font-size-body-15)] underline whitespace-nowrap" style={dmSans500}>
         {label}
       </p>
     </button>
@@ -96,13 +96,13 @@ function OverflowSkipBtn({ label, onClick }: { label: string; onClick: () => voi
   return (
     <button
       type="button"
-      className="flex shrink-0 items-center justify-center gap-[4px] px-[12px] py-[6px] cursor-pointer transition-colors"
+      className="flex shrink-0 items-center justify-center gap-[var(--space-1)] px-[var(--space-3)] py-[var(--space-1-5)] cursor-pointer transition-colors"
       style={{ backgroundColor: "var(--color-brand-secondary-dim)", borderRadius: "var(--radius-button)" }}
       onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--color-element-subtle)")}
       onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "var(--color-brand-secondary-dim)")}
       onClick={onClick}
     >
-      <span className="leading-[20px] text-[15px] whitespace-nowrap" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{label}</span>
+      <span className="leading-[var(--line-height-body-15)] text-[length:var(--font-size-body-15)] whitespace-nowrap" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{label}</span>
     </button>
   );
 }
@@ -119,13 +119,13 @@ function ActionMenuHeader({
   generateButtonLabel?: string;
 }) {
   return (
-    <div className="flex items-center gap-[16px] px-[16px] py-[8px] w-full">
-      <div className="flex flex-1 gap-[12px] items-center min-w-0">
-        <div className="flex flex-col gap-[4px] flex-1 min-w-0">
-          <p className="leading-[20px] text-[15px]" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{config.title}</p>
-          <p className="leading-[17px] text-[13px]" style={{ ...dmSans400, color: "var(--color-text-secondary)" }}>{config.subtitle}</p>
+    <div className="flex items-center gap-[var(--space-4)] px-[var(--space-4)] py-[var(--space-2)] w-full">
+      <div className="flex flex-1 gap-[var(--space-3)] items-center min-w-0">
+        <div className="flex flex-col gap-[var(--space-1)] flex-1 min-w-0">
+          <p className="leading-[var(--line-height-body-15)] text-[length:var(--font-size-body-15)]" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{config.title}</p>
+          <p className="leading-[17px] text-[length:var(--font-size-body-13)]" style={{ ...dmSans400, color: "var(--color-text-secondary)" }}>{config.subtitle}</p>
         </div>
-        <Btn onClick={onGenerate} className="shrink-0 flex items-center gap-[6px]" disabled={isLoadingGenerate}>
+        <Btn onClick={onGenerate} className="shrink-0 flex items-center gap-[var(--space-1-5)]" disabled={isLoadingGenerate}>
           {isLoadingGenerate && <svg className="shrink-0 animate-spin" width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" strokeWidth="1.5" strokeDasharray="20 12" /></svg>}
           {generateButtonLabel ?? config.generateButtonLabel}
         </Btn>
@@ -180,21 +180,21 @@ export function OverflowMenu({
 
   return (
     <div
-      className="flex flex-col items-start px-[12px] py-[12px] relative rounded-[12px] w-full"
+      className="flex flex-col items-start px-[var(--space-3)] py-[var(--space-3)] relative rounded-[var(--radius-2xl)] w-full"
       style={{ backgroundColor: "var(--color-bg-menus)", boxShadow: "var(--shadow-sm)", border: "1px solid var(--color-element-subtle)" }}
     >
       <AnimatePresence mode="wait">
         <motion.div
           key={page}
-          className="flex flex-col gap-[8px] w-full"
+          className="flex flex-col gap-[var(--space-2)] w-full"
           initial={{ opacity: 0, x: page > 1 ? 14 : -14 }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: page > 1 ? -14 : 14 }}
           transition={{ type: "spring", stiffness: 380, damping: 28 }}
         >
-          <div className="flex gap-[16px] items-start p-[8px] w-full">
-            <p className="flex-1 leading-[20px] text-[15px] min-w-0" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{header}</p>
-            <div className="flex gap-[12px] items-center shrink-0">
+          <div className="flex gap-[var(--space-4)] items-start p-[var(--space-2)] w-full">
+            <p className="flex-1 leading-[var(--line-height-body-15)] text-[length:var(--font-size-body-15)] min-w-0" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{header}</p>
+            <div className="flex gap-[var(--space-3)] items-center shrink-0">
               {totalPages > 1 && <OverflowPagination page={page} total={totalPages} onPrev={() => setPage(p => Math.max(1, p - 1))} onNext={() => setPage(p => Math.min(totalPages, p + 1))} />}
               <OverflowCloseBtn onClose={onClose} />
             </div>
@@ -205,12 +205,12 @@ export function OverflowMenu({
             {items.map((item) => (
               <div key={item.num} className="h-[36px] w-full shrink-0">
                 <div
-                  className="flex gap-[8px] items-center px-[8px] py-[6px] w-full rounded-[6px] transition-colors cursor-pointer"
+                  className="flex gap-[var(--space-2)] items-center px-[var(--space-2)] py-[var(--space-1-5)] w-full rounded-[var(--radius-sm)] transition-colors cursor-pointer"
                   {...hoverItem}
                   onClick={() => handleItemClick(item)}
                 >
                   <NumBadge num={item.num} />
-                  <p className="flex-1 leading-[20px] text-[15px] min-w-0 truncate" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{item.label}</p>
+                  <p className="flex-1 leading-[var(--line-height-body-15)] text-[length:var(--font-size-body-15)] min-w-0 truncate" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{item.label}</p>
                 </div>
               </div>
             ))}
@@ -274,13 +274,13 @@ export function ChecklistOverflowMenu({
 
   return (
     <div
-      className="flex flex-col items-start px-[12px] py-[12px] relative rounded-[12px] w-full"
+      className="flex flex-col items-start px-[var(--space-3)] py-[var(--space-3)] relative rounded-[var(--radius-2xl)] w-full"
       style={{ backgroundColor: "var(--color-bg-menus)", boxShadow: "var(--shadow-sm)", border: "1px solid var(--color-element-subtle)" }}
     >
-      <div className="flex flex-col gap-[8px] items-start w-full">
-        <div className="flex gap-[16px] items-start p-[8px] w-full">
-          <p className="flex-1 leading-[20px] text-[15px] min-w-0" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{currentPageData.question}</p>
-          <div className="flex gap-[12px] items-center shrink-0">
+      <div className="flex flex-col gap-[var(--space-2)] items-start w-full">
+        <div className="flex gap-[var(--space-4)] items-start p-[var(--space-2)] w-full">
+          <p className="flex-1 leading-[var(--line-height-body-15)] text-[length:var(--font-size-body-15)] min-w-0" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{currentPageData.question}</p>
+          <div className="flex gap-[var(--space-3)] items-center shrink-0">
             {totalPages > 1 && <OverflowPagination page={page + 1} total={totalPages} onPrev={() => setPage(p => Math.max(0, p - 1))} onNext={() => setPage(p => Math.min(totalPages - 1, p + 1))} />}
             <OverflowCloseBtn onClose={onClose} />
           </div>
@@ -293,11 +293,11 @@ export function ChecklistOverflowMenu({
               const checked = selected.has(item.id);
               return (
                 <div key={item.id} className="h-[36px] w-full shrink-0">
-                  <div className="flex gap-[8px] items-center px-[8px] py-[6px] rounded-[6px] w-full cursor-pointer transition-colors" {...hoverItem} onClick={() => toggleItem(item.id)}>
-                    <div className="relative rounded-[4px] shrink-0 size-[16px] flex items-center justify-center transition-colors duration-150" style={{ backgroundColor: checked ? "var(--color-brand-primary)" : "transparent", border: checked ? "1px solid var(--color-brand-primary)" : "1px solid var(--color-element-subtle)", boxShadow: "var(--shadow-xs)" }}>
+                  <div className="flex gap-[var(--space-2)] items-center px-[var(--space-2)] py-[var(--space-1-5)] rounded-[var(--radius-sm)] w-full cursor-pointer transition-colors" {...hoverItem} onClick={() => toggleItem(item.id)}>
+                    <div className="relative rounded-[var(--radius-xs)] shrink-0 size-[16px] flex items-center justify-center transition-colors duration-150" style={{ backgroundColor: checked ? "var(--color-brand-primary)" : "transparent", border: checked ? "1px solid var(--color-brand-primary)" : "1px solid var(--color-element-subtle)", boxShadow: "var(--shadow-xs)" }}>
                       {checked && <svg width="10.7" height="7.75" viewBox="0 0 10.6633 7.74667" fill="none"><path d={CHECKMARK_PATH} stroke="var(--color-text-on-primary)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33" /></svg>}
                     </div>
-                    <p className="flex-1 leading-[20px] text-[15px] min-w-0 truncate" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{item.label}</p>
+                    <p className="flex-1 leading-[var(--line-height-body-15)] text-[length:var(--font-size-body-15)] min-w-0 truncate" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{item.label}</p>
                   </div>
                 </div>
               );
@@ -346,19 +346,19 @@ export function TemplateOverflowMenu({
 
   return (
     <div
-      className="flex flex-col gap-[8px] px-[12px] py-[12px] relative rounded-[12px] w-full z-10"
+      className="flex flex-col gap-[var(--space-2)] px-[var(--space-3)] py-[var(--space-3)] relative rounded-[var(--radius-2xl)] w-full z-10"
       style={{ backgroundColor: "var(--color-bg-menus)", boxShadow: "var(--shadow-sm)", border: "1px solid var(--color-element-subtle)" }}
     >
-      <div className="flex items-start gap-[16px] p-[8px] w-full">
-        <p className="flex-1 leading-[20px] text-[15px] min-w-0" style={{ ...dmSans500, color: "var(--color-text-primary)", fontVariationSettings: "'opsz' 14" }}>{header}</p>
-        <div className="flex gap-[12px] items-center shrink-0">
+      <div className="flex items-start gap-[var(--space-4)] p-[var(--space-2)] w-full">
+        <p className="flex-1 leading-[var(--line-height-body-15)] text-[length:var(--font-size-body-15)] min-w-0" style={{ ...dmSans500, color: "var(--color-text-primary)", fontVariationSettings: "'opsz' 14" }}>{header}</p>
+        <div className="flex gap-[var(--space-3)] items-center shrink-0">
           {totalPages > 1 && <OverflowPagination page={page} total={totalPages} onPrev={() => setPage(p => Math.max(1, p - 1))} onNext={() => setPage(p => Math.min(totalPages, p + 1))} />}
           <OverflowCloseBtn onClose={onClose} />
         </div>
       </div>
 
       <AnimatePresence mode="wait">
-        <motion.div key={page} className="flex items-start gap-[8px] w-full" initial={{ opacity: 0, x: 14 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -14 }} transition={{ type: "spring", stiffness: 380, damping: 28 }}>
+        <motion.div key={page} className="flex items-start gap-[var(--space-2)] w-full" initial={{ opacity: 0, x: 14 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -14 }} transition={{ type: "spring", stiffness: 380, damping: 28 }}>
           {pageCards.map((item) => {
             // The design renders one pre-wrapped block: "Front: …", a blank line,
             // then "Inside: …" — same weight throughout, clipped at the card height.
@@ -370,14 +370,14 @@ export function TemplateOverflowMenu({
             return (
               <div
                 key={item.num}
-                className="flex flex-1 h-[160px] min-w-0 flex-col items-start p-[8px] rounded-[12px] cursor-pointer overflow-hidden transition-colors"
+                className="flex flex-1 h-[160px] min-w-0 flex-col items-start p-[var(--space-2)] rounded-[var(--radius-2xl)] cursor-pointer overflow-hidden transition-colors"
                 style={{ border: "1px solid var(--color-element-subtle)", backgroundColor: "transparent" }}
                 onMouseEnter={e => { e.currentTarget.style.backgroundColor = "var(--color-element-subtle)"; e.currentTarget.style.borderColor = "var(--color-text-secondary)"; }}
                 onMouseLeave={e => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.borderColor = "var(--color-element-subtle)"; }}
                 onClick={() => onComplete(`${item.title}: "${item.front}" — ${item.insideHeading ?? ""} ${item.insideBody}`)}
               >
                 <p
-                  className="flex-1 min-h-0 w-full overflow-hidden text-[13px] whitespace-pre-wrap"
+                  className="flex-1 min-h-0 w-full overflow-hidden text-[length:var(--font-size-body-13)] whitespace-pre-wrap"
                   style={{ ...dmSans400, color: "var(--color-text-primary)", lineHeight: "normal" }}
                 >
                   {blocks.join("\n\n")}
@@ -389,7 +389,7 @@ export function TemplateOverflowMenu({
       </AnimatePresence>
 
       {showsFooter && (
-        <div className="flex items-center justify-between pt-[8px] w-full">
+        <div className="flex items-center justify-between pt-[var(--space-2)] w-full">
           {onShowMore
             ? <OverflowShowMoreBtn label={showMoreLabel} onClick={onShowMore} isLoading={isLoadingShowMore} />
             : <span />}
@@ -416,7 +416,7 @@ export function ActionOverflowMenu({
 }) {
   return (
     <div
-      className="flex flex-col gap-[16px] items-start py-[12px] relative rounded-[12px] w-full"
+      className="flex flex-col gap-[var(--space-4)] items-start py-[var(--space-3)] relative rounded-[var(--radius-2xl)] w-full"
       style={{ backgroundColor: "var(--color-bg-menus)", boxShadow: "var(--shadow-sm)", border: "1px solid var(--color-element-subtle)" }}
     >
       <ActionMenuHeader
@@ -428,9 +428,9 @@ export function ActionOverflowMenu({
       />
       <ActionMenuSeparator />
 
-      <div className="flex flex-col gap-[8px] px-[16px] w-full">
-        <p className="leading-[20px] text-[15px]" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{config.adjustHeader ?? "Or Adjust"}</p>
-        <div className="flex flex-wrap gap-[8px] items-center">
+      <div className="flex flex-col gap-[var(--space-2)] px-[var(--space-4)] w-full">
+        <p className="leading-[var(--line-height-body-15)] text-[length:var(--font-size-body-15)]" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{config.adjustHeader ?? "Or Adjust"}</p>
+        <div className="flex flex-wrap gap-[var(--space-2)] items-center">
           {(config.adjustOptions ?? []).map((label) => (
             <Btn key={label} variant="outline" size="sm" onClick={() => (onAdjust ? onAdjust(label) : onClose())}>{label}</Btn>
           ))}
@@ -462,7 +462,7 @@ export function ActionOverflowMenuList({
 
   return (
     <div
-      className="flex flex-col gap-[16px] items-start py-[12px] relative rounded-[12px] w-full"
+      className="flex flex-col gap-[var(--space-4)] items-start py-[var(--space-3)] relative rounded-[var(--radius-2xl)] w-full"
       style={{ backgroundColor: "var(--color-bg-menus)", boxShadow: "var(--shadow-sm)", border: "1px solid var(--color-element-subtle)" }}
     >
       <ActionMenuHeader
@@ -474,20 +474,20 @@ export function ActionOverflowMenuList({
       />
       <ActionMenuSeparator />
 
-      <div className="flex flex-col gap-[8px] px-[16px] w-full">
-        <p className="leading-[20px] text-[15px]" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{adjustHeader}</p>
+      <div className="flex flex-col gap-[var(--space-2)] px-[var(--space-4)] w-full">
+        <p className="leading-[var(--line-height-body-15)] text-[length:var(--font-size-body-15)]" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{adjustHeader}</p>
         <div className="flex flex-col w-full">
           {/* Six 36px rows fit before the list starts scrolling — the design's full height. */}
           <div className="flex flex-col w-full max-h-[216px] overflow-y-auto scrollbar-thin scrollbar-thumb-muted-foreground scrollbar-track-transparent">
             {items.map((item) => (
               <div key={item.num} className="h-[36px] w-full shrink-0">
                 <div
-                  className="flex gap-[8px] items-center px-[8px] py-[6px] w-full rounded-[6px] transition-colors cursor-pointer"
+                  className="flex gap-[var(--space-2)] items-center px-[var(--space-2)] py-[var(--space-1-5)] w-full rounded-[var(--radius-sm)] transition-colors cursor-pointer"
                   {...hoverItem}
                   onClick={() => onComplete(item.label)}
                 >
                   <NumBadge num={item.num} />
-                  <p className="flex-1 leading-[20px] text-[15px] min-w-0 truncate" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{item.label}</p>
+                  <p className="flex-1 leading-[var(--line-height-body-15)] text-[length:var(--font-size-body-15)] min-w-0 truncate" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{item.label}</p>
                 </div>
               </div>
             ))}
@@ -532,7 +532,7 @@ export function ActionChecklistOverflowMenu({
 
   return (
     <div
-      className="flex flex-col gap-[16px] items-start py-[12px] relative rounded-[12px] w-full"
+      className="flex flex-col gap-[var(--space-4)] items-start py-[var(--space-3)] relative rounded-[var(--radius-2xl)] w-full"
       style={{ backgroundColor: "var(--color-bg-menus)", boxShadow: "var(--shadow-sm)", border: "1px solid var(--color-element-subtle)" }}
     >
       <ActionMenuHeader
@@ -544,9 +544,9 @@ export function ActionChecklistOverflowMenu({
       />
       <ActionMenuSeparator />
 
-      <div className="flex flex-col gap-[8px] px-[16px] w-full">
+      <div className="flex flex-col gap-[var(--space-2)] px-[var(--space-4)] w-full">
         {config.adjustHeader && (
-          <p className="leading-[20px] text-[15px]" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{config.adjustHeader}</p>
+          <p className="leading-[var(--line-height-body-15)] text-[length:var(--font-size-body-15)]" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{config.adjustHeader}</p>
         )}
         <div className="flex flex-col w-full">
           {/* Six 36px rows fit before the list starts scrolling — the design's full height. */}
@@ -555,11 +555,11 @@ export function ActionChecklistOverflowMenu({
               const checked = selected.has(item.id);
               return (
                 <div key={item.id} className="h-[36px] w-full shrink-0">
-                  <div className="flex gap-[8px] items-center px-[8px] py-[6px] rounded-[6px] w-full cursor-pointer transition-colors" {...hoverItem} onClick={() => toggleItem(item.id)}>
-                    <div className="relative rounded-[4px] shrink-0 size-[16px] flex items-center justify-center transition-colors duration-150" style={{ backgroundColor: checked ? "var(--color-brand-primary)" : "transparent", border: checked ? "1px solid var(--color-brand-primary)" : "1px solid var(--color-element-subtle)", boxShadow: "var(--shadow-xs)" }}>
+                  <div className="flex gap-[var(--space-2)] items-center px-[var(--space-2)] py-[var(--space-1-5)] rounded-[var(--radius-sm)] w-full cursor-pointer transition-colors" {...hoverItem} onClick={() => toggleItem(item.id)}>
+                    <div className="relative rounded-[var(--radius-xs)] shrink-0 size-[16px] flex items-center justify-center transition-colors duration-150" style={{ backgroundColor: checked ? "var(--color-brand-primary)" : "transparent", border: checked ? "1px solid var(--color-brand-primary)" : "1px solid var(--color-element-subtle)", boxShadow: "var(--shadow-xs)" }}>
                       {checked && <svg width="10.7" height="7.75" viewBox="0 0 10.6633 7.74667" fill="none"><path d={CHECKMARK_PATH} stroke="var(--color-text-on-primary)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33" /></svg>}
                     </div>
-                    <p className="flex-1 leading-[20px] text-[15px] min-w-0 truncate" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{item.label}</p>
+                    <p className="flex-1 leading-[var(--line-height-body-15)] text-[length:var(--font-size-body-15)] min-w-0 truncate" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{item.label}</p>
                   </div>
                 </div>
               );
@@ -623,7 +623,7 @@ function SignupHeader({ title, subtitle, onClose }: { title: string; subtitle: s
     <div className="flex gap-[var(--space-4)] items-start px-[var(--space-5)] py-[var(--space-2)] w-full">
       <div className="flex flex-col gap-[var(--space-2)] flex-1 min-w-0">
         <h2 className="m-0" style={{ ...signupHeading, fontSize: "var(--font-size-h5)", lineHeight: "28px", color: "var(--color-text-primary)" }}>{title}</h2>
-        <p className="leading-[20px] text-[var(--font-size-body-15)]" style={{ ...dmSans400, color: "var(--color-text-secondary)" }}>{subtitle}</p>
+        <p className="leading-[var(--line-height-body-15)] text-[var(--font-size-body-15)]" style={{ ...dmSans400, color: "var(--color-text-secondary)" }}>{subtitle}</p>
       </div>
       <OverflowCloseBtn onClose={onClose} className="mt-[var(--space-2)] shrink-0" />
     </div>
@@ -647,7 +647,7 @@ function AuthFooter({ onSignIn, onBack, backLabel = "Back to sign up", loading, 
   return (
     <div className="flex flex-col gap-[var(--space-3)] items-center w-full">
       {onSignIn && (
-        <p className="leading-[20px] text-[var(--font-size-body-15)] text-center" style={{ ...dmSans400, color: "var(--color-text-secondary)" }}>
+        <p className="leading-[var(--line-height-body-15)] text-[var(--font-size-body-15)] text-center" style={{ ...dmSans400, color: "var(--color-text-secondary)" }}>
           Already have an account?{" "}
           <Btn
             variant="link"
@@ -795,7 +795,7 @@ export function SignupOverflowMenu({
               </motion.div>
               <div className="flex items-center gap-[var(--space-3)] w-full">
                 <Sep style={{ flex: 1, width: "auto" }} />
-                <p className="text-[var(--font-size-body-13)] leading-[20px]" style={{ ...dmSans400, color: "var(--color-text-secondary)" }}>OR</p>
+                <p className="text-[var(--font-size-body-13)] leading-[var(--line-height-body-15)]" style={{ ...dmSans400, color: "var(--color-text-secondary)" }}>OR</p>
                 <Sep style={{ flex: 1, width: "auto" }} />
               </div>
               <motion.div

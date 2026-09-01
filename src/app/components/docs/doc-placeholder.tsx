@@ -11,12 +11,12 @@ export function PlaceholderPage({ id }: PlaceholderPageProps) {
   return (
     <div style={{
       display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-      minHeight: 300, gap: 12, color: "var(--muted-fg)",
+      minHeight: 300, gap: "var(--space-3)", color: "var(--muted-fg)",
     }}>
-      <div style={{ fontSize: 36, opacity: .15 }}>📄</div>
-      <div style={{ fontSize: 18, fontWeight: 700, color: "var(--fg)" }}>{item?.title || id}</div>
-      <div style={{ fontSize: 13 }}>Documentation coming soon.</div>
-      <Btn variant="outline" style={{ marginTop: 8 }}>Request docs</Btn>
+      <div style={{ fontSize: "var(--font-size-h3)", opacity: .15 }}>📄</div>
+      <div style={{ fontSize: "var(--font-size-h5)", fontWeight: "var(--font-weight-bold, 700)" as any, color: "var(--fg)" }}>{item?.title || id}</div>
+      <div style={{ fontSize: "var(--font-size-body-13)" }}>Documentation coming soon.</div>
+      <Btn variant="outline" style={{ marginTop: "var(--space-2)" }}>Request docs</Btn>
     </div>
   );
 }

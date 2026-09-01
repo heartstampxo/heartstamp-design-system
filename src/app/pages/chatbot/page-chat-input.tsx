@@ -5,7 +5,7 @@ import { PropsTable } from "../../components/docs/doc-props-table";
 import { ChatHomeInput, ChatConversationInput } from "../../components/ui/hs-stampy-chat";
 import chatAiIconImg from "../../../assets/stampy/ai-icon.png";
 
-const DESC_STYLE: React.CSSProperties = { fontSize: "var(--font-size-body-15)", color: "var(--muted-fg)", marginBottom: 16 };
+const DESC_STYLE: React.CSSProperties = { fontSize: "var(--font-size-body-15)", color: "var(--muted-fg)", marginBottom: "var(--space-4)" };
 
 export function PageChatInput() {
   return (
@@ -54,7 +54,7 @@ export function PageChatInput() {
   onSend={(value) => console.log(value)}
 />`}
         >
-          <div style={{ width: "100%", maxWidth: 420, border: "1px solid var(--border)", borderRadius: 12, overflow: "hidden" }}>
+          <div style={{ width: "100%", maxWidth: 420, border: "1px solid var(--border)", borderRadius: "var(--radius-2xl)", overflow: "hidden" }}>
             <ChatConversationInput aiIconSrc={chatAiIconImg} />
           </div>
         </Preview>

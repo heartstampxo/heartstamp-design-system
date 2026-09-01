@@ -26,14 +26,14 @@ function FigmaIcon({ size = 12 }: { size?: number }) {
 export function DocPage({ title, subtitle, sourceSlug, figmaUrl, children, style }: DocPageProps) {
   return (
     <div style={{ transition: "background 0.15s ease, color 0.15s ease", ...style }}>
-      <div style={{ marginBottom: 28 }}>
-        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, marginBottom: "var(--space-1-5)" }}>
+      <div style={{ marginBottom: "var(--space-7)" }}>
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "var(--space-3)", marginBottom: "var(--space-1-5)" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
             <h1 style={{ margin: 0, fontSize: 26, fontWeight: 800, color: "var(--fg)", letterSpacing: "-.02em" }}>{title}</h1>
             <CopyLinkButton />
           </div>
 
-          <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0, marginTop: "var(--space-1-5)" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", flexShrink: 0, marginTop: "var(--space-1-5)" }}>
             {figmaUrl && (
               <a
                 href={figmaUrl}
@@ -42,7 +42,7 @@ export function DocPage({ title, subtitle, sourceSlug, figmaUrl, children, style
                 className="hs-figma-link"
                 style={{
                   display: "inline-flex", alignItems: "center", gap: 5,
-                  padding: "4px 9px", borderRadius: 6,
+                  padding: "4px 9px", borderRadius: "var(--radius-sm)",
                   border: "1px solid var(--color-element-subtle)",
                   background: "transparent",
                   color: "var(--color-text-secondary)",
@@ -92,10 +92,10 @@ export function DocSection({ title, desc, action, children }: DocSectionProps) {
   const id = slugify(title);
   return (
     <section id={id} style={{ marginBottom: "var(--space-12)", display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--space-3)" }}>
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
-            <h2 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: "var(--fg)" }}>{title}</h2>
+            <h2 style={{ margin: 0, fontSize: "var(--font-size-h6)", fontWeight: "var(--font-weight-bold, 700)" as any, color: "var(--fg)" }}>{title}</h2>
             <CopySectionLinkButton sectionId={id} />
           </div>
           {desc && <p style={{ margin: "4px 0 0", fontSize: "var(--font-size-body-13)", fontWeight: "var(--font-weight-body-13)" as React.CSSProperties["fontWeight"], color: "var(--muted-fg)" }}>{desc}</p>}

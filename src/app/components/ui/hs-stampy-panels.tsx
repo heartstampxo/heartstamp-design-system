@@ -145,11 +145,11 @@ export function ChatHomeScreen({
       )}
 
       {/* Greeting + typewriter */}
-      <div className="flex flex-col gap-[8px] items-start w-full relative pl-[60px]">
-        <p className="font-normal leading-[28px] relative text-[18px] w-full" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>Hi there! I'm Stampy</p>
+      <div className="flex flex-col gap-[var(--space-2)] items-start w-full relative pl-[60px]">
+        <p className="font-normal leading-[var(--line-height-h5)] relative text-[length:var(--font-size-h5)] w-full" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>Hi there! I'm Stampy</p>
         <div className="relative w-full" style={{ minHeight: 20 }}>
           <div className="pointer-events-none select-none">
-            <span className="text-[15px] leading-[20px]" style={{ ...dmSans400, color: "var(--color-text-secondary)" }}>
+            <span className="text-[length:var(--font-size-body-15)] leading-[var(--line-height-body-15)]" style={{ ...dmSans400, color: "var(--color-text-secondary)" }}>
               Try: {displayText}
               <motion.span
                 className="inline-block w-[1.5px] h-[13px] ml-[1px] align-middle"
@@ -235,46 +235,46 @@ export function ChatHeader({
   }
 
   return (
-    <div className={`border-b border-solid flex items-center justify-between px-[16px] py-[12px] relative shrink-0 w-full z-30${embedded ? "" : " rounded-t-[20px]"}`} style={{ borderColor: "var(--color-element-subtle)", backgroundColor: "var(--color-bg-main)" }}>
+    <div className={`border-b border-solid flex items-center justify-between px-[var(--space-4)] py-[var(--space-3)] relative shrink-0 w-full z-30${embedded ? "" : " rounded-t-[20px]"}`} style={{ borderColor: "var(--color-element-subtle)", backgroundColor: "var(--color-bg-main)" }}>
       {/* Left: Stampy label + conversation dropdown */}
-      <div className="flex gap-[16px] items-center relative shrink-0 min-w-0 flex-1">
-        <div className="flex flex-col justify-center leading-[0] relative shrink-0 text-[15px] whitespace-nowrap" style={{ ...dmSans500, fontWeight: "var(--font-weight-semibold, 600)" as React.CSSProperties["fontWeight"], color: "var(--color-text-primary)" }}>
+      <div className="flex gap-[var(--space-4)] items-center relative shrink-0 min-w-0 flex-1">
+        <div className="flex flex-col justify-center leading-[0] relative shrink-0 text-[length:var(--font-size-body-15)] whitespace-nowrap" style={{ ...dmSans500, fontWeight: "var(--font-weight-semibold, 600)" as React.CSSProperties["fontWeight"], color: "var(--color-text-primary)" }}>
           <p className="leading-[normal]">Stampy</p>
         </div>
         <div ref={ref} className="relative min-w-0">
           <button
-            className="flex items-center gap-[8px] px-[12px] h-[32px] rounded-[30px] cursor-pointer transition-colors max-w-[180px]"
+            className="flex items-center gap-[var(--space-2)] px-[var(--space-3)] h-[32px] rounded-[30px] cursor-pointer transition-colors max-w-[180px]"
             style={{ backgroundColor: "var(--color-brand-secondary-dim)" }}
             onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-state-pressed)")}
             onMouseLeave={e => (e.currentTarget.style.backgroundColor = "var(--color-brand-secondary-dim)")}
             onClick={() => setDropdownOpen(p => !p)}
           >
-            <span className="text-[15px] leading-[20px] truncate" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{conversationName}</span>
+            <span className="text-[length:var(--font-size-body-15)] leading-[var(--line-height-body-15)] truncate" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{conversationName}</span>
             <ChevronDown size={10} strokeWidth={1.5} absoluteStrokeWidth className="shrink-0" style={{ color: "var(--color-text-primary)" }} />
           </button>
           <AnimatePresence>
             {dropdownOpen && (
               <motion.div
-                className="absolute top-[calc(100%+4px)] left-0 rounded-[12px] py-[4px] min-w-[220px] z-50"
+                className="absolute top-[calc(100%+4px)] left-0 rounded-[var(--radius-2xl)] py-[var(--space-1)] min-w-[220px] z-50"
                 style={{ backgroundColor: "var(--color-bg-main)", boxShadow: "var(--shadow-md)", border: "1px solid var(--color-element-subtle)" }}
                 initial={{ opacity: 0, y: -4, scale: 0.97 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: -4, scale: 0.97 }}
                 transition={{ duration: 0.15 }}
               >
-                <button className="flex items-center gap-[8px] w-[calc(100%-24px)] mx-[4px] px-[12px] h-[32px] text-left cursor-pointer transition-colors rounded-[6px]" onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-state-hover)")} onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")} onClick={() => { setDropdownOpen(false); onNewConversation?.(); }}>
+                <button className="flex items-center gap-[var(--space-2)] w-[calc(100%-24px)] mx-[var(--space-1)] px-[var(--space-3)] h-[32px] text-left cursor-pointer transition-colors rounded-[var(--radius-sm)]" onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-state-hover)")} onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")} onClick={() => { setDropdownOpen(false); onNewConversation?.(); }}>
                   <Plus size={14} strokeWidth={1.5} className="shrink-0" style={{ color: "var(--color-text-primary)" }} />
-                  <span className="text-[15px] leading-[20px]" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>New Conversation</span>
+                  <span className="text-[length:var(--font-size-body-15)] leading-[var(--line-height-body-15)]" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>New Conversation</span>
                 </button>
-                <div className="mx-[4px] my-[4px] h-px" style={{ backgroundColor: "var(--color-element-subtle)" }} />
+                <div className="mx-[var(--space-1)] my-[var(--space-1)] h-px" style={{ backgroundColor: "var(--color-element-subtle)" }} />
                 <div className="max-h-[240px] overflow-y-auto">
                   {localConversations.map(c => {
                     const isActive = activeConversationId ? c.id === activeConversationId : c.name === conversationName;
                     return (
-                      <div key={c.id} className="group flex items-center justify-between px-[12px] mx-[4px] h-[32px] cursor-pointer transition-colors rounded-[6px]" style={{ backgroundColor: isActive ? "var(--color-brand-secondary-dim)" : "transparent" }} onMouseEnter={e => { if (!isActive) e.currentTarget.style.backgroundColor = "var(--color-state-hover)"; }} onMouseLeave={e => { e.currentTarget.style.backgroundColor = isActive ? "var(--color-brand-secondary-dim)" : "transparent"; }} onClick={() => { if (editingConvoId !== c.id) { setDropdownOpen(false); onSelectConversation?.(c.id); } }}>
+                      <div key={c.id} className="group flex items-center justify-between px-[var(--space-3)] mx-[var(--space-1)] h-[32px] cursor-pointer transition-colors rounded-[var(--radius-sm)]" style={{ backgroundColor: isActive ? "var(--color-brand-secondary-dim)" : "transparent" }} onMouseEnter={e => { if (!isActive) e.currentTarget.style.backgroundColor = "var(--color-state-hover)"; }} onMouseLeave={e => { e.currentTarget.style.backgroundColor = isActive ? "var(--color-brand-secondary-dim)" : "transparent"; }} onClick={() => { if (editingConvoId !== c.id) { setDropdownOpen(false); onSelectConversation?.(c.id); } }}>
                         {editingConvoId === c.id ? (
                           <input
-                            className="flex-1 text-[15px] leading-[20px] bg-transparent outline-none min-w-0"
+                            className="flex-1 text-[length:var(--font-size-body-15)] leading-[var(--line-height-body-15)] bg-transparent outline-none min-w-0"
                             style={{ ...dmSans400, color: "var(--color-text-primary)", borderBottom: "1px solid var(--color-text-primary)" }}
                             value={editingName}
                             autoFocus
@@ -285,8 +285,8 @@ export function ChatHeader({
                           />
                         ) : (
                           <>
-                            <span className="text-[15px] leading-[20px] truncate" style={{ ...(isActive ? dmSans500 : dmSans400), color: "var(--color-text-primary)" }}>{c.name}</span>
-                            <button className="opacity-0 group-hover:opacity-100 transition-opacity shrink-0 ml-[8px] p-[2px] rounded cursor-pointer" onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-state-hover)")} onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")} onClick={e => { e.stopPropagation(); setEditingConvoId(c.id); setEditingName(c.name); }} aria-label={`Rename ${c.name}`}>
+                            <span className="text-[length:var(--font-size-body-15)] leading-[var(--line-height-body-15)] truncate" style={{ ...(isActive ? dmSans500 : dmSans400), color: "var(--color-text-primary)" }}>{c.name}</span>
+                            <button className="opacity-0 group-hover:opacity-100 transition-opacity shrink-0 ml-[var(--space-2)] p-[var(--space-0-5)] rounded cursor-pointer" onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-state-hover)")} onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")} onClick={e => { e.stopPropagation(); setEditingConvoId(c.id); setEditingName(c.name); }} aria-label={`Rename ${c.name}`}>
                               <PencilLine size={14} strokeWidth={1.5} style={{ color: "var(--color-text-secondary)" }} />
                             </button>
                           </>
@@ -302,15 +302,15 @@ export function ChatHeader({
       </div>
 
       {/* Right: expand (hidden in embedded) + minimize */}
-      <div className="flex gap-[8px] items-center relative shrink-0">
-        {!embedded && <div className="group flex items-center justify-center relative rounded-[25px] shrink-0 size-[32px] cursor-pointer transition-colors" onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-state-hover)")} onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")} onClick={onToggleExpand}>
+      <div className="flex gap-[var(--space-2)] items-center relative shrink-0">
+        {!embedded && <div className="group flex items-center justify-center relative rounded-[var(--radius-button)] shrink-0 size-[32px] cursor-pointer transition-colors" onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-state-hover)")} onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")} onClick={onToggleExpand}>
           {expanded ? (
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M19 4C20.6569 4 22 5.34315 22 7V17C22 18.6051 20.7394 19.9158 19.1543 19.9961L19 20H5L4.8457 19.9961C3.26055 19.9158 2 18.6051 2 17V7C2 5.34315 3.34315 4 5 4H19ZM5 5.5C4.17157 5.5 3.5 6.17157 3.5 7V17C3.5 17.8284 4.17157 18.5 5 18.5H19C19.8284 18.5 20.5 17.8284 20.5 17V7C20.5 6.17157 19.8284 5.5 19 5.5H5ZM18 7C18.5523 7 19 7.44772 19 8V16C19 16.5523 18.5523 17 18 17H14C13.4477 17 13 16.5523 13 16V8C13 7.44772 13.4477 7 14 7H18Z" className="fill-[var(--color-text-secondary)] group-hover:fill-[var(--color-text-primary)] transition-colors" /></svg>
           ) : (
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M15.4883 3.33691C17.073 3.41753 18.3338 4.72826 18.334 6.33301V13.666L18.3301 13.8203C18.2525 15.3543 17.0221 16.5841 15.4883 16.6621L15.334 16.666H4.66699C3.01014 16.666 1.66699 15.3229 1.66699 13.666V6.33301C1.66717 4.6763 3.01025 3.33301 4.66699 3.33301H15.334L15.4883 3.33691ZM4.66699 4.83301C3.83867 4.83301 3.16717 5.50473 3.16699 6.33301V13.666C3.16699 14.4944 3.83857 15.166 4.66699 15.166H15.334C16.1621 15.1657 16.834 14.4942 16.834 13.666V6.33301C16.8338 5.50495 16.162 4.83336 15.334 4.83301H4.66699ZM14.833 9.16699C15.3853 9.16699 15.833 9.61471 15.833 10.167V13.167C15.8328 13.7191 15.3852 14.167 14.833 14.167H11.833C11.281 14.1668 10.8332 13.719 10.833 13.167V10.167C10.833 9.61482 11.2809 9.16717 11.833 9.16699H14.833Z" className="fill-[var(--color-text-secondary)] group-hover:fill-[var(--color-text-primary)] transition-colors" /></svg>
           )}
         </div>}
-        <div className="group flex items-center justify-center relative rounded-[25px] shrink-0 size-[32px] cursor-pointer transition-colors" onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-state-hover)")} onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")} onClick={onMinimize}>
+        <div className="group flex items-center justify-center relative rounded-[var(--radius-button)] shrink-0 size-[32px] cursor-pointer transition-colors" onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-state-hover)")} onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")} onClick={onMinimize}>
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4.16669 10H15.8334" className="stroke-[var(--color-text-secondary)] group-hover:stroke-[var(--color-text-primary)] transition-colors" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
         </div>
       </div>

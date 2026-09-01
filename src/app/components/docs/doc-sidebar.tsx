@@ -26,7 +26,7 @@ export function Sidebar({ active, onSelect, onClose }: SidebarProps) {
       onClick={() => { onSelect(item.id); onClose?.(); }}
       badge={item.label && (
         <span style={{
-          fontSize: 10, fontWeight: 700, padding: "1px 6px", borderRadius: 999,
+          fontSize: 10, fontWeight: "var(--font-weight-bold, 700)" as any, padding: "1px 6px", borderRadius: "var(--radius-full)",
           background: LABEL_COLORS[item.label].bg, color: LABEL_COLORS[item.label].color,
           textTransform: "uppercase", letterSpacing: ".04em",
         }}>{item.label}</span>
@@ -105,8 +105,8 @@ export function Sidebar({ active, onSelect, onClose }: SidebarProps) {
                 <span style={{ display: "inline-flex", alignItems: "center", gap: "var(--space-1-5)" }}>
                   {group.title}
                   <span style={{
-                    fontSize: 10, fontWeight: 600, lineHeight: "15px", padding: "0 6px",
-                    borderRadius: 999, letterSpacing: 0,
+                    fontSize: 10, fontWeight: "var(--font-weight-semibold, 600)" as any, lineHeight: "15px", padding: "0 6px",
+                    borderRadius: "var(--radius-full)", letterSpacing: 0,
                     background: "var(--muted)", color: "var(--muted-fg)", border: "1px solid var(--border)",
                   }}>{group.items.length}</span>
                 </span>
@@ -129,10 +129,10 @@ export function Sidebar({ active, onSelect, onClose }: SidebarProps) {
           onClick={() => { onSelect("changelog"); onClose?.(); }}
           title="What changed in this version"
           style={{
-            fontSize: "var(--font-size-label-12)", fontWeight: 600, fontFamily: "inherit",
+            fontSize: "var(--font-size-label-12)", fontWeight: "var(--font-weight-semibold, 600)" as any, fontFamily: "inherit",
             color: active === "changelog" ? "var(--accent)" : "var(--muted-fg)",
             background: "var(--muted)", border: "1px solid var(--border)",
-            borderRadius: 999, padding: "1px 8px", cursor: "pointer",
+            borderRadius: "var(--radius-full)", padding: "1px 8px", cursor: "pointer",
           }}
         >
           v{pkg.version}

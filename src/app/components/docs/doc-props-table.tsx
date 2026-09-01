@@ -10,13 +10,13 @@ interface PropRow {
 
 export function PropsTable({ props }: { props: PropRow[] }) {
   return (
-    <div style={{ border: "1px solid var(--border)", borderRadius: 10, overflow: "hidden" }}>
+    <div style={{ border: "1px solid var(--border)", borderRadius: "var(--radius-xl)", overflow: "hidden" }}>
       <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12.5 }}>
         <thead>
           <tr style={{ background: "var(--muted)", borderBottom: "1px solid var(--border)" }}>
             {["Prop", "Type", "Default", "Description"].map(h => (
               <th key={h} style={{
-                padding: "8px 14px", textAlign: "left", fontWeight: 600,
+                padding: "8px 14px", textAlign: "left", fontWeight: "var(--font-weight-semibold, 600)" as any,
                 color: "var(--muted-fg)", fontSize: 11, textTransform: "uppercase", letterSpacing: ".04em",
               }}>{h}</th>
             ))}
@@ -29,8 +29,8 @@ export function PropsTable({ props }: { props: PropRow[] }) {
               borderBottom: "1px solid var(--border)",
             }}>
               <td style={{ padding: "8px 14px", verticalAlign: "top" }}>
-                <code style={{ fontFamily: "monospace", fontWeight: 700, color: "var(--fg)", fontSize: 12 }}>{p.name}</code>
-                {p.required && <span style={{ color: "var(--accent)", marginLeft: 2 }}>*</span>}
+                <code style={{ fontFamily: "monospace", fontWeight: "var(--font-weight-bold, 700)" as any, color: "var(--fg)", fontSize: "var(--font-size-label-12)" }}>{p.name}</code>
+                {p.required && <span style={{ color: "var(--accent)", marginLeft: "var(--space-0-5)" }}>*</span>}
               </td>
               <td style={{ padding: "8px 14px", verticalAlign: "top" }}>
                 <code style={{ fontFamily: "monospace", color: "var(--fg)", fontSize: 11, wordBreak: "break-word" }}>{p.type}</code>

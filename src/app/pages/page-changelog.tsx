@@ -30,6 +30,16 @@ const TAG_STYLES: Record<string, { bg: string; color: string }> = {
 
 const RELEASES: Release[] = [
   {
+    version: "2.1.51", date: "1 Sep 2026",
+    title: "Token audit: Tailwind values and docs chrome",
+    tags: ["tokens", "docs"],
+    items: [
+      "Stampy chat suite and shadcn primitives: arbitrary Tailwind px values (text-[15px], leading-[20px], gap-[8px], rounded-[12px], ...) now reference the existing tokens via var().",
+      "Docs app: ~400 hardcoded sizes, weights, radii, and spacing values snapped to their exact token equivalents; code samples now demonstrate token usage too.",
+      "Left by policy: sub-12px micro chrome and off-scale one-offs (17, 22, 26px, 20px radii) that have no token equivalent.",
+    ],
+  },
+  {
     version: "2.1.50", date: "1 Sep 2026",
     title: "Token audit: colors, weights, shadows",
     tags: ["tokens", "fix"],
@@ -231,8 +241,8 @@ function TagBadge({ tag }: { tag: string }) {
   const s = TAG_STYLES[tag] ?? TAG_STYLES.feature;
   return (
     <span style={{
-      display: "inline-flex", alignItems: "center", padding: "1px 8px", borderRadius: 99,
-      fontSize: 10, fontWeight: 600, letterSpacing: ".03em", textTransform: "uppercase" as const,
+      display: "inline-flex", alignItems: "center", padding: "1px 8px", borderRadius: "var(--radius-full)",
+      fontSize: 10, fontWeight: "var(--font-weight-semibold, 600)" as any, letterSpacing: ".03em", textTransform: "uppercase" as const,
       background: s.bg, color: s.color,
     }}>
       {tag}
@@ -247,34 +257,34 @@ export function PageChangelog() {
       subtitle="What changed in the design system, release by release. Every push to main publishes a patch version automatically; the notable changes are curated here, newest first. Housekeeping releases are rolled up into version ranges."
     >
       <DocSection title="Releases">
-        <div style={{ position: "relative", paddingLeft: 24 }}>
+        <div style={{ position: "relative", paddingLeft: "var(--space-6)" }}>
           {/* timeline rail */}
           <div style={{ position: "absolute", left: 5, top: 6, bottom: 6, width: 2, background: "var(--border)", borderRadius: 1 }} />
-          <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-7)" }}>
             {RELEASES.map((r, i) => (
               <div key={r.version} style={{ position: "relative" }}>
                 {/* timeline dot */}
                 <div style={{
-                  position: "absolute", left: -24, top: 5, width: 12, height: 12, borderRadius: 99,
+                  position: "absolute", left: -24, top: 5, width: 12, height: 12, borderRadius: "var(--radius-full)",
                   background: i === 0 ? "var(--accent)" : "var(--bg)",
                   border: i === 0 ? "2px solid var(--accent)" : "2px solid var(--border)",
                   boxSizing: "border-box" as const,
                 }} />
-                <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" as const, marginBottom: 6 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2-5)", flexWrap: "wrap" as const, marginBottom: "var(--space-1-5)" }}>
                   <code style={{
-                    fontFamily: "monospace", fontSize: 12, fontWeight: 700, color: "var(--accent)",
-                    background: "var(--accent-subtle)", padding: "2px 9px", borderRadius: 99,
+                    fontFamily: "monospace", fontSize: "var(--font-size-label-12)", fontWeight: "var(--font-weight-bold, 700)" as any, color: "var(--accent)",
+                    background: "var(--accent-subtle)", padding: "2px 9px", borderRadius: "var(--radius-full)",
                   }}>v{r.version}</code>
                   {i === 0 && (
-                    <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: ".04em", textTransform: "uppercase" as const, color: "var(--accent)" }}>Latest</span>
+                    <span style={{ fontSize: 10, fontWeight: "var(--font-weight-bold, 700)" as any, letterSpacing: ".04em", textTransform: "uppercase" as const, color: "var(--accent)" }}>Latest</span>
                   )}
                   <span style={{ fontSize: 11.5, color: "var(--muted-fg)" }}>{r.date}</span>
-                  <span style={{ display: "flex", gap: 4, flexWrap: "wrap" as const }}>
+                  <span style={{ display: "flex", gap: "var(--space-1)", flexWrap: "wrap" as const }}>
                     {r.tags.map(t => <TagBadge key={t} tag={t} />)}
                   </span>
                 </div>
-                <div style={{ fontSize: "var(--font-size-label-sb-15)", fontWeight: "var(--font-weight-label-sb-15)" as any, color: "var(--fg)", marginBottom: 6 }}>{r.title}</div>
-                <ul style={{ margin: 0, paddingLeft: 18, display: "flex", flexDirection: "column", gap: 4 }}>
+                <div style={{ fontSize: "var(--font-size-label-sb-15)", fontWeight: "var(--font-weight-label-sb-15)" as any, color: "var(--fg)", marginBottom: "var(--space-1-5)" }}>{r.title}</div>
+                <ul style={{ margin: 0, paddingLeft: 18, display: "flex", flexDirection: "column", gap: "var(--space-1)" }}>
                   {r.items.map(item => (
                     <li key={item} style={{ fontSize: "var(--font-size-body-15)", fontWeight: "var(--font-weight-body-15)" as any, color: "var(--muted-fg)", lineHeight: 1.55 }}>{item}</li>
                   ))}

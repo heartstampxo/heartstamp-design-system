@@ -36,12 +36,12 @@ export function InstallBlock({
   return (
     <div>
       {label && (
-        <p style={{ margin: "0 0 8px", fontSize: 13, color: "var(--muted-fg)" }}>{label}</p>
+        <p style={{ margin: "0 0 8px", fontSize: "var(--font-size-body-13)", color: "var(--muted-fg)" }}>{label}</p>
       )}
       <div style={{
         background: "#09090b",
         border: "1px solid #27272a",
-        borderRadius: 8,
+        borderRadius: "var(--radius-lg)",
         overflow: "hidden",
         fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
       }}>
@@ -64,7 +64,7 @@ export function InstallBlock({
                   border: "none",
                   cursor: "pointer",
                   padding: "10px 14px",
-                  fontSize: 12,
+                  fontSize: "var(--font-size-label-12)",
                   fontWeight: active ? 600 : 400,
                   color: active ? "#fafafa" : "#71717a",
                   position: "relative",
@@ -84,7 +84,7 @@ export function InstallBlock({
             onClick={copy}
             style={{
               marginLeft: "auto",
-              marginRight: 8,
+              marginRight: "var(--space-2)",
               display: "flex",
               alignItems: "center",
               gap: 5,
@@ -109,7 +109,7 @@ export function InstallBlock({
           margin: 0,
           padding: "16px 20px",
           overflowX: "auto",
-          fontSize: 13,
+          fontSize: "var(--font-size-body-13)",
           lineHeight: 1.7,
           color: "#e4e4e7",
           whiteSpace: "pre",
@@ -201,7 +201,7 @@ export function CodeBlock({ code, filename }: { code: string; filename?: string 
     <div style={{
       background: "#09090b",
       border: "1px solid #27272a",
-      borderRadius: 8,
+      borderRadius: "var(--radius-lg)",
       overflow: "hidden",
       fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
     }}>
@@ -214,7 +214,7 @@ export function CodeBlock({ code, filename }: { code: string; filename?: string 
         minHeight: 40,
       }}>
         {filename && (
-          <span style={{ fontSize: 12, color: "#71717a", fontFamily: "inherit", flex: 1 }}>
+          <span style={{ fontSize: "var(--font-size-label-12)", color: "#71717a", fontFamily: "inherit", flex: 1 }}>
             {filename}
           </span>
         )}
@@ -243,10 +243,10 @@ export function CodeBlock({ code, filename }: { code: string; filename?: string 
       </div>
 
       {/* ── Code area ── */}
-      <pre style={{ margin: 0, padding: "16px 20px", overflowX: "auto", fontSize: 13, lineHeight: 1.7, fontFamily: "inherit" }}>
+      <pre style={{ margin: 0, padding: "16px 20px", overflowX: "auto", fontSize: "var(--font-size-body-13)", lineHeight: 1.7, fontFamily: "inherit" }}>
         {code.split("\n").map((line: string, i: number) => (
           <div key={i} style={{ display: "flex" }}>
-            <span style={{ minWidth: 28, color: "#3f3f46", userSelect: "none", textAlign: "right", marginRight: 20, flexShrink: 0 }}>
+            <span style={{ minWidth: 28, color: "#3f3f46", userSelect: "none", textAlign: "right", marginRight: "var(--space-5)", flexShrink: 0 }}>
               {i + 1}
             </span>
             <span

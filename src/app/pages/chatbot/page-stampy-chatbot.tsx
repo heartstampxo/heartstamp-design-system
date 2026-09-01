@@ -76,7 +76,7 @@ export function PageStampyChatbot() {
           selecting a suggestion to start the conversation flow.
         </p>
         <Preview title="Stampy Chatbot" height={750} fullWidth code={DEMO_CODE}>
-          <div style={{ width: "100%", height: 750, position: "relative", overflow: "hidden", borderRadius: 12 }}>
+          <div style={{ width: "100%", height: 750, position: "relative", overflow: "hidden", borderRadius: "var(--radius-2xl)" }}>
             <StampyChatbot
               chatScript={demoChatScript}
               mascotSrc={chatMascotImg}

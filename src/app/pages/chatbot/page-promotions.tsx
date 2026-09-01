@@ -62,7 +62,7 @@ export function PagePromotions() {
 
             {/* Chat body */}
             <div style={{
-              padding: 16,
+              padding: "var(--space-4)",
             }}>
               <StampyPromotions
                 key={key}

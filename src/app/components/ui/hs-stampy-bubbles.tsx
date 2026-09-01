@@ -13,7 +13,7 @@ import { dmSans400, bubbleBg, bubbleSpring, STYLE_OPTIONS } from "./hs-stampy-co
 export function WorkingSpinner({ text = "Working on your request...", delay = 0 }: { text?: string; delay?: number }) {
   return (
     <motion.div
-      className="flex gap-[8px] items-center shrink-0"
+      className="flex gap-[var(--space-2)] items-center shrink-0"
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -8, transition: { duration: 0.15 } }}
@@ -28,7 +28,7 @@ export function WorkingSpinner({ text = "Working on your request...", delay = 0 
           <Loader2 size={14} strokeWidth={2} color="var(--color-text-primary)" />
         </motion.div>
       </div>
-      <p className="leading-[20px] text-[15px]" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{text}</p>
+      <p className="leading-[var(--line-height-body-15)] text-[length:var(--font-size-body-15)]" style={{ ...dmSans400, color: "var(--color-text-primary)" }}>{text}</p>
     </motion.div>
   );
 }
@@ -43,7 +43,7 @@ export function BubbleButton({
       initial={{ opacity: 0, y: 4, backgroundColor: "rgba(0,0,0,0)" }}
       animate={{ opacity: 1, y: 0, backgroundColor: "rgba(0,0,0,0)" }}
       transition={{ ...bubbleSpring, delay }}
-      className={`flex gap-[8px] items-center px-[4px] py-[2px] rounded-[4px] w-full text-left ${!isUsed ? "cursor-pointer" : "cursor-default"}`}
+      className={`flex gap-[var(--space-2)] items-center px-[var(--space-1)] py-[var(--space-0-5)] rounded-[var(--radius-xs)] w-full text-left ${!isUsed ? "cursor-pointer" : "cursor-default"}`}
       whileHover={!isUsed ? { backgroundColor: "var(--color-state-hover)" } : {}}
       onClick={!isUsed ? onClick : undefined}
     >
@@ -53,7 +53,7 @@ export function BubbleButton({
         />
       </div>
       <p
-        className="leading-[20px] text-[15px]"
+        className="leading-[var(--line-height-body-15)] text-[length:var(--font-size-body-15)]"
         style={{
           fontFamily: "var(--font-family-body)",
           fontWeight: "var(--font-weight-medium, 500)" as React.CSSProperties["fontWeight"],
@@ -81,7 +81,7 @@ export function StyleCarousel({ themeChoice, setThemeChoice }: { themeChoice: st
     <div className="relative w-full">
       <div
         ref={scrollRef}
-        className="flex gap-[12px] items-start overflow-x-auto pb-[2px] w-full style-carousel"
+        className="flex gap-[var(--space-3)] items-start overflow-x-auto pb-[var(--space-0-5)] w-full style-carousel"
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" } as React.CSSProperties}
         onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; touchStartScrollLeft.current = scrollRef.current?.scrollLeft ?? 0; }}
         onTouchMove={(e) => { if (scrollRef.current) { scrollRef.current.scrollLeft = touchStartScrollLeft.current + (touchStartX.current - e.touches[0].clientX); } }}
@@ -94,7 +94,7 @@ export function StyleCarousel({ themeChoice, setThemeChoice }: { themeChoice: st
         {STYLE_OPTIONS.map(({ label, image }) => (
           <motion.button
             key={label}
-            className={`flex flex-col gap-[8px] items-center p-[6px] rounded-[12px] shrink-0 ${!themeChoice ? "cursor-pointer" : "cursor-default"}`}
+            className={`flex flex-col gap-[var(--space-2)] items-center p-[var(--space-1-5)] rounded-[var(--radius-2xl)] shrink-0 ${!themeChoice ? "cursor-pointer" : "cursor-default"}`}
             style={{ opacity: themeChoice && themeChoice !== label ? 0.35 : 1, userSelect: "none" }}
             animate={{ backgroundColor: themeChoice === label ? "var(--color-element-subtle)" : "var(--color-brand-secondary-dim)" }}
             whileHover={!themeChoice ? { backgroundColor: "var(--color-element-subtle)" } : {}}
@@ -102,11 +102,11 @@ export function StyleCarousel({ themeChoice, setThemeChoice }: { themeChoice: st
             onClick={!themeChoice ? () => setThemeChoice(label) : undefined}
             draggable={false}
           >
-            <div className="rounded-[8px] shrink-0 overflow-hidden" style={{ width: 99, height: 98 }}>
+            <div className="rounded-[var(--radius-lg)] shrink-0 overflow-hidden" style={{ width: 99, height: 98 }}>
               <img src={image} alt={label} className="w-full h-full object-cover" draggable={false} />
             </div>
             <p
-              className="leading-[20px] text-[15px] text-center whitespace-nowrap"
+              className="leading-[var(--line-height-body-15)] text-[length:var(--font-size-body-15)] text-center whitespace-nowrap"
               style={{ fontFamily: "var(--font-family-body)", fontWeight: "var(--font-weight-medium, 500)" as React.CSSProperties["fontWeight"], fontVariationSettings: "'opsz' 14", color: "var(--color-text-primary)", minWidth: "100%" }}
             >
               {label}
@@ -142,12 +142,12 @@ export function StampyBubble({
       transition={bubbleSpring}
     >
       <div
-        className="rounded-[12px] px-[12px] py-[8px] max-w-[85%] sm:max-w-[440px] flex flex-col gap-[12px]"
+        className="rounded-[var(--radius-2xl)] px-[var(--space-3)] py-[var(--space-2)] max-w-[85%] sm:max-w-[440px] flex flex-col gap-[var(--space-3)]"
         style={{ backgroundColor: bubbleBg, ...dmSans400, fontSize: "var(--font-size-body-15, 15px)", color: "var(--color-text-primary)", lineHeight: "1.5" }}
       >
-        <div className="leading-[20px] text-[15px] whitespace-pre-wrap">{text}</div>
+        <div className="leading-[var(--line-height-body-15)] text-[length:var(--font-size-body-15)] whitespace-pre-wrap">{text}</div>
         {buttons?.length ? (
-          <div className="flex flex-col gap-[6px]">
+          <div className="flex flex-col gap-[var(--space-1-5)]">
             {buttons.map((b, bi) => (
               <BubbleButton
                 key={b}
@@ -172,10 +172,10 @@ export function UserBubble({ text, delay }: { text: React.ReactNode; delay?: num
       transition={delay !== undefined ? { ...bubbleSpring, delay } : bubbleSpring}
     >
       <div
-        className="rounded-[12px] px-[12px] py-[8px] max-w-[85%] sm:max-w-[440px]"
+        className="rounded-[var(--radius-2xl)] px-[var(--space-3)] py-[var(--space-2)] max-w-[85%] sm:max-w-[440px]"
         style={{ backgroundColor: bubbleBg, ...dmSans400, fontSize: "var(--font-size-body-15, 15px)", color: "var(--color-text-primary)", lineHeight: "1.5" }}
       >
-        <div className="leading-[20px] text-[15px] whitespace-pre-wrap">{text}</div>
+        <div className="leading-[var(--line-height-body-15)] text-[length:var(--font-size-body-15)] whitespace-pre-wrap">{text}</div>
       </div>
     </motion.div>
   );

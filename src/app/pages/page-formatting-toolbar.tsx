@@ -121,7 +121,7 @@ const anchorTo = (trigger) => {
   />
 
   {popover && (
-    <div style={{ position: 'absolute', top: '100%', left: popover.left, marginTop: 14 }}>
+    <div style={{ position: 'absolute', top: '100%', left: popover.left, marginTop: "var(--space-3-5)" }}>
       <EmojiPicker
         arrowOffset={popover.arrow}
         onSelect={(char) => insertAtCursor(char)}
@@ -142,7 +142,7 @@ const anchorTo = (trigger) => {
                   {inserted.length > 0 && (
                     <>
                       <span>inserted</span>
-                      <span style={{ fontSize: 18 }}>{inserted.join(" ")}</span>
+                      <span style={{ fontSize: "var(--font-size-h5)" }}>{inserted.join(" ")}</span>
                     </>
                   )}
                   {appliedLink && <span>{appliedLink}</span>}

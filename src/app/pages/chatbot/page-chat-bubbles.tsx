@@ -12,7 +12,7 @@ import {
 } from "../../components/ui/hs-stampy-chat";
 import partyPopperImg from "../../../assets/stampy/party-popper.gif";
 
-const DESC_STYLE: React.CSSProperties = { fontSize: "var(--font-size-body-15)", color: "var(--muted-fg)", marginBottom: 16 };
+const DESC_STYLE: React.CSSProperties = { fontSize: "var(--font-size-body-15)", color: "var(--muted-fg)", marginBottom: "var(--space-4)" };
 
 /** Stateful wrapper so StyleCarousel has its own selection state in the preview. */
 function StyleCarouselDemo() {

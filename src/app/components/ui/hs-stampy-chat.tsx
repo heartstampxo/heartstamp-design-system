@@ -379,7 +379,7 @@ export function StampyChatbot({
   }
 
   return (
-    <div className={`relative flex items-end justify-end pt-[24px] pb-[24px] pr-[24px] ${className}`} style={{ width: "100%", height: "100%", overflow: "hidden" }}>
+    <div className={`relative flex items-end justify-end pt-[var(--space-6)] pb-[var(--space-6)] pr-[var(--space-6)] ${className}`} style={{ width: "100%", height: "100%", overflow: "hidden" }}>
       {/* Background */}
       <div aria-hidden="true" className="absolute inset-0 pointer-events-none">
         <div className="absolute inset-0" style={{ backgroundColor: "var(--chatbot-hero-bg, var(--color-brand-secondary))" }} />
@@ -392,7 +392,7 @@ export function StampyChatbot({
             <img alt="Stampy mascot" className="w-full h-full object-contain pointer-events-none" src={stampyIconSrc} />
           </motion.div>
         ) : (
-          <motion.div key="opened" className="relative flex flex-col items-end gap-[8px] w-full sm:w-[540px] px-3 sm:px-0 h-full" style={{ flexShrink: 0 }} initial={false} animate={{ opacity: 1 }} exit={{ opacity: 0, y: 30 }} transition={{ duration: 0.25, ease: "easeOut" }}>
+          <motion.div key="opened" className="relative flex flex-col items-end gap-[var(--space-2)] w-full sm:w-[540px] px-3 sm:px-0 h-full" style={{ flexShrink: 0 }} initial={false} animate={{ opacity: 1 }} exit={{ opacity: 0, y: 30 }} transition={{ duration: 0.25, ease: "easeOut" }}>
             <div className="flex items-end justify-end w-full relative flex-1">
               <motion.div className="flex flex-col items-start w-full sm:w-[450px] overflow-hidden" style={{ backgroundColor: "var(--color-bg-main)", marginRight: isMobile ? 0 : -5, borderRadius: 20, boxShadow: "var(--shadow-xs)" }} initial={{ opacity: 0, y: 24, scale: 0.98 }} animate={{ opacity: 1, scale: 1, y: 0, height: isExpanded ? (containerHeight ?? window.innerHeight) - 48 : isMobile ? Math.max(420, (containerHeight ?? window.innerHeight) - 80) : 550 }} transition={{ opacity: { duration: 0.3, ease: "easeOut" }, y: { duration: 0.35, ease: [0.16, 1, 0.3, 1] }, scale: { duration: 0.35, ease: [0.16, 1, 0.3, 1] }, height: { duration: 0.4, ease: [0.4, 0, 0.2, 1] } }}>
 
@@ -423,7 +423,7 @@ export function StampyChatbot({
                         />
 
                         {/* Suggestions + home input */}
-                        <div className="flex flex-col gap-[16px] w-full px-[16px] pb-[16px]">
+                        <div className="flex flex-col gap-[var(--space-4)] w-full px-[var(--space-4)] pb-[var(--space-4)]">
                           <AnimatePresence>
                             {showSuggestions && (
                               <motion.div key="suggestions" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 6 }} transition={{ type: "spring", stiffness: 300, damping: 28 }}>
@@ -448,9 +448,9 @@ export function StampyChatbot({
                     ) : (
                       /* WORKING STATE */
                       <motion.div key="working" className="flex flex-col w-full flex-1 relative overflow-hidden min-h-0" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 4 }} transition={{ type: "spring", stiffness: 260, damping: 28, delay: 0.08 }}>
-                        <div className="flex flex-col flex-1 overflow-hidden p-[16px] gap-[24px] min-h-0">
+                        <div className="flex flex-col flex-1 overflow-hidden p-[var(--space-4)] gap-[var(--space-6)] min-h-0">
                           <ScrollArea viewportRef={chatsScrollRef} className="flex-1 min-h-0">
-                          <div ref={chatsInnerRef} className="flex flex-col gap-[16px] justify-end flex-1">
+                          <div ref={chatsInnerRef} className="flex flex-col gap-[var(--space-4)] justify-end flex-1">
 
                             {messages.map((msg, i) => {
                               if (msg.role === "user") {
@@ -459,7 +459,7 @@ export function StampyChatbot({
                                 );
                               } else {
                                 return (
-                                  <div key={`msg-${i}`} className="flex flex-col gap-[16px] w-full shrink-0">
+                                  <div key={`msg-${i}`} className="flex flex-col gap-[var(--space-4)] w-full shrink-0">
                                     <StampyBubble
                                       text={msg.text}
                                       buttons={msg.buttons}
