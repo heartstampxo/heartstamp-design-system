@@ -30,11 +30,11 @@ const TAG_STYLES: Record<string, { bg: string; color: string }> = {
 
 const RELEASES: Release[] = [
   {
-    version: "2.1.46", date: "1 Sep 2026",
+    version: "2.1.46 – 2.1.47", date: "1 Sep 2026",
     title: "Sidebar spacing",
     tags: ["design"],
     items: [
-      "Nav rows get menu-style spacing: 2px gaps between rows, inset from the sidebar edges so the rounded hover state clears them.",
+      "Nav rows get 2px vertical gaps between them.",
     ],
   },
   {
