@@ -84,6 +84,7 @@ import { PageCoachTips } from "./pages/page-coach-tips";
 import { PageFormattingToolbar } from "./pages/page-formatting-toolbar";
 import { PageStyleSidebar } from "./pages/page-style-sidebar";
 import { BtnBuilder } from "./pages/page-btn-builder";
+import { PageChangelog } from "./pages/page-changelog";
 import { NAV, ALL_ITEMS, LABEL_COLORS } from "./nav-config";
 import { CodeBlock, InstallBlock } from "./components/docs/doc-code-block";
 import { Preview } from "./components/docs/doc-preview";
@@ -3009,7 +3010,7 @@ function PageTokensTypography() {
                 <div style={{ fontSize: 13, fontWeight: 700, color: "var(--fg)", marginBottom: "var(--space-1-5)" }}>Oldstyle Italic HPLHS</div>
                 <code style={{ fontSize: 11, fontFamily: "monospace", color: "#be1d2c", display: "block", marginBottom: 4 }}>--font-family-promo</code>
                 <div style={{ fontSize: 10.5, color: "var(--muted-fg)", fontFamily: "monospace", lineHeight: 1.6 }}>'Oldstyle Italic HPLHS',<br/>'EB Garamond', Georgia, serif</div>
-                <div style={{ marginTop: 8, display: "inline-flex", alignItems: "center", gap: 4, fontSize: 10.5, padding: "2px 8px", borderRadius: 99, background: "rgba(190,29,44,0.08)", color: "#be1d2c" }}>Licensed · not bundled, EB Garamond fallback</div>
+                <div style={{ marginTop: 8, display: "inline-flex", alignItems: "center", gap: 4, fontSize: 10.5, padding: "2px 8px", borderRadius: 99, background: "rgba(16,185,129,0.1)", color: "#10b981" }}>Free (HPLHS) · not bundled yet, EB Garamond fallback</div>
               </div>
             </div>
           </div>
@@ -3091,7 +3092,7 @@ function PageTokensTypography() {
       </DocSection>
 
       {/* Promo Text Styles */}
-      <DocSection title="Promo Text Styles" desc="Oldstyle Italic HPLHS · decorative promotional styles from textStyles.json. The licensed face is not bundled; previews render the EB Garamond italic fallback until a consumer loads it via @font-face.">
+      <DocSection title="Promo Text Styles" desc="Oldstyle Italic HPLHS · decorative promotional styles from textStyles.json. The face is free (HPLHS) but not bundled yet; previews render the EB Garamond italic fallback until it ships via @font-face.">
         <div style={{ border: "1px solid var(--border)", borderRadius: 12, overflow: "hidden" }}>
           <div style={{ background: "var(--muted)", padding: "10px 20px", display: "grid", gridTemplateColumns: "150px 1fr 64px 64px 64px 1fr", gap: 12, fontSize: 10.5, fontWeight: 700, color: "var(--muted-fg)", textTransform: "uppercase" as const, letterSpacing: ".04em", borderBottom: "1px solid var(--border)" }}>
             <span>Style</span><span>Preview</span><span>Size</span><span>Line H</span><span>Tracking</span><span>Usage</span>
@@ -5528,6 +5529,7 @@ function PageColorPicker() {
 const PAGES: Record<string, any> = {
   intro: PageIntro,
   install: PageInstallation,
+  changelog: PageChangelog,
   icons: PageIcons,
   "custom-icons": PageCustomIcons,
   logos: PageLogos,

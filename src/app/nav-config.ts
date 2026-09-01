@@ -15,6 +15,7 @@ export const NAV = [
       { title: "Installation",  id: "install" },
       { title: "Theming",       id: "theming" },
       { title: "Grid System",   id: "tokens-grid", label: "new" },
+      { title: "Changelog",     id: "changelog",   label: "new" },
     ]
   },
   {

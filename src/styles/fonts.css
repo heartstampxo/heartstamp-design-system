@@ -3,10 +3,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
 
 /* ─── Promo font fallback ───
-   'Oldstyle Italic HPLHS' (--font-family-promo) is a licensed face that is not
-   bundled, same policy as 'Stack Sans Text'. EB Garamond italic is the loaded
-   open-source stand-in; consumers that license HPLHS load it themselves via
-   @font-face with font-family: 'Oldstyle Italic HPLHS'. */
+   'Oldstyle Italic HPLHS' (--font-family-promo) is a free face from the
+   H.P. Lovecraft Historical Society, but it is not on Google Fonts and the
+   file is not bundled yet. EB Garamond italic is the loaded stand-in until
+   the font ships here via @font-face as 'Oldstyle Italic HPLHS'. */
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@1,400;1,500&display=swap');
 
 /* ─── Message panel handwriting / script fonts ─── */
