@@ -2335,7 +2335,7 @@ function PageWebsiteNav() {
       {/* New navigation — WebsiteNavV2, in validation */}
       <DocSection
         title="New Navigation"
-        desc="WebsiteNavV2, built from the new Figma spec: brand lockup, prominent search, Get the App and Reminders actions, language / notifications / cart buttons, and a category strip with the Ask Stampy chip. Both rows ride the marketing grid track. The current WebsiteNav below stays the production component until this one graduates."
+        desc="WebsiteNavV2 is the design team's next-generation top navigation: a bolder, more action-oriented concept built from the new Figma spec. Both rows ride the marketing grid track. It's currently being validated against the spec; the current WebsiteNav below remains the production component until V2 is promoted."
         action={
           <span style={{
             fontSize: 10, fontWeight: "var(--font-weight-bold, 700)" as any, padding: "2px 8px", borderRadius: "var(--radius-full)",
