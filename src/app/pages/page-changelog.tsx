@@ -30,6 +30,19 @@ const TAG_STYLES: Record<string, { bg: string; color: string }> = {
 
 const RELEASES: Release[] = [
   {
+    version: "2.1.55", date: "1 Sep 2026",
+    title: "Notification component",
+    tags: ["feature"],
+    items: [
+      "New Notification component from the approved standalone: bell trigger with unread dot, pop-in panel with staggered rows, per-row kebab menus (mark as unread, archive), Mark all as read, optional Show more link and delivery-progress strip.",
+      "On touch screens or narrow viewports, rows swipe right to mark read and left to archive, revealing the action panes.",
+      "Data-driven via NotificationItem[]; documented under Feedback & Status; exported from the package root and the /hs entry.",
+      "NotificationRow is exported for standalone composition; the docs show read / unread states and the delivery progress at every stage.",
+      "Mobile: under 768px the panel becomes a full-height sheet below the header, and the mobile prop forces the phone presentation (and mouse swipe) at any width, shown in a device frame on the docs page.",
+      "QA + security pass: component stylesheets are now minified at load and injected into <head> once per component type (ref-counted, useInsertionEffect, no paint flash, animations untouched); removed the unused react-router dependency, clearing the only high-severity production vulnerability; all dangerouslySetInnerHTML sites reviewed as static bundled content.",
+    ],
+  },
+  {
     version: "2.1.53", date: "1 Sep 2026",
     title: "WebsiteNavV2 (testing phase)",
     tags: ["feature", "design"],

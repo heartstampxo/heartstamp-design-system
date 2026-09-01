@@ -82,6 +82,7 @@ export const NAV = [
       { title: "Tooltip",         id: "tooltip",      group: "Overlays & Popups" },
       /* ── Feedback & Status ──────────────────────────────── */
       { title: "Alert",           id: "alert",        group: "Feedback & Status" },
+      { title: "Notification",    id: "notification", group: "Feedback & Status", label: "new" },
       { title: "Progress",        id: "progress",     group: "Feedback & Status" },
       { title: "Skeleton",        id: "skeleton",     group: "Feedback & Status" },
       { title: "Toast",           id: "toast",        group: "Feedback & Status", label: "beta" },

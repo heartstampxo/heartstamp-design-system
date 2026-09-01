@@ -86,6 +86,7 @@ import { PageFormattingToolbar } from "./pages/page-formatting-toolbar";
 import { PageStyleSidebar } from "./pages/page-style-sidebar";
 import { BtnBuilder } from "./pages/page-btn-builder";
 import { PageChangelog } from "./pages/page-changelog";
+import { PageNotification } from "./pages/page-notification";
 import { NAV, ALL_ITEMS, LABEL_COLORS } from "./nav-config";
 import { CodeBlock, InstallBlock } from "./components/docs/doc-code-block";
 import { Preview } from "./components/docs/doc-preview";
@@ -5556,6 +5557,7 @@ const PAGES: Record<string, any> = {
   intro: PageIntro,
   install: PageInstallation,
   changelog: PageChangelog,
+  notification: PageNotification,
   icons: PageIcons,
   "custom-icons": PageCustomIcons,
   logos: PageLogos,

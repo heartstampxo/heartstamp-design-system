@@ -23,6 +23,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Search, Globe, Bell, ShoppingCart, CalendarCheck } from "lucide-react";
 import { HSLogo } from "./hs-logo";
+import { cssMin, useInjectedStyle } from "./hs-style-inject";
 import { Kbd } from "./hs-kbd";
 import { Avt } from "./hs-avt";
 import stampyBtnGraphic from "../../../assets/stampy/stampy-btn-graphic.svg?url";
@@ -351,6 +352,8 @@ const NAV_CSS = `
 }
 `;
 
+const NAV_CSS_MIN = cssMin(NAV_CSS);
+
 /* ── Component ─────────────────────────────────────────────────────────── */
 
 export interface WebsiteNavV2Props {
@@ -399,6 +402,7 @@ export function WebsiteNavV2({
   onSearch, onGetApp, onReminders, onLanguage, onNotifications,
   onCart, onProfile, onAskStampy, onCategoryClick, onCategoryHover,
 }: WebsiteNavV2Props) {
+  useInjectedStyle("hs-nav-v2", NAV_CSS_MIN);
   const typed = useNavTypewriter(searchPrompts, searchPlaceholder);
   const [hovered, setHovered] = useState<string | null>(null);
 
@@ -419,8 +423,6 @@ export function WebsiteNavV2({
 
   return (
     <header className={`hs-nav-v2${sticky ? "" : " hs-nav-v2--static"}`}>
-      <style>{NAV_CSS}</style>
-
       {/* Row 1 — actions */}
       <div className="hs-nav-v2__row hs-nav-v2__row--actions">
         <a className="hs-nav-v2__logo" href="#" aria-label="HeartStamp home" onClick={e => e.preventDefault()}>
