@@ -30,6 +30,15 @@ const TAG_STYLES: Record<string, { bg: string; color: string }> = {
 
 const RELEASES: Release[] = [
   {
+    version: "2.1.44", date: "1 Sep 2026",
+    title: "Sidebar readability",
+    tags: ["design", "docs"],
+    items: [
+      "Sidebar nav rows bumped from Label 12 to Label 15; the search input follows the standard input size token.",
+      "Group eyebrow titles and the version footer stay at Label 12 by design.",
+    ],
+  },
+  {
     version: "2.1.43", date: "1 Sep 2026",
     title: "Hardcoded font-size sweep",
     tags: ["tokens", "fix"],

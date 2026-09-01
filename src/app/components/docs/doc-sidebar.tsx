@@ -75,8 +75,7 @@ export function Sidebar({ active, onSelect, onClose }: SidebarProps) {
           value={search}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
           placeholder="Search components…"
-          iconLeft={<Search size={12} />}
-          style={{ fontSize: "var(--font-size-label-12)" }}
+          iconLeft={<Search size={14} />}
         />
       </div>
 

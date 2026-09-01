@@ -42,7 +42,7 @@ export function PnNavRow({
   size?: "default" | "sm";
 }) {
   const smStyle: React.CSSProperties = size === "sm"
-    ? { fontSize: "var(--font-size-label-12)", padding: "var(--space-1-5) var(--space-4)", borderRadius: "var(--radius-md)" }
+    ? { fontSize: "var(--font-size-label-15)", padding: "var(--space-1-5) var(--space-4)", borderRadius: "var(--radius-md)" }
     : {};
   const activeStyle: React.CSSProperties = active
     ? { background: "var(--color-state-hover)", color: "var(--color-text-primary)", fontWeight: "var(--font-weight-label-sb-15)" }
