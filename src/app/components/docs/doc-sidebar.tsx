@@ -16,17 +16,17 @@ export function Sidebar({ active, onSelect, onClose }: SidebarProps) {
   const activeGroupIndex = NAV.findIndex(g => g.items.some(i => i.id === active));
   const [search, setSearch] = useState("");
 
-  // Renders a single nav row
+  // Renders a single nav row; on mobile, picking a page also closes the drawer
   const navRow = (item: { id: string; title: string; label?: string; group?: string }) => (
     <PnNavRow
       key={item.id}
       size="sm"
       label={item.title}
       active={active === item.id}
-      onClick={() => onSelect(item.id)}
+      onClick={() => { onSelect(item.id); onClose?.(); }}
       badge={item.label && (
         <span style={{
-          fontSize: 9, fontWeight: 700, padding: "1px 5px", borderRadius: 999,
+          fontSize: 10, fontWeight: 700, padding: "1px 6px", borderRadius: 999,
           background: LABEL_COLORS[item.label].bg, color: LABEL_COLORS[item.label].color,
           textTransform: "uppercase", letterSpacing: ".04em",
         }}>{item.label}</span>
@@ -70,7 +70,7 @@ export function Sidebar({ active, onSelect, onClose }: SidebarProps) {
   return (
     <nav style={{ display: "flex", flexDirection: "column", height: "100%", overflow: "hidden" }}>
       {/* search — using Inp component */}
-      <div style={{ padding: "var(--space-2-5) var(--space-2) var(--space-1-5)", position: "relative" }}>
+      <div style={{ padding: "var(--space-3) var(--space-3) var(--space-2)", position: "relative" }}>
         <Inp
           value={search}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
@@ -93,19 +93,45 @@ export function Sidebar({ active, onSelect, onClose }: SidebarProps) {
           // Accordion groups
           <Acc
             variant="ghost"
-            multiple
-            defaultOpen={Array.from(new Set([0, ...NAV.map((_, i) => i).filter(i => i === activeGroupIndex)]))}
+            collapsible={false}
+            defaultOpen={[activeGroupIndex >= 0 ? activeGroupIndex : 0]}
             items={NAV.map(group => ({
-              title: group.title,
+              title: (
+                <span style={{ display: "inline-flex", alignItems: "center", gap: "var(--space-1-5)" }}>
+                  {group.title}
+                  <span style={{
+                    fontSize: 10, fontWeight: 600, lineHeight: "15px", padding: "0 6px",
+                    borderRadius: 999, letterSpacing: 0,
+                    background: "var(--muted)", color: "var(--muted-fg)", border: "1px solid var(--border)",
+                  }}>{group.items.length}</span>
+                </span>
+              ),
               content: navLinks(group.items, group.title === "Components"),
             }))}
           />
         )}
       </div>
 
-      {/* footer */}
-      <div style={{ padding: "var(--space-2-5) var(--space-3-5)", borderTop: "1px solid var(--border)", fontSize: "var(--font-size-label-12)", color: "var(--muted-fg)" }}>
-        HeartStamp DS · v{pkg.version}
+      {/* footer — version chip opens the changelog */}
+      <div style={{
+        padding: "var(--space-2-5) var(--space-3-5)", borderTop: "1px solid var(--border)",
+        display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--space-2)",
+      }}>
+        <span style={{ fontSize: "var(--font-size-label-12)", fontWeight: "var(--font-weight-label-12)" as React.CSSProperties["fontWeight"], color: "var(--muted-fg)" }}>
+          HeartStamp DS
+        </span>
+        <button
+          onClick={() => { onSelect("changelog"); onClose?.(); }}
+          title="What changed in this version"
+          style={{
+            fontSize: "var(--font-size-label-12)", fontWeight: 600, fontFamily: "inherit",
+            color: active === "changelog" ? "var(--accent)" : "var(--muted-fg)",
+            background: "var(--muted)", border: "1px solid var(--border)",
+            borderRadius: 999, padding: "1px 8px", cursor: "pointer",
+          }}
+        >
+          v{pkg.version}
+        </button>
       </div>
     </nav>
   );

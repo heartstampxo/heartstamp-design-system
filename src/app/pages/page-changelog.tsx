@@ -30,6 +30,17 @@ const TAG_STYLES: Record<string, { bg: string; color: string }> = {
 
 const RELEASES: Release[] = [
   {
+    version: "2.1.45", date: "1 Sep 2026",
+    title: "Sidebar upgrade",
+    tags: ["feature", "design"],
+    items: [
+      "Exactly one sidebar group stays open; opening another closes the current one, and the open group follows the active page. The Accordion component gains a collapsible prop (default true) to support this.",
+      "Sidebar widened from 220px to 320px on desktop (280px mobile drawer).",
+      "Group headers show item counts; the version footer now opens this changelog.",
+      "On mobile, picking a page closes the drawer.",
+    ],
+  },
+  {
     version: "2.1.44", date: "1 Sep 2026",
     title: "Sidebar readability",
     tags: ["design", "docs"],

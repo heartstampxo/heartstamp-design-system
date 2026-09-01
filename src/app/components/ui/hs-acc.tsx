@@ -10,6 +10,7 @@ interface AccItem {
 interface AccProps {
   items: AccItem[];
   multiple?: boolean;
+  collapsible?: boolean;
   defaultOpen?: number[];
   variant?: "default" | "ghost";
 }
@@ -18,14 +19,23 @@ interface AccProps {
    Props:
    - items      : { title, content }[]
    - multiple   : boolean — allow multiple panels open at once (default false)
+   - collapsible: boolean — allow closing the last open panel (default true);
+                  with multiple=false and collapsible=false, exactly one panel
+                  stays open and clicking another switches to it
    - defaultOpen: number[] — indices open on first render
    - variant    : "default" | "ghost" — ghost removes card border/radius for inline use (e.g. sidebar)
 */
-export function Acc({ items, multiple = false, defaultOpen = [], variant = "default" }: AccProps) {
+export function Acc({ items, multiple = false, collapsible = true, defaultOpen = [], variant = "default" }: AccProps) {
   const [openSet, setOpenSet] = useState<Set<number>>(new Set(defaultOpen));
 
   useEffect(() => {
     setOpenSet(prev => {
+      if (!multiple) {
+        /* single mode: follow defaultOpen when it points somewhere new */
+        const target = defaultOpen.filter(i => i >= 0);
+        if (target.length === 0 || target.some(i => prev.has(i))) return prev;
+        return new Set([target[0]]);
+      }
       const toAdd = defaultOpen.filter(i => !prev.has(i));
       if (toAdd.length === 0) return prev;
       const next = new Set(prev);
@@ -39,6 +49,7 @@ export function Acc({ items, multiple = false, defaultOpen = [], variant = "defa
     setOpenSet(prev => {
       const next = new Set(prev);
       if (next.has(i)) {
+        if (!collapsible && next.size <= 1) return prev; /* keep one panel open */
         next.delete(i);
       } else {
         if (!multiple) next.clear();

@@ -5734,22 +5734,22 @@ export default function App() {
           flexShrink: 0, background: "var(--bg)", display: "flex", flexDirection: "column",
           ...(isMobile
             ? {
-                position: "fixed", top: 52, bottom: 0, width: 240,
-                left: sidebarOpen ? 0 : -240, zIndex: 50,
+                position: "fixed", top: 52, bottom: 0, width: 280,
+                left: sidebarOpen ? 0 : -280, zIndex: 50,
                 borderRight: "1px solid var(--border)",
                 boxShadow: sidebarOpen ? "4px 0 24px rgba(0,0,0,.18)" : "none",
                 transition: "left .22s cubic-bezier(.4,0,.2,1)",
               }
             : {
-                width: sidebarOpen ? 220 : 0,
+                width: sidebarOpen ? 320 : 0,
                 overflow: "hidden",
                 borderRight: sidebarOpen ? "1px solid var(--border)" : "none",
                 transition: "width .22s cubic-bezier(.4,0,.2,1)",
               }
           )
         }}>
-          <div style={{ width: isMobile ? 240 : 220, flexShrink: 0, height: "100%", display: "flex", flexDirection: "column" }}>
-            <Sidebar active={page} onSelect={(p: string) => setPage(p)} onClose={() => setSidebarOpen(false)} />
+          <div style={{ width: isMobile ? 280 : 320, flexShrink: 0, height: "100%", display: "flex", flexDirection: "column" }}>
+            <Sidebar active={page} onSelect={(p: string) => setPage(p)} onClose={isMobile ? () => setSidebarOpen(false) : undefined} />
           </div>
         </aside>
 
