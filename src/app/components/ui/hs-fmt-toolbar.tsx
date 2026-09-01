@@ -103,7 +103,7 @@ const pillStyle: React.CSSProperties = {
 const labelStyle: React.CSSProperties = {
   fontFamily: FONT_BODY,
   fontSize: LABEL_SIZE,
-  fontWeight: 600,
+  fontWeight: "var(--font-weight-semibold, 600)" as React.CSSProperties["fontWeight"],
   lineHeight: 1,
   whiteSpace: "nowrap",
 };
@@ -117,7 +117,7 @@ const fontLabelStyle: React.CSSProperties = {
 const glyphStyle: React.CSSProperties = {
   fontFamily: FONT_GLYPH,
   fontSize: "var(--font-size-label-15, 15px)",
-  fontWeight: 700,
+  fontWeight: "var(--font-weight-bold, 700)" as React.CSSProperties["fontWeight"],
   lineHeight: 1,
 };
 

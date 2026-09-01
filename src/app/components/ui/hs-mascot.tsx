@@ -212,7 +212,7 @@ export function AnatomySlider({ slides }: { slides: MascotAsset[] }) {
       {/* Track */}
       <div
         ref={containerRef}
-        style={{ overflow: "hidden", background: "#fff", padding: `24px 0 24px ${SLIDE_PAD_L}px` }}
+        style={{ overflow: "hidden", background: "#fff" /* mascot artwork is drawn for a white ground; keep it in dark mode too */, padding: `24px 0 24px ${SLIDE_PAD_L}px` }}
       >
         <motion.div
           animate={{ x: offset }}

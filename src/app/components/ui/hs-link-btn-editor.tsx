@@ -46,7 +46,7 @@ const labelStyle: React.CSSProperties = {
   color: "var(--color-text-primary, #242423)",
   fontFamily: FONT_BODY,
   fontSize: LABEL_SIZE,
-  fontWeight: 600,
+  fontWeight: "var(--font-weight-semibold, 600)" as React.CSSProperties["fontWeight"],
 };
 
 const fieldGroupStyle: React.CSSProperties = {
@@ -88,7 +88,7 @@ const chooseStyle: React.CSSProperties = {
   color: "var(--color-text-primary, #242423)",
   fontFamily: FONT_BODY,
   fontSize: VALUE_SIZE,
-  fontWeight: 600,
+  fontWeight: "var(--font-weight-semibold, 600)" as React.CSSProperties["fontWeight"],
   cursor: "pointer",
   whiteSpace: "nowrap",
 };

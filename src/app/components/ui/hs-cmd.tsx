@@ -96,7 +96,7 @@ export function Cmd({ placeholder = "Type a command…" }: CmdProps) {
                 style={{
                   padding: "var(--space-1-5) var(--space-3-5) var(--space-1)",
                   fontSize: "var(--font-size-label-12)",
-                  fontWeight: 700,
+                  fontWeight: "var(--font-weight-bold, 700)" as React.CSSProperties["fontWeight"],
                   color: "var(--muted-fg)",
                   textTransform: "uppercase",
                   letterSpacing: ".06em",

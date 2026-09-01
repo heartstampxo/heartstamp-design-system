@@ -56,7 +56,7 @@ export function BubbleButton({
         className="leading-[20px] text-[15px]"
         style={{
           fontFamily: "var(--font-family-body)",
-          fontWeight: 500,
+          fontWeight: "var(--font-weight-medium, 500)" as React.CSSProperties["fontWeight"],
           fontVariationSettings: "'opsz' 14",
           color: isUsed ? "var(--color-text-disabled)" : "var(--color-text-primary)",
         }}
@@ -107,7 +107,7 @@ export function StyleCarousel({ themeChoice, setThemeChoice }: { themeChoice: st
             </div>
             <p
               className="leading-[20px] text-[15px] text-center whitespace-nowrap"
-              style={{ fontFamily: "var(--font-family-body)", fontWeight: 500, fontVariationSettings: "'opsz' 14", color: "var(--color-text-primary)", minWidth: "100%" }}
+              style={{ fontFamily: "var(--font-family-body)", fontWeight: "var(--font-weight-medium, 500)" as React.CSSProperties["fontWeight"], fontVariationSettings: "'opsz' 14", color: "var(--color-text-primary)", minWidth: "100%" }}
             >
               {label}
             </p>

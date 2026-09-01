@@ -346,7 +346,7 @@ function ToolbarButton({ icon, label, active, onClick }: ToolbarButtonProps) {
       {icon}
       <span style={{
         fontSize: "var(--font-size-label-12)",
-        fontWeight: 400,
+        fontWeight: "var(--font-weight-regular, 400)" as React.CSSProperties["fontWeight"],
         lineHeight: 1,
         color: "inherit",
       }}>
@@ -504,7 +504,7 @@ function StylePanel({
             >
               <div style={{
                 fontSize: "var(--font-size-label-12)",
-                fontWeight: 600,
+                fontWeight: "var(--font-weight-semibold, 600)" as React.CSSProperties["fontWeight"],
                 color: "var(--muted-fg)",
                 textTransform: "uppercase",
                 letterSpacing: ".05em",
@@ -563,7 +563,7 @@ function StylePanel({
                 }}>
                   <span style={{
                     fontSize: "var(--font-size-body-15)",
-                    fontWeight: 600,
+                    fontWeight: "var(--font-weight-semibold, 600)" as React.CSSProperties["fontWeight"],
                     color: "var(--fg)",
                   }}>
                     Recommended Style
@@ -727,7 +727,7 @@ function MessagePanel({ onClose }: MessagePanelProps) {
           flexShrink: 0,
         }}
       >
-        <span style={{ fontSize: "var(--font-size-body-15)", fontWeight: 600, color: "var(--fg)" }}>
+        <span style={{ fontSize: "var(--font-size-body-15)", fontWeight: "var(--font-weight-semibold, 600)" as React.CSSProperties["fontWeight"], color: "var(--fg)" }}>
           Message
         </span>
         <Btn
@@ -815,7 +815,7 @@ function MessagePanel({ onClose }: MessagePanelProps) {
                     <Minus size={14} />
                   </Btn>
                   <Sep orientation="vertical" style={{ height: "var(--space-5)" }} />
-                  <span style={{ flex: 1, textAlign: "center", fontSize: "var(--font-size-body-15)", fontWeight: 500, color: "var(--fg)" }}>
+                  <span style={{ flex: 1, textAlign: "center", fontSize: "var(--font-size-body-15)", fontWeight: "var(--font-weight-medium, 500)" as React.CSSProperties["fontWeight"], color: "var(--fg)" }}>
                     {size}
                   </span>
                   <Sep orientation="vertical" style={{ height: "var(--space-5)" }} />
@@ -924,7 +924,7 @@ function MessagePanel({ onClose }: MessagePanelProps) {
                       />
                       <span style={{
                         fontSize: "var(--font-size-body-13)",
-                        fontWeight: 500,
+                        fontWeight: "var(--font-weight-medium, 500)" as React.CSSProperties["fontWeight"],
                         color: "var(--fg)",
                       }}>
                         Uploading…
@@ -1001,7 +1001,7 @@ function MessagePanel({ onClose }: MessagePanelProps) {
                   >
                     <CloudUpload size={24} style={{ color: "var(--muted-fg)" }} />
                     <div style={{ textAlign: "center", display: "flex", flexDirection: "column", gap: "var(--space-2)" }}>
-                      <p style={{ fontSize: "var(--font-size-body-13)", fontWeight: 500, color: "var(--fg)", margin: 0 }}>
+                      <p style={{ fontSize: "var(--font-size-body-13)", fontWeight: "var(--font-weight-medium, 500)" as React.CSSProperties["fontWeight"], color: "var(--fg)", margin: 0 }}>
                         Upload your handwritten message
                       </p>
                       <p style={{ fontSize: "var(--font-size-body-13)", color: "var(--muted-fg)", margin: 0, lineHeight: 1.5 }}>
@@ -1195,7 +1195,7 @@ function SignaturePanel({ onClose }: SignaturePanelProps) {
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>
       {/* "Signature color" + dynamic name label */}
       <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-1)" }}>
-        <span style={{ fontSize: "var(--font-size-body-15)", fontWeight: 600, color: "var(--fg)" }}>
+        <span style={{ fontSize: "var(--font-size-body-15)", fontWeight: "var(--font-weight-semibold, 600)" as React.CSSProperties["fontWeight"], color: "var(--fg)" }}>
           Signature color
         </span>
         <span style={{ fontSize: "var(--font-size-body-15)", color: "var(--muted-fg)" }}>
@@ -1267,7 +1267,7 @@ function SignaturePanel({ onClose }: SignaturePanelProps) {
           flexShrink: 0,
         }}
       >
-        <span style={{ fontSize: "var(--font-size-body-15)", fontWeight: 600, color: "var(--fg)" }}>
+        <span style={{ fontSize: "var(--font-size-body-15)", fontWeight: "var(--font-weight-semibold, 600)" as React.CSSProperties["fontWeight"], color: "var(--fg)" }}>
           Signature
         </span>
         <Btn
@@ -1460,7 +1460,7 @@ function SignaturePanel({ onClose }: SignaturePanelProps) {
                     )}
                     <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "var(--space-3)" }}>
                       <Loader2 size={28} style={{ color: "var(--fg)", animation: "spin 0.9s linear infinite" }} />
-                      <span style={{ fontSize: "var(--font-size-body-13)", fontWeight: 500, color: "var(--fg)" }}>Uploading…</span>
+                      <span style={{ fontSize: "var(--font-size-body-13)", fontWeight: "var(--font-weight-medium, 500)" as React.CSSProperties["fontWeight"], color: "var(--fg)" }}>Uploading…</span>
                     </div>
                   </motion.div>
                 ) : uploadedUrl ? (
@@ -1517,7 +1517,7 @@ function SignaturePanel({ onClose }: SignaturePanelProps) {
                   >
                     <CloudUpload size={24} style={{ color: "var(--muted-fg)" }} />
                     <div style={{ textAlign: "center", display: "flex", flexDirection: "column", gap: "var(--space-2)" }}>
-                      <p style={{ fontSize: "var(--font-size-body-13)", fontWeight: 500, color: "var(--fg)", margin: 0 }}>
+                      <p style={{ fontSize: "var(--font-size-body-13)", fontWeight: "var(--font-weight-medium, 500)" as React.CSSProperties["fontWeight"], color: "var(--fg)", margin: 0 }}>
                         Upload your signature image
                       </p>
                       <p style={{ fontSize: "var(--font-size-body-13)", color: "var(--muted-fg)", margin: 0, lineHeight: 1.5 }}>
@@ -1614,7 +1614,7 @@ function SignaturePanel({ onClose }: SignaturePanelProps) {
                     <Minus size={14} />
                   </Btn>
                   <Sep orientation="vertical" style={{ height: "var(--space-5)" }} />
-                  <span style={{ flex: 1, textAlign: "center", fontSize: "var(--font-size-body-15)", fontWeight: 500, color: "var(--fg)" }}>
+                  <span style={{ flex: 1, textAlign: "center", fontSize: "var(--font-size-body-15)", fontWeight: "var(--font-weight-medium, 500)" as React.CSSProperties["fontWeight"], color: "var(--fg)" }}>
                     {sigSize}
                   </span>
                   <Sep orientation="vertical" style={{ height: "var(--space-5)" }} />
@@ -1725,7 +1725,7 @@ function TranslatePanel({ onClose, count = 2 }: TranslatePanelProps) {
           flexShrink: 0,
         }}
       >
-        <span style={{ fontSize: "var(--font-size-body-15)", fontWeight: 600, color: "var(--fg)" }}>
+        <span style={{ fontSize: "var(--font-size-body-15)", fontWeight: "var(--font-weight-semibold, 600)" as React.CSSProperties["fontWeight"], color: "var(--fg)" }}>
           Translate
         </span>
         <Btn
@@ -1857,7 +1857,7 @@ function EnvelopePanel({ onClose, onSave }: EnvelopePanelProps) {
         {...msgItem(0.04)}
         style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "var(--space-2) var(--space-3) var(--space-2) var(--space-4)", borderBottom: "1px solid var(--border)", flexShrink: 0 }}
       >
-        <span style={{ fontSize: "var(--font-size-body-15)", fontWeight: 600, color: "var(--fg)" }}>Envelope</span>
+        <span style={{ fontSize: "var(--font-size-body-15)", fontWeight: "var(--font-weight-semibold, 600)" as React.CSSProperties["fontWeight"], color: "var(--fg)" }}>Envelope</span>
         <Btn variant="outline" size="icon-sm" onClick={onClose} style={{ border: "none", flexShrink: 0, color: "var(--color-text-secondary)" }}>
           <X size={16} />
         </Btn>
@@ -1869,8 +1869,8 @@ function EnvelopePanel({ onClose, onSave }: EnvelopePanelProps) {
         {/* Flap style */}
         <motion.div {...msgItem(0.08)} style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ fontSize: "var(--font-size-body-15)", fontWeight: 600, color: "var(--fg)" }}>Flap style</span>
-            <span style={{ fontSize: "var(--font-size-body-15)", fontWeight: 600, color: "var(--fg)" }}>
+            <span style={{ fontSize: "var(--font-size-body-15)", fontWeight: "var(--font-weight-semibold, 600)" as React.CSSProperties["fontWeight"], color: "var(--fg)" }}>Flap style</span>
+            <span style={{ fontSize: "var(--font-size-body-15)", fontWeight: "var(--font-weight-semibold, 600)" as React.CSSProperties["fontWeight"], color: "var(--fg)" }}>
               {selected.price ?? "+ $0.00"}
             </span>
           </div>
@@ -1899,7 +1899,7 @@ function EnvelopePanel({ onClose, onSave }: EnvelopePanelProps) {
                 >
                   <div style={{ width: "100%", height: 108, background: "var(--muted)" }} />
                   <div style={{ display: "flex", gap: "var(--space-1-5)", alignItems: "baseline", padding: "var(--space-2) var(--space-3)" }}>
-                    <span style={{ fontSize: "var(--font-size-body-15)", fontWeight: 600, color: "var(--fg)" }}>{s.label}</span>
+                    <span style={{ fontSize: "var(--font-size-body-15)", fontWeight: "var(--font-weight-semibold, 600)" as React.CSSProperties["fontWeight"], color: "var(--fg)" }}>{s.label}</span>
                     {s.price && (
                       <span style={{ fontSize: "var(--font-size-body-13)", color: "var(--muted-fg)" }}>{s.price}</span>
                     )}
@@ -2353,7 +2353,7 @@ function StylesMobileSheet({
           <AnimatePresence mode="wait">
             {filtered ? (
               <motion.div key="search" initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }} transition={viewTransition}>
-                <div style={{ fontSize: "var(--font-size-label-12)", fontWeight: 600, color: "var(--muted-fg)", textTransform: "uppercase", letterSpacing: ".05em", marginBottom: "var(--space-3)" }}>
+                <div style={{ fontSize: "var(--font-size-label-12)", fontWeight: "var(--font-weight-semibold, 600)" as React.CSSProperties["fontWeight"], color: "var(--muted-fg)", textTransform: "uppercase", letterSpacing: ".05em", marginBottom: "var(--space-3)" }}>
                   {filtered.length} result{filtered.length !== 1 ? "s" : ""}
                 </div>
                 {filtered.length > 0
@@ -2499,7 +2499,7 @@ function MessageMobileSheet({ onClose, onSaveReady }: MessageMobileSheetProps) {
 
         {/* Title */}
         <div style={{ padding: "0 var(--space-4) var(--space-3)", flexShrink: 0 }}>
-          <span style={{ fontSize: "var(--font-size-body-15)", fontWeight: 600, color: "var(--fg)" }}>Message</span>
+          <span style={{ fontSize: "var(--font-size-body-15)", fontWeight: "var(--font-weight-semibold, 600)" as React.CSSProperties["fontWeight"], color: "var(--fg)" }}>Message</span>
         </div>
 
         {/* Tab switcher */}
@@ -2563,7 +2563,7 @@ function MessageMobileSheet({ onClose, onSaveReady }: MessageMobileSheetProps) {
                       <Minus size={14} />
                     </Btn>
                     <Sep orientation="vertical" style={{ height: "var(--space-5)" }} />
-                    <span style={{ flex: 1, textAlign: "center", fontSize: "var(--font-size-body-15)", fontWeight: 500, color: "var(--fg)" }}>{size}</span>
+                    <span style={{ flex: 1, textAlign: "center", fontSize: "var(--font-size-body-15)", fontWeight: "var(--font-weight-medium, 500)" as React.CSSProperties["fontWeight"], color: "var(--fg)" }}>{size}</span>
                     <Sep orientation="vertical" style={{ height: "var(--space-5)" }} />
                     <Btn variant="outline" size="icon-sm" onClick={() => setSize(s => Math.min(120, s + 1))}
                       style={{ border: "none", borderRadius: "var(--radius-full)", color: "var(--fg)", flexShrink: 0 }}>
@@ -2618,7 +2618,7 @@ function MessageMobileSheet({ onClose, onSaveReady }: MessageMobileSheetProps) {
                       {uploadPreview && <img src={uploadPreview} alt="" style={{ width: "100%", height: "100%", objectFit: "contain", padding: "var(--space-6)", opacity: 0.25 }} />}
                       <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "var(--space-3)" }}>
                         <Loader2 size={28} style={{ color: "var(--fg)", animation: "spin 0.9s linear infinite" }} />
-                        <span style={{ fontSize: "var(--font-size-body-13)", fontWeight: 500, color: "var(--fg)" }}>Uploading…</span>
+                        <span style={{ fontSize: "var(--font-size-body-13)", fontWeight: "var(--font-weight-medium, 500)" as React.CSSProperties["fontWeight"], color: "var(--fg)" }}>Uploading…</span>
                       </div>
                     </motion.div>
                   ) : uploadedUrl ? (
@@ -2654,7 +2654,7 @@ function MessageMobileSheet({ onClose, onSaveReady }: MessageMobileSheetProps) {
                     >
                       <CloudUpload size={24} style={{ color: "var(--muted-fg)" }} />
                       <div style={{ textAlign: "center", display: "flex", flexDirection: "column", gap: "var(--space-2)" }}>
-                        <p style={{ fontSize: "var(--font-size-body-13)", fontWeight: 500, color: "var(--fg)", margin: 0 }}>Upload your handwritten message</p>
+                        <p style={{ fontSize: "var(--font-size-body-13)", fontWeight: "var(--font-weight-medium, 500)" as React.CSSProperties["fontWeight"], color: "var(--fg)", margin: 0 }}>Upload your handwritten message</p>
                         <p style={{ fontSize: "var(--font-size-body-13)", color: "var(--muted-fg)", margin: 0, lineHeight: 1.5 }}>Tap to upload. For best results, write on plain white paper.</p>
                       </div>
                     </motion.div>
@@ -2834,7 +2834,7 @@ function SignatureMobileSheet({ onClose, onSaveReady }: SignatureMobileSheetProp
   const colorSection = (
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>
       <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-1)" }}>
-        <span style={{ fontSize: "var(--font-size-body-15)", fontWeight: 600, color: "var(--fg)" }}>Signature color</span>
+        <span style={{ fontSize: "var(--font-size-body-15)", fontWeight: "var(--font-weight-semibold, 600)" as React.CSSProperties["fontWeight"], color: "var(--fg)" }}>Signature color</span>
         <span style={{ fontSize: "var(--font-size-body-15)", color: "var(--muted-fg)" }}>{selectedColorName}</span>
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)" }}>
@@ -2885,7 +2885,7 @@ function SignatureMobileSheet({ onClose, onSaveReady }: SignatureMobileSheetProp
 
         {/* Title */}
         <div style={{ padding: "0 var(--space-4) var(--space-3)", flexShrink: 0 }}>
-          <span style={{ fontSize: "var(--font-size-body-15)", fontWeight: 600, color: "var(--fg)" }}>Signature</span>
+          <span style={{ fontSize: "var(--font-size-body-15)", fontWeight: "var(--font-weight-semibold, 600)" as React.CSSProperties["fontWeight"], color: "var(--fg)" }}>Signature</span>
         </div>
 
         {/* Tab switcher */}
@@ -2981,7 +2981,7 @@ function SignatureMobileSheet({ onClose, onSaveReady }: SignatureMobileSheetProp
                       {uploadPreview && <img src={uploadPreview} alt="" style={{ width: "100%", height: "100%", objectFit: "contain", padding: "var(--space-6)", opacity: 0.25 }} />}
                       <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "var(--space-3)" }}>
                         <Loader2 size={28} style={{ color: "var(--fg)", animation: "spin 0.9s linear infinite" }} />
-                        <span style={{ fontSize: "var(--font-size-body-13)", fontWeight: 500, color: "var(--fg)" }}>Uploading…</span>
+                        <span style={{ fontSize: "var(--font-size-body-13)", fontWeight: "var(--font-weight-medium, 500)" as React.CSSProperties["fontWeight"], color: "var(--fg)" }}>Uploading…</span>
                       </div>
                     </motion.div>
                   ) : uploadedUrl ? (
@@ -3008,7 +3008,7 @@ function SignatureMobileSheet({ onClose, onSaveReady }: SignatureMobileSheetProp
                     >
                       <CloudUpload size={24} style={{ color: "var(--muted-fg)" }} />
                       <div style={{ textAlign: "center", display: "flex", flexDirection: "column", gap: "var(--space-2)" }}>
-                        <p style={{ fontSize: "var(--font-size-body-13)", fontWeight: 500, color: "var(--fg)", margin: 0 }}>Upload your signature image</p>
+                        <p style={{ fontSize: "var(--font-size-body-13)", fontWeight: "var(--font-weight-medium, 500)" as React.CSSProperties["fontWeight"], color: "var(--fg)", margin: 0 }}>Upload your signature image</p>
                         <p style={{ fontSize: "var(--font-size-body-13)", color: "var(--muted-fg)", margin: 0, lineHeight: 1.5 }}>Tap to upload. White background works best.</p>
                       </div>
                     </motion.div>
@@ -3051,7 +3051,7 @@ function SignatureMobileSheet({ onClose, onSaveReady }: SignatureMobileSheetProp
                   <div style={{ display: "flex", alignItems: "center", height: "var(--space-10)", borderRadius: "var(--radius-full)", border: "1px solid var(--border)", background: "var(--bg)", padding: "0 var(--space-1)" }}>
                     <Btn variant="outline" size="icon-sm" onClick={() => setSigSize(s => Math.max(8, s - 1))} style={{ border: "none", borderRadius: "var(--radius-full)", color: "var(--fg)", flexShrink: 0 }}><Minus size={14} /></Btn>
                     <Sep orientation="vertical" style={{ height: "var(--space-5)" }} />
-                    <span style={{ flex: 1, textAlign: "center", fontSize: "var(--font-size-body-15)", fontWeight: 500, color: "var(--fg)" }}>{sigSize}</span>
+                    <span style={{ flex: 1, textAlign: "center", fontSize: "var(--font-size-body-15)", fontWeight: "var(--font-weight-medium, 500)" as React.CSSProperties["fontWeight"], color: "var(--fg)" }}>{sigSize}</span>
                     <Sep orientation="vertical" style={{ height: "var(--space-5)" }} />
                     <Btn variant="outline" size="icon-sm" onClick={() => setSigSize(s => Math.min(120, s + 1))} style={{ border: "none", borderRadius: "var(--radius-full)", color: "var(--fg)", flexShrink: 0 }}><Plus size={14} /></Btn>
                   </div>
@@ -3150,7 +3150,7 @@ function EnvelopeMobileSheet({ onClose, onSave }: EnvelopeMobileSheetProps) {
 
         {/* Title */}
         <div style={{ padding: "0 var(--space-4) var(--space-3)", flexShrink: 0 }}>
-          <span style={{ fontSize: "var(--font-size-body-15)", fontWeight: 600, color: "var(--fg)" }}>Envelope</span>
+          <span style={{ fontSize: "var(--font-size-body-15)", fontWeight: "var(--font-weight-semibold, 600)" as React.CSSProperties["fontWeight"], color: "var(--fg)" }}>Envelope</span>
         </div>
 
         {/* Scrollable content */}
@@ -3159,8 +3159,8 @@ function EnvelopeMobileSheet({ onClose, onSave }: EnvelopeMobileSheetProps) {
           {/* Flap style */}
           <motion.div {...msgItem(0.06)} style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{ fontSize: "var(--font-size-body-15)", fontWeight: 600, color: "var(--fg)" }}>Flap style</span>
-              <span style={{ fontSize: "var(--font-size-body-15)", fontWeight: 600, color: "var(--fg)" }}>{selected.price ?? "+ $0.00"}</span>
+              <span style={{ fontSize: "var(--font-size-body-15)", fontWeight: "var(--font-weight-semibold, 600)" as React.CSSProperties["fontWeight"], color: "var(--fg)" }}>Flap style</span>
+              <span style={{ fontSize: "var(--font-size-body-15)", fontWeight: "var(--font-weight-semibold, 600)" as React.CSSProperties["fontWeight"], color: "var(--fg)" }}>{selected.price ?? "+ $0.00"}</span>
             </div>
 
             <div style={{ display: "flex", gap: "var(--space-4)" }}>
@@ -3180,7 +3180,7 @@ function EnvelopeMobileSheet({ onClose, onSave }: EnvelopeMobileSheetProps) {
                   >
                     <div style={{ width: "100%", height: 108, background: "var(--muted)" }} />
                     <div style={{ display: "flex", gap: "var(--space-1-5)", alignItems: "baseline", padding: "var(--space-2) var(--space-3)" }}>
-                      <span style={{ fontSize: "var(--font-size-body-15)", fontWeight: 600, color: "var(--fg)" }}>{s.label}</span>
+                      <span style={{ fontSize: "var(--font-size-body-15)", fontWeight: "var(--font-weight-semibold, 600)" as React.CSSProperties["fontWeight"], color: "var(--fg)" }}>{s.label}</span>
                       {s.price && <span style={{ fontSize: "var(--font-size-body-13)", color: "var(--muted-fg)" }}>{s.price}</span>}
                     </div>
                   </button>
@@ -3309,7 +3309,7 @@ function TranslateMobileSheet({ onClose, count = 2 }: TranslateMobileSheetProps)
 
         {/* Title */}
         <div style={{ padding: "0 var(--space-4) var(--space-3)", flexShrink: 0 }}>
-          <span style={{ fontSize: "var(--font-size-body-15)", fontWeight: 600, color: "var(--fg)" }}>Translate</span>
+          <span style={{ fontSize: "var(--font-size-body-15)", fontWeight: "var(--font-weight-semibold, 600)" as React.CSSProperties["fontWeight"], color: "var(--fg)" }}>Translate</span>
         </div>
 
         {/* Search */}

@@ -21,7 +21,7 @@ export function Avt({ src, fallback = "AB", size = 40 }: AvtProps) {
         alignItems: "center",
         justifyContent: "center",
         fontSize: size * 0.35,
-        fontWeight: 700,
+        fontWeight: "var(--font-weight-bold, 700)" as React.CSSProperties["fontWeight"],
         color: "var(--fg)",
         border: "1.5px solid var(--border)",
         flexShrink: 0,

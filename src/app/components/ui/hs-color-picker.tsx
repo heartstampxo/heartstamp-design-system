@@ -308,7 +308,7 @@ export function ColorPicker({
           border: "1px solid var(--color-element-subtle)",
           borderRadius: "var(--radius-md)",
           fontSize: "var(--font-size-body-13)",
-          fontWeight: 500,
+          fontWeight: "var(--font-weight-medium, 500)" as React.CSSProperties["fontWeight"],
           color: "var(--color-text-primary)",
           background: "var(--color-bg-input)",
           flexShrink: 0,
@@ -338,7 +338,7 @@ export function ColorPicker({
           <div>
             <p style={{
               fontSize: "var(--font-size-body-13)",
-              fontWeight: 600,
+              fontWeight: "var(--font-weight-semibold, 600)" as React.CSSProperties["fontWeight"],
               color: "var(--color-text-secondary)",
               margin: "0 0 var(--space-3)",
             }}>

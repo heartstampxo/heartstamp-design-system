@@ -80,7 +80,7 @@ function CartButton({ cartCount, iconSize = 16 }: { cartCount: number; iconSize?
             background: "var(--color-state-error)",
             color: "var(--color-text-on-primary)",
             /* Badge numerals intentionally sub-label (10px) — no token at this size */
-            fontSize: 10, fontWeight: 700, lineHeight: 1,
+            fontSize: 10, fontWeight: "var(--font-weight-bold, 700)" as React.CSSProperties["fontWeight"], lineHeight: 1,
             display: "flex", alignItems: "center", justifyContent: "center",
             borderRadius: "var(--radius-full)",
             pointerEvents: "none",

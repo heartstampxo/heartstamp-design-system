@@ -39,7 +39,7 @@ export function Dlg({ open, onClose, title, children, footer }: DlgProps) {
           border: "1px solid var(--border)",
           padding: "var(--space-6)",
           width: "min(440px,90%)",
-          boxShadow: "0 24px 64px rgba(0,0,0,.3)",
+          boxShadow: "var(--shadow-2xl)",
           zIndex: 1,
         }}
       >

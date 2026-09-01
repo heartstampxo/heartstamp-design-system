@@ -279,10 +279,10 @@ describe('StampyAlrt', () => {
     expect(alert).toHaveTextContent('Suds is applied, tap Continue to cover below to start writing.');
   });
 
-  it('emphasises AlrtStrong with text-primary at weight 600', () => {
+  it('emphasises AlrtStrong with text-primary at the semibold token', () => {
     render(<StampyAlrt title="Title"><AlrtStrong>emphasised</AlrtStrong></StampyAlrt>);
 
-    expect(screen.getByText('emphasised')).toHaveStyle({ fontWeight: '600' });
+    expect(screen.getByText('emphasised')).toHaveStyle({ fontWeight: 'var(--font-weight-semibold, 600)' });
   });
 
   it('renders the mascot slot by default and drops it when icon is null', () => {

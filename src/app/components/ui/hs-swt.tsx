@@ -27,7 +27,7 @@ export function Swt({
 
   const thumbBg = disabled
     ? checked ? "rgba(255,255,255,0.65)" : "var(--color-text-disabled)"
-    : "#ffffff";
+    : "#ffffff"; /* thumb stays white in both themes, iOS-style, against the tinted track */
 
   return (
     <div

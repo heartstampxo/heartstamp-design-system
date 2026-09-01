@@ -43,7 +43,7 @@ export function CtxMenu({ children, items }: CtxMenuProps) {
             background: "var(--bg-menus)",
             border: "1px solid var(--border)",
             borderRadius: "var(--radius-2xl)",
-            boxShadow: "0 8px 24px rgba(0,0,0,.15)",
+            boxShadow: "var(--shadow-lg)",
             minWidth: 160,
             overflow: "hidden",
             padding: "var(--space-1) 0",

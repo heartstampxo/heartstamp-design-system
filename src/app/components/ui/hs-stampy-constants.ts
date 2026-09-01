@@ -20,8 +20,8 @@ export function getRandomSuggestions(count = 3): string[] {
 
 // ── Shared text styles ─────────────────────────────────────────────────────
 
-export const dmSans400 = { fontFamily: "var(--font-family-body)", fontWeight: 400 } as const;
-export const dmSans500 = { fontFamily: "var(--font-family-body)", fontWeight: 500 } as const;
+export const dmSans400 = { fontFamily: "var(--font-family-body)", fontWeight: "var(--font-weight-regular, 400)" as unknown as number } as const;
+export const dmSans500 = { fontFamily: "var(--font-family-body)", fontWeight: "var(--font-weight-medium, 500)" as unknown as number } as const;
 // Bubble background maps to the brand-secondary-dim token
 export const bubbleBg = "var(--color-brand-secondary-dim)";
 

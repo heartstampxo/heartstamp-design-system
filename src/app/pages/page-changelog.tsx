@@ -21,7 +21,7 @@ type Release = {
 const TAG_STYLES: Record<string, { bg: string; color: string }> = {
   feature: { bg: "rgba(16,185,129,.13)",  color: "#10b981" },
   fix:     { bg: "rgba(245,158,11,.13)",  color: "#f59e0b" },
-  tokens:  { bg: "rgba(190,29,44,.10)",   color: "#be1d2c" },
+  tokens:  { bg: "rgba(190,29,44,.10)",   color: "var(--accent)" },
   design:  { bg: "rgba(139,92,246,.13)",  color: "#8b5cf6" },
   docs:    { bg: "rgba(59,130,246,.13)",  color: "#3b82f6" },
   perf:    { bg: "rgba(20,184,166,.13)",  color: "#14b8a6" },
@@ -29,6 +29,17 @@ const TAG_STYLES: Record<string, { bg: string; color: string }> = {
 };
 
 const RELEASES: Release[] = [
+  {
+    version: "2.1.50", date: "1 Sep 2026",
+    title: "Token audit: colors, weights, shadows",
+    tags: ["tokens", "fix"],
+    items: [
+      "All numeric font weights in published components moved to the --font-weight-* scale (52 spots); shadows matching the scale moved to --shadow-* tokens.",
+      "Button Builder destructive preview matched the shipped button: it now uses the error token instead of a stray #ef4444.",
+      "Docs: 44 hardcoded accent reds replaced with var(--accent) / var(--accent-subtle), fixing the wrong red in dark mode.",
+      "Intentional literals (brand palettes, swatch data, the white paper zone, mascot ground, switch thumb) documented in code as deliberate exceptions.",
+    ],
+  },
   {
     version: "2.1.49", date: "1 Sep 2026",
     title: "Docs body text on tokens",
@@ -251,8 +262,8 @@ export function PageChangelog() {
                 }} />
                 <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" as const, marginBottom: 6 }}>
                   <code style={{
-                    fontFamily: "monospace", fontSize: 12, fontWeight: 700, color: "#be1d2c",
-                    background: "rgba(190,29,44,0.08)", padding: "2px 9px", borderRadius: 99,
+                    fontFamily: "monospace", fontSize: 12, fontWeight: 700, color: "var(--accent)",
+                    background: "var(--accent-subtle)", padding: "2px 9px", borderRadius: 99,
                   }}>v{r.version}</code>
                   {i === 0 && (
                     <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: ".04em", textTransform: "uppercase" as const, color: "var(--accent)" }}>Latest</span>

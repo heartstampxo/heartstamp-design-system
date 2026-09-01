@@ -149,7 +149,7 @@ const stampyBodyStyle: React.CSSProperties = {
 // (--font-weight-label-sb-15), so the numeric value is used directly here.
 const alrtStrongStyle: React.CSSProperties = {
   color: "var(--color-text-primary, #242423)",
-  fontWeight: 600,
+  fontWeight: "var(--font-weight-semibold, 600)" as React.CSSProperties["fontWeight"],
 };
 
 export interface AlrtStrongProps {

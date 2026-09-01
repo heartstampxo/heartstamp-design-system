@@ -73,7 +73,7 @@ export function Sel({ options = [], value, onChange, placeholder = "Select…", 
             background: "var(--bg-menus)",
             border: "1px solid var(--border)",
             borderRadius: "var(--radius-2xl)",
-            boxShadow: "0 8px 24px rgba(0,0,0,.15)",
+            boxShadow: "var(--shadow-lg)",
             overflow: "hidden",
           }}
         >

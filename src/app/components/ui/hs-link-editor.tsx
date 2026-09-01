@@ -66,7 +66,7 @@ const applyStyle: React.CSSProperties = {
   height: FIELD_H,
   borderRadius: "var(--radius-full, 999px)",
   fontSize: APPLY_SIZE,
-  fontWeight: 600,
+  fontWeight: "var(--font-weight-semibold, 600)" as React.CSSProperties["fontWeight"],
 };
 
 /* Field labels sit tight above their input, overriding the shell's 9px gap. */

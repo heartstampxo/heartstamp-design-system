@@ -64,6 +64,7 @@ export function BtnTokens() {
         --border:            rgba(36,36,35,0.1);
         --state-hover:       rgba(36,36,35,0.06);
         --link:              #be1d2c;
+        --destructive:       #be1d2c;
 
         /* ── Ghost hover ── */
         --btn-secondary-ghost-hover-bg:  rgba(36,36,35,0.12);
@@ -151,7 +152,7 @@ export function Btn({
     ghost:             { background: "var(--accent-subtle)",    color: "var(--accent)",            borderColor: "transparent" },
     "secondary-ghost": { background: "var(--secondary-subtle)", color: "var(--secondary)",         borderColor: "transparent" },
     link:              { background: "transparent",             color: "var(--link)",              borderColor: "transparent", textDecoration: "underline", padding: "0" },
-    destructive:       { background: "#ef4444",                 color: "#fff",                     borderColor: "#ef4444" },
+    destructive:       { background: "var(--destructive)",      color: "var(--text-on-primary)",   borderColor: "var(--destructive)" },
   };
 
   const hoverStyle = hovered && !disabled && hoverMap[variant] ? hoverMap[variant] : {};

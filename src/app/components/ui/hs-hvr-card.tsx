@@ -24,7 +24,7 @@ export function HvrCard({ trigger, children }: HvrCardProps) {
             background: "var(--bg-menus)",
             border: "1px solid var(--border)",
             borderRadius: "var(--radius-2xl)",
-            boxShadow: "0 8px 32px rgba(0,0,0,.15)",
+            boxShadow: "var(--shadow-xl)",
             padding: "var(--space-4)",
             minWidth: 260,
             zIndex: 100,

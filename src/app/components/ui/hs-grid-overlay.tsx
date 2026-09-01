@@ -213,7 +213,7 @@ const infoStyle: React.CSSProperties = {
 const titleStyle: React.CSSProperties = {
   fontFamily: FONT_HEADING,
   fontSize: "var(--font-size-label-sb-15, 15px)",
-  fontWeight: 600,
+  fontWeight: "var(--font-weight-semibold, 600)" as React.CSSProperties["fontWeight"],
   color: "var(--color-text-primary, #242423)",
   lineHeight: 1.2,
 };
@@ -228,7 +228,7 @@ const subStyle: React.CSSProperties = {
 
 const strongStyle: React.CSSProperties = {
   color: "var(--color-text-primary, #242423)",
-  fontWeight: 600,
+  fontWeight: "var(--font-weight-semibold, 600)" as React.CSSProperties["fontWeight"],
 };
 
 const actionsStyle: React.CSSProperties = {

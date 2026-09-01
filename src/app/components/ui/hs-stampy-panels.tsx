@@ -117,7 +117,7 @@ export function ChatHomeScreen({
           <img alt="Stampy mascot" src={mascotSrc} style={{ width: 52, height: 52, objectFit: "contain", flexShrink: 0 }} />
         )}
         <div style={{ display: "flex", flexDirection: "column", gap: 4, flex: 1, minWidth: 0 }}>
-          <p style={{ margin: 0, fontSize: "var(--font-size-h5, 18px)", fontWeight: 600, lineHeight: "var(--line-height-h5, 28px)", ...dmSans500, color: "var(--color-text-primary)" }}>
+          <p style={{ margin: 0, fontSize: "var(--font-size-h5, 18px)", fontWeight: "var(--font-weight-semibold, 600)" as React.CSSProperties["fontWeight"], lineHeight: "var(--line-height-h5, 28px)", ...dmSans500, color: "var(--color-text-primary)" }}>
             Hi there! I'm Stampy
           </p>
           <div className="pointer-events-none select-none" style={{ minHeight: 20 }}>
@@ -238,7 +238,7 @@ export function ChatHeader({
     <div className={`border-b border-solid flex items-center justify-between px-[16px] py-[12px] relative shrink-0 w-full z-30${embedded ? "" : " rounded-t-[20px]"}`} style={{ borderColor: "var(--color-element-subtle)", backgroundColor: "var(--color-bg-main)" }}>
       {/* Left: Stampy label + conversation dropdown */}
       <div className="flex gap-[16px] items-center relative shrink-0 min-w-0 flex-1">
-        <div className="flex flex-col justify-center leading-[0] relative shrink-0 text-[15px] whitespace-nowrap" style={{ ...dmSans500, fontWeight: 600, color: "var(--color-text-primary)" }}>
+        <div className="flex flex-col justify-center leading-[0] relative shrink-0 text-[15px] whitespace-nowrap" style={{ ...dmSans500, fontWeight: "var(--font-weight-semibold, 600)" as React.CSSProperties["fontWeight"], color: "var(--color-text-primary)" }}>
           <p className="leading-[normal]">Stampy</p>
         </div>
         <div ref={ref} className="relative min-w-0">

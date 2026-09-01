@@ -2505,7 +2505,7 @@ function TokenColorSwatch({ name, value, variable }: { name: string; value: stri
           marginBottom: 8, wordBreak: "break-all", lineHeight: 1.5
         }}>{value}</div>
         <div style={{
-          fontSize: 10, fontFamily: "monospace", color: "#be1d2c",
+          fontSize: 10, fontFamily: "monospace", color: "var(--accent)",
           marginBottom: 10, wordBreak: "break-all", lineHeight: 1.4, opacity: 0.85
         }}>{variable}</div>
         <button onClick={() => copy(variable)} style={{
@@ -2540,11 +2540,11 @@ function PageTokensColor() {
         <section key={group} style={{ marginBottom: 40 }}>
           <div style={{ marginBottom: 16 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: "var(--space-1-5)" }}>
-              <div style={{ width: 3, height: 18, borderRadius: 99, background: "#be1d2c" }} />
+              <div style={{ width: 3, height: 18, borderRadius: 99, background: "var(--accent)" }} />
               <h2 style={{ margin: 0, fontSize: 17, fontWeight: 700, color: "var(--fg)" }}>{group}</h2>
               <span style={{
                 fontSize: 10.5, fontWeight: 600, padding: "2px 8px", borderRadius: 999,
-                background: "rgba(190,29,44,0.08)", color: "#be1d2c"
+                background: "var(--accent-subtle)", color: "var(--accent)"
               }}>{Object.keys(tokens[group]).length} tokens</span>
             </div>
             <p style={{ margin: "0 0 0 13px", fontSize: 12.5, color: "var(--muted-fg)", lineHeight: 1.6 }}>
@@ -2572,7 +2572,7 @@ function PageTokensColor() {
       {/* CSS Variables reference */}
       <section style={{ marginBottom: 8 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
-          <div style={{ width: 3, height: 18, borderRadius: 99, background: "#be1d2c" }} />
+          <div style={{ width: 3, height: 18, borderRadius: 99, background: "var(--accent)" }} />
           <h2 style={{ margin: 0, fontSize: 17, fontWeight: 700, color: "var(--fg)" }}>CSS Variable Reference</h2>
         </div>
         <div style={{ background: "#09090b", border: "1px solid #27272a", borderRadius: 8, overflow: "hidden", fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
@@ -2668,10 +2668,10 @@ function JsonTokenSection({ lightTokens, darkTokens }: { lightTokens: Record<str
   return (
     <section style={{ marginBottom: 8, marginTop: 32 }}>
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
-        <div style={{ width: 3, height: 18, borderRadius: 99, background: "#be1d2c" }} />
+        <div style={{ width: 3, height: 18, borderRadius: 99, background: "var(--accent)" }} />
         <h2 style={{ margin: 0, fontSize: 17, fontWeight: 700, color: "var(--fg)" }}>JSON Token Source</h2>
         <span style={{ fontSize: 11, color: "var(--muted-fg)", marginLeft: 4 }}>
-          — mirrors the <code style={{ fontFamily: "monospace", fontSize: 11, color: "#be1d2c" }}>color-tokens.json</code> file exactly
+          — mirrors the <code style={{ fontFamily: "monospace", fontSize: 11, color: "var(--accent)" }}>color-tokens.json</code> file exactly
         </span>
       </div>
 
@@ -2730,7 +2730,7 @@ function JsonTokenSection({ lightTokens, darkTokens }: { lightTokens: Record<str
                 <span style={{ width: 14, height: 14, borderRadius: 4, background: value, border: "1px solid rgba(0,0,0,0.1)", flexShrink: 0 }} />
                 <code style={{ fontSize: 11, fontFamily: "monospace", color: "var(--fg)", wordBreak: "break-all" }}>{value}</code>
               </div>
-              <code style={{ fontSize: 10.5, fontFamily: "monospace", color: "#be1d2c", wordBreak: "break-all" }}>
+              <code style={{ fontSize: 10.5, fontFamily: "monospace", color: "var(--accent)", wordBreak: "break-all" }}>
                 {TOKEN_VARIABLE_NAMES[group]?.[name] ?? "—"}
               </code>
             </div>
@@ -2763,7 +2763,7 @@ function TokenTable({ rows }: { rows: TokenRow[] }) {
           background: i % 2 === 0 ? "var(--bg)" : "var(--muted)",
           borderBottom: i < rows.length - 1 ? "1px solid var(--border)" : "none",
         }}>
-          <code style={{ fontSize: 12, fontFamily: "monospace", color: "#be1d2c", paddingRight: 12 }}>{r.token}</code>
+          <code style={{ fontSize: 12, fontFamily: "monospace", color: "var(--accent)", paddingRight: 12 }}>{r.token}</code>
           <div style={{ paddingRight: 12 }}>
             <code style={{
               fontSize: 11.5, fontFamily: "monospace", color: "var(--fg)",
@@ -2824,7 +2824,7 @@ function PageTokensTypography() {
             <h1 style={{ ...headingFF, flex: 1, fontSize: "var(--font-size-h1)", fontWeight: "var(--font-weight-h1)" as any, letterSpacing: "var(--letter-spacing-h1)", color: "var(--fg)", lineHeight: 1.05, margin: 0 }}>
               Taxing Laughter: The Joke Tax Chronicles
             </h1>
-            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "rgba(190,29,44,0.08)", color: "#be1d2c", padding: "2px 7px", borderRadius: 99, letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>H1 · --font-size-h1 · 56px · Bold</span>
+            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "var(--accent-subtle)", color: "var(--accent)", padding: "2px 7px", borderRadius: 99, letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>H1 · --font-size-h1 · 56px · Bold</span>
           </div>
 
           {/* Subheadline */}
@@ -2832,7 +2832,7 @@ function PageTokensTypography() {
             <p style={{ ...headingFF, flex: 1, fontSize: "var(--font-size-subheadline)", fontWeight: "var(--font-weight-subheadline)" as any, letterSpacing: "var(--letter-spacing-subheadline)", color: "var(--muted-fg)", lineHeight: 1.45, margin: 0 }}>
               Once upon a time, in a far-off land, there was a very lazy king who spent all day lounging on his throne. One day, his advisors came to him with a problem: the kingdom was running out of money.
             </p>
-            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "rgba(190,29,44,0.08)", color: "#be1d2c", padding: "2px 7px", borderRadius: 99, letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>Subheadline · 24px · Light</span>
+            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "var(--accent-subtle)", color: "var(--accent)", padding: "2px 7px", borderRadius: 99, letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>Subheadline · 24px · Light</span>
           </div>
 
           {/* Subheadline MD */}
@@ -2840,7 +2840,7 @@ function PageTokensTypography() {
             <p style={{ ...headingFF, flex: 1, fontSize: "var(--font-size-subheadline-md)", fontWeight: "var(--font-weight-subheadline-md)" as any, letterSpacing: "var(--letter-spacing-subheadline-md)", color: "var(--muted-fg)", lineHeight: 1.45, margin: 0 }}>
               Once upon a time, in a far-off land, there was a very lazy king who spent all day lounging on his throne. One day, his advisors came to him with a problem: the kingdom was running out of money.
             </p>
-            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "rgba(190,29,44,0.08)", color: "#be1d2c", padding: "2px 7px", borderRadius: 99, letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>Subheadline MD · 24px · Medium</span>
+            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "var(--accent-subtle)", color: "var(--accent)", padding: "2px 7px", borderRadius: 99, letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>Subheadline MD · 24px · Medium</span>
           </div>
 
           <div style={{ height: 1, background: "var(--border)", margin: "0 0 24px" }} />
@@ -2850,7 +2850,7 @@ function PageTokensTypography() {
             <h3 style={{ ...headingFF, flex: 1, fontSize: "var(--font-size-h3)", fontWeight: "var(--font-weight-h3)" as any, letterSpacing: "var(--letter-spacing-h3)", color: "var(--fg)", lineHeight: 1.15, margin: 0 }}>
               The King's Plan
             </h3>
-            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "rgba(190,29,44,0.08)", color: "#be1d2c", padding: "2px 7px", borderRadius: 99, letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>H3 · --font-size-h3 · 36px · Regular · 0em</span>
+            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "var(--accent-subtle)", color: "var(--accent)", padding: "2px 7px", borderRadius: 99, letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>H3 · --font-size-h3 · 36px · Regular · 0em</span>
           </div>
 
           {/* Body 15 with link */}
@@ -2859,7 +2859,7 @@ function PageTokensTypography() {
               The king thought long and hard, and finally came up with{" "}
               <span style={{ textDecoration: "underline", fontWeight: "var(--font-weight-label-15)" as any }}>a brilliant plan</span>: he would tax the jokes in the kingdom.
             </p>
-            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "rgba(190,29,44,0.08)", color: "#be1d2c", padding: "2px 7px", borderRadius: 99, letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>Body · 15 · --font-size-body-15 · 400</span>
+            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "var(--accent-subtle)", color: "var(--accent)", padding: "2px 7px", borderRadius: 99, letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>Body · 15 · --font-size-body-15 · 400</span>
           </div>
 
           {/* Blockquote */}
@@ -2869,7 +2869,7 @@ function PageTokensTypography() {
                 "After all," he said, "everyone enjoys a good joke, so it's only fair that they should pay for the privilege."
               </p>
             </blockquote>
-            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "rgba(190,29,44,0.08)", color: "#be1d2c", padding: "2px 7px", borderRadius: 99, letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>Body · 15 · italic · left-border</span>
+            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "var(--accent-subtle)", color: "var(--accent)", padding: "2px 7px", borderRadius: 99, letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>Body · 15 · italic · left-border</span>
           </div>
 
           {/* H4 */}
@@ -2877,7 +2877,7 @@ function PageTokensTypography() {
             <h4 style={{ ...headingFF, flex: 1, fontSize: "var(--font-size-h4)", fontWeight: "var(--font-weight-h4)" as any, letterSpacing: "var(--letter-spacing-h4)", color: "var(--fg)", lineHeight: 1.3, margin: 0 }}>
               The Joke Tax
             </h4>
-            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "rgba(190,29,44,0.08)", color: "#be1d2c", padding: "2px 7px", borderRadius: 99, letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>H4 · --font-size-h4 · 20px · Regular · 0em</span>
+            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "var(--accent-subtle)", color: "var(--accent)", padding: "2px 7px", borderRadius: 99, letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>H4 · --font-size-h4 · 20px · Regular · 0em</span>
           </div>
 
           <p style={{ ...bodyFF, fontSize: "var(--font-size-body-15)", fontWeight: "var(--font-weight-body-15)" as any, color: "var(--fg)", lineHeight: 1.65, margin: "0 0 12px" }}>
@@ -2897,7 +2897,7 @@ function PageTokensTypography() {
                 </li>
               ))}
             </ul>
-            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "rgba(190,29,44,0.08)", color: "#be1d2c", padding: "2px 7px", borderRadius: 99, letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>Label · 15 · --font-weight-label-15 · 500</span>
+            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "var(--accent-subtle)", color: "var(--accent)", padding: "2px 7px", borderRadius: 99, letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>Label · 15 · --font-weight-label-15 · 500</span>
           </div>
 
           <p style={{ ...bodyFF, fontSize: "var(--font-size-body-15)", fontWeight: "var(--font-weight-body-15)" as any, color: "var(--fg)", lineHeight: 1.65, margin: "0 0 24px" }}>
@@ -2909,7 +2909,7 @@ function PageTokensTypography() {
             <h5 style={{ ...headingFF, flex: 1, fontSize: "var(--font-size-h5)", fontWeight: "var(--font-weight-h5)" as any, letterSpacing: "var(--letter-spacing-h5)", color: "var(--fg)", lineHeight: 1.35, margin: 0 }}>
               Jokester's Revolt
             </h5>
-            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "rgba(190,29,44,0.08)", color: "#be1d2c", padding: "2px 7px", borderRadius: 99, letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>H5 · --font-size-h5 · 18px · Regular · 0em</span>
+            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "var(--accent-subtle)", color: "var(--accent)", padding: "2px 7px", borderRadius: 99, letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>H5 · --font-size-h5 · 18px · Regular · 0em</span>
           </div>
 
           {/* Label SB 15 */}
@@ -2917,7 +2917,7 @@ function PageTokensTypography() {
             <p style={{ ...bodyFF, flex: 1, fontSize: "var(--font-size-label-sb-15)", fontWeight: "var(--font-weight-label-sb-15)" as any, color: "var(--fg)", lineHeight: 1.65, margin: 0 }}>
               Jokester began sneaking into the castle in the middle of the night and leaving jokes all over the place: under the king's pillow, in his soup, even in the royal toilet.
             </p>
-            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "rgba(190,29,44,0.08)", color: "#be1d2c", padding: "2px 7px", borderRadius: 99, letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>Label SB · 15 · --font-weight-label-sb-15 · 600</span>
+            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "var(--accent-subtle)", color: "var(--accent)", padding: "2px 7px", borderRadius: 99, letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>Label SB · 15 · --font-weight-label-sb-15 · 600</span>
           </div>
 
           {/* Body 13 */}
@@ -2925,7 +2925,7 @@ function PageTokensTypography() {
             <p style={{ ...bodyFF, flex: 1, fontSize: "var(--font-size-body-13)", fontWeight: "var(--font-weight-body-13)" as any, color: "var(--muted-fg)", lineHeight: 1.65, margin: 0 }}>
               The king was furious, but he couldn't seem to stop Jokester. And so, in the end, the joke tax was repealed, and the kingdom lived happily ever after — at least until the next royal decree.
             </p>
-            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "rgba(190,29,44,0.08)", color: "#be1d2c", padding: "2px 7px", borderRadius: 99, letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>Body · 13 · --font-size-body-13 · 400</span>
+            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "var(--accent-subtle)", color: "var(--accent)", padding: "2px 7px", borderRadius: 99, letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>Body · 13 · --font-size-body-13 · 400</span>
           </div>
 
           {/* Body 13 Bold */}
@@ -2933,7 +2933,7 @@ function PageTokensTypography() {
             <p style={{ ...bodyFF, flex: 1, fontSize: "var(--font-size-body-13-bd)", fontWeight: "var(--font-weight-body-13-bd)" as any, color: "var(--muted-fg)", lineHeight: 1.65, margin: 0 }}>
               The king was furious, but he couldn't seem to stop Jokester. And so, in the end, the joke tax was repealed, and the kingdom lived happily ever after — at least until the next royal decree.
             </p>
-            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "rgba(190,29,44,0.08)", color: "#be1d2c", padding: "2px 7px", borderRadius: 99, letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>Body · 13 Bold · --font-size-body-13-bd · 700</span>
+            <span style={{ flexShrink: 0, alignSelf: "flex-start", fontSize: 9.5, fontFamily: "monospace", background: "var(--accent-subtle)", color: "var(--accent)", padding: "2px 7px", borderRadius: 99, letterSpacing: ".02em", whiteSpace: "nowrap", marginTop: 3 }}>Body · 13 Bold · --font-size-body-13-bd · 700</span>
           </div>
 
           {/* Label 12 — tag row */}
@@ -2945,7 +2945,7 @@ function PageTokensTypography() {
                 </span>
               ))}
             </div>
-            <span style={{ flexShrink: 0, fontSize: 9.5, fontFamily: "monospace", background: "rgba(190,29,44,0.08)", color: "#be1d2c", padding: "2px 7px", borderRadius: 99, letterSpacing: ".02em", whiteSpace: "nowrap" }}>Label · 12 · --font-size-label-12 · 500</span>
+            <span style={{ flexShrink: 0, fontSize: 9.5, fontFamily: "monospace", background: "var(--accent-subtle)", color: "var(--accent)", padding: "2px 7px", borderRadius: 99, letterSpacing: ".02em", whiteSpace: "nowrap" }}>Label · 12 · --font-size-label-12 · 500</span>
           </div>
 
           {/* Label 12 Bold — tag row */}
@@ -2957,7 +2957,7 @@ function PageTokensTypography() {
                 </span>
               ))}
             </div>
-            <span style={{ flexShrink: 0, fontSize: 9.5, fontFamily: "monospace", background: "rgba(190,29,44,0.08)", color: "#be1d2c", padding: "2px 7px", borderRadius: 99, letterSpacing: ".02em", whiteSpace: "nowrap" }}>Label · 12 Bold · --font-size-label-12-bd · 700</span>
+            <span style={{ flexShrink: 0, fontSize: 9.5, fontFamily: "monospace", background: "var(--accent-subtle)", color: "var(--accent)", padding: "2px 7px", borderRadius: 99, letterSpacing: ".02em", whiteSpace: "nowrap" }}>Label · 12 Bold · --font-size-label-12-bd · 700</span>
           </div>
 
         </div>
@@ -2976,9 +2976,9 @@ function PageTokensTypography() {
               </div>
               <div style={{ flexShrink: 0, minWidth: 210 }}>
                 <div style={{ fontSize: 13, fontWeight: 700, color: "var(--fg)", marginBottom: "var(--space-1-5)" }}>Stack Sans Text</div>
-                <code style={{ fontSize: 11, fontFamily: "monospace", color: "#be1d2c", display: "block", marginBottom: 4 }}>--font-family-heading</code>
+                <code style={{ fontSize: 11, fontFamily: "monospace", color: "var(--accent)", display: "block", marginBottom: 4 }}>--font-family-heading</code>
                 <div style={{ fontSize: 10.5, color: "var(--muted-fg)", fontFamily: "monospace", lineHeight: 1.6 }}>'Stack Sans Text', 'Instrument Sans',<br/>system-ui, sans-serif</div>
-                <div style={{ marginTop: 8, display: "inline-flex", alignItems: "center", gap: 4, fontSize: 10.5, padding: "2px 8px", borderRadius: 99, background: "rgba(190,29,44,0.08)", color: "#be1d2c" }}>Licensed · Figma Library</div>
+                <div style={{ marginTop: 8, display: "inline-flex", alignItems: "center", gap: 4, fontSize: 10.5, padding: "2px 8px", borderRadius: 99, background: "var(--accent-subtle)", color: "var(--accent)" }}>Licensed · Figma Library</div>
               </div>
             </div>
           </div>
@@ -2992,7 +2992,7 @@ function PageTokensTypography() {
               </div>
               <div style={{ flexShrink: 0, minWidth: 210 }}>
                 <div style={{ fontSize: 13, fontWeight: 700, color: "var(--fg)", marginBottom: "var(--space-1-5)" }}>DM Sans</div>
-                <code style={{ fontSize: 11, fontFamily: "monospace", color: "#be1d2c", display: "block", marginBottom: 4 }}>--font-family-body</code>
+                <code style={{ fontSize: 11, fontFamily: "monospace", color: "var(--accent)", display: "block", marginBottom: 4 }}>--font-family-body</code>
                 <div style={{ fontSize: 10.5, color: "var(--muted-fg)", fontFamily: "monospace", lineHeight: 1.6 }}>'DM Sans', system-ui, sans-serif</div>
                 <div style={{ marginTop: 8, display: "inline-flex", alignItems: "center", gap: 4, fontSize: 10.5, padding: "2px 8px", borderRadius: 99, background: "rgba(16,185,129,0.1)", color: "#10b981" }}>Google Fonts · Open Source</div>
               </div>
@@ -3008,7 +3008,7 @@ function PageTokensTypography() {
               </div>
               <div style={{ flexShrink: 0, minWidth: 210 }}>
                 <div style={{ fontSize: 13, fontWeight: 700, color: "var(--fg)", marginBottom: "var(--space-1-5)" }}>Oldstyle Italic HPLHS</div>
-                <code style={{ fontSize: 11, fontFamily: "monospace", color: "#be1d2c", display: "block", marginBottom: 4 }}>--font-family-promo</code>
+                <code style={{ fontSize: 11, fontFamily: "monospace", color: "var(--accent)", display: "block", marginBottom: 4 }}>--font-family-promo</code>
                 <div style={{ fontSize: 10.5, color: "var(--muted-fg)", fontFamily: "monospace", lineHeight: 1.6 }}>'Oldstyle Italic HPLHS',<br/>'EB Garamond', Georgia, serif</div>
                 <div style={{ marginTop: 8, display: "inline-flex", alignItems: "center", gap: 4, fontSize: 10.5, padding: "2px 8px", borderRadius: 99, background: "rgba(16,185,129,0.1)", color: "#10b981" }}>Free (HPLHS) · not bundled yet, EB Garamond fallback</div>
               </div>
@@ -3024,7 +3024,7 @@ function PageTokensTypography() {
               </div>
               <div style={{ flexShrink: 0, minWidth: 210 }}>
                 <div style={{ fontSize: 13, fontWeight: 700, color: "var(--fg)", marginBottom: "var(--space-1-5)" }}>Monospace</div>
-                <code style={{ fontSize: 11, fontFamily: "monospace", color: "#be1d2c", display: "block", marginBottom: 4 }}>--font-family-mono</code>
+                <code style={{ fontSize: 11, fontFamily: "monospace", color: "var(--accent)", display: "block", marginBottom: 4 }}>--font-family-mono</code>
                 <div style={{ fontSize: 10.5, color: "var(--muted-fg)", fontFamily: "monospace", lineHeight: 1.6 }}>ui-monospace, 'Cascadia Code',<br/>monospace</div>
               </div>
             </div>
@@ -3046,14 +3046,14 @@ function PageTokensTypography() {
             }}>
               <div>
                 <div style={{ fontSize: 12, fontWeight: 700, color: "var(--fg)", marginBottom: 3 }}>{s.name}</div>
-                <code style={{ fontSize: 10, fontFamily: "monospace", color: "#be1d2c" }}>{s.sToken}</code>
+                <code style={{ fontSize: 10, fontFamily: "monospace", color: "var(--accent)" }}>{s.sToken}</code>
               </div>
               <div style={{ overflow: "hidden" }}>
                 <span style={{ ...headingFF, fontSize: Math.min(s.size, 36), fontWeight: s.weight, letterSpacing: s.ls, color: "var(--fg)", lineHeight: 1.1, display: "block", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>HeartStamp</span>
               </div>
               <div style={{ fontSize: 12, fontFamily: "monospace", color: "var(--fg)" }}>{s.size}px</div>
               <div style={{ fontSize: 11, color: "var(--muted-fg)", lineHeight: 1.5 }}>
-                {s.figmaWeight} <span style={{ fontFamily: "monospace", color: "#be1d2c", fontSize: 10 }}>{s.weight}</span>
+                {s.figmaWeight} <span style={{ fontFamily: "monospace", color: "var(--accent)", fontSize: 10 }}>{s.weight}</span>
                 {s.variants && <><br/><span style={{ fontSize: 10, opacity: 0.8 }}>{s.variants}</span></>}
               </div>
               <div style={{ fontSize: 11, fontFamily: "monospace", color: "var(--muted-fg)" }}>{s.lh}</div>
@@ -3077,13 +3077,13 @@ function PageTokensTypography() {
             }}>
               <div>
                 <div style={{ fontSize: 12, fontWeight: 700, color: "var(--fg)", marginBottom: 3 }}>{s.name}</div>
-                <code style={{ fontSize: 10, fontFamily: "monospace", color: "#be1d2c" }}>{s.sToken}</code>
+                <code style={{ fontSize: 10, fontFamily: "monospace", color: "var(--accent)" }}>{s.sToken}</code>
               </div>
               <div>
                 <span style={{ ...bodyFF, fontSize: s.size, fontWeight: s.weight, color: "var(--fg)" }}>The quick brown fox</span>
               </div>
               <div style={{ fontSize: 12, fontFamily: "monospace", color: "var(--fg)" }}>{s.size}px</div>
-              <div style={{ fontSize: 11, color: "var(--muted-fg)", lineHeight: 1.5 }}>{s.figmaWeight}<br/><span style={{ fontFamily: "monospace", color: "#be1d2c", fontSize: 10 }}>{s.weight}</span></div>
+              <div style={{ fontSize: 11, color: "var(--muted-fg)", lineHeight: 1.5 }}>{s.figmaWeight}<br/><span style={{ fontFamily: "monospace", color: "var(--accent)", fontSize: 10 }}>{s.weight}</span></div>
               <div style={{ fontSize: 11, fontFamily: "monospace", color: "var(--muted-fg)" }}>{s.lh}</div>
               <div style={{ fontSize: 11, color: "var(--muted-fg)", lineHeight: 1.5 }}>{s.usage}</div>
             </div>
@@ -3105,7 +3105,7 @@ function PageTokensTypography() {
             }}>
               <div>
                 <div style={{ fontSize: 12, fontWeight: 700, color: "var(--fg)", marginBottom: 3 }}>{s.name}</div>
-                <code style={{ fontSize: 10, fontFamily: "monospace", color: "#be1d2c" }}>{s.sToken}</code>
+                <code style={{ fontSize: 10, fontFamily: "monospace", color: "var(--accent)" }}>{s.sToken}</code>
               </div>
               <div style={{ overflow: "hidden" }}>
                 <span style={{ ...promoFF, fontSize: Math.min(s.size, 28), letterSpacing: s.ls, color: "var(--fg)", lineHeight: 1.2, display: "block", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>Sealed with a heart</span>
@@ -3241,7 +3241,7 @@ function PageTokensSpacing() {
               border: "1px solid transparent"
             }}>
               <span style={{ fontSize: 11, fontFamily: "monospace", color: "var(--muted-fg)", width: 24, flexShrink: 0, textAlign: "right" }}>{s.name}</span>
-              <code style={{ fontSize: 11, fontFamily: "monospace", color: "#be1d2c", width: 140, flexShrink: 0 }}>{s.variable}</code>
+              <code style={{ fontSize: 11, fontFamily: "monospace", color: "var(--accent)", width: 140, flexShrink: 0 }}>{s.variable}</code>
               <div style={{
                 height: 16, width: Math.max(s.px, 1), background: s.px === 0 ? "transparent" : "#242423",
                 borderRadius: 2, flexShrink: 0, border: s.px === 0 ? "1px dashed var(--border)" : "none",
@@ -3266,7 +3266,7 @@ function PageTokensSpacing() {
             }}>
               <span style={{ fontSize: 12.5, fontWeight: 500, color: "var(--fg)" }}>{item.component}</span>
               <code style={{ fontSize: 11, fontFamily: "monospace", color: "var(--fg)", background: "var(--color-element-disabled)", padding: "2px var(--space-1-5)", borderRadius: 4 }}>{item.value}</code>
-              <code style={{ fontSize: 10.5, fontFamily: "monospace", color: "#be1d2c" }}>{item.variable}</code>
+              <code style={{ fontSize: 10.5, fontFamily: "monospace", color: "var(--accent)" }}>{item.variable}</code>
               <span style={{ fontSize: 12, color: "var(--muted-fg)" }}>{item.desc}</span>
             </div>
           ))}
@@ -3338,7 +3338,7 @@ function PageTokensRadius() {
               </div>
               <div>
                 <div style={{ fontSize: 12.5, fontWeight: 600, color: "var(--fg)", marginBottom: 3 }}>{r.name}</div>
-                <code style={{ fontSize: 11, fontFamily: "monospace", color: "#be1d2c", display: "block", marginBottom: 4 }}>{r.variable}</code>
+                <code style={{ fontSize: 11, fontFamily: "monospace", color: "var(--accent)", display: "block", marginBottom: 4 }}>{r.variable}</code>
                 <div style={{ fontSize: 12, fontFamily: "monospace", fontWeight: 700, color: "#242423", marginBottom: "var(--space-1-5)" }}>{r.value}</div>
                 <div style={{ fontSize: 10.5, color: "var(--muted-fg)", lineHeight: 1.5 }}>{r.usage}</div>
               </div>
@@ -3393,7 +3393,7 @@ function PageTokensShadow() {
               <div style={{ flex: 1, minWidth: 140 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
                   <span style={{ fontSize: 13, fontWeight: 600, color: "var(--fg)" }}>{s.name}</span>
-                  <code style={{ fontSize: 10.5, fontFamily: "monospace", color: "#be1d2c" }}>{s.variable}</code>
+                  <code style={{ fontSize: 10.5, fontFamily: "monospace", color: "var(--accent)" }}>{s.variable}</code>
                 </div>
                 <code style={{ fontSize: 11, fontFamily: "monospace", color: "var(--muted-fg)", display: "block", marginBottom: 4 }}>{s.value}</code>
                 <div style={{ fontSize: 12, color: "var(--muted-fg)" }}>{s.usage}</div>
@@ -4718,7 +4718,7 @@ function PageTheming() {
     <th style={{ padding: "8px 14px", textAlign: "left" as const, fontWeight: 600, color: "var(--muted-fg)", fontSize: 10.5, textTransform: "uppercase" as const, letterSpacing: ".04em" }}>{children}</th>
   );
   const SectionBar = () => (
-    <div style={{ width: 3, height: 16, borderRadius: 99, background: "#be1d2c", marginRight: 8, flexShrink: 0 }} />
+    <div style={{ width: 3, height: 16, borderRadius: 99, background: "var(--accent)", marginRight: 8, flexShrink: 0 }} />
   );
   const ModePill = ({ current, onChange }: { current: "light" | "dark"; onChange: (v: "light" | "dark") => void }) => (
     <Tabs value={current} onValueChange={(v) => onChange(v as "light" | "dark")}>
@@ -4747,11 +4747,11 @@ function PageTheming() {
           <div style={{ display: "flex", gap: 12 }}>
             {[{ hex: "#BE1D2C", label: "Brand Primary" }, { hex: "#242423", label: "Brand Secondary" }].map(({ hex, label }) => (
               <div key={hex} style={{
-                padding: "10px 20px", borderRadius: 10, border: "2px solid #be1d2c",
-                background: "rgba(190,29,44,0.06)", textAlign: "center" as const, minWidth: 130,
+                padding: "10px 20px", borderRadius: 10, border: "2px solid var(--accent)",
+                background: "var(--accent-subtle)", textAlign: "center" as const, minWidth: 130,
               }}>
                 <div style={{ width: 24, height: 24, borderRadius: 6, background: hex, margin: "0 auto var(--space-1-5)", border: "1px solid rgba(0,0,0,.1)" }} />
-                <div style={{ fontWeight: 800, fontSize: 12.5, color: "#be1d2c", fontFamily: "monospace" }}>{hex}</div>
+                <div style={{ fontWeight: 800, fontSize: 12.5, color: "var(--accent)", fontFamily: "monospace" }}>{hex}</div>
                 <div style={{ fontSize: 11, color: "var(--muted-fg)", marginTop: 2 }}>{label}</div>
               </div>
             ))}
@@ -5169,7 +5169,7 @@ const [hov, setHov] = useState(false);
             </div>
             <CodeBlock code={`// ❌ Hardcoded values ignore all theme changes
 <div style={{
-  background: "#be1d2c",   // invisible in dark mode
+  background: "var(--accent)",   // invisible in dark mode
   color: "#ffffff",        // skips --text-on-primary
   border: "1px solid rgba(36,36,35,0.1)",
   borderRadius: "8px",     // use var(--radius-md)
@@ -5205,7 +5205,7 @@ const [hov, setHov] = useState(false);
             { prefix: "var(--heart)",       full: "--heart",                                                             desc: "Brand heart lockup accent — decorative" },
           ].map(({ prefix, full, desc }) => (
             <div key={prefix} style={{ padding: "10px 12px", borderRadius: 8, border: "1px solid var(--border)", background: "var(--bg)" }}>
-              <code style={{ fontFamily: "monospace", fontSize: 11, color: "#be1d2c", display: "block", marginBottom: 2 }}>{prefix}</code>
+              <code style={{ fontFamily: "monospace", fontSize: 11, color: "var(--accent)", display: "block", marginBottom: 2 }}>{prefix}</code>
               <div style={{ fontSize: 10, color: "var(--muted-fg)", fontFamily: "monospace", marginBottom: 5, lineHeight: 1.4, opacity: 0.85 }}>{full}</div>
               <span style={{ fontSize: 11.5, color: "var(--muted-fg)", lineHeight: 1.4 }}>{desc}</span>
             </div>
@@ -5229,7 +5229,7 @@ const [hov, setHov] = useState(false);
                 return (
                   <tr key={v} style={{ background: i % 2 === 0 ? "var(--bg)" : "var(--muted)", borderBottom: "1px solid var(--border)" }}>
                     <td style={{ padding: "8px 14px", whiteSpace: "nowrap" as const }}>
-                      <code style={{ fontFamily: "monospace", fontSize: 11, color: "#be1d2c" }}>{v}</code>
+                      <code style={{ fontFamily: "monospace", fontSize: 11, color: "var(--accent)" }}>{v}</code>
                     </td>
                     <td style={{ padding: "8px 14px", color: "var(--muted-fg)", fontSize: 12, lineHeight: 1.4 }}>{desc}</td>
                     <td style={{ padding: "8px 14px" }}>

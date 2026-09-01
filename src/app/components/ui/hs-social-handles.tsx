@@ -71,7 +71,7 @@ const valueStyle: React.CSSProperties = {
   color: "var(--color-text-primary, #242423)",
   fontFamily: FONT_BODY,
   fontSize: VALUE_SIZE,
-  fontWeight: 500,
+  fontWeight: "var(--font-weight-medium, 500)" as React.CSSProperties["fontWeight"],
 };
 
 const addRowStyle: React.CSSProperties = {
