@@ -1,14 +1,15 @@
-import React, { useState, useMemo, useEffect } from "react";
-import { Eye, Code2, Moon, Sun, Smartphone, Tablet, Monitor, Maximize2 } from "lucide-react";
+import React, { useState, useMemo, useEffect, useRef } from "react";
+import { Eye, Code2, Moon, Sun, Smartphone, Tablet, Monitor, Maximize2, Minimize2 } from "lucide-react";
 import { PREVIEW_DARK_VARS } from "../../theme";
 import { CodeBlock } from "./doc-code-block";
 import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
 
+/* Width presets for the canvas. Full screen is not one of these: it is a real
+   Fullscreen API toggle on the preview itself, handled separately below. */
 const VIEWPORTS = [
   { id: "mobile", w: "390px", Icon: Smartphone },
   { id: "tablet", w: "768px", Icon: Tablet },
   { id: "desktop", w: "100%", Icon: Monitor },
-  { id: "full", w: "100%", Icon: Maximize2 },
 ];
 
 interface PreviewProps {
@@ -17,8 +18,8 @@ interface PreviewProps {
   filename?: string;
   children: React.ReactNode | ((vp: string) => React.ReactNode);
   height?: number;
-  /** Default viewport tab: "mobile" | "tablet" | "desktop" | "full" (default: "full") */
-  defaultViewport?: "mobile" | "tablet" | "desktop" | "full";
+  /** Default canvas width: "mobile" | "tablet" | "desktop" (default: "desktop") */
+  defaultViewport?: "mobile" | "tablet" | "desktop";
   /** Remove all padding so content stretches edge-to-edge inside the preview */
   fullWidth?: boolean;
   /** Override the preview canvas background (light mode only). Defaults to var(--bg). */
@@ -72,11 +73,29 @@ function normalizeImports(code: string | undefined): string {
   return result.join("\n");
 }
 
-export function Preview({ title, code, filename, children, height = 160, defaultViewport = "full", fullWidth = false, canvasBg, clipContent = false, contentAlign = "center" }: PreviewProps) {
+export function Preview({ title, code, filename, children, height = 160, defaultViewport = "desktop", fullWidth = false, canvasBg, clipContent = false, contentAlign = "center" }: PreviewProps) {
   const [tab, setTab] = useState("preview");
-  const [vp, setVp] = useState(defaultViewport);
+  const [vp, setVp] = useState<"mobile" | "tablet" | "desktop">(defaultViewport);
   const [dark, setDark] = useState(false);
   const vpW = VIEWPORTS.find(v => v.id === vp)?.w || "100%";
+
+  /* Real full screen, not a width preset: the preview element itself goes
+     fullscreen, so a component that fills the viewport can be seen doing it. */
+  const rootRef = useRef<HTMLDivElement>(null);
+  const [isFull, setIsFull] = useState(false);
+
+  useEffect(() => {
+    const onChange = () => setIsFull(document.fullscreenElement === rootRef.current);
+    document.addEventListener("fullscreenchange", onChange);
+    return () => document.removeEventListener("fullscreenchange", onChange);
+  }, []);
+
+  const toggleFull = () => {
+    const el = rootRef.current;
+    if (!el) return;
+    if (document.fullscreenElement) document.exitFullscreen?.();
+    else el.requestFullscreen?.();
+  };
 
   useEffect(() => {
     const root = document.documentElement;
@@ -94,7 +113,16 @@ export function Preview({ title, code, filename, children, height = 160, default
 
 
   return (
-    <div style={{ border: "1px solid var(--border)", borderRadius: "var(--radius-2xl)", marginBottom: "var(--space-5)" }}>
+    <div
+      ref={rootRef}
+      style={{
+        border: "1px solid var(--border)",
+        borderRadius: isFull ? 0 : "var(--radius-2xl)",
+        marginBottom: isFull ? 0 : "var(--space-5)",
+        background: "var(--bg)",
+        ...(isFull ? { height: "100vh", display: "flex", flexDirection: "column" as const } : {}),
+      }}
+    >
       {/* toolbar */}
       <div style={{
         display: "flex", alignItems: "center", justifyContent: "space-between",
@@ -112,7 +140,7 @@ export function Preview({ title, code, filename, children, height = 160, default
         </Tabs>
         <div style={{ display: "flex", alignItems: "center", gap: "var(--space-0-5)" }}>
           {VIEWPORTS.map(v => (
-            <button key={v.id} onClick={() => setVp(v.id as "mobile" | "tablet" | "desktop" | "full")} title={v.w} style={{
+            <button key={v.id} onClick={() => setVp(v.id as "mobile" | "tablet" | "desktop")} title={v.w} style={{
               width: 24, height: 24, borderRadius: 5, border: "none", cursor: "pointer",
               background: vp === v.id ? "var(--bg)" : "transparent",
               color: vp === v.id ? "var(--fg)" : "var(--muted-fg)",
@@ -122,6 +150,20 @@ export function Preview({ title, code, filename, children, height = 160, default
               <v.Icon size={11} />
             </button>
           ))}
+          <button
+            onClick={toggleFull}
+            title={isFull ? "Exit full screen" : "Full screen"}
+            aria-pressed={isFull}
+            style={{
+              width: 24, height: 24, borderRadius: 5, border: "none", cursor: "pointer",
+              background: isFull ? "var(--bg)" : "transparent",
+              color: isFull ? "var(--fg)" : "var(--muted-fg)",
+              display: "inline-flex", alignItems: "center", justifyContent: "center",
+              boxShadow: isFull ? "0 1px 3px rgba(0,0,0,.12)" : "none",
+            }}
+          >
+            {isFull ? <Minimize2 size={11} /> : <Maximize2 size={11} />}
+          </button>
           <div style={{ width: 1, height: 14, background: "var(--border)", margin: "0 3px" }} />
           <button onClick={() => setDark(d => !d)} title="Toggle preview bg" style={{
             width: 24, height: 24, borderRadius: 5, border: "none", cursor: "pointer",
@@ -139,22 +181,26 @@ export function Preview({ title, code, filename, children, height = 160, default
         ? (
           <div style={{
             ...(dark ? PREVIEW_DARK_VARS : {}) as React.CSSProperties,
-            background: dark ? "#09090b" : (canvasBg ?? "var(--bg)"), padding: fullWidth ? 0 : 16, minHeight: height,
+            background: dark ? "#09090b" : (canvasBg ?? "var(--bg)"), padding: fullWidth ? 0 : 16,
+            minHeight: isFull ? 0 : height,
             display: "flex", alignItems: "center", justifyContent: "center",
             position: "relative", transition: "background .2s",
-            borderRadius: "0 0 12px 12px", overflow: clipContent ? "hidden" : "visible",
+            borderRadius: isFull ? 0 : "0 0 12px 12px", overflow: clipContent ? "hidden" : "visible",
+            ...(isFull ? { flex: 1 } : {}),
           }}>
             <div style={{
               maxWidth: vpW, width: "100%", transition: "max-width .3s",
               borderRadius: "var(--radius-lg)",
               overflow: "visible",
+              ...(isFull ? { height: "100%" } : {}),
             }}>
               <div style={{
                 display: "flex",
                 alignItems: contentAlign === "start" ? "flex-start" : "center",
                 justifyContent: contentAlign === "start" ? "flex-start" : "center",
                 flexWrap: "wrap",
-                gap: fullWidth ? 0 : 10, padding: fullWidth ? 0 : "16px", minHeight: height, overflow: "visible",
+                gap: fullWidth ? 0 : 10, padding: fullWidth ? 0 : "16px",
+                minHeight: isFull ? "100%" : height, overflow: "visible",
               }}>
                 {renderedChildren}
               </div>

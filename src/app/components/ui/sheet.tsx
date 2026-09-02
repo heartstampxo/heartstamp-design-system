@@ -55,10 +55,17 @@ function SheetOverlay({
 function SheetContent({
   className,
   children,
+  container,
   ...props
-}: React.ComponentProps<typeof DrawerPrimitive.Content>) {
+}: React.ComponentProps<typeof DrawerPrimitive.Content> & {
+  /** Render the overlay and sheet into this element instead of document.body.
+   *  Use it to keep a sheet inside a bounded box, such as a docs preview or a
+   *  device frame. The container must be a positioned/transformed element for
+   *  the fixed layers to resolve against it. */
+  container?: HTMLElement | null;
+}) {
   return (
-    <SheetPortal>
+    <SheetPortal container={container}>
       <SheetOverlay />
       <DrawerPrimitive.Content
         data-slot="sheet-content"

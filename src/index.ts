@@ -112,6 +112,7 @@ export * from './app/components/ui/hs-order-summary-card';
 export * from './app/components/ui/hs-website-nav';
 export * from './app/components/ui/hs-website-nav-v2'; /* testing phase */
 export * from './app/components/ui/hs-notifications';
+export * from './app/components/ui/hs-mega-menu-data';
 export * from './app/components/ui/profile-nav';
 export * from './app/components/ui/stepper';
 

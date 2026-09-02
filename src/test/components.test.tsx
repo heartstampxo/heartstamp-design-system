@@ -1,7 +1,7 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { fireEvent, render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { act, fireEvent, render, screen } from '@testing-library/react';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   Alrt,
   AlrtStrong,
@@ -37,7 +37,9 @@ import {
   StampyAlrt,
   TopNavDesktop,
   TopNavMobile,
+  WebsiteNavV2,
   type CoachTipItem,
+  type NotificationItem,
 } from '../index';
 
 const TIPS: CoachTipItem[] = [
@@ -1314,5 +1316,366 @@ describe('Alrt severity tints stay wired to state tokens', () => {
 
     const { container: bad } = render(<Alrt variant="destructive">Body</Alrt>);
     expect(bad.firstElementChild?.getAttribute('style')).toContain('var(--state-error)');
+  });
+});
+
+describe('WebsiteNavV2 bell opens the notification panel', () => {
+  const ITEMS: NotificationItem[] = [
+    { id: 'order', title: 'Order delivered', time: '1d', preview: 'Your order HS-1042 arrived.' },
+  ];
+
+  it('renders no panel until the bell is pressed', () => {
+    render(<WebsiteNavV2 notifications={ITEMS} />);
+
+    expect(screen.queryByRole('dialog', { name: 'Notifications' })).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Notifications' }));
+
+    expect(screen.getByRole('dialog', { name: 'Notifications' })).toBeInTheDocument();
+    expect(screen.getByText('Order delivered')).toBeInTheDocument();
+  });
+
+  it('forwards the row callbacks and reports opening exactly once', () => {
+    const onNotifications = vi.fn();
+    const onNotificationItemClick = vi.fn();
+
+    render(
+      <WebsiteNavV2
+        notifications={ITEMS}
+        onNotifications={onNotifications}
+        onNotificationItemClick={onNotificationItemClick}
+      />,
+    );
+
+    const bell = screen.getByRole('button', { name: 'Notifications' });
+
+    fireEvent.click(bell);
+    expect(onNotifications).toHaveBeenCalledTimes(1);
+
+    fireEvent.click(screen.getByText('Order delivered'));
+    expect(onNotificationItemClick).toHaveBeenCalledWith(expect.objectContaining({ id: 'order' }));
+
+    // Closing is not an open: onNotifications must not fire again on the way out.
+    fireEvent.click(bell);
+    expect(screen.queryByRole('dialog', { name: 'Notifications' })).not.toBeInTheDocument();
+    expect(onNotifications).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('WebsiteNavV2 compact bar (mobile)', () => {
+  const ITEMS: NotificationItem[] = [
+    { id: 'order', title: 'Order delivered', time: '1d', preview: 'Your order HS-1042 arrived.' },
+  ];
+
+  it('is one component for both layouts, so a caller mounts it once', () => {
+    const { rerender } = render(<WebsiteNavV2 />);
+
+    // Wide: the desktop rows.
+    expect(screen.getByRole('button', { name: 'Get the App' })).toBeInTheDocument();
+    expect(screen.getByRole('navigation', { name: 'Card categories' })).toBeInTheDocument();
+
+    // Narrow: the same element becomes the compact bar. No second import.
+    rerender(<WebsiteNavV2 mobile />);
+    expect(screen.queryByRole('button', { name: 'Get the App' })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Search' })).toBeInTheDocument();
+  });
+
+  it('collapses to the icon-only cluster and opens the notification sheet', () => {
+    render(<WebsiteNavV2 mobile notifications={ITEMS} />);
+
+    for (const name of ['Search', 'Reminders', 'Language', 'Notifications', 'Cart']) {
+      expect(screen.getByRole('button', { name })).toBeInTheDocument();
+    }
+
+    // Everything the compact bar drops from the desktop rows.
+    expect(screen.queryByRole('button', { name: 'Get the App' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Profile' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('navigation', { name: 'Card categories' })).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Notifications' }));
+
+    expect(screen.getByRole('dialog', { name: 'Notifications' })).toBeInTheDocument();
+    expect(screen.getByText('Order delivered')).toBeInTheDocument();
+  });
+
+  it('drops the globe when showLanguage is false, matching production', () => {
+    render(<WebsiteNavV2 mobile showLanguage={false} />);
+
+    expect(screen.queryByRole('button', { name: 'Language' })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Cart' })).toBeInTheDocument();
+  });
+
+  describe('scroll auto-hide', () => {
+    const scrollTo = (y: number) => {
+      Object.defineProperty(window, 'scrollY', { value: y, configurable: true, writable: true });
+      fireEvent.scroll(window);
+    };
+
+    afterEach(() => scrollTo(0));
+
+    it('hides a stuck bar once the page is scrolled past the settle distance', () => {
+      render(<WebsiteNavV2 mobile />);
+
+      scrollTo(300);
+
+      expect(screen.getByRole('banner')).toHaveAttribute('data-hidden');
+    });
+
+    it('never translates a non-sticky bar, which would lift it over what sits above', () => {
+      render(<WebsiteNavV2 mobile sticky={false} />);
+
+      scrollTo(300);
+
+      expect(screen.getByRole('banner')).not.toHaveAttribute('data-hidden');
+    });
+  });
+});
+
+describe('WebsiteNavV2 language dropdown', () => {
+  it('opens from the globe, marks the current choice, and reports a pick', () => {
+    const onLanguageChange = vi.fn();
+    render(<WebsiteNavV2 onLanguageChange={onLanguageChange} />);
+
+    expect(screen.queryByRole('menu', { name: 'Language' })).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Language' }));
+
+    expect(screen.getByRole('menu', { name: 'Language' })).toBeInTheDocument();
+    expect(screen.getByRole('menuitemradio', { name: /English/ })).toHaveAttribute('aria-checked', 'true');
+    expect(screen.getByRole('menuitemradio', { name: /French/ })).toHaveAttribute('aria-checked', 'false');
+
+    fireEvent.click(screen.getByRole('menuitemradio', { name: /French/ }));
+
+    expect(onLanguageChange).toHaveBeenCalledWith('French');
+    expect(screen.queryByRole('menu', { name: 'Language' })).not.toBeInTheDocument();
+  });
+
+  it('closes on Escape', () => {
+    render(<WebsiteNavV2 />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Language' }));
+    expect(screen.getByRole('menu', { name: 'Language' })).toBeInTheDocument();
+
+    fireEvent.keyDown(document, { key: 'Escape' });
+    expect(screen.queryByRole('menu', { name: 'Language' })).not.toBeInTheDocument();
+  });
+});
+
+describe('WebsiteNavV2 reminders sheet', () => {
+  it('opens from the Reminders action, reports it, and closes again', () => {
+    const onReminders = vi.fn();
+    render(<WebsiteNavV2 onReminders={onReminders} />);
+
+    expect(screen.queryByRole('dialog', { name: 'Reminders' })).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Reminders' }));
+
+    expect(onReminders).toHaveBeenCalledTimes(1);
+    expect(screen.getByRole('dialog', { name: 'Reminders' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Set Reminders' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'View All Reminders' })).toBeInTheDocument();
+
+    // The shell is the design system Sheet, which keeps the node mounted for
+    // its exit animation, so assert the state it reports rather than removal.
+    fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+    expect(screen.getByRole('dialog', { name: 'Reminders' })).toHaveAttribute('data-state', 'closed');
+  });
+
+  it('portals into portalContainer when given one, and to the body without', () => {
+    const frame = document.createElement('div');
+    document.body.appendChild(frame);
+
+    const { unmount } = render(<WebsiteNavV2 portalContainer={frame} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Reminders' }));
+    expect(frame.contains(screen.getByRole('dialog', { name: 'Reminders' }))).toBe(true);
+    unmount();
+
+    // Default stays viewport-level, which is what the spec asks for in an app.
+    render(<WebsiteNavV2 />);
+    fireEvent.click(screen.getByRole('button', { name: 'Reminders' }));
+    expect(frame.contains(screen.getByRole('dialog', { name: 'Reminders' }))).toBe(false);
+
+    frame.remove();
+  });
+
+  it('bleeds to its container on phone, not to the browser viewport', () => {
+    const frame = document.createElement('div');
+    document.body.appendChild(frame);
+
+    const { unmount } = render(<WebsiteNavV2 mobile portalContainer={frame} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Reminders' }));
+    // 100vw here would be the whole browser, hanging the contents off the left
+    // of the frame and pushing the title and copy out of view.
+    expect(screen.getByRole('dialog', { name: 'Reminders' })).toHaveStyle({ width: '100%' });
+    unmount();
+    frame.remove();
+
+    // Portaled to the body, full bleed really is the viewport.
+    render(<WebsiteNavV2 mobile />);
+    fireEvent.click(screen.getByRole('button', { name: 'Reminders' }));
+    expect(screen.getByRole('dialog', { name: 'Reminders' })).toHaveStyle({ width: '100vw' });
+  });
+
+  it('is the design system Sheet, not a bespoke panel', () => {
+    render(<WebsiteNavV2 />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Reminders' }));
+
+    const sheet = screen.getByRole('dialog', { name: 'Reminders' });
+    expect(sheet).toHaveAttribute('data-slot', 'sheet-content');
+    expect(sheet).toHaveAttribute('data-vaul-drawer-direction', 'right');
+    // Spec width and ground ride on top of SheetContent's own sizing. These
+    // must be resolvable values, not nav-scoped custom properties: the sheet
+    // portals outside .hs-nav-v2, where those would collapse to transparent.
+    expect(sheet).toHaveStyle({ width: '456px', background: '#f9f9f9' });
+    expect(sheet.getAttribute('style') ?? '').not.toContain('var(--rem-');
+  });
+
+  it('opens from the compact bar as well, so both layouts reach it', () => {
+    render(<WebsiteNavV2 mobile />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Reminders' }));
+
+    expect(screen.getByRole('dialog', { name: 'Reminders' })).toBeInTheDocument();
+  });
+});
+
+describe('WebsiteNavV2 mega menu', () => {
+  const row = () => document.querySelector('.hs-nav-v2__linksrow') as HTMLElement;
+
+  it('opens on category hover and swaps datasets without closing', () => {
+    render(<WebsiteNavV2 />);
+
+    // The panel stays mounted so both animations can play, but while closed it
+    // is out of the accessibility tree and the tab order, so a role query must
+    // not find it. The row's flag is what says it is open.
+    expect(row()).not.toHaveAttribute('data-mega-open');
+    expect(document.querySelector('.hs-nav-v2__megapanel')).toBeInTheDocument();
+    expect(screen.queryByRole('region', { name: 'Category menu' })).not.toBeInTheDocument();
+
+    fireEvent.mouseEnter(screen.getByRole('button', { name: 'Bday' }));
+
+    expect(row()).toHaveAttribute('data-mega-open');
+    // Open, and now exposed.
+    expect(screen.getByRole('region', { name: 'Category menu' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Bday' })).toHaveAttribute('aria-expanded', 'true');
+    expect(screen.getByText('By Age')).toBeInTheDocument();
+
+    // Moving to another category swaps the dataset and stays open.
+    fireEvent.mouseEnter(screen.getByRole('button', { name: 'Wedding' }));
+
+    expect(row()).toHaveAttribute('data-mega-open');
+    expect(screen.getByRole('button', { name: 'Bday' })).toHaveAttribute('aria-expanded', 'false');
+    expect(screen.queryByText('By Age')).not.toBeInTheDocument();
+    expect(screen.getByText('By Moment')).toBeInTheDocument();
+  });
+
+  it('opens on focus as well, for keyboard parity with hover', () => {
+    render(<WebsiteNavV2 />);
+
+    fireEvent.focus(screen.getByRole('button', { name: 'Congrats' }));
+
+    expect(row()).toHaveAttribute('data-mega-open');
+  });
+
+  it('closes immediately on Escape', () => {
+    render(<WebsiteNavV2 />);
+
+    fireEvent.mouseEnter(screen.getByRole('button', { name: 'Bday' }));
+    fireEvent.keyDown(row(), { key: 'Escape' });
+
+    expect(row()).not.toHaveAttribute('data-mega-open');
+  });
+
+  it('holds open for the grace period when the pointer leaves the row', () => {
+    vi.useFakeTimers();
+    try {
+      render(<WebsiteNavV2 />);
+
+      fireEvent.mouseEnter(screen.getByRole('button', { name: 'Bday' }));
+      fireEvent.mouseLeave(row());
+
+      // Still open, so the pointer can cross the gap down into the panel.
+      expect(row()).toHaveAttribute('data-mega-open');
+
+      act(() => { vi.advanceTimersByTime(140); });
+      expect(row()).not.toHaveAttribute('data-mega-open');
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('is absent on the compact bar, which is what production ships', () => {
+    render(<WebsiteNavV2 mobile />);
+
+    expect(screen.queryByRole('region', { name: 'Category menu' })).not.toBeInTheDocument();
+  });
+
+  it('can be dropped, leaving the row as plain links', () => {
+    render(<WebsiteNavV2 showMegaMenu={false} />);
+
+    expect(screen.queryByRole('region', { name: 'Category menu' })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Bday' })).not.toHaveAttribute('aria-haspopup');
+  });
+
+  it('reports the category alongside the item that was clicked', () => {
+    const onMegaSelect = vi.fn();
+    render(<WebsiteNavV2 onMegaSelect={onMegaSelect} />);
+
+    fireEvent.mouseEnter(screen.getByRole('button', { name: 'Bday' }));
+    fireEvent.click(screen.getByRole('button', { name: 'For Mum' }));
+
+    expect(onMegaSelect).toHaveBeenCalledWith('Bday', 'For Mum');
+  });
+});
+
+describe('WebsiteNavV2 mega menu survives hostile category labels', () => {
+  it('falls back instead of resolving inherited Object members', () => {
+    // megaMenus is documented as CMS-fed, so a label like "__proto__" is
+    // reachable. A plain map lookup returns Object.prototype here, tests
+    // truthy, defeats the ?? fallback and throws on data.filters.map.
+    for (const label of ['__proto__', 'constructor', 'toString']) {
+      const { unmount } = render(
+        <WebsiteNavV2 categories={[label]} defaultOpenCategory={label} />,
+      );
+
+      // Renders, and shows the fallback dataset rather than crashing.
+      expect(screen.getByRole('region', { name: 'Category menu' })).toBeInTheDocument();
+      expect(screen.getByText('By Age')).toBeInTheDocument();
+      unmount();
+    }
+  });
+});
+
+describe('WebsiteNavV2 review regressions', () => {
+  const row = () => document.querySelector('.hs-nav-v2__linksrow') as HTMLElement;
+  const setScroll = (y: number) =>
+    Object.defineProperty(window, 'scrollY', { value: y, configurable: true, writable: true });
+
+  afterEach(() => setScroll(0));
+
+  it('reports the hover-out even with the panel switched off', () => {
+    // showMegaMenu={false} is the mode where a consumer drives its own panel
+    // from onCategoryHover, so the null close signal is the whole contract.
+    const onCategoryHover = vi.fn();
+    render(<WebsiteNavV2 showMegaMenu={false} onCategoryHover={onCategoryHover} />);
+
+    fireEvent.mouseEnter(screen.getByRole('button', { name: 'Bday' }));
+    expect(onCategoryHover).toHaveBeenCalledWith('Bday');
+
+    fireEvent.mouseLeave(row());
+    expect(onCategoryHover).toHaveBeenLastCalledWith(null);
+  });
+
+  it('does not hide the bar on an upward scroll when it starts below the fold', () => {
+    // Seeding the tracker at 0 made the first scroll from y=590 read as a
+    // 590px downward delta and hid the bar on an upward flick.
+    setScroll(600);
+    render(<WebsiteNavV2 mobile />);
+
+    setScroll(590);
+    fireEvent.scroll(window);
+
+    expect(screen.getByRole('banner')).not.toHaveAttribute('data-hidden');
   });
 });

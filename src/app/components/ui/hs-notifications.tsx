@@ -73,7 +73,11 @@ const NOTIF_CSS = `
   --notif-w: 400px;
   --notif-max-h: 620px;
   --notif-row-pad: 20px 24px;
-  --notif-m-top: 46px; /* phone: sheet starts below the compact header */
+  /* Phone: the sheet starts below the compact header, so this MUST equal the
+     mobile nav bar height. Inside WebsiteNavV2 that height is --nav-m-h and
+     is inherited, which keeps the two in sync; 56px is the standalone value
+     for a Notification used outside the nav. */
+  --notif-m-top: var(--nav-m-h, 56px);
   --notif-z: 50;
   position: relative; flex: none;
   font-family: var(--font-family-body);
@@ -521,6 +525,8 @@ export interface NotificationProps {
   onShowMore?: (item: NotificationItem) => void;
   onArchive?: (item: NotificationItem) => void;
   onMarkAllRead?: () => void;
+  /** Fires whenever the panel opens or closes, including outside-click and Escape. */
+  onOpenChange?: (open: boolean) => void;
 }
 
 export function Notification({
@@ -529,7 +535,7 @@ export function Notification({
   mobile = false,
   title = "Notifications",
   markAllLabel = "Mark all as read",
-  onItemClick, onShowMore, onArchive, onMarkAllRead,
+  onItemClick, onShowMore, onArchive, onMarkAllRead, onOpenChange,
 }: NotificationProps) {
   useInjectedStyle("hs-notif", NOTIF_CSS_MIN);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -549,13 +555,15 @@ export function Notification({
   /* Outside click + Escape close the panel (and any open menu). */
   useEffect(() => {
     if (!open && !menuFor) return;
+    const dismiss = () => {
+      if (open) onOpenChange?.(false);
+      setOpen(false); setMenuFor(null);
+    };
     const onDoc = (e: MouseEvent) => {
-      if (rootRef.current && !rootRef.current.contains(e.target as Node)) {
-        setOpen(false); setMenuFor(null);
-      }
+      if (rootRef.current && !rootRef.current.contains(e.target as Node)) dismiss();
     };
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") { setOpen(false); setMenuFor(null); }
+      if (e.key === "Escape") dismiss();
     };
     document.addEventListener("click", onDoc);
     document.addEventListener("keydown", onKey);
@@ -563,14 +571,14 @@ export function Notification({
       document.removeEventListener("click", onDoc);
       document.removeEventListener("keydown", onKey);
     };
-  }, [open, menuFor]);
+  }, [open, menuFor, onOpenChange]);
 
   const toggleOpen = () => {
-    setOpen(o => {
-      if (!o) setOpenCount(c => c + 1);
-      else setMenuFor(null);
-      return !o;
-    });
+    const next = !open;
+    if (next) setOpenCount(c => c + 1);
+    else setMenuFor(null);
+    setOpen(next);
+    onOpenChange?.(next);
   };
 
   const markAll = () => {

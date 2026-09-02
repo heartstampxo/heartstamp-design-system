@@ -2289,6 +2289,78 @@ function PageEditorTopNav() {
 }
 
 
+/* Phone frame for the WebsiteNavV2Mobile preview. In mobile mode the
+   notification sheet is position:fixed against the viewport, which in a docs
+   page would cover the whole screen. Re-anchoring it to this frame keeps the
+   demo inside its box; the frame is docs chrome, not part of the component. */
+/* ── Demo chrome for the WebsiteNavV2 previews ─────────────────────────
+   None of this ships. The import is WebsiteNavV2 and nothing else; the
+   frame, the scroll container and the filler copy exist only so the nav's
+   viewport-level behaviour can be shown inside a docs page: the sticky
+   bar, the phone auto-hide, and the fixed layers (notification sheet,
+   reminders veil and sheet) that would otherwise cover the whole page. */
+const NAV_V2_DEMO_CSS = `
+.navv2-frame {
+  position: relative;
+  /* Containing block for the component's position:fixed layers, so they land
+     inside the frame. It must NOT also be the scroll container, or those
+     layers would translate with the scroll — .navv2-scroll does that. */
+  transform: translate(0);
+  overflow: hidden;
+  height: 760px;
+  box-sizing: border-box;
+  background: var(--color-bg-main);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-2xl);
+}
+.navv2-phone { width: 390px; flex: none; border-radius: 28px; }
+.navv2-desk { width: 100%; align-self: stretch; }
+.navv2-scroll { height: 100%; overflow: auto; }
+/* Inside a frame the phone tray must size to the frame, not to 100vw. Scoped
+   to the forced-phone instance only: the desktop dropdown keeps its 400px
+   width and right-edge anchor. The reminders sheet needs no rule, since it is
+   portaled into the frame and already sizes to it. */
+.navv2-frame .hs-notif[data-mobile] .hs-notif__panel { left: 0; right: 0; width: auto; max-width: none; }
+/* Mega-menu-only view: a shorter frame with the action row hidden, so the
+   container shows the panel and the single category it hangs off and nothing
+   else. Hiding the row is docs chrome; the component always renders it. */
+.navv2-mega { height: 520px; }
+.navv2-mega .hs-nav-v2__row--actions { display: none; }
+/* Pin the drop open. defaultOpenCategory only seeds the state, and the
+   component still closes on mouse leave; this view is here to show the panel,
+   not the interaction, so hold it at its open geometry. Two classes outrank
+   the component's own single-class closed rules, so injection order is
+   irrelevant, and it agrees with the [data-mega-open] rules when state opens. */
+.navv2-mega .hs-nav-v2__megapanel { height: var(--mega-panel-h); pointer-events: auto; visibility: visible; }
+.navv2-mega .hs-nav-v2__megainner { transform: none; opacity: 1; }
+/* Keep the category reading as active while the panel is pinned. */
+.navv2-mega .hs-nav-v2__link { color: var(--color-brand-primary); }
+.navv2-filler { padding: var(--space-6) var(--space-5) 64px; }
+.navv2-filler p {
+  max-width: 560px;
+  margin: 0 0 var(--space-4);
+  font-size: var(--font-size-body-15);
+  line-height: var(--line-height-body-15);
+  color: var(--color-text-secondary);
+}
+.navv2-spacer { height: 900px; }
+`;
+
+/* Hands the frame element down so the nav can portal its reminders sheet into
+   it. Demo only: in an app the sheet is viewport-level, which is the spec, and
+   portalContainer is left unset. */
+function NavV2Frame({ className, children }: {
+  className: string;
+  children: (container: HTMLElement | null) => React.ReactNode;
+}) {
+  const [frame, setFrame] = useState<HTMLDivElement | null>(null);
+  return (
+    <div className={`navv2-frame ${className}`} ref={setFrame}>
+      <div className="navv2-scroll">{children(frame)}</div>
+    </div>
+  );
+}
+
 function PageWebsiteNav() {
   const [solidBg,           setSolidBg]           = useState(false);
   const [showCategoryStrip, setShowCategoryStrip]  = useState(true);
@@ -2336,7 +2408,7 @@ function PageWebsiteNav() {
       {/* New navigation — WebsiteNavV2, in validation */}
       <DocSection
         title="New Navigation"
-        desc="WebsiteNavV2 is the design team's next-generation top navigation: a bolder, more action-oriented concept built from the new Figma spec. Both rows ride the marketing grid track. It's currently being validated against the spec; the current WebsiteNav below remains the production component until V2 is promoted."
+        desc="WebsiteNavV2 is the design team's next-generation top navigation: a bolder, more action-oriented concept built from the new Figma spec. Both rows ride the marketing grid track. Hover any category in the second row and the mega menu drops out of it, covered on its own below. All three surfaces from the handoff are wired and ship inside the component: the bell opens the Notification panel (pass rows through `notifications`, handle the rest with the `onNotification*` callbacks), the globe opens the language dropdown (`languages`, `language`, `onLanguageChange`), and Reminders opens the design system's own Sheet on `direction=right` (`remindersLede`, `remindersSub`, `onSetReminders`, `onViewAllReminders`), which brings the overlay, the slide, focus handling and the close button with it; the nav only supplies the contents plus the spec's 456px width and off-white ground. It is viewport-level when you import it, as the spec asks. The demo below bounds it to the frame with `portalContainer`, which is the only reason it does not cover this page. The sheet's illustration is not bundled: pass `remindersArtSrc` for the alpha WebM and `remindersArtFallbackSrc` for the still, or leave both off and the copy renders alone. Auto-hide pauses while any surface is open, since transforming the nav would drag the fixed layers with it. The bordered box below is a stand-in viewport for the demo, nothing more: importing WebsiteNavV2 gets you the navigation and its surfaces, never the frame, the scroll container or the filler copy, and the Code tab shows exactly what ships. It's currently being validated against the spec; the current WebsiteNav below remains the production component until V2 is promoted."
         action={
           <span style={{
             fontSize: 10, fontWeight: "var(--font-weight-bold, 700)" as any, padding: "2px 8px", borderRadius: "var(--radius-full)",
@@ -2347,16 +2419,91 @@ function PageWebsiteNav() {
       >
         <Preview
           title="WebsiteNavV2 · testing"
-          code={`import { WebsiteNavV2 } from "@heartstampxo/design-system";\n\n<WebsiteNavV2\n  avatarSrc="https://i.pravatar.cc/80?img=68"\n  onSearch={openSpotlight}      // also bound to ⌘K / Ctrl+K\n  onCategoryHover={openMegaPanel}\n  onAskStampy={openStampy}\n/>`}
-          height={320}
+          code={`import { WebsiteNavV2 } from "@heartstampxo/design-system";\n\n<WebsiteNavV2\n  avatarSrc="https://i.pravatar.cc/80?img=68"\n  onSearch={openSpotlight}      // also bound to ⌘K / Ctrl+K\n  onCategoryHover={openMegaPanel}\n  onAskStampy={openStampy}\n  notifications={notifications}          // omit to use the demo set\n  onNotifications={trackBellOpened}      // fires when the panel opens\n  onNotificationItemClick={openNotification}\n  onNotificationArchive={archiveNotification}\n  onNotificationMarkAllRead={markAllRead}\n/>`}
+          height={800}
           fullWidth
           canvasBg="var(--color-bg-editor)"
         >
-          <div style={{ width: "100%", alignSelf: "stretch" }}>
-            <WebsiteNavV2 sticky={false} avatarSrc="https://i.pravatar.cc/80?img=68" />
-          </div>
+          <style>{NAV_V2_DEMO_CSS}</style>
+          <NavV2Frame className="navv2-desk">
+            {container => (
+              <>
+                <WebsiteNavV2 avatarSrc="https://i.pravatar.cc/80?img=68" portalContainer={container} />
+                <div className="navv2-filler">
+                  <p>Scroll this frame to watch the bar stay stuck to the top. Open the globe, the bell or Reminders and the surface stays inside the frame, because the preview hands the nav this box to render into. In your app you leave that unset and they cover the viewport.</p>
+                  <p>Narrow the frame with the viewport buttons above and the nav collapses to its compact bar on its own. It measures its own width, not the browser's.</p>
+                  <div className="navv2-spacer" />
+                </div>
+              </>
+            )}
+          </NavV2Frame>
         </Preview>
       </DocSection>
+
+      <DocSection
+        title="New Navigation · Mobile"
+desc="Same component, no second import. WebsiteNavV2 measures its own box and swaps to this compact bar once it drops below 768px wide, so mounting it once covers both layouts; pass breakpoint to move the switch, or mobile to force the bar at any width as this preview does. It measures itself rather than the viewport, so it also collapses inside a narrow frame on a wide screen. The two rows become one 56px bar: a 112px lockup and an icon-only cluster, with the search pill, Get the App, the Reminders label, the Ask Stampy chip, the avatar and the whole category row dropping. Tap the bell and the tray opens as a full-height sheet pinned under the bar, since --notif-m-top reads the bar's own --nav-m-h. On a real phone the bar slides away on downward scroll and returns on upward; pass autoHideOnScroll={false} to pin it. The globe is here because the handoff asks for it, but production's cluster drops it, so pass showLanguage={false} to match production. The phone frame, its scroll container and the filler copy are demo chrome standing in for a viewport; the import is WebsiteNavV2 and nothing else."
+        action={
+          <span style={{
+            fontSize: 10, fontWeight: "var(--font-weight-bold, 700)" as any, padding: "2px 8px", borderRadius: "var(--radius-full)",
+            background: LABEL_COLORS.beta.bg, color: LABEL_COLORS.beta.color,
+            textTransform: "uppercase" as const, letterSpacing: ".04em", whiteSpace: "nowrap" as const,
+          }}>Testing phase</span>
+        }
+      >
+        <Preview
+          title="WebsiteNavV2Mobile · testing"
+          code={`import { WebsiteNavV2 } from "@heartstampxo/design-system";\n\n// One mount, both layouts. Below 768px of its own width this becomes\n// the compact bar on its own; \`mobile\` forces it at any width.\n<WebsiteNavV2\n  notifications={notifications}\n  onSearch={openSpotlight}\n  onReminders={openReminders}\n  onNotificationItemClick={openNotification}\n  onNotificationArchive={archiveNotification}\n  onNotificationMarkAllRead={markAllRead}\n  onCart={openCart}\n  showLanguage={false}          // match production's cluster\n/>`}
+          height={800}
+          canvasBg="var(--color-bg-editor)"
+        >
+          <style>{NAV_V2_DEMO_CSS}</style>
+          <NavV2Frame className="navv2-phone">
+            {container => (
+              <>
+                <WebsiteNavV2 mobile portalContainer={container} />
+                <div className="navv2-filler">
+                  <p>Scroll down and the bar slides away; scroll back up and it returns. Tap the bell for the full-height tray, the globe for the language menu, or the calendar for the reminders sheet.</p>
+                  <div className="navv2-spacer" />
+                </div>
+              </>
+            )}
+          </NavV2Frame>
+        </Preview>
+      </DocSection>
+
+      <DocSection
+        title="New Navigation · Mega Menu"
+        desc="The panel on its own, so its layout can be read without the rest of the nav in the way. This container is cut down for that purpose only: one category instead of eleven, the action row hidden, and the drop pinned permanently open on Bday so it cannot close as you move the pointer. It is the same WebsiteNavV2 as above, not a second component, and nothing here is a prop you need in an app; the working version is the preview at the top of this page. The panel is a filter rail, four link columns and a promo tile, all swapped from the hovered category's dataset without the panel closing. Leaving the row closes it after a 140ms grace period so the pointer can cross the gap, focus opens it exactly as hover does, and Escape closes it at once. Datasets come from megaMenus, keyed by category label, and default to the spec's eleven; onMegaSelect reports the category alongside the filter, item or promo that was clicked. Promo art is not bundled, so pass megaPromoImages to fill the tile, otherwise it shows its navy ground and copy. Production has no mobile mega menu at all: the compact bar drops the category row and the panel with it, which is why the phone preview above has neither."
+        action={
+          <span style={{
+            fontSize: 10, fontWeight: "var(--font-weight-bold, 700)" as any, padding: "2px 8px", borderRadius: "var(--radius-full)",
+            background: LABEL_COLORS.beta.bg, color: LABEL_COLORS.beta.color,
+            textTransform: "uppercase" as const, letterSpacing: ".04em", whiteSpace: "nowrap" as const,
+          }}>Testing phase</span>
+        }
+      >
+        <Preview
+          title="WebsiteNavV2 · mega menu"
+          code={`import { WebsiteNavV2 } from "@heartstampxo/design-system";\n\n// The panel is part of the nav. Hover a category and it drops;\n// defaultOpenCategory just holds it open for review.\n<WebsiteNavV2\n  defaultOpenCategory="Bday"\n  megaMenus={menusFromCms}          // defaults to the spec's eleven\n  megaPromoImages={{ Bday: promoBday }}\n  onMegaSelect={(category, value) => router.push(hrefFor(category, value))}\n/>`}
+          height={560}
+          fullWidth
+          canvasBg="var(--color-bg-editor)"
+        >
+          <style>{NAV_V2_DEMO_CSS}</style>
+          <NavV2Frame className="navv2-desk navv2-mega">
+            {container => (
+              <WebsiteNavV2
+                categories={["Bday"]}
+                defaultOpenCategory="Bday"
+                sticky={false}
+                portalContainer={container}
+              />
+            )}
+          </NavV2Frame>
+        </Preview>
+      </DocSection>
+
 
       <DocSection
         title="Logged Out"

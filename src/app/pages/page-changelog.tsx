@@ -30,6 +30,25 @@ const TAG_STYLES: Record<string, { bg: string; color: string }> = {
 
 const RELEASES: Release[] = [
   {
+    version: "2.1.56", date: "2 Sep 2026",
+    title: "WebsiteNavV2: mega menu, language, reminders, mobile",
+    tags: ["feature", "design", "fix"],
+    items: [
+      "Mega menu, from the mega-menu handoff: the panel drops out of the category row on hover with a filter rail, four link columns and a promo tile. Switching categories swaps the dataset without closing, leaving the row closes after a 140ms grace period so the pointer can cross the gap, focus opens it exactly as hover does, and Escape closes at once. Eleven datasets ship as the default and are overridable via megaMenus; onMegaSelect reports the category alongside the filter, item or promo clicked. Production has no mobile mega menu, so the compact bar drops the row and the panel with it.",
+      "Language dropdown on the globe: 167px card with an inset hairline ring under the shadow, staggered pop-in, radio semantics and a check on the active row. Wired through languages / language / onLanguageChange.",
+      "Reminders sidebar on the Reminders action, built on the design system's own Sheet (direction=right) so the overlay, slide, focus handling and close button come from one place. The nav supplies the contents plus the spec's 456px width and off-white ground.",
+      "The notification tray now opens from the nav's bell. Notification ships its own trigger, so the nav's duplicate bell was removed rather than a second one added; the two were already pixel-identical. Notification gained an additive onOpenChange so the nav can react to the panel opening.",
+      "One component covers both layouts. WebsiteNavV2 measures its own box and swaps to a compact 56px bar below 768px, so a caller mounts it once and needs no second import. It measures itself rather than the viewport, so it also collapses inside a narrow frame on a wide screen; mobile forces the phone layout for design review.",
+      "Scroll auto-hide on the compact bar, phone only, skipped under reduced motion and paused while any surface is open, since transforming the nav would drag the fixed tray and sheet along with it.",
+      "Accessibility fix with wider reach than the nav: cssMin stripped whitespace on both sides of a colon, which collapsed \".root :focus-visible\" to \".root:focus-visible\" and silently moved the focus ring off every child and onto the root. Keyboard focus outlines were missing throughout WebsiteNavV2 and the notification tray. Colons are now stripped on the trailing side only.",
+      "The closed mega panel no longer holds ~40 buttons in the tab order: pointer-events does not remove focusability, so the closed state now carries visibility:hidden and aria-hidden, with a delayed transition so the collapse still animates. A dataset taller than the fixed 372px drop now scrolls, which the code comment had always claimed but nothing implemented.",
+      "Hardening: the category-keyed dataset maps are read with own-property lookups. megaMenus is documented as CMS-fed, and a label of \"__proto__\", \"constructor\" or \"toString\" previously resolved to an inherited member of Object, defeated the fallback and crashed the panel.",
+      "The notification sheet's phone offset now reads the nav bar's own height (--notif-m-top resolves to --nav-m-h) instead of a hardcoded 46px that predated the compact bar, so the two cannot drift.",
+      "Sheet gained an optional container prop, forwarded to its portal, so a sheet can be bounded inside a docs preview or device frame instead of the viewport.",
+      "Docs Preview: desktop is the default viewport again, and the full-screen button is a real Fullscreen API toggle rather than a second 100% width preset that did nothing.",
+    ],
+  },
+  {
     version: "2.1.55", date: "1 Sep 2026",
     title: "Notification component",
     tags: ["feature"],

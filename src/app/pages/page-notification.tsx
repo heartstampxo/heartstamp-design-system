@@ -25,14 +25,15 @@ const PHONE_FRAME_CSS = `
   position: absolute;
   left: 0;
   right: auto;
-  top: var(--notif-m-top, 46px);
+  top: var(--notif-m-top, 56px);
   bottom: 0;
   width: 390px;
   max-width: 390px;
   height: auto;
 }
 .notif-phone__bar {
-  height: 46px;
+  /* Matches --nav-m-h, the real compact nav bar height the sheet sits under. */
+  height: 56px;
   padding: 0 var(--space-4);
   border-bottom: 1px solid var(--border);
   display: flex;
@@ -87,7 +88,7 @@ export function PageNotification() {
 
       <DocSection
         title="Mobile"
-        desc="Under 768px the panel automatically becomes a full-height sheet, and the mobile prop forces that presentation at any width for design review. Rows are tighter (40px icon, centred), and dragging a row right marks it read, left archives it, the mobile prop also enables the swipe gestures with a mouse. The component ships only the bell and the sheet: the phone frame and top bar below are docs chrome. The sheet starts --notif-m-top (46px) from the top; set that variable to your app's header height."
+        desc="Under 768px the panel automatically becomes a full-height sheet, and the mobile prop forces that presentation at any width for design review. Rows are tighter (40px icon, centred), and dragging a row right marks it read, left archives it, the mobile prop also enables the swipe gestures with a mouse. The component ships only the bell and the sheet: the phone frame and top bar below are docs chrome. The sheet starts --notif-m-top from the top, which resolves to --nav-m-h (56px, the compact WebsiteNavV2Mobile bar height) when the bell sits inside the nav, and falls back to 56px standalone; set either variable to your app's header height."
       >
         <Preview
           title="Notification · mobile sheet"

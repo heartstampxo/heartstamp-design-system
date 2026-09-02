@@ -19,7 +19,13 @@ export function cssMin(css: string): string {
   return css
     .replace(/\/\*[^]*?\*\//g, "")
     .replace(/\s+/g, " ")
-    .replace(/ ?([{};:,>]) ?/g, "$1")
+    .replace(/ ?([{};,>]) ?/g, "$1")
+    /* Colons are stripped on the trailing side only. A declaration is
+       "prop: value", so the space sits after; a descendant pseudo is
+       ".root :focus-visible", where it sits before and is load-bearing.
+       Stripping both collapsed that selector to ".root:focus-visible" and
+       silently moved the rule from any focused child onto the root. */
+    .replace(/: /g, ":")
     .trim();
 }
 
