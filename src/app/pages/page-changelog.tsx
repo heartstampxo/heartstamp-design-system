@@ -11,7 +11,7 @@ import { DocPage, DocSection } from "../components/docs/doc-page";
 ═══════════════════════════════════════════════════════════ */
 
 type Release = {
-  version: string;   // "2.1.41" or a rollup like "2.1.28 – 2.1.33"
+  version: string;   // "2.1.41" or a rollup like "2.1.28 to 2.1.33"
   date: string;      // "1 Sep 2026"
   title: string;
   tags: string[];    // keys of TAG_STYLES
@@ -30,16 +30,26 @@ const TAG_STYLES: Record<string, { bg: string; color: string }> = {
 
 const RELEASES: Release[] = [
   {
-    version: "2.1.57", date: "4 Sep 2026",
-    title: "WebsiteNavV2: overridable grid track",
+    version: "2.1.58", date: "4 Sep 2026",
+    title: "Changelog: bullets and plainer wording",
     tags: ["fix", "docs"],
     items: [
-      "WebsiteNavV2's content track is now overridable per nav, through --nav-track-max and --nav-track-margin. Both are unset by default and fall through to --grid-max-width / --grid-margin, so nothing changes for a consumer who does not touch them and the bar still picks up the 1400px wide tier on its own at viewports of 2000px and up. The rows, the mega panel grid and the rail hairline all read the same pair, so they cannot drift apart.",
-      "Why it exists: the grid's contract is that --grid-max-width is the OUTER width of the track and --grid-margin is subtracted from inside it, so content lands at 1168px on the 1200px tier and matches .hs-page-grid exactly. A page whose own grid measures 1200px to the content box is 32px wider, which put the bar 16px in from the page on each side and scrolled the last category out of the strip with no scrollbar to show for it, since the category row hides its own. The only fix available was to redefine --grid-margin page-wide, which retunes every grid consumer in the subtree, and pinning --grid-max-width alongside it severed the wide tier so the bar stayed at 1200px while the page went to 1400px.",
-      "The two properties are deliberately not declared on .hs-nav-v2. The nav is a descendant of whatever scope a consumer overrides on, so a default declared on the component itself would beat the inherited value and the override would silently do nothing. The defaults live in the var() fallback chain at each usage site instead, and a contract test now holds them there.",
-      "Grid docs: --grid-max-width was described in the token table as the maximum content width, which is the opposite of what it does and the most likely reason a consumer expects 1200px of content and does not get it. It is now named as the outer track width, with the content arithmetic spelled out. The Website Navigation page gained the alignment recipe.",
-      "Red interactive text now uses the Link role rather than the brand red: the mega menu's filters and items, the category links' hover and active states, and Notification's Mark all as read. The two are the same #be1d2c in light mode, so nothing moves there, but dark mode splits them and Link's lighter #f54051 is the legible one against a dark ground.",
-      "WebsiteNavV2's bare-button reset now zeroes background, padding and margin, matching the one Notification already shipped. Without them every mega-menu filter and item kept the browser's default ButtonFace grey behind it and the default 1px 6px padding, so the panel drew a grey chip behind each label and pushed them 6px right of the column heading they align under. The language dropdown rows and the promo tile's absolutely positioned contents were affected the same way. The docs app never showed any of it because Tailwind's preflight already zeroes all three; a consumer without a preflight saw it on first mount. A contract test now holds both sheets to a standalone-safe reset.",
+      "The changelog list shows bullet points again. Tailwind clears the markers on every list, so they had never drawn.",
+      "Entries now use simple English and short sentences.",
+      "Version and date ranges use the word to instead of a dash. For example, 2.1.28 to 2.1.33.",
+    ],
+  },
+  {
+    version: "2.1.57", date: "4 Sep 2026",
+    title: "WebsiteNavV2: grid alignment and button fixes",
+    tags: ["fix", "docs"],
+    items: [
+      "You can now line the nav bar up with a page grid that is measured a different way. Set --nav-track-margin on the nav or on any parent element, and --nav-track-max too if you need it. Leave them alone and nothing changes.",
+      "The nav bar still grows with the page. On screens 2000px and wider it goes from 1200px to 1400px on its own. This only works if you leave --grid-max-width alone. Giving it a fixed value is what used to hold the bar at 1200px while the rest of the page grew.",
+      "Why the bar looked wrong before: the grid treats --grid-max-width as the outer width of the track, then takes --grid-margin off the inside. So the content is 1168px, not 1200px. If your page treats 1200px as the content width, the bar came out 32px narrower. That pulled it in by 16px on each side and pushed the last category out of view.",
+      "Mega menu buttons no longer show a grey box. The filters and the items are plain buttons, and browsers give plain buttons a grey background and a small padding. The nav now clears both. Labels sit flat again and line up under their column headings. The language dropdown rows and the promo tile had the same problem. The docs site never showed it, because Tailwind clears these for us.",
+      "Red text now uses the Link colour instead of the brand red. This covers the mega menu filters and items, the category links when you hover or select them, and Mark all as read in Notification. Light mode looks the same. Dark mode now uses a lighter red that is easier to read on a dark background.",
+      "Docs fix: the token table said --grid-max-width was the maximum content width. It is the outer width of the track. The table now says so and shows how to work out the content width. The Website Navigation page shows how to line the nav up with your own grid.",
     ],
   },
   {
@@ -124,7 +134,7 @@ const RELEASES: Release[] = [
     ],
   },
   {
-    version: "2.1.46 – 2.1.48", date: "1 Sep 2026",
+    version: "2.1.46 to 2.1.48", date: "1 Sep 2026",
     title: "Sidebar spacing",
     tags: ["design"],
     items: [
@@ -195,7 +205,7 @@ const RELEASES: Release[] = [
     ],
   },
   {
-    version: "2.1.38 – 2.1.39", date: "8 Aug 2026",
+    version: "2.1.38 to 2.1.39", date: "8 Aug 2026",
     title: "Bundle-size pass",
     tags: ["perf"],
     items: [
@@ -204,7 +214,7 @@ const RELEASES: Release[] = [
     ],
   },
   {
-    version: "2.1.34 – 2.1.37", date: "7 – 8 Aug 2026",
+    version: "2.1.34 to 2.1.37", date: "7 to 8 Aug 2026",
     title: "Loader fix (ENG-1457)",
     tags: ["fix"],
     items: [
@@ -212,7 +222,7 @@ const RELEASES: Release[] = [
     ],
   },
   {
-    version: "2.1.28 – 2.1.33", date: "3 – 4 Aug 2026",
+    version: "2.1.28 to 2.1.33", date: "3 to 4 Aug 2026",
     title: "Grid Inspector",
     tags: ["feature", "fix", "design"],
     items: [
@@ -222,7 +232,7 @@ const RELEASES: Release[] = [
     ],
   },
   {
-    version: "2.1.26 – 2.1.27", date: "30 Jul 2026",
+    version: "2.1.26 to 2.1.27", date: "30 Jul 2026",
     title: "Formatting Toolbar and Coaching Tips",
     tags: ["feature", "fix"],
     items: [
@@ -233,7 +243,7 @@ const RELEASES: Release[] = [
     ],
   },
   {
-    version: "2.1.23 – 2.1.25", date: "22 – 28 Jul 2026",
+    version: "2.1.23 to 2.1.25", date: "22 to 28 Jul 2026",
     title: "StampyPromotions polish",
     tags: ["feature", "fix"],
     items: [
@@ -242,7 +252,7 @@ const RELEASES: Release[] = [
     ],
   },
   {
-    version: "2.1.20 – 2.1.22", date: "19 – 21 Jul 2026",
+    version: "2.1.20 to 2.1.22", date: "19 to 21 Jul 2026",
     title: "Marketing page grid system",
     tags: ["feature", "tokens", "docs"],
     items: [
@@ -251,7 +261,7 @@ const RELEASES: Release[] = [
     ],
   },
   {
-    version: "2.1.15 – 2.1.19", date: "10 – 15 Jul 2026",
+    version: "2.1.15 to 2.1.19", date: "10 to 15 Jul 2026",
     title: "Color token cleanup and promotions deck",
     tags: ["feature", "tokens", "fix"],
     items: [
@@ -261,7 +271,7 @@ const RELEASES: Release[] = [
     ],
   },
   {
-    version: "2.1.13 – 2.1.14", date: "22 Jun 2026",
+    version: "2.1.13 to 2.1.14", date: "22 Jun 2026",
     title: "React 19",
     tags: ["major", "fix"],
     items: [
@@ -270,7 +280,7 @@ const RELEASES: Release[] = [
     ],
   },
   {
-    version: "2.1.4 – 2.1.12", date: "5 – 11 Jun 2026",
+    version: "2.1.4 to 2.1.12", date: "5 to 11 Jun 2026",
     title: "Mascot page and chatbot overflow menus",
     tags: ["feature", "design"],
     items: [
@@ -279,7 +289,7 @@ const RELEASES: Release[] = [
     ],
   },
   {
-    version: "2.1.1 – 2.1.3", date: "21 May 2026",
+    version: "2.1.1 to 2.1.3", date: "21 May 2026",
     title: "v2.1: button builder and docs polish",
     tags: ["feature", "docs", "tokens"],
     items: [
@@ -349,9 +359,13 @@ export function PageChangelog() {
                   </span>
                 </div>
                 <div style={{ fontSize: "var(--font-size-label-sb-15)", fontWeight: "var(--font-weight-label-sb-15)" as any, color: "var(--fg)", marginBottom: "var(--space-1-5)" }}>{r.title}</div>
-                <ul style={{ margin: 0, paddingLeft: 18, display: "flex", flexDirection: "column", gap: "var(--space-1)" }}>
+                {/* listStyle is set explicitly: Tailwind's preflight clears it on
+                    every ul, so the markers never drew. Plain block layout rather
+                    than flex, since a flex item's marker is the shakiest corner of
+                    list rendering across engines, and gap is not worth that. */}
+                <ul style={{ margin: 0, paddingLeft: 18, listStyle: "disc", listStylePosition: "outside" }}>
                   {r.items.map(item => (
-                    <li key={item} style={{ fontSize: "var(--font-size-body-15)", fontWeight: "var(--font-weight-body-15)" as any, color: "var(--muted-fg)", lineHeight: 1.55 }}>{item}</li>
+                    <li key={item} style={{ fontSize: "var(--font-size-body-15)", fontWeight: "var(--font-weight-body-15)" as any, color: "var(--muted-fg)", lineHeight: 1.55, marginBottom: "var(--space-1)" }}>{item}</li>
                   ))}
                 </ul>
               </div>
