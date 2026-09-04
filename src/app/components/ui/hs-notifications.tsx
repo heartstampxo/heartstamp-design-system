@@ -151,7 +151,9 @@ const NOTIF_CSS = `
   font-weight: var(--font-weight-semibold, 600);
   font-size: var(--font-size-body-13);
   line-height: var(--line-height-label-12, 18px);
-  color: var(--color-brand-primary);
+  /* Link role, not brand: identical in light mode, but dark mode wants the
+     lighter #f54051 rather than brand's #cf2737. */
+  color: var(--color-element-link);
   transition: opacity 150ms ease;
 }
 .hs-notif__markall:hover { opacity: 0.8; }

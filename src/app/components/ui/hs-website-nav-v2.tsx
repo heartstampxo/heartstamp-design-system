@@ -23,7 +23,10 @@
 //     (docs previews, device frames), which a media query cannot see;
 //   - the content track uses --grid-max-width (1200px, 1400px wide tier)
 //     instead of a fixed 1200px, and gets the grid's 16px margins so the
-//     bar still breathes below 1200px viewports;
+//     bar still breathes below 1200px viewports. --nav-track-max and
+//     --nav-track-margin override that track for a page whose own grid is
+//     measured differently, without touching the grid tokens themselves;
+//     see the note on .hs-nav-v2 in NAV_CSS;
 //   - the logo renders through HSLogo instead of a baked-in image.
 //
 // The current WebsiteNav (hs-website-nav.tsx) remains the production
@@ -199,15 +202,55 @@ function AppleMark() {
 
 const NAV_CSS = `
 :where(.hs-nav-v2 button, .hs-nav-v2 a) { font: inherit; color: inherit; text-decoration: none; }
+/* background/padding/margin are part of the reset, not decoration. Without
+   them a bare button keeps the UA's ButtonFace grey and its 1px 6px padding,
+   which paints a grey chip behind every mega-menu filter and item and pushes
+   their labels 6px right of the column heading they should align under. The
+   docs app hid that for a long time because Tailwind's preflight already
+   zeroes all three; a consumer without a preflight sees it immediately. Keep
+   this in step with the same reset in hs-notifications.tsx. :where() keeps the
+   whole thing at zero specificity, so every rule below that does want a
+   background or padding still wins on its own. */
 :where(.hs-nav-v2 button) {
   appearance: none;
   border: 0;
+  background: none;
+  padding: 0;
+  margin: 0;
   cursor: pointer;
   transition: background 150ms ease, color 150ms ease;
 }
 .hs-nav-v2 :focus-visible { outline: 2px solid var(--color-brand-primary); outline-offset: 2px; }
 
 .hs-nav-v2 {
+  /* Content track. Both rows and the mega panel ride
+       width: min(--nav-track-max, 100%); padding: 0 --nav-track-margin
+     and both properties fall through to the marketing grid tokens when the
+     consumer leaves them alone, so the bar picks up the 1400px wide tier at
+     >= 2000px on its own. The grid's contract is that --grid-max-width is the
+     OUTER width of the track and --grid-margin is subtracted from inside it,
+     so content comes out at max-width - 2 x margin (1168px at the 1200px
+     tier). That matches .hs-page-grid exactly.
+
+     A page whose own grid measures 1200px to the CONTENT box instead will be
+     32px wider than the bar, which reads as a 16px inset per side and quietly
+     scrolls the last category out of the strip. To align them, set
+     --nav-track-margin to 0px on the nav or on any ancestor (and
+     --nav-track-max as well, if that page's narrow tier differs too).
+
+     NB the example above is written in prose rather than as a declaration on
+     purpose: the token-policy test in components.test.tsx scans this file for
+     "--name:" to find declared properties and does not skip comments, so a
+     worked example here would register as a definition and mask a genuinely
+     undefined reference.
+
+     They are deliberately NOT declared here. An unset property lets a value
+     inherited from an ancestor win; declaring defaults on .hs-nav-v2 would
+     beat the ancestor, since the nav is the descendant, and the override would
+     silently do nothing. Prefer these over redefining --grid-max-width or
+     --grid-margin, which retunes every grid consumer in the subtree and, if
+     --grid-max-width is pinned to a number, severs the wide tier. */
+
   /* Nav-specific measurements from the spec (no global tokens at these
      values). z-index: the standalone says 9200 for a bare marketing page;
      40 keeps the nav below app-level overlays in composed layouts. */
@@ -256,9 +299,9 @@ const NAV_CSS = `
 /* Scroll auto-hide, phone only, driven by the autoHideOnScroll effect. */
 .hs-nav-v2[data-hidden] { transform: translateY(-100%); }
 .hs-nav-v2__row {
-  width: min(var(--grid-max-width, 1200px), 100%);
+  width: min(var(--nav-track-max, var(--grid-max-width, 1200px)), 100%);
   box-sizing: border-box;
-  padding: 0 var(--grid-margin, 16px);
+  padding: 0 var(--nav-track-margin, var(--grid-margin, 16px));
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -432,9 +475,9 @@ const NAV_CSS = `
    margins, so the panel has to match or its contents sit outside the track. */
 .hs-nav-v2__megagrid {
   position: relative;
-  width: min(var(--grid-max-width, 1200px), 100%);
+  width: min(var(--nav-track-max, var(--grid-max-width, 1200px)), 100%);
   box-sizing: border-box;
-  padding: var(--mega-pad-top) var(--grid-margin, 16px) var(--mega-pad-bottom);
+  padding: var(--mega-pad-top) var(--nav-track-margin, var(--grid-margin, 16px)) var(--mega-pad-bottom);
   display: flex;
   flex-direction: row;
   gap: var(--mega-col-gap);
@@ -445,7 +488,7 @@ const NAV_CSS = `
 .hs-nav-v2__megarule {
   position: absolute;
   /* Offset from the grid edge, so it follows the rail past the inset. */
-  left: calc(var(--grid-margin, 16px) + var(--mega-rail-w));
+  left: calc(var(--nav-track-margin, var(--grid-margin, 16px)) + var(--mega-rail-w));
   top: 0;
   bottom: 0;
   width: 1px;
@@ -476,7 +519,7 @@ const NAV_CSS = `
   line-height: var(--line-height-label-15);
   transition: color 0.15s ease;
 }
-.hs-nav-v2__megafilter:hover { color: var(--color-brand-primary); }
+.hs-nav-v2__megafilter:hover { color: var(--color-element-link); }
 
 .hs-nav-v2__megacol {
   flex: 1 1 0;
@@ -500,7 +543,7 @@ const NAV_CSS = `
   white-space: nowrap;
   transition: color 0.15s ease;
 }
-.hs-nav-v2__megaitem:hover { color: var(--color-brand-primary); }
+.hs-nav-v2__megaitem:hover { color: var(--color-element-link); }
 
 .hs-nav-v2__megapromo {
   position: relative;
@@ -553,9 +596,12 @@ const NAV_CSS = `
   transition: color 150ms ease;
 }
 .hs-nav-v2__link:first-child { padding-left: 0; }
+/* The Link role, not the brand red. They are the same #be1d2c in light mode,
+   but dark mode splits them: link is #f54051 against brand's #cf2737, the
+   lighter red being the legible one on a dark ground. */
 .hs-nav-v2__link:hover,
 .hs-nav-v2__link[aria-expanded="true"],
-.hs-nav-v2__link[aria-current="true"] { color: var(--color-brand-primary); }
+.hs-nav-v2__link[aria-current="true"] { color: var(--color-element-link); }
 
 /* ── Ask Stampy pill (hairline + twin sheen sweeps) ───────── */
 .hs-nav-v2__stampy {

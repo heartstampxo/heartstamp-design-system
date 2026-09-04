@@ -30,6 +30,19 @@ const TAG_STYLES: Record<string, { bg: string; color: string }> = {
 
 const RELEASES: Release[] = [
   {
+    version: "2.1.57", date: "4 Sep 2026",
+    title: "WebsiteNavV2: overridable grid track",
+    tags: ["fix", "docs"],
+    items: [
+      "WebsiteNavV2's content track is now overridable per nav, through --nav-track-max and --nav-track-margin. Both are unset by default and fall through to --grid-max-width / --grid-margin, so nothing changes for a consumer who does not touch them and the bar still picks up the 1400px wide tier on its own at viewports of 2000px and up. The rows, the mega panel grid and the rail hairline all read the same pair, so they cannot drift apart.",
+      "Why it exists: the grid's contract is that --grid-max-width is the OUTER width of the track and --grid-margin is subtracted from inside it, so content lands at 1168px on the 1200px tier and matches .hs-page-grid exactly. A page whose own grid measures 1200px to the content box is 32px wider, which put the bar 16px in from the page on each side and scrolled the last category out of the strip with no scrollbar to show for it, since the category row hides its own. The only fix available was to redefine --grid-margin page-wide, which retunes every grid consumer in the subtree, and pinning --grid-max-width alongside it severed the wide tier so the bar stayed at 1200px while the page went to 1400px.",
+      "The two properties are deliberately not declared on .hs-nav-v2. The nav is a descendant of whatever scope a consumer overrides on, so a default declared on the component itself would beat the inherited value and the override would silently do nothing. The defaults live in the var() fallback chain at each usage site instead, and a contract test now holds them there.",
+      "Grid docs: --grid-max-width was described in the token table as the maximum content width, which is the opposite of what it does and the most likely reason a consumer expects 1200px of content and does not get it. It is now named as the outer track width, with the content arithmetic spelled out. The Website Navigation page gained the alignment recipe.",
+      "Red interactive text now uses the Link role rather than the brand red: the mega menu's filters and items, the category links' hover and active states, and Notification's Mark all as read. The two are the same #be1d2c in light mode, so nothing moves there, but dark mode splits them and Link's lighter #f54051 is the legible one against a dark ground.",
+      "WebsiteNavV2's bare-button reset now zeroes background, padding and margin, matching the one Notification already shipped. Without them every mega-menu filter and item kept the browser's default ButtonFace grey behind it and the default 1px 6px padding, so the panel drew a grey chip behind each label and pushed them 6px right of the column heading they align under. The language dropdown rows and the promo tile's absolutely positioned contents were affected the same way. The docs app never showed any of it because Tailwind's preflight already zeroes all three; a consumer without a preflight saw it on first mount. A contract test now holds both sheets to a standalone-safe reset.",
+    ],
+  },
+  {
     version: "2.1.56", date: "2 Sep 2026",
     title: "WebsiteNavV2: mega menu, language, reminders, mobile",
     tags: ["feature", "design", "fix"],

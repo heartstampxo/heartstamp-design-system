@@ -719,7 +719,15 @@ describe('CSS custom property contract', () => {
 
   /* Deliberate override hooks: undefined by design, always used with a default
      so a consumer can theme them per subtree. */
-  const OVERRIDE_HOOKS = ['--chatbot-hero-bg'];
+  const OVERRIDE_HOOKS = [
+    '--chatbot-hero-bg',
+    /* WebsiteNavV2's content track. Unset on purpose: the nav is a descendant
+       of whatever scope a consumer overrides on, so declaring a default on
+       .hs-nav-v2 would beat the inherited value and the override would do
+       nothing. Both fall through to --grid-max-width / --grid-margin. */
+    '--nav-track-max',
+    '--nav-track-margin',
+  ];
 
   const uiDir = join(process.cwd(), 'src/app/components/ui');
 

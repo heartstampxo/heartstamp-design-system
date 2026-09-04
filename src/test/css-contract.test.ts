@@ -65,6 +65,41 @@ describe('CSS package contract', () => {
   });
 });
 
+/* These two components ship their own sheet and are mounted by consumers who
+   may have no CSS reset at all. The docs app does have one (Tailwind's preflight
+   zeroes button background, padding and margin), so anything the reset below
+   forgets renders correctly here and wrongly there. WebsiteNavV2 shipped without
+   background/padding/margin for exactly that reason: every mega-menu filter and
+   item drew the UA's ButtonFace grey behind it and sat 6px right of its column
+   heading, on a page with no preflight. */
+describe('injected component sheets stand alone without a CSS reset', () => {
+  const SHEETS = [
+    ['src/app/components/ui/hs-website-nav-v2.tsx', '.hs-nav-v2'],
+    ['src/app/components/ui/hs-notifications.tsx', '.hs-notif'],
+  ] as const;
+
+  it('zeroes the UA button background, padding and margin', () => {
+    for (const [file, scope] of SHEETS) {
+      const src = read(file);
+      const start = src.indexOf(`:where(${scope} button) {`);
+      expect(start, `${file}: no bare-button reset for ${scope}`).toBeGreaterThan(-1);
+      const reset = src.slice(start, src.indexOf('}', start));
+
+      for (const decl of [/background:\s*none/, /padding:\s*0/, /margin:\s*0/]) {
+        expect(reset, `${file}: reset is missing ${decl.source}`).toMatch(decl);
+      }
+    }
+  });
+
+  it('keeps the reset at zero specificity so styled buttons still win', () => {
+    // :where() is what lets .hs-nav-v2__pill and friends set a background
+    // without !important or a source-order dependency.
+    for (const [file, scope] of SHEETS) {
+      expect(read(file)).toContain(`:where(${scope} button) {`);
+    }
+  });
+});
+
 describe('WebsiteNavV2 mega panel rides the nav grid track', () => {
   /** The declarations of one CSS rule out of the component's injected sheet. */
   const block = (src: string, selector: string) => {
@@ -78,18 +113,39 @@ describe('WebsiteNavV2 mega panel rides the nav grid track', () => {
     const row = block(src, '.hs-nav-v2__row');
     const mega = block(src, '.hs-nav-v2__megagrid');
 
-    const TRACK = 'width: min(var(--grid-max-width, 1200px), 100%)';
+    const TRACK = 'width: min(var(--nav-track-max, var(--grid-max-width, 1200px)), 100%)';
     expect(row).toContain(TRACK);
     expect(mega).toContain(TRACK);
 
     // The inset is what drifted: the panel shipped with none, so its rail and
     // promo tile sat ~16px outside the track the nav rows align to.
-    expect(row).toContain('var(--grid-margin, 16px)');
-    expect(mega).toContain('var(--grid-margin, 16px)');
+    const INSET = 'var(--nav-track-margin, var(--grid-margin, 16px))';
+    expect(row).toContain(INSET);
+    expect(mega).toContain(INSET);
 
     // The rail hairline offsets from the same inset, or it parts from the rail.
     expect(block(src, '.hs-nav-v2__megarule'))
-      .toContain('calc(var(--grid-margin, 16px) + var(--mega-rail-w))');
+      .toContain(`calc(${INSET} + var(--mega-rail-w))`);
+  });
+
+  it('leaves the track overridable, and still tiered when nobody overrides it', () => {
+    const src = read('src/app/components/ui/hs-website-nav-v2.tsx');
+
+    // --grid-max-width is restated as 1400px at >= 2000px in tokens.css, and the
+    // nav inherits that only for as long as it keeps reading the token. Pinning
+    // a number here (or in a consumer's --nav-track-max) is what severs the wide
+    // tier, which is how the bar ended up 200px narrow against a 1400px page.
+    for (const rule of ['.hs-nav-v2__row', '.hs-nav-v2__megagrid', '.hs-nav-v2__megarule']) {
+      expect(block(src, rule), `${rule} left the grid tokens`)
+        .toMatch(/var\(--nav-track-(max|margin), var\(--grid-(max-width, 1200px|margin, 16px)\)\)/);
+    }
+
+    // Both properties must stay UNSET on .hs-nav-v2. The nav is a descendant of
+    // whatever scope a consumer overrides on, so a default declared here would
+    // win over the inherited value and the override would silently do nothing.
+    const root = src.slice(src.indexOf('\n.hs-nav-v2 {'), src.indexOf('.hs-nav-v2--static'));
+    expect(root.replace(/\/\*[^]*?\*\//g, ''))
+      .not.toMatch(/--nav-track-(max|margin)\s*:/);
   });
 });
 
