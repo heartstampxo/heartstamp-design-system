@@ -379,9 +379,16 @@ const NAV_CSS = `
 .hs-nav-v2__pill--ghost:hover { background: var(--color-element-subtle); }
 .hs-nav-v2__pill--ghost:active { background: var(--color-state-pressed); }
 
-/* Rest state is pure black per the spec; hover/pressed return to the
-   brand-secondary ramp. */
-.hs-nav-v2__pill--dark { background: #000000; color: var(--color-text-on-secondary); }
+/* Rest, hover and pressed all ride the brand-secondary ramp, so the pill
+   inverts with the theme: near-black with white text in light mode, near-white
+   with dark text in dark mode. The spec asked for pure black at rest, and it
+   shipped as a literal #000000, which broke in two ways. In dark mode the
+   ground stayed black while --color-text-on-secondary flipped to #141414,
+   leaving near-black text on black at about 1.09:1, and hovering then jumped
+   the pill to near-white. In light mode it also put rest (#000000) darker than
+   pressed (#171717), so pressing lightened the button. The token is #242423
+   in light mode, so the rest state is a fraction off pure black now. */
+.hs-nav-v2__pill--dark { background: var(--color-brand-secondary); color: var(--color-text-on-secondary); }
 .hs-nav-v2__pill--dark:hover { background: var(--color-brand-secondary-hover); }
 .hs-nav-v2__pill--dark:active { background: var(--color-brand-secondary-pressed); }
 

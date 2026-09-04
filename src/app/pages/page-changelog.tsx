@@ -30,6 +30,16 @@ const TAG_STYLES: Record<string, { bg: string; color: string }> = {
 
 const RELEASES: Release[] = [
   {
+    version: "2.1.59", date: "4 Sep 2026",
+    title: "Get the App button now follows the theme",
+    tags: ["fix"],
+    items: [
+      "The Get the App button in WebsiteNavV2 was set to pure black by hand, so it never changed with the theme. In dark mode the background stayed black while the label colour turned near black, and the text almost disappeared. The contrast was 1.14 to 1.",
+      "The button now uses the --color-brand-secondary token, the same one its hover and pressed states already used. In dark mode it turns light with dark text. Contrast is now 16.89 to 1.",
+      "This also fixes a smaller problem in light mode. Pressing the button used to make it lighter than its resting state. Now it gets darker, which is what you expect. The resting colour is #242423 instead of pure black.",
+    ],
+  },
+  {
     version: "2.1.58", date: "4 Sep 2026",
     title: "Changelog: bullets and plainer wording",
     tags: ["fix", "docs"],
