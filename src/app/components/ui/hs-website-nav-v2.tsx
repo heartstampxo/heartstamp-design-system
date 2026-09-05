@@ -278,7 +278,6 @@ const NAV_CSS = `
   --mega-promo-w: 242px;
   --mega-promo-h: 288px;
   --mega-link-ink: rgb(10, 10, 10);
-  --mega-item-ink: #4a4a48;
   --mega-rule: rgba(36, 36, 35, 0.08);
   /* The reminders sheet's own measurements are NOT declared here: it portals
      outside this element, where these custom properties would not resolve.
@@ -546,7 +545,12 @@ const NAV_CSS = `
   font-weight: var(--font-weight-regular);
   font-size: var(--font-size-label-15);
   line-height: var(--line-height-label-15);
-  color: var(--mega-item-ink);
+  /* The handoff's #4a4a48 was a light-mode literal that never flipped, so in
+     dark mode the items sat at about 2:1 against the panel while the column
+     headings beside them, which inherit --color-text-primary, read normally.
+     The token is the same intent, one step down from the headings, and it
+     carries its own dark value. */
+  color: var(--color-text-secondary);
   white-space: nowrap;
   transition: color 0.15s ease;
 }

@@ -30,6 +30,16 @@ const TAG_STYLES: Record<string, { bg: string; color: string }> = {
 
 const RELEASES: Release[] = [
   {
+    version: "2.1.60", date: "5 Sep 2026",
+    title: "Mega menu links now follow the theme",
+    tags: ["fix", "tokens"],
+    items: [
+      "The link columns in the WebsiteNavV2 mega menu, the ones under By Recipient, By Reason and the rest, were set to the hex #4a4a48 by hand. It is a light mode grey, and it never changed with the theme.",
+      "In dark mode this left the links washed out against the panel. The contrast was 2.07 to 1, well under the 4.5 to 1 that body text needs. The column headings next to them looked right the whole time, because they inherit --color-text-primary and flip on their own, which made the links look like the odd one out.",
+      "The links now use the --color-text-secondary token. Contrast is 10.46 to 1 in dark mode and 5.17 to 1 in light. Light mode looks a little softer than before, which is the intended step down from the headings.",
+    ],
+  },
+  {
     version: "2.1.59", date: "4 Sep 2026",
     title: "Get the App button now follows the theme",
     tags: ["fix"],
