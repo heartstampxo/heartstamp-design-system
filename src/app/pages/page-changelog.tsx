@@ -30,6 +30,19 @@ const TAG_STYLES: Record<string, { bg: string; color: string }> = {
 
 const RELEASES: Release[] = [
   {
+    version: "2.1.64", date: "8 Sep 2026",
+    title: "The smaller headings now actually apply in the blocks",
+    tags: ["fix", "tokens"],
+    items: [
+      "2.1.63 added the smaller headline scale but put it behind a viewport media query only. A media query reports the browser window, not the box a block is drawn in, so a block rendered at phone width inside a desktop page kept the desktop sizes. That is exactly what the docs preview does: it sets a width on a plain wrapper rather than an iframe, so the preview never triggered the query and the headings stayed at 40px.",
+      "The blocks already knew about this. They size themselves with container queries for the same reason, and the note explaining why has been in the code the whole time. The type scale should have followed the same rule and did not.",
+      "Every block now applies the smaller scale from its own container as well, at the same 768px, so the type matches the layout being drawn. In a preview, in a narrow page column, or on a phone, the headings are now the size the layout is.",
+      "The sizes are named once in tokens.css as h1-sm through subheadline-sm. Both the viewport query and the blocks point at those, so changing a size changes it in one place. On a real phone both fire and agree.",
+      "The tokens are set on the children of each block rather than on the block itself, because an element cannot be matched by the container it establishes. Setting them on the root would have done nothing.",
+      "38 tests cover this: that the sizes are named once, that they carry the hs-website numbers, that every block with a container applies them, that they land below the container root rather than on it, and that the rule survives the stylesheet minifier, which strips whitespace around the child combinator these rules depend on.",
+    ],
+  },
+  {
     version: "2.1.63", date: "8 Sep 2026",
     title: "Headings now shrink on mobile, and Thanksgiving's headline fits",
     tags: ["fix", "tokens", "design"],

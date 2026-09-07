@@ -135,6 +135,28 @@ const QUOTE_CSS = `
 @media (prefers-reduced-motion: reduce) {
   .hs-quote[data-rise] { animation: none; }
 }
+
+/* ── Type scale below 768px of the BLOCK's width ───────────────────────────
+   tokens.css drops the headline sizes at a 767px viewport, which is right for
+   a page but blind to a block that is phone-width inside a desktop one — the
+   docs preview, or a narrow page column. The same -sm tokens are applied here
+   from the block's own container so the type matches the layout that is
+   actually being drawn. The tokens are set on the children rather than on the
+   root, because an element cannot be matched by the container it establishes. */
+@container (max-width: 767px) {
+  .hs-quote > * {
+    --font-size-h1: var(--font-size-h1-sm, 34px);
+    --line-height-h1: var(--line-height-h1-sm, 1.15);
+    --font-size-h2: var(--font-size-h2-sm, 28px);
+    --line-height-h2: var(--line-height-h2-sm, 1.2);
+    --font-size-h3: var(--font-size-h3-sm, 24px);
+    --line-height-h3: var(--line-height-h3-sm, 1.25);
+    --font-size-h4: var(--font-size-h4-sm, 18px);
+    --font-size-h5: var(--font-size-h5-sm, 16px);
+    --font-size-subheadline: var(--font-size-subheadline-sm, 20px);
+    --font-size-subheadline-md: var(--font-size-subheadline-sm, 20px);
+  }
+}
 `;
 
 const QUOTE_CSS_MIN = cssMin(QUOTE_CSS);

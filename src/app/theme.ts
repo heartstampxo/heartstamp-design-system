@@ -65,6 +65,18 @@ const SHARED_TOKENS: Record<string, string> = {
   "--font-weight-medium":         "500",
   "--font-weight-semibold":       "600",
   "--font-weight-bold":           "700",
+  /* The small end of the scale, applied below 768px — by the viewport media
+     query in tokens.css, and by each block from its own container query. */
+  "--font-size-h1-sm":            "34px",
+  "--line-height-h1-sm":          "1.15",
+  "--font-size-h2-sm":            "28px",
+  "--line-height-h2-sm":          "1.2",
+  "--font-size-h3-sm":            "24px",
+  "--line-height-h3-sm":          "1.25",
+  "--font-size-h4-sm":            "18px",
+  "--font-size-h5-sm":            "16px",
+  "--font-size-subheadline-sm":   "20px",
+
   "--font-size-h1":               "56px",
   "--font-weight-h1":             "700",
   "--letter-spacing-h1":          "0em",

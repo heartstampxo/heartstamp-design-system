@@ -85,6 +85,21 @@
   --font-weight-semibold: 600;
   --font-weight-bold:     700;
 
+  /* The small end of the type scale, used below 768px. Named rather than
+     inlined because it is applied twice: by the viewport media query at the
+     foot of this file, and by each block's own container query, since a block
+     can be phone-width inside a desktop page and a media query cannot see
+     that. Change a size here and both follow. */
+  --font-size-h1-sm:          34px;
+  --line-height-h1-sm:        1.15;
+  --font-size-h2-sm:          28px;
+  --line-height-h2-sm:        1.2;
+  --font-size-h3-sm:          24px;
+  --line-height-h3-sm:        1.25;
+  --font-size-h4-sm:          18px;
+  --font-size-h5-sm:          16px;
+  --font-size-subheadline-sm: 20px;
+
   --font-size-h1:          56px;
   --font-weight-h1:        700;
   --letter-spacing-h1:     0em;
@@ -283,18 +298,26 @@
  */
 @media (max-width: 767px) {
   :root {
-    --font-size-h1: 34px;
-    --line-height-h1: 1.15;
-    --font-size-h2: 28px;
-    --line-height-h2: 1.2;
-    --font-size-h3: 24px;
-    --line-height-h3: 1.25;
-    --font-size-h4: 18px;
-    --font-size-h5: 16px;
-    --font-size-subheadline: 20px;
-    --font-size-subheadline-md: 20px;
+    --font-size-h1: var(--font-size-h1-sm);
+    --line-height-h1: var(--line-height-h1-sm);
+    --font-size-h2: var(--font-size-h2-sm);
+    --line-height-h2: var(--line-height-h2-sm);
+    --font-size-h3: var(--font-size-h3-sm);
+    --line-height-h3: var(--line-height-h3-sm);
+    --font-size-h4: var(--font-size-h4-sm);
+    --font-size-h5: var(--font-size-h5-sm);
+    --font-size-subheadline: var(--font-size-subheadline-sm);
+    --font-size-subheadline-md: var(--font-size-subheadline-sm);
   }
 }
+
+/*
+ * This media query is the page-level half of the story. It cannot help a block
+ * that is phone-width inside a desktop page — a docs preview, a narrow column —
+ * because a media query reports the window, not the box. Each block applies the
+ * same -sm tokens from its own @container query for that case. Same numbers,
+ * two axes; on a real phone both fire and agree.
+ */
 
 .dark {
   /* ── Colors (dark mode overrides) ───────────────────────── */
