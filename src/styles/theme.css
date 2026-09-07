@@ -1,8 +1,11 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Space tokens (4px base scale) */
+  /* Space tokens (4px base scale) — must stay in step with css/tokens.css,
+     which the docs app does not import. A step missing here does not fall
+     back, it drops the whole declaration. */
   --space-0: 0px;
+  --space-0-5: 2px;
   --space-1: 4px;
   --space-1-5: 6px;
   --space-2: 8px;
@@ -16,6 +19,7 @@
   --space-8: 32px;
   --space-10: 40px;
   --space-12: 48px;
+  --space-16: 64px;
 
   /* Grid tokens — mirrors tokens.css, which the docs app does not import.
      Without these the ≥2000px wide tier never fires here and the overlay

@@ -30,7 +30,22 @@ export default defineConfig({
     },
   },
   build: {
-    assetsInlineLimit: 2097152,
+    /* Video is always emitted as a file, never base64'd. The tablet clip is
+       under the 2 MB threshold, so the default would inline it into BOTH the
+       ESM and CJS bundles — about 3.4 MB of duplicated data URI for one asset.
+
+       Large SVGs are held to the same rule for the same reason: the
+       Thanksgiving promo strip is one 800 KB drawing, and base64 adds a third
+       again on top before it is duplicated across both bundles. The 512 KB
+       floor is deliberately above every other SVG we ship, so this changes
+       that one asset and leaves the rest inlined as they were.
+
+       Everything else keeps the previous numeric behaviour. */
+    assetsInlineLimit: (filePath: string, content: Buffer) => {
+      if (/\.(mp4|webm|mov|m4v)$/i.test(filePath)) return false
+      if (/\.svg$/i.test(filePath) && content.length > 524288) return false
+      return content.length <= 2097152
+    },
     copyPublicDir: false,
     rollupOptions: {
       external: (id: string) => {

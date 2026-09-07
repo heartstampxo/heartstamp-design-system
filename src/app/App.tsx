@@ -86,6 +86,20 @@ import { PageFormattingToolbar } from "./pages/page-formatting-toolbar";
 import { PageStyleSidebar } from "./pages/page-style-sidebar";
 import { BtnBuilder } from "./pages/page-btn-builder";
 import { PageChangelog } from "./pages/page-changelog";
+import { PagePromoBlocks } from "./pages/page-promo-blocks";
+import { PageFaqBlock } from "./pages/page-faq-block";
+import { PageAppShowcase } from "./pages/page-app-showcase";
+import { PageTestimonial } from "./pages/page-testimonial";
+import { PageSeoColumns } from "./pages/page-seo-columns";
+import { PageUspGrid } from "./pages/page-usp-grid";
+import { PageAnnouncementBar } from "./pages/page-announcement-bar";
+import { PageCtaBand } from "./pages/page-cta-band";
+import { PageDeals } from "./pages/page-deals";
+import { PageFormatBand } from "./pages/page-format-band";
+import { PagePrivacyBanner } from "./pages/page-privacy-banner";
+import { PageBottomGlass } from "./pages/page-bottom-glass";
+import { FaqAccordion } from "./components/blocks/hs-faq";
+import { WebsiteFooter } from "./components/blocks/hs-website-footer";
 import { PageNotification } from "./pages/page-notification";
 import { NAV, ALL_ITEMS, LABEL_COLORS } from "./nav-config";
 import { CodeBlock, InstallBlock } from "./components/docs/doc-code-block";
@@ -1713,7 +1727,41 @@ function PageAccordion() {
         </div>
       </Preview>
     </DocSection>
-    <DocSection title="Props">
+    <DocSection
+      title="FAQ accordion"
+      desc="The marketing FAQ's row: a question, a plus that turns into a minus, and an answer that grows to its own height. Larger type and more air than the default above — use it for a page of questions, and Acc for compact UI. It is the list inside the FAQ block, on its own."
+    >
+      <Preview
+        title="FaqAccordion"
+        code={`import { FaqAccordion } from "@heartstampxo/design-system";\n\n<FaqAccordion\n  items={[\n    { q: "How do Heart credits work?", a: "Credits pay for art generation." },\n    { q: "When will my card arrive?",  a: "Printed cards leave us the next working day." },\n  ]}\n  defaultOpenIndex={0}          // null starts closed\n  collapsible                   // clicking the open row closes it\n  onToggle={(i, open) => track("faq-row", { i, open })}\n/>\n\n// Controlled, if the open row lives in your own state:\n<FaqAccordion items={items} openIndex={open} onToggle={i => setOpen(i)} />`}
+        height={300}
+      >
+        <div style={{ width: "100%", maxWidth: 872 }}>
+          <FaqAccordion items={[
+            { q: "How do Heart credits work?", a: "Credits pay for art generation. New accounts start with 200, and referring a friend earns you more." },
+            { q: "When will my card arrive?", a: "Printed cards leave us the next working day. We can post straight to your recipient or send it to you first." },
+            { q: "Can I get a refund?", a: "If a printed card arrives damaged or wrong, tell us and we will reprint and repost it at no cost." },
+          ]} />
+        </div>
+      </Preview>
+      <PropsTable props={[
+        { name: "items", type: "FaqItem[]", required: true, desc: "The rows. q and a both take nodes, not just strings." },
+        { name: "openIndex", type: "number | null", desc: "Controlled open row. null closes them all. Omit to let the component keep its own state." },
+        { name: "defaultOpenIndex", type: "number | null", def: "0", desc: "Uncontrolled starting row. null starts closed." },
+        { name: "collapsible", type: "boolean", def: "true", desc: "Let the open row be closed by clicking it again." },
+        { name: "onToggle", type: "(i: number, open: boolean) => void", desc: "Fires with the row clicked and whether it is now open." },
+        { name: "revealStagger", type: "boolean", def: "false", desc: "Tag the list as a reveal stagger group for a surrounding cascade." },
+        { name: "className", type: "string", desc: "Extra class on the list root." },
+        { name: "style", type: "React.CSSProperties", desc: "Inline style on the list root." },
+      ]} />
+      <Callout variant="info">
+        Rows are real buttons with <code>aria-expanded</code> and <code>aria-controls</code>, and
+        the open/close animates <code>grid-template-rows</code> from <code>0fr</code> to{" "}
+        <code>1fr</code> so the answer grows to its own height without being measured. The whole
+        section it comes from is on the <a href="#faq-block">FAQ</a> page under Blocks.
+      </Callout>
+    </DocSection>
+    <DocSection title="Acc props">
       <PropsTable props={[
         { name: "type", type: '"single"|"multiple"', required: true, desc: "Whether one or multiple items can be open at the same time." },
         { name: "collapsible", type: "boolean", def: "false", desc: "When type='single', allows closing content when clicking the trigger of an open item." },
@@ -2139,6 +2187,24 @@ function PageFooter() {
         </Preview>
       </DocSection>
 
+      <DocSection
+        title="Website footer"
+        desc="The tall marketing footer the homepage runs: link columns, the oversized masked lockup, payment marks, the app button and socials, on the brand's dark ground. A different component from the compact one above — both ship."
+      >
+        <Preview title="WebsiteFooter" code={`import { WebsiteFooter } from "@heartstampxo/design-system";\n\n// The tall marketing footer. On the homepage it sits under CtaBand and tucks\n// 32px up to close the seam; on its own, turn that off.\n<WebsiteFooter />\n\n<WebsiteFooter\n  about={{ title: "About HeartStamp", body: "Cards worth keeping." }}\n  columns={WEBSITE_FOOTER_COLUMNS}\n  mark                                  // the oversized masked lockup\n  payments={WEBSITE_FOOTER_PAYMENTS}    // false removes the group\n  appStore={{ href: "https://apps.apple.com/…" }}\n  socials={[{ label: "Facebook" }, { label: "X" }]}\n  reveal\n/>`} height={720} fullWidth contentAlign="start">
+          <WebsiteFooter tuck={false} />
+        </Preview>
+        <Callout variant="info">
+          Drawn to sit under <code>CtaBand</code>, where that band's bottom border becomes the
+          separator between the two — the pair is documented as one{" "}
+          <a href="#cta-band">Closing Section</a> under Blocks. The marketing page pulls the
+          footer up 32px to cancel a gap its own layout introduces; composed directly that would
+          slide over the border and swallow the separator, so <code>tuck</code> is opt-in. The
+          lockup is a gradient masked by the artwork, so it takes the theme's tones rather than
+          shipping two colourways, and it is hidden below 900px because it is drawn at 1199px and
+          only smears when scaled.
+        </Callout>
+      </DocSection>
       <DocSection title="Props">
         <PropsTable props={[
           { name: "layout", type: '"desktop" | "mobile"', desc: 'Optionally force a layout. Omit to auto-switch at 768px via ResizeObserver.' },
@@ -5774,6 +5840,21 @@ const PAGES: Record<string, any> = {
   "chatbot-input": PageChatInput,
   "chatbot-bubbles": PageChatBubbles,
   "chatbot-promotions": PagePromotions,
+  // Blocks
+  "promo-blocks": PagePromoBlocks,
+  // Old hash, kept so existing links to the Christmas band still land.
+  "christmas-promo": PagePromoBlocks,
+  "faq-block": PageFaqBlock,
+  "app-showcase": PageAppShowcase,
+  "testimonial": PageTestimonial,
+  "seo-columns": PageSeoColumns,
+  "usp-grid": PageUspGrid,
+  "announcement-bar": PageAnnouncementBar,
+  "cta-band": PageCtaBand,
+  "deals": PageDeals,
+  "format-band": PageFormatBand,
+  "privacy-banner": PagePrivacyBanner,
+  "bottom-glass": PageBottomGlass,
 };
 
 /* ═══════════════════════════════════════════════════════════

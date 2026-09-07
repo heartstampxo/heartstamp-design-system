@@ -56,6 +56,28 @@ export * from './app/components/ui/hs-bdg';
 export * from './app/components/ui/hs-brd';
 export * from './app/components/ui/hs-cal';
 export * from './app/components/ui/hs-cbx';
+// Promo Blocks — the seasonal bands. PromoBand is the shared engine;
+// each season is a preset of it.
+export * from './app/components/blocks/hs-promo-band';
+export * from './app/components/blocks/hs-christmas-promo';
+export * from './app/components/blocks/hs-thanksgiving-promo';
+export * from './app/components/blocks/hs-independence-promo';
+export * from './app/components/blocks/hs-halloween-promo';
+export * from './app/components/blocks/hs-valentines-promo';
+export * from './app/components/blocks/hs-new-year-promo';
+export * from './app/components/blocks/hs-faq';
+export * from './app/components/blocks/hs-app-showcase';
+export * from './app/components/blocks/hs-seo-columns';
+export * from './app/components/blocks/hs-testimonial';
+export * from './app/components/blocks/hs-usp-grid';
+export * from './app/components/blocks/hs-announcement-bar';
+export * from './app/components/blocks/hs-cta-band';
+export * from './app/components/blocks/hs-website-footer';
+export * from './app/components/blocks/hs-deals';
+export * from './app/components/blocks/hs-format-band';
+export * from './app/components/ui/hs-privacy-banner';
+export * from './app/components/ui/hs-bottom-glass';
+export * from './app/components/ui/hs-reveal';
 export * from './app/components/ui/hs-cmd';
 // hs-collapsible exports a simplified Collapsible that conflicts with the Radix primitive above;
 // re-export under HsCollapsible to preserve both without ambiguity.

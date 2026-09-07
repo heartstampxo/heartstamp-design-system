@@ -39,6 +39,8 @@ const SHARED_TOKENS: Record<string, string> = {
   "--shadow-lg":  "0 8px 24px rgba(0,0,0,0.15)",
   "--shadow-xl":  "0 8px 32px rgba(0,0,0,0.15)",
   "--shadow-2xl": "0 24px 64px rgba(0,0,0,0.30)",
+  /* A filter, not a box-shadow — for drop-shadow() on the card-back art. */
+  "--shadow-card-back": "drop-shadow(24px 12px 10px rgba(0,0,0,0.15))",
   /* ── Button ─────────────────────────────────────────────── */
   "--btn-padding-sm":      "0px 12px",
   "--btn-padding-default": "0px 16px",

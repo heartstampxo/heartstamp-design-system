@@ -169,3 +169,52 @@ describe('cssMin keeps selectors intact while minifying', () => {
     });
   });
 });
+
+/* ── Docs token mirror ────────────────────────────────────────────────
+   The docs app does NOT import tokens.css. It restates the same scale in
+   two places: src/styles/theme.css (CSS) and src/app/theme.ts (the JS map
+   injected onto :root at runtime).
+
+   A step present in tokens.css and absent from both mirrors does not fall
+   back — the browser drops the whole declaration. `gap: var(--space-16)`
+   becomes no gap at all, silently, and only in the docs app, so the
+   showroom disagrees with what consumers actually get. --space-0-5 and
+   --space-16 had drifted exactly that way.
+
+   Colours are deliberately not asserted here: --color-state-success,
+   --color-state-warning, --color-state-dislike(-rgb) and
+   --color-brand-primary-rgb are read by hs-alrt, hs-bdg and
+   hs-stampy-promotions but declared in neither mirror. That gap predates
+   this test and is tracked separately; widening the assertion to colours
+   is the fix, once those five are mirrored.
+   ──────────────────────────────────────────────────────────────────── */
+describe('docs token mirror stays in step with the published tokens', () => {
+  const names = (src: string) =>
+    new Set([
+      ...[...src.matchAll(/--([a-z0-9-]+)\s*:/g)].map((m) => m[1]),
+      ...[...src.matchAll(/"--([a-z0-9-]+)"\s*:/g)].map((m) => m[1]),
+    ]);
+
+  const published = () => names(read('src/css/tokens.css'));
+  const mirrored = () =>
+    new Set([...names(read('src/styles/theme.css')), ...names(read('src/app/theme.ts'))]);
+
+  it.each([
+    ['spacing', 'space-'],
+    ['radius', 'radius'],
+    ['shadow', 'shadow'],
+    ['font size', 'font-size-'],
+    ['font weight', 'font-weight'],
+    ['font family', 'font-family'],
+    ['line height', 'line-height-'],
+    ['grid', 'grid-'],
+  ])('mirrors every %s token', (_label, prefix) => {
+    const mirror = mirrored();
+    const missing = [...published()]
+      .filter((t) => t.startsWith(prefix))
+      .filter((t) => !mirror.has(t))
+      .sort();
+
+    expect(missing).toEqual([]);
+  });
+});

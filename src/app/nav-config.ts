@@ -78,6 +78,7 @@ export const NAV = [
       { title: "Dropdown Menu",   id: "dropdown",     group: "Overlays & Popups" },
       { title: "Hover Card",      id: "hover-card",   group: "Overlays & Popups" },
       { title: "Popover",         id: "popover",      group: "Overlays & Popups" },
+      { title: "Privacy Banner",  id: "privacy-banner", group: "Overlays & Popups", label: "new"  },
       { title: "Sheet",           id: "sheet",        group: "Overlays & Popups" },
       { title: "Tooltip",         id: "tooltip",      group: "Overlays & Popups" },
       /* ── Feedback & Status ──────────────────────────────── */
@@ -91,6 +92,7 @@ export const NAV = [
       /* ── Display ────────────────────────────────────────── */
       { title: "Avatar",          id: "avatar",       group: "Display" },
       { title: "Badge",           id: "badge",        group: "Display",           label: "new"  },
+      { title: "Bottom Glass",    id: "bottom-glass", group: "Display",           label: "new"  },
       { title: "Calendar",        id: "calendar",     group: "Display",           label: "new"  },
       { title: "Footer",          id: "footer",       group: "Display",           label: "new"  },
       /* ── Editor ─────────────────────────────────────── */
@@ -104,6 +106,20 @@ export const NAV = [
       { title: "Chat Input",      id: "chatbot-input",          group: "Chatbot", label: "new" },
       { title: "Chat Bubbles",    id: "chatbot-bubbles",        group: "Chatbot", label: "new" },
       { title: "Promotions",      id: "chatbot-promotions",     group: "Chatbot", label: "new" },
+    ]
+  },
+  {
+    title: "Blocks", items: [
+      { title: "Promo Blocks",    id: "promo-blocks",    label: "new" },
+      { title: "FAQ",             id: "faq-block",       label: "new" },
+      { title: "App Showcase",    id: "app-showcase",    label: "new" },
+      { title: "Testimonial",     id: "testimonial",     label: "new" },
+      { title: "SEO Columns",     id: "seo-columns",     label: "new" },
+      { title: "USP Grid",        id: "usp-grid",        label: "new" },
+      { title: "Announcement Bar", id: "announcement-bar", label: "new" },
+      { title: "Closing Section", id: "cta-band",        label: "new" },
+      { title: "Deals",           id: "deals",           label: "new" },
+      { title: "Format Band",     id: "format-band",     label: "new" },
     ]
   },
 ];
