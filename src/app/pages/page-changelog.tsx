@@ -30,6 +30,24 @@ const TAG_STYLES: Record<string, { bg: string; color: string }> = {
 
 const RELEASES: Release[] = [
   {
+    version: "2.1.61 to 2.1.62", date: "7 Sep 2026",
+    title: "Promo Blocks: six seasonal bands on one engine, plus the marketing blocks",
+    tags: ["feature", "design", "fix", "docs"],
+    items: [
+      "Six seasonal promo bands ship under one Promo Blocks page: Christmas, Thanksgiving, Independence Day, Halloween, Valentine's Day and New Year. They are one component, not six. PromoBand holds the structure and the stylesheet, and each season is a small preset that supplies only its own ground, art and copy.",
+      "Decoration comes in three shapes and a season picks what it needs. pixelBand is a strip along the top, used by Christmas, Thanksgiving, Halloween, Valentine's Day and New Year. cornerArt is a single drawing pinned to a corner, used by the Independence Day flag. decorations is loose art scattered behind the content, used by Halloween for its two bats and three spider webs. A band can carry any of them, all of them, or none.",
+      "New Year's fireworks are 351px deep, so the header sits inside the art rather than below it. That needed no new code, because the strip already draws behind the content. Independence Day is the opposite case: its flag is opaque all the way across, so the band's top padding clears the full height of it at any screen width. Deep art you can sit on is the easy one. Opaque art is the one that needs room.",
+      "The six product callouts, from Printing through to Custom Envelope, are shared from a single place. Every season reads the same list, so they cannot drift apart as seasons are edited.",
+      "Every season exports its defaults. Take the approved cards, features, banner, ground or headline and change one field without restating the rest, or pass false to any section to drop it.",
+      "Also new: FAQ, app showcase, testimonial, SEO columns, USP grid, announcement bar, closing section, deals, format band and website footer blocks, plus the privacy banner and bottom glass components.",
+      "Grid fix: the closing section and the announcement bar now ride the design system track. Both used spacing tokens that were close to the grid margin rather than the margin itself, so neither could be lined up with --hs-track-max the way every other block could. The closing section's side padding is now the grid margin, and the announcement bar's line is held to the track while its pink ground stays full width. Nothing moves at default settings.",
+      "Fix with wider reach: band padding travels as a custom property instead of an inline style. An inline style beats every stylesheet rule, so a promo band was keeping its desktop padding all the way down to a phone and the small-screen rules never applied. All six seasons get their mobile spacing back.",
+      "The app showcase's digital panel now uses a clip with a real alpha channel. The old one had a flat grey ground that was invisible on the light panel it was drawn for and a visible grey plate on a dark one. The block's own notes had logged this as a defect and named the fix; nothing in the code had to change to take it.",
+      "Security pass over the blocks: no innerHTML, no eval, and no unguarded links. Every anchor goes through safeHref, and every CSS url() is a bundled asset rather than a value from a caller.",
+      "30 tests cover the promo family: the exported defaults, that all six render the same structure, that each section can be dropped, that the decoration slots behave, and that a javascript: link on a card or an offer bar is neutralised.",
+    ],
+  },
+  {
     version: "2.1.60", date: "5 Sep 2026",
     title: "Mega menu links now follow the theme",
     tags: ["fix", "tokens"],
