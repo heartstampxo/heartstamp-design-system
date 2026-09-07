@@ -342,7 +342,7 @@ function SeasonProps({
         { name: "cards",          type: "PromoBandCard[] | false",    def: `${CONST}_CARDS`, desc: "The promo cards. false removes the row. Slice or spread the exported default to change one without restating all three." },
         { name: "features",       type: "PromoBandFeature[] | false", def: `${CONST}_FEATURES`, desc: "The feature callouts. false removes the grid. Slice the exported default to shorten it." },
         { name: "featureColumns", type: "number",            def: "2", desc: "Columns in the feature grid. Collapses to 1 below 900px of the block's width regardless." },
-        { name: "headWidth",      type: "number",            def: july ? "770" : feb ? "790" : "611", desc: "The measure the heading wraps at, in px. Per-season, because each headline is a different length. Capped at 100% of the band." },
+        { name: "headWidth",      type: "number",            def: july ? "770" : feb ? "790" : season === "thanksgiving" ? "738" : "611", desc: "The measure the heading wraps at, in px. Per-season, because each headline is a different length. Capped at 100% of the band." },
         { name: "banner",         type: "PromoBandBanner | false",    def: `${CONST}_BANNER`, desc: "The offer bar under the band. false removes it entirely. With an href it renders an anchor, without one a button." },
         { name: "ground",         type: "string",            def: xmas ? '"rgb(14, 51, 30)"' : july ? '"#132941"' : oct ? '"#070E17"' : feb ? '"#810316"' : jan ? '"#0C255E"' : "the orange gradient", desc: "The band's ground. Any CSS background value, so gradients work. Fixed across light and dark by design." },
         { name: "pixelBand",      type: "string | false",    def: july ? "false" : "the packaged strip", desc: july ? "The strip along the top. This season decorates with corner art instead, so it is off." : "The pixel strip along the top. Pass a URL to swap it, false to drop it." },
@@ -445,6 +445,18 @@ function ThanksgivingSection() {
         multiple
         items={[
           { title: "Props", content: <SeasonProps season="thanksgiving" /> },
+          {
+            title: "Headline",
+            content: (
+              <Callout variant="info">
+                <code>headWidth</code> is 738px here rather than the 611px the shorter headlines
+                use. That is the handoff's own number, sized to hold{" "}
+                <em>Start your holiday preparations early.</em> on one line — the longer of this
+                season's two lines. At 611px it breaks in two and the header renders as three
+                lines instead of the design's two.
+              </Callout>
+            ),
+          },
           {
             title: "Theming",
             content: (

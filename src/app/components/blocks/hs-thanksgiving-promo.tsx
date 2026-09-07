@@ -62,6 +62,15 @@ export const THANKSGIVING_PROMO_GROUND = "linear-gradient(180deg, #DFB083 0%, #E
     wants more room above the eyebrow than Christmas's does. */
 export const THANKSGIVING_PROMO_BAND_PADDING = "160px 0 68px";
 
+/**
+ * The measure the heading wraps at. 738px is the handoff's own number, sized
+ * to hold "Start your holiday preparations early." on one line — the longer
+ * of this season's two lines. At the 611px the shorter headlines use, that
+ * line breaks in two and the header renders as three lines rather than the
+ * design's two.
+ */
+export const THANKSGIVING_PROMO_HEAD_WIDTH = 738;
+
 export interface ThanksgivingPromoProps extends PromoBandProps {}
 
 /**
@@ -81,6 +90,7 @@ export function ThanksgivingPromo({
   features = THANKSGIVING_PROMO_FEATURES,
   banner = THANKSGIVING_PROMO_BANNER,
   ground = THANKSGIVING_PROMO_GROUND,
+  headWidth = THANKSGIVING_PROMO_HEAD_WIDTH,
   pixelBand = THANKSGIVING_PROMO_PIXEL_BAND,
   pixelBandHeight = THANKSGIVING_PROMO_PIXEL_BAND_HEIGHT,
   bandPadding = THANKSGIVING_PROMO_BAND_PADDING,
@@ -108,6 +118,7 @@ export function ThanksgivingPromo({
       features={features}
       banner={banner}
       ground={ground}
+      headWidth={headWidth}
       pixelBand={pixelBand}
       pixelBandHeight={pixelBandHeight}
       bandPadding={bandPadding}

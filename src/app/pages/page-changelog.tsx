@@ -30,6 +30,20 @@ const TAG_STYLES: Record<string, { bg: string; color: string }> = {
 
 const RELEASES: Release[] = [
   {
+    version: "2.1.63", date: "8 Sep 2026",
+    title: "Headings now shrink on mobile, and Thanksgiving's headline fits",
+    tags: ["fix", "tokens", "design"],
+    items: [
+      "Headings were the desktop size on every screen. On a phone that meant 56px of h1 and 40px of h2, which is about seven characters to a line on a 390px screen.",
+      "The smaller scale existed, but only on hs-website. It sat in that site's own stylesheet as a set of overrides on top of the design system's tokens, so the site looked right and everything else built on the design system kept the desktop sizes all the way down to a phone. That includes every block in this package.",
+      "Those numbers now live in tokens.css, so the scale belongs to the design system rather than to one page. Below 768px: h1 is 34px, h2 is 28px, h3 is 24px, h4 is 18px, h5 is 16px, and both subheadline sizes are 20px. Above 768px nothing changes.",
+      "The leading for h1, h2 and h3 changes with them, to the ratios hs-website uses: 1.15, 1.2 and 1.25. Without this the tokens keep their fixed pixel leading, and 64px of leading under 34px text reads as a gap rather than a line. h4, h5 and the subheadlines drop by 2px to 4px and keep the leading they had, which still sits in range.",
+      "20 heading declarations across the blocks pick this up, because they already used the tokens. Body copy stays at 16px, which is what hs-website does too.",
+      "This reaches every component that uses these tokens, not only the blocks. That is the point: the design system was the thing that was wrong, and hs-website was working around it.",
+      "Thanksgiving promo: the headline fits on two lines again. Start your holiday preparations early. was wrapping onto a third, because the block was using the 611px measure meant for shorter headlines. It now uses 738px, the width the handoff specifies. Independence Day and Valentine's Day already set their own.",
+    ],
+  },
+  {
     version: "2.1.61 to 2.1.62", date: "7 Sep 2026",
     title: "Promo Blocks: six seasonal bands on one engine, plus the marketing blocks",
     tags: ["feature", "design", "fix", "docs"],

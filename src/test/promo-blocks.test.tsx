@@ -28,6 +28,7 @@ import {
   NEW_YEAR_PROMO_GROUND,
   NEW_YEAR_PROMO_TOP_BAND_HEIGHT,
   ThanksgivingPromo,
+  THANKSGIVING_PROMO_HEAD_WIDTH,
   ValentinesPromo,
   VALENTINES_PROMO_BANNER,
   VALENTINES_PROMO_CARDS,
@@ -173,6 +174,7 @@ describe('promo blocks', () => {
     expect(headWidth(<IndependencePromo />)).toBe('770px');
     /* The longest first line in the set gets the widest measure. */
     expect(headWidth(<ValentinesPromo />)).toBe(`${VALENTINES_PROMO_HEAD_WIDTH}px`);
+    expect(headWidth(<ThanksgivingPromo />)).toBe(`${THANKSGIVING_PROMO_HEAD_WIDTH}px`);
     /* The others leave it unset, so the stylesheet's 611px fallback applies. */
     expect(headWidth(<ChristmasPromo />)).toBe('');
   });

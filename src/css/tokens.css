@@ -260,6 +260,42 @@
   }
 }
 
+/*
+ * ── Type scale below 768px ──────────────────────────────────
+ *
+ * The headline sizes above are the desktop scale. On a phone they are far too
+ * large — 56px of h1 on a 390px screen is roughly seven characters to a line —
+ * so hs-website has always dropped them at 767px. That scale lived in the
+ * site's own stylesheet as a block of overrides on top of these tokens, which
+ * meant every other consumer of the design system, this package's own blocks
+ * included, kept the desktop sizes all the way down to a phone.
+ *
+ * The site's numbers now live here instead, so the scale is the design
+ * system's rather than one page's, and a block picks it up by using the
+ * tokens it already uses.
+ *
+ * h1 to h3 need their leading changed with them: the desktop line heights are
+ * fixed pixel values sized for the desktop type, and 64px of leading under
+ * 34px text reads as a gap rather than a line. The site sets ratios for those
+ * three and nothing for the rest, so that is what is carried over — h4, h5 and
+ * the subheadlines drop by 2px to 4px and keep their existing leading, which
+ * still sits in range.
+ */
+@media (max-width: 767px) {
+  :root {
+    --font-size-h1: 34px;
+    --line-height-h1: 1.15;
+    --font-size-h2: 28px;
+    --line-height-h2: 1.2;
+    --font-size-h3: 24px;
+    --line-height-h3: 1.25;
+    --font-size-h4: 18px;
+    --font-size-h5: 16px;
+    --font-size-subheadline: 20px;
+    --font-size-subheadline-md: 20px;
+  }
+}
+
 .dark {
   /* ── Colors (dark mode overrides) ───────────────────────── */
   --bg:                #141414;
