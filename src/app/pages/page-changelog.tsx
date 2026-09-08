@@ -30,6 +30,21 @@ const TAG_STYLES: Record<string, { bg: string; color: string }> = {
 
 const RELEASES: Release[] = [
   {
+    version: "2.1.65", date: "8 Sep 2026",
+    title: "The offer bar scrolls a long line instead of wrapping it",
+    tags: ["feature", "fix"],
+    items: [
+      "The offer bar under each promo band kept its line on one row until the bar got narrow, then let it wrap. On a phone the Get 30% off line ran to three rows and pushed the bar from 52px to about 120px.",
+      "It now stays one line and scrolls leftward on a continuous loop. The line is duplicated and the pair moved by exactly one copy plus the gap, so the loop closes on itself and you never see it jump back.",
+      "Whether it scrolls is measured, not tied to a screen width. A short offer still fits on a phone and stays centred. A long one can overflow a desktop bar and will scroll there too.",
+      "Speed is fixed at 60px a second, and the duration comes from how far the line has to travel. A longer offer takes longer rather than scrolling faster, so every offer reads at the same pace.",
+      "Hovering the bar, or focusing it with a keyboard, holds it still so the line can be read.",
+      "Under prefers-reduced-motion nothing scrolls and the line wraps instead. A clipped offer is worse than a taller bar.",
+      "The repeated copy is hidden from screen readers, so the offer is announced once, and the chevron sits outside the scrolling window so it stays put while the line moves.",
+      "Pass marquee false on the banner to switch it off and let a long line wrap.",
+    ],
+  },
+  {
     version: "2.1.64", date: "8 Sep 2026",
     title: "The smaller headings now actually apply in the blocks",
     tags: ["fix", "tokens"],

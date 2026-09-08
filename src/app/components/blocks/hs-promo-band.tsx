@@ -79,6 +79,14 @@ export interface PromoBandDecoration {
 
 export interface PromoBandBanner {
   label: string;
+  /**
+   * What to do when the line is wider than the bar. Left alone it is measured:
+   * a line that fits is centred, one that does not scrolls. `false` never
+   * scrolls and lets a long line wrap instead. Scrolling is skipped under
+   * `prefers-reduced-motion` whatever this says, and the line wraps there.
+   * @default measured
+   */
+  marquee?: boolean;
   href?: string;
   onClick?: (e: React.MouseEvent<HTMLElement>) => void;
   /** Hide the trailing chevron. @default false */
@@ -380,6 +388,20 @@ const PROMO_CSS = `
   font: inherit;
 }
 .hs-xpromo__cta { text-decoration: none; color: var(--xpromo-banner-ink); }
+/* The window the offer line runs through. It shrinks below its content, which
+   is what lets a line too long for the bar scroll instead of wrapping; without
+   min-width:0 a flex item refuses to go under its content width. */
+.hs-xpromo__cta-vp {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  display: block;
+}
+.hs-xpromo__cta-track {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--xpromo-marquee-gap, 48px);
+}
 .hs-xpromo__cta-text {
   font-family: var(--font-family-heading);
   font-weight: 600;
@@ -390,6 +412,35 @@ const PROMO_CSS = `
   white-space: nowrap;
 }
 .hs-xpromo__cta svg { display: block; flex: none; }
+
+/* ── The offer line, when it does not fit ──────────────────────────────────
+   A line too long for the bar used to wrap to two or three rows, which grew
+   the bar and broke its 52px band. It now runs as a marquee instead: the line
+   is duplicated and the pair translated by exactly one copy plus the gap, so
+   the loop closes on itself with no jump.
+
+   Distance and duration are measured and written back by the component, not
+   guessed here — the duration is derived from the distance at a fixed speed,
+   so a long offer takes longer rather than scrolling faster. */
+.hs-xpromo__cta[data-marquee] .hs-xpromo__cta-track {
+  animation: hs-xpromo-marquee var(--xpromo-marquee-dur, 18s) linear infinite;
+  will-change: transform;
+}
+@keyframes hs-xpromo-marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(calc(-1 * var(--xpromo-marquee-dist, 0px))); }
+}
+/* Hovering holds it still, so a line can be read rather than chased. */
+.hs-xpromo__cta[data-marquee]:hover .hs-xpromo__cta-track,
+.hs-xpromo__cta[data-marquee]:focus-visible .hs-xpromo__cta-track {
+  animation-play-state: paused;
+}
+/* Under reduced motion nothing scrolls, so the line has to wrap to stay
+   readable — a clipped offer is worse than a taller bar. The component sets
+   this state instead of the marquee when the preference is on. */
+.hs-xpromo__cta[data-wrap] { height: auto; min-height: 52px; padding-block: var(--space-2); }
+.hs-xpromo__cta[data-wrap] .hs-xpromo__cta-vp { overflow: visible; }
+.hs-xpromo__cta[data-wrap] .hs-xpromo__cta-text { white-space: normal; }
 
 /* ── Below the desktop track ──────────────────────────────────────────────
    The source band had no layout of its own under 768px: the page only
@@ -407,8 +458,7 @@ const PROMO_CSS = `
   /* The eyebrow is set nowrap so it never breaks mid-phrase; at this width
      it no longer fits one line of the phone, so let it wrap. */
   .hs-xpromo__eyebrow { white-space: normal; text-align: center; }
-  .hs-xpromo__cta { height: auto; min-height: 52px; padding: var(--space-2) var(--space-4); }
-  .hs-xpromo__cta-text { white-space: normal; }
+  .hs-xpromo__cta { padding-inline: var(--space-4); }
 }
 /* Below the desktop track the padding above drops to 96px and then 84px of
    top, which is less than corner art is tall — so a band carrying corner art
@@ -452,6 +502,64 @@ const PROMO_CSS = `
 `;
 
 const PROMO_CSS_MIN = cssMin(PROMO_CSS);
+
+/** How fast the offer line travels when it has to scroll, in px per second. */
+const MARQUEE_SPEED = 60;
+/** The breathing space between the line and its repeat. Matches the CSS. */
+const MARQUEE_GAP = 48;
+
+/**
+ * Decide what the offer bar does with a line that is wider than the bar.
+ *
+ * Three outcomes, and which one applies is a measurement rather than a
+ * breakpoint: a short offer on a phone still fits, and a long one can overflow
+ * a desktop bar. `none` leaves it centred on one line, `marquee` scrolls it,
+ * and `wrap` lets it run to several rows, which is the reduced-motion answer
+ * since nothing is allowed to move.
+ *
+ * The travel distance is one copy of the line plus the gap, which is what
+ * makes the loop close on itself, and the duration comes from that distance at
+ * a fixed speed so a longer offer takes longer instead of racing past.
+ */
+function useOfferFit(
+  ref: React.RefObject<HTMLElement | null>,
+  deps: React.DependencyList,
+  enabled: boolean | undefined,
+): "none" | "marquee" | "wrap" {
+  const [fit, setFit] = React.useState<"none" | "marquee" | "wrap">("none");
+
+  React.useEffect(() => {
+    const root = ref.current;
+    if (!root || typeof ResizeObserver === "undefined") return;
+
+    const measure = () => {
+      const vp = root.querySelector<HTMLElement>(".hs-xpromo__cta-vp");
+      const line = root.querySelector<HTMLElement>(".hs-xpromo__cta-text");
+      if (!vp || !line) return;
+
+      /* scrollWidth is the line's natural width and is unaffected by the
+         transform the marquee may already be running. */
+      const need = line.scrollWidth;
+      const have = vp.clientWidth;
+
+      if (enabled === false || need <= have + 1) { setFit("none"); return; }
+      if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) { setFit("wrap"); return; }
+
+      const dist = need + MARQUEE_GAP;
+      root.style.setProperty("--xpromo-marquee-dist", `${dist}px`);
+      root.style.setProperty("--xpromo-marquee-dur", `${(dist / MARQUEE_SPEED).toFixed(2)}s`);
+      setFit("marquee");
+    };
+
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(root);
+    return () => ro.disconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ref, enabled, ...deps]);
+
+  return fit;
+}
 
 export interface PromoBandProps {
   /** Small uppercase line above the heading. `false` removes it. */
@@ -569,6 +677,14 @@ export function PromoBand({
   const hasHeader = eyebrow !== false || (heading !== false && heading != null);
   const hasCorner = cornerArt !== false && cornerArt != null;
 
+  /* The offer bar measures its own line, so the decision follows the content
+     and the width rather than a breakpoint. Re-measured when the label
+     changes, since a new offer is a new width. */
+  const ctaRef = React.useRef<HTMLElement>(null);
+  const bannerLabel = banner !== false && banner != null ? banner.label : null;
+  const bannerMarquee = banner !== false && banner != null ? banner.marquee : undefined;
+  const offerFit = useOfferFit(ctaRef, [bannerLabel], bannerMarquee);
+
   const rootStyle: React.CSSProperties = {
     ...(ground ? ({ "--xpromo-ground": ground } as React.CSSProperties) : null),
     ...(pixelBandHeight ? ({ "--xpromo-pixel-height": `${pixelBandHeight}px` } as React.CSSProperties) : null),
@@ -672,17 +788,50 @@ export function PromoBand({
       </div>
 
       {banner !== false && banner != null &&
-        (banner.href ? (
-          <a className="hs-xpromo__cta" href={safeHref(banner.href)} onClick={banner.onClick ?? onCtaClick}>
-            <span className="hs-xpromo__cta-text">{banner.label}</span>
-            {!banner.hideChevron && CHEVRON}
-          </a>
-        ) : (
-          <button type="button" className="hs-xpromo__cta" onClick={banner.onClick ?? onCtaClick}>
-            <span className="hs-xpromo__cta-text">{banner.label}</span>
-            {!banner.hideChevron && CHEVRON}
-          </button>
-        ))}
+        (() => {
+          /* The chevron sits outside the scrolling window, so it stays put
+             while the line travels. The repeat is what closes the loop, and it
+             is hidden from assistive tech so the offer is announced once. */
+          const contents = (
+            <>
+              <span className="hs-xpromo__cta-vp">
+                <span className="hs-xpromo__cta-track">
+                  <span className="hs-xpromo__cta-text">{banner.label}</span>
+                  {offerFit === "marquee" && (
+                    <span className="hs-xpromo__cta-text" aria-hidden="true">{banner.label}</span>
+                  )}
+                </span>
+              </span>
+              {!banner.hideChevron && CHEVRON}
+            </>
+          );
+          const state =
+            offerFit === "marquee" ? { "data-marquee": "" }
+            : offerFit === "wrap" ? { "data-wrap": "" }
+            : {};
+
+          return banner.href ? (
+            <a
+              ref={ctaRef as React.RefObject<HTMLAnchorElement>}
+              className="hs-xpromo__cta"
+              href={safeHref(banner.href)}
+              onClick={banner.onClick ?? onCtaClick}
+              {...state}
+            >
+              {contents}
+            </a>
+          ) : (
+            <button
+              ref={ctaRef as React.RefObject<HTMLButtonElement>}
+              type="button"
+              className="hs-xpromo__cta"
+              onClick={banner.onClick ?? onCtaClick}
+              {...state}
+            >
+              {contents}
+            </button>
+          );
+        })()}
     </div>
   );
 }

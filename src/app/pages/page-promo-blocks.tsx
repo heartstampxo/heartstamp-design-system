@@ -347,6 +347,7 @@ function SeasonProps({
         { name: "ground",         type: "string",            def: xmas ? '"rgb(14, 51, 30)"' : july ? '"#132941"' : oct ? '"#070E17"' : feb ? '"#810316"' : jan ? '"#0C255E"' : "the orange gradient", desc: "The band's ground. Any CSS background value, so gradients work. Fixed across light and dark by design." },
         { name: "pixelBand",      type: "string | false",    def: july ? "false" : "the packaged strip", desc: july ? "The strip along the top. This season decorates with corner art instead, so it is off." : "The pixel strip along the top. Pass a URL to swap it, false to drop it." },
         { name: "pixelBandHeight", type: "number",           def: xmas ? "63" : july ? "—" : oct ? "93" : feb ? "87" : jan ? "351" : "95", desc: "Height of that strip in px. The art is drawn at this height and its width scales with it." },
+        { name: "banner.marquee", type: "boolean",           def: "measured", desc: "What the offer bar does with a line wider than itself. Left alone it is measured: a line that fits is centred, one that does not scrolls leftward on a loop. false wraps instead. Skipped under prefers-reduced-motion, where the line wraps." },
         { name: "cornerArt",      type: "string | false",    def: july ? "INDEPENDENCE_PROMO_FLAG" : "false", desc: "A fixed drawing pinned to the band's top-left corner, behind the content. The other shape a season's decoration takes." },
         { name: "cornerArtWidth", type: "number",            def: july ? "988" : "—", desc: "Width of that drawing in px. The band clips it, so a narrower band shows less of it." },
         { name: "cornerArtHeight", type: "number",           def: july ? "231" : "—", desc: "Height of that drawing in px." },
@@ -961,6 +962,34 @@ function BehaviourSection() {
                   Under <code>prefers-reduced-motion: reduce</code> the cascade never arms and the
                   block renders finished, rather than hidden and waiting.{" "}
                   <code>{"reveal={false}"}</code> switches it off for everyone.
+                </Callout>
+              </div>
+            ),
+          },
+          {
+            title: "The offer bar",
+            content: (
+              <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>
+                <Callout variant="info">
+                  The offer line is held to one row. When it is wider than the bar it scrolls
+                  leftward on a continuous loop rather than wrapping, which used to push the bar
+                  from 52px to two or three rows. The line is duplicated and the pair moved by
+                  exactly one copy plus the gap, so the loop closes on itself with no jump.
+                </Callout>
+                <Callout variant="info">
+                  Whether it scrolls is <strong>measured, not a breakpoint</strong>. A short offer
+                  still fits on a phone and stays centred; a long one can overflow a desktop bar
+                  and will scroll there. Travel and duration are written back from that
+                  measurement, and the duration comes from the distance at a fixed 60px per
+                  second — so a longer offer takes longer rather than racing past. Hovering or
+                  focusing the bar holds it still so the line can be read.
+                </Callout>
+                <Callout variant="info">
+                  Under <code>prefers-reduced-motion</code> nothing scrolls and the line wraps
+                  instead, because a clipped offer is worse than a taller bar. The repeat is
+                  hidden from assistive technology, so the offer is announced once, and the
+                  chevron sits outside the scrolling window so it stays put.{" "}
+                  <code>{"banner={{ marquee: false }}"}</code> opts out entirely.
                 </Callout>
               </div>
             ),
