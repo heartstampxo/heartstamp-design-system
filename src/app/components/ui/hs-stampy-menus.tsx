@@ -107,17 +107,35 @@ function OverflowSkipBtn({ label, onClick }: { label: string; onClick: () => voi
   );
 }
 
-/** Title + subtitle + primary action + close, shared by the two action menus so
- *  they stay pixel-identical. Full-bleed separator sits directly under it. */
+/** Title + subtitle + action(s) + close, shared by the two action menus so
+ *  they stay pixel-identical. Full-bleed separator sits directly under it.
+ *
+ *  The header carried a single call to action until a turn needed to offer two
+ *  of them side by side (Preview alongside Prepare for Cart, once a card has
+ *  been generated). `onSecondary` + `secondaryButtonLabel` add an optional
+ *  lower-emphasis action to the left of the primary one. Both are required
+ *  together — a label with no handler would render a button that does nothing —
+ *  and when they are absent the header is byte-identical to what it was, so
+ *  every existing caller is unaffected.
+ *
+ *  Deliberately props only, not part of `ActionMenuConfig`: the secondary is an
+ *  optional capability of the header rather than something every action menu
+ *  has to describe. */
 function ActionMenuHeader({
-  config, onClose, onGenerate, isLoadingGenerate, generateButtonLabel,
+  config, onClose, onGenerate, isLoadingGenerate, generateButtonLabel, onSecondary, secondaryButtonLabel,
 }: {
   config: ActionMenuConfig;
   onClose: () => void;
   onGenerate: () => void;
   isLoadingGenerate?: boolean;
   generateButtonLabel?: string;
+  /** Renders a second, lower-emphasis action before the primary one. Needs `secondaryButtonLabel`. */
+  onSecondary?: () => void;
+  /** Label for the secondary action. Needs `onSecondary`. */
+  secondaryButtonLabel?: string;
 }) {
+  const hasSecondary = Boolean(onSecondary && secondaryButtonLabel);
+
   return (
     <div className="flex items-center gap-[var(--space-4)] px-[var(--space-4)] py-[var(--space-2)] w-full">
       <div className="flex flex-1 gap-[var(--space-3)] items-center min-w-0">
@@ -125,10 +143,19 @@ function ActionMenuHeader({
           <p className="leading-[var(--line-height-body-15)] text-[length:var(--font-size-body-15)]" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{config.title}</p>
           <p className="leading-[17px] text-[length:var(--font-size-body-13)]" style={{ ...dmSans400, color: "var(--color-text-secondary)" }}>{config.subtitle}</p>
         </div>
-        <Btn onClick={onGenerate} className="shrink-0 flex items-center gap-[var(--space-1-5)]" disabled={isLoadingGenerate}>
-          {isLoadingGenerate && <svg className="shrink-0 animate-spin" width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" strokeWidth="1.5" strokeDasharray="20 12" /></svg>}
-          {generateButtonLabel ?? config.generateButtonLabel}
-        </Btn>
+        {/* Grouped so the two actions stay together and the title is what gives
+            up width first when the panel is narrow. */}
+        <div className="flex shrink-0 items-center gap-[var(--space-2)]">
+          {hasSecondary && (
+            <Btn variant="secondary" onClick={onSecondary} className="shrink-0 whitespace-nowrap">
+              {secondaryButtonLabel}
+            </Btn>
+          )}
+          <Btn onClick={onGenerate} className="shrink-0 flex items-center gap-[var(--space-1-5)]" disabled={isLoadingGenerate}>
+            {isLoadingGenerate && <svg className="shrink-0 animate-spin" width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" strokeWidth="1.5" strokeDasharray="20 12" /></svg>}
+            {generateButtonLabel ?? config.generateButtonLabel}
+          </Btn>
+        </div>
       </div>
       <OverflowCloseBtn onClose={onClose} />
     </div>
@@ -403,11 +430,15 @@ export function TemplateOverflowMenu({
 // ── ActionOverflowMenu (V1 — Ghost Buttons) ────────────────────────────────
 
 export function ActionOverflowMenu({
-  config, onClose, onGenerate, onAdjust, isLoadingGenerate, generateButtonLabel,
+  config, onClose, onGenerate, onAdjust, isLoadingGenerate, generateButtonLabel, onSecondary, secondaryButtonLabel,
 }: {
   config: ActionMenuConfig;
   onClose: () => void;
   onGenerate: () => void;
+  /** Renders a second, lower-emphasis action before the primary one. Needs `secondaryButtonLabel`. */
+  onSecondary?: () => void;
+  /** Label for the secondary action. Needs `onSecondary`. */
+  secondaryButtonLabel?: string;
   /** Called with the adjust option the user picked. Falls back to closing the
    *  menu when omitted, which is what this variant did before it had a callback. */
   onAdjust?: (label: string) => void;
@@ -423,6 +454,8 @@ export function ActionOverflowMenu({
         config={config}
         onClose={onClose}
         onGenerate={onGenerate}
+        onSecondary={onSecondary}
+        secondaryButtonLabel={secondaryButtonLabel}
         isLoadingGenerate={isLoadingGenerate}
         generateButtonLabel={generateButtonLabel}
       />
@@ -443,11 +476,15 @@ export function ActionOverflowMenu({
 // ── ActionOverflowMenuList (V2 — Numbered List) ────────────────────────────
 
 export function ActionOverflowMenuList({
-  config, onClose, onGenerate, onComplete, onShowMore, isLoadingShowMore, showMoreLabel = "Show more...", isLoadingGenerate, generateButtonLabel,
+  config, onClose, onGenerate, onComplete, onShowMore, isLoadingShowMore, showMoreLabel = "Show more...", isLoadingGenerate, generateButtonLabel, onSecondary, secondaryButtonLabel,
 }: {
   config: ActionMenuConfig;
   onClose: () => void;
   onGenerate: () => void;
+  /** Renders a second, lower-emphasis action before the primary one. Needs `secondaryButtonLabel`. */
+  onSecondary?: () => void;
+  /** Label for the secondary action. Needs `onSecondary`. */
+  secondaryButtonLabel?: string;
   onComplete: (label: string) => void;
   /** Renders the "Show more…" action when provided. */
   onShowMore?: () => void;
@@ -469,6 +506,8 @@ export function ActionOverflowMenuList({
         config={config}
         onClose={onClose}
         onGenerate={onGenerate}
+        onSecondary={onSecondary}
+        secondaryButtonLabel={secondaryButtonLabel}
         isLoadingGenerate={isLoadingGenerate}
         generateButtonLabel={generateButtonLabel}
       />
@@ -502,12 +541,16 @@ export function ActionOverflowMenuList({
 // ── ActionChecklistOverflowMenu (Action header + multi-select checklist) ──────
 
 export function ActionChecklistOverflowMenu({
-  config, items, onClose, onGenerate, onSelectionChange, onShowMore, isLoadingShowMore, showMoreLabel = "Show more...", isLoadingGenerate, generateButtonLabel,
+  config, items, onClose, onGenerate, onSelectionChange, onShowMore, isLoadingShowMore, showMoreLabel = "Show more...", isLoadingGenerate, generateButtonLabel, onSecondary, secondaryButtonLabel,
 }: {
   config: ActionMenuConfig;
   items: { id: string; label: string }[];
   onClose: () => void;
   onGenerate: () => void;
+  /** Renders a second, lower-emphasis action before the primary one. Needs `secondaryButtonLabel`. */
+  onSecondary?: () => void;
+  /** Label for the secondary action. Needs `onSecondary`. */
+  secondaryButtonLabel?: string;
   /** Fired on every toggle with the labels currently ticked. Like the other
    *  menus this one has no send button, so the consumer owns submission —
    *  mirror this into your own state and send it from your own input. */
@@ -539,6 +582,8 @@ export function ActionChecklistOverflowMenu({
         config={config}
         onClose={onClose}
         onGenerate={onGenerate}
+        onSecondary={onSecondary}
+        secondaryButtonLabel={secondaryButtonLabel}
         isLoadingGenerate={isLoadingGenerate}
         generateButtonLabel={generateButtonLabel}
       />
