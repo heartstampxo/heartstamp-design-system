@@ -2,7 +2,7 @@
 // StampyChatbot — Overflow menu components
 // ═══════════════════════════════════════════════════════════════════════════
 
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { X, ChevronRight, ChevronLeft, Mail } from "lucide-react";
 import { cn } from "./utils";
 import { Btn } from "./btn";
@@ -107,6 +107,37 @@ function OverflowSkipBtn({ label, onClick }: { label: string; onClick: () => voi
   );
 }
 
+/** Height of one list row. Must match the `h-[36px]` rows below. */
+const ROW_H = 36;
+
+/** Bring a newly appended batch into view once a "Show more" lands.
+ *
+ *  The list boxes hold six 36px rows, so rows seven onward arrive below the
+ *  fold. The spinner stopped and nothing on screen moved, and a customer took
+ *  it that nothing had happened. This scrolls so the first new row sits at the
+ *  top, which with batches of about six shows exactly what is new.
+ *
+ *  While `busy` the count is deliberately not recorded, so the growth still
+ *  reads as growth when the flag clears, whichever render delivers the new
+ *  items. Never fires on mount or on a shrink. Reduced motion jumps instead of
+ *  gliding. */
+function useRevealAppended(count: number, busy?: boolean) {
+  const ref = useRef<HTMLDivElement | null>(null);
+  const prev = useRef(count);
+  useEffect(() => {
+    if (busy) return;
+    const before = prev.current;
+    prev.current = count;
+    const el = ref.current;
+    if (!el || count <= before) return;
+    const reduce =
+      typeof window !== "undefined" &&
+      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    el.scrollTo({ top: before * ROW_H, behavior: reduce ? "auto" : "smooth" });
+  }, [count, busy]);
+  return ref;
+}
+
 /** Title + subtitle + action(s) + close, shared by the two action menus so
  *  they stay pixel-identical. Full-bleed separator sits directly under it.
  *
@@ -193,6 +224,7 @@ export function OverflowMenu({
   const currentPageData = pages[page - 1];
   const items = currentPageData?.options ?? [];
   const header = currentPageData?.question ?? "";
+  const listRef = useRevealAppended(items.length, isLoadingShowMore);
 
   // Paging through answers is its own way forward, so the show-more escape hatch
   // is only offered on single-page menus.
@@ -228,7 +260,7 @@ export function OverflowMenu({
           </div>
 
           {/* Six 36px rows fit before the list starts scrolling — the design's full height. */}
-          <div className={'w-full max-h-[216px] overflow-y-auto scrollbar-thin scrollbar-thumb-muted-foreground scrollbar-track-transparent'}>
+          <div ref={listRef} className={'w-full max-h-[216px] overflow-y-auto scrollbar-thin scrollbar-thumb-muted-foreground scrollbar-track-transparent'}>
             {items.map((item) => (
               <div key={item.num} className="h-[36px] w-full shrink-0">
                 <div
@@ -296,6 +328,7 @@ export function ChecklistOverflowMenu({
   };
 
   const currentPageData = checklistPages[page];
+  const checklistRef = useRevealAppended(currentPageData?.items.length ?? 0, isLoadingShowMore);
 
   const showsFooter = !!onShowMore || !!onSkip;
 
@@ -315,7 +348,7 @@ export function ChecklistOverflowMenu({
 
         <AnimatePresence mode="wait">
           {/* Six 36px rows fit before the list starts scrolling — the design's full height. */}
-          <motion.div key={page} className="w-full flex flex-col max-h-[216px] overflow-y-auto scrollbar-thin scrollbar-thumb-muted-foreground scrollbar-track-transparent" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} transition={{ type: "spring", stiffness: 380, damping: 28 }}>
+          <motion.div key={page} ref={checklistRef} className="w-full flex flex-col max-h-[216px] overflow-y-auto scrollbar-thin scrollbar-thumb-muted-foreground scrollbar-track-transparent" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} transition={{ type: "spring", stiffness: 380, damping: 28 }}>
             {currentPageData.items.map((item) => {
               const checked = selected.has(item.id);
               return (
@@ -367,6 +400,18 @@ export function TemplateOverflowMenu({
   const CARDS_PER_PAGE = 2;
   const totalPages = Math.ceil(cards.length / CARDS_PER_PAGE);
   const [page, setPage] = useState(1);
+
+  // Two cards a page, so a "Show more" batch lands on a page nobody is looking
+  // at and the only visible change was "1 of 2" becoming "1 of 3". Turn to the
+  // page holding the first new card once the batch lands. Same busy rule as
+  // useRevealAppended: the count is not recorded while the request is in flight.
+  const prevCardCount = useRef(cards.length);
+  useEffect(() => {
+    if (isLoadingShowMore) return;
+    const before = prevCardCount.current;
+    prevCardCount.current = cards.length;
+    if (cards.length > before) setPage(Math.floor(before / CARDS_PER_PAGE) + 1);
+  }, [cards.length, isLoadingShowMore]);
   const pageCards = cards.slice((page - 1) * CARDS_PER_PAGE, page * CARDS_PER_PAGE);
 
   const showsFooter = !!onShowMore || !!onSkip;
