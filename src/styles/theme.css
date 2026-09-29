@@ -258,6 +258,6 @@
 /* Grid wide tier — keep in sync with tokens.css */
 @media (min-width: 2000px) {
   :root {
-    --grid-max-width: 1400px;
+    --grid-max-width: 1460px;
   }
 }

@@ -823,16 +823,16 @@ describe('GridOverlay / GridInspector', () => {
     expect(gridBreakpointFor(1023).name).toBe('Tablet');
   });
 
-  it('widens the track to 1400px on the Wide tier, in step with tokens.css', () => {
+  it('widens the track to 1460px on the Wide tier, in step with tokens.css', () => {
     /* The Wide media query lives in tokens.css, not grid.css, because it only
        restates --grid-max-width. Two sources of truth for one breakpoint is
        exactly the drift this asserts against: the helper below is what app
        code branches on, and it has to agree with the CSS that actually ships. */
     const tokens = readFileSync(join(process.cwd(), 'src/css/tokens.css'), 'utf8');
     expect(tokens).toMatch(/--grid-max-width:\s*1200px/);
-    expect(tokens).toMatch(/@media\s*\(min-width:\s*2000px\)\s*\{\s*:root\s*\{\s*--grid-max-width:\s*1400px/s);
+    expect(tokens).toMatch(/@media\s*\(min-width:\s*2000px\)\s*\{\s*:root\s*\{\s*--grid-max-width:\s*1460px/s);
 
-    expect(gridBreakpointFor(2560)).toMatchObject({ name: 'Wide', columns: 12, gutter: 24, maxWidth: 1400 });
+    expect(gridBreakpointFor(2560)).toMatchObject({ name: 'Wide', columns: 12, gutter: 24, maxWidth: 1460 });
     // Wide changes the track and nothing else, so spans stay put
     expect(gridBreakpointFor(2560).columns).toBe(gridBreakpointFor(1440).columns);
     expect(gridBreakpointFor(2560).gutter).toBe(gridBreakpointFor(1440).gutter);

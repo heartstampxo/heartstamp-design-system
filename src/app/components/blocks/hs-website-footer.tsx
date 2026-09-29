@@ -101,7 +101,7 @@ const FOOTER_CSS = `
      width and --grid-margin is subtracted from inside it, so content lands at
      1168px on the 1200px tier and lines up with .hs-page-grid — and the wide
      tier follows automatically, because tokens.css restates --grid-max-width
-     as 1400px at >= 2000px. Retune one block with --hs-track-max /
+     as 1460px at >= 2000px. Retune one block with --hs-track-max /
      --hs-track-margin rather than redefining the grid tokens, which would
      retune every consumer in the subtree and, if pinned to a number, sever
      the wide tier. */
@@ -121,7 +121,7 @@ const FOOTER_CSS = `
 }
 .hs-wfoot__about { width: 253px; flex: none; display: flex; flex-direction: column; gap: var(--space-4); align-items: flex-start; }
 /* The link columns sit ON the grid, not at an arbitrary width: eight of the
-   twelve on the 1200px track, seven once it widens to 1400px. Both are derived
+   twelve on the 1200px track, seven once it widens to 1460px. Both are derived
    from the tokens, so a change to the gutter or the column count carries here
    rather than needing this recomputed by hand.
      column  = (track - 11 gutters) / 12
@@ -201,7 +201,7 @@ const FOOTER_CSS = `
      width and --grid-margin is subtracted from inside it, so content lands at
      1168px on the 1200px tier and lines up with .hs-page-grid — and the wide
      tier follows automatically, because tokens.css restates --grid-max-width
-     as 1400px at >= 2000px. Retune one block with --hs-track-max /
+     as 1460px at >= 2000px. Retune one block with --hs-track-max /
      --hs-track-margin rather than redefining the grid tokens, which would
      retune every consumer in the subtree and, if pinned to a number, sever
      the wide tier. */

@@ -42,7 +42,7 @@ export function gridBreakpointFor(width: number): GridBreakpoint {
   if (width < 768) return { name: "Mobile", columns: 4, gutter: 16, margin: 16, maxWidth: 1200 };
   if (width < 1024) return { name: "Tablet", columns: 12, gutter: 16, margin: 16, maxWidth: 1200 };
   if (width < 2000) return { name: "Desktop", columns: 12, gutter: 24, margin: 16, maxWidth: 1200 };
-  return { name: "Wide", columns: 12, gutter: 24, margin: 16, maxWidth: 1400 };
+  return { name: "Wide", columns: 12, gutter: 24, margin: 16, maxWidth: 1460 };
 }
 
 /** Resolves a selector or element to a node, SSR-safely. */

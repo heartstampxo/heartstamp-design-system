@@ -133,7 +133,7 @@ export function PageCtaBand() {
               content: (
                 <Callout variant="info">
                   The four link lists span <strong>eight of the twelve columns</strong> on the
-                  1200px track and <strong>seven</strong> once it widens to 1400px at 2000px and
+                  1200px track and <strong>seven</strong> once it widens to 1460px at 2000px and
                   up — the About column takes the rest. Both spans are derived from the tokens
                   rather than measured by hand:{" "}
                   <code>column = (track − 11 gutters) / 12</code>, and{" "}
@@ -156,7 +156,7 @@ export function PageCtaBand() {
                     <code>@import "@heartstampxo/design-system/grid.css";</code>
                     <br />
                     Both, not just the grid — <code>tokens.css</code> carries the media query that
-                    restates <code>--grid-max-width</code> as 1400px at 2000px and up. With only
+                    restates <code>--grid-max-width</code> as 1460px at 2000px and up. With only
                     the grid imported the var() fallbacks hold it at 1200px, so the wide tier
                     silently never arrives rather than visibly breaking.
                   </Callout>

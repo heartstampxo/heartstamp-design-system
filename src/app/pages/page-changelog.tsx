@@ -30,6 +30,19 @@ const TAG_STYLES: Record<string, { bg: string; color: string }> = {
 
 const RELEASES: Release[] = [
   {
+    version: "2.1.68", date: "29 Sep 2026",
+    title: "The wide grid track is now 1460px instead of 1400px",
+    tags: ["tokens", "docs"],
+    items: [
+      "On viewports 2000px and wider the page track was 1400px. It is now 1460px. Columns and gutter stay at 12 and 24px, so the extra 60px goes into column width, from 92px to 97px, and every span helper widens with it.",
+      "The change is one line: --grid-max-width in the 2000px media query in tokens.css. Anything reading the token, .hs-page-grid, the grid overlay, the marketing nav and every block that rides --grid-max-width, picks the new width up on its own with no code change on the consumer.",
+      "The docs mirror in styles/theme.css was moved in step, so the docs app widens with the design system rather than lagging a version behind it.",
+      "The Grid docs page, the WebsiteNavV2 note, and the block callouts on FAQ, USP grid, testimonial, SEO columns, app showcase, promo band, deals, CTA band and format band now all quote 1460px.",
+      "The GridInspector overlay reads the new width from the same helper the tests use, so its readout stays honest.",
+      "Two tests pin the value: the components test asserts --grid-max-width lands at 1460px at 2000px and up in tokens.css and that gridBreakpointFor returns 1460 on Wide. Keeping them in one place is how the CSS and the JS helper stay in step.",
+    ],
+  },
+  {
     version: "2.1.65", date: "8 Sep 2026",
     title: "The offer bar scrolls a long line instead of wrapping it",
     tags: ["feature", "fix"],

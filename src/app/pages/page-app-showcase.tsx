@@ -180,7 +180,7 @@ export function PageAppShowcase() {
                     <code>@import "@heartstampxo/design-system/grid.css";</code>
                     <br />
                     Both, not just the grid — <code>tokens.css</code> carries the media query that
-                    restates <code>--grid-max-width</code> as 1400px at 2000px and up. With only
+                    restates <code>--grid-max-width</code> as 1460px at 2000px and up. With only
                     the grid imported the var() fallbacks hold it at 1200px, so the wide tier
                     silently never arrives rather than visibly breaking.
                   </Callout>

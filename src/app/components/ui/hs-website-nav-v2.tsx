@@ -21,7 +21,7 @@
 //   - the layout switch measures the nav's own width rather than the
 //     viewport, so it also collapses inside a narrow frame on a wide screen
 //     (docs previews, device frames), which a media query cannot see;
-//   - the content track uses --grid-max-width (1200px, 1400px wide tier)
+//   - the content track uses --grid-max-width (1200px, 1460px wide tier)
 //     instead of a fixed 1200px, and gets the grid's 16px margins so the
 //     bar still breathes below 1200px viewports. --nav-track-max and
 //     --nav-track-margin override that track for a page whose own grid is
@@ -226,7 +226,7 @@ const NAV_CSS = `
   /* Content track. Both rows and the mega panel ride
        width: min(--nav-track-max, 100%); padding: 0 --nav-track-margin
      and both properties fall through to the marketing grid tokens when the
-     consumer leaves them alone, so the bar picks up the 1400px wide tier at
+     consumer leaves them alone, so the bar picks up the 1460px wide tier at
      >= 2000px on its own. The grid's contract is that --grid-max-width is the
      OUTER width of the track and --grid-margin is subtracted from inside it,
      so content comes out at max-width - 2 x margin (1168px at the 1200px
