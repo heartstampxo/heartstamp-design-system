@@ -521,7 +521,7 @@ export default StampyChatbot;
 
 // ── Barrel re-exports for backwards compatibility ─────────────────────────
 
-export { WorkingSpinner, BubbleButton, StampyBubble, UserBubble, StyleCarousel } from "./hs-stampy-bubbles";
+export { WorkingSpinner, BubbleButton, StampyBubble, UserBubble, UserImageBubble, StyleCarousel } from "./hs-stampy-bubbles";
 export { OverflowMenu, ChecklistOverflowMenu, TemplateOverflowMenu, ActionOverflowMenu, ActionOverflowMenuList, ActionChecklistOverflowMenu, SignupOverflowMenu, OTPOverflowMenu } from "./hs-stampy-menus";
 export { ChatHomeInput, ChatConversationInput, OccasionSuggestions } from "./hs-stampy-inputs";
 export type { ChatHomeInputProps, ChatConversationInputProps, OccasionSuggestionsProps } from "./hs-stampy-inputs";

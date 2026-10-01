@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════════════════
-// StampyChatbot — Bubble components (WorkingSpinner, BubbleButton, StampyBubble, UserBubble, StyleCarousel)
+// StampyChatbot — Bubble components (WorkingSpinner, BubbleButton, StampyBubble, UserBubble, UserImageBubble, StyleCarousel)
 // ═══════════════════════════════════════════════════════════════════════════
 
 import React, { useRef } from "react";
@@ -176,6 +176,41 @@ export function UserBubble({ text, delay }: { text: React.ReactNode; delay?: num
         style={{ backgroundColor: bubbleBg, ...dmSans400, fontSize: "var(--font-size-body-15, 15px)", color: "var(--color-text-primary)", lineHeight: "1.5" }}
       >
         <div className="leading-[var(--line-height-body-15)] text-[length:var(--font-size-body-15)] whitespace-pre-wrap">{text}</div>
+      </div>
+    </motion.div>
+  );
+}
+
+export function UserImageBubble({
+  src, alt = "", text, delay,
+}: {
+  src: string;
+  alt?: string;
+  text?: React.ReactNode;
+  delay?: number;
+}) {
+  return (
+    <motion.div
+      className="flex w-full justify-end shrink-0 pl-[56px]"
+      initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+      transition={delay !== undefined ? { ...bubbleSpring, delay } : bubbleSpring}
+    >
+      <div
+        className="rounded-[var(--radius-2xl)] px-[var(--space-3)] py-[var(--space-2)] max-w-[85%] sm:max-w-[440px] flex flex-col gap-[var(--space-2)] items-start"
+        style={{ backgroundColor: bubbleBg, ...dmSans400, fontSize: "var(--font-size-body-15, 15px)", color: "var(--color-text-primary)", lineHeight: "1.5" }}
+      >
+        <img
+          src={src}
+          alt={alt}
+          draggable={false}
+          className="shrink-0 rounded-[var(--radius-lg)] object-cover"
+          style={{ width: 64, height: 64 }}
+        />
+        {text ? (
+          <div className="leading-[var(--line-height-body-15)] text-[length:var(--font-size-body-15)] whitespace-pre-wrap">
+            {text}
+          </div>
+        ) : null}
       </div>
     </motion.div>
   );

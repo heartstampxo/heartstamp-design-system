@@ -30,6 +30,19 @@ const TAG_STYLES: Record<string, { bg: string; color: string }> = {
 
 const RELEASES: Release[] = [
   {
+    version: "2.1.69", date: "1 Oct 2026",
+    title: "A user bubble for when the user shares a photo",
+    tags: ["feature"],
+    items: [
+      "UserBubble only ever carried text. Chats were losing a case the design has had for a while: the user shares a photo alongside their message, and both belong in one bubble.",
+      "There is now a UserImageBubble. It is right aligned like UserBubble, uses the same bubble background and radius, and takes a src for the photo plus an optional text for a caption below.",
+      "The image is a fixed 64x64 thumbnail at the top left of the bubble. The caption sits below the image, aligned to the same left edge. With no text the bubble is just the thumbnail. The 64x64 is a hard cap so a tall or wide photo does not stretch the row.",
+      "Exported through hs-stampy-chat alongside UserBubble, so one import line gets you both: import { UserBubble, UserImageBubble } from '@heartstampxo/design-system'.",
+      "Docs: a new User Image Bubble section on the Chat Bubbles page, between User Bubble and Style Carousel. It shows the photo-with-caption and photo-only shapes side by side, with a props table.",
+      "The demo image reuses the first entry from STYLE_OPTIONS (the Cartoon style), so the same asset appears in the Style Carousel preview below and no new asset ships for the docs.",
+    ],
+  },
+  {
     version: "2.1.68", date: "29 Sep 2026",
     title: "The wide grid track is now 1460px instead of 1400px",
     tags: ["tokens", "docs"],

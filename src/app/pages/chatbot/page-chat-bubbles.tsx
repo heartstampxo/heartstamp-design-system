@@ -7,10 +7,14 @@ import {
   StampyBubble,
   BubbleButton,
   UserBubble,
+  UserImageBubble,
   StyleCarousel,
   TadaBanner,
 } from "../../components/ui/hs-stampy-chat";
 import partyPopperImg from "../../../assets/stampy/party-popper.gif";
+import { STYLE_OPTIONS } from "../../components/ui/hs-stampy-constants";
+
+const DEMO_IMAGE = STYLE_OPTIONS[0].image;
 
 const DESC_STYLE: React.CSSProperties = { fontSize: "var(--font-size-body-15)", color: "var(--muted-fg)", marginBottom: "var(--space-4)" };
 
@@ -122,6 +126,41 @@ export function PageChatBubbles() {
         </Preview>
         <PropsTable props={[
           { name: "text", type: "string", def: "(required)", required: true, desc: "Message text displayed inside the bubble" },
+        ]} />
+      </DocSection>
+
+      <DocSection title="User Image Bubble">
+        <p style={DESC_STYLE}>
+          Right-aligned bubble for when the user shares a photo. The image renders as a fixed
+          64×64 thumbnail at the top of the bubble, left-aligned, with an optional caption sitting
+          below it. Pass just <code>src</code> for a photo alone, or add <code>text</code> for a
+          photo with a message.
+        </p>
+        <Preview
+          title="User image bubble with caption"
+          height={260}
+          code={`import { UserImageBubble } from '@heartstampxo/design-system';
+
+<UserImageBubble
+  src="/photo.jpg"
+  alt="Reference photo of the recipient"
+  text="I'm making a card for my girlfriend that will make her laugh for her birthday"
+/>`}
+        >
+          <div style={{ width: "100%", maxWidth: 440, display: "flex", flexDirection: "column", gap: "var(--space-2)" }}>
+            <UserImageBubble
+              src={DEMO_IMAGE}
+              alt="Reference photo"
+              text="I'm making a card for my girlfriend that will make her laugh for her birthday"
+            />
+            <UserImageBubble src={DEMO_IMAGE} alt="Reference photo" />
+          </div>
+        </Preview>
+        <PropsTable props={[
+          { name: "src",   type: "string",           def: "(required)", required: true, desc: "Image URL rendered inside the bubble" },
+          { name: "alt",   type: "string",           def: '""',                         desc: "Accessible description of the image" },
+          { name: "text",  type: "React.ReactNode",  def: "—",                          desc: "Optional caption rendered below the image" },
+          { name: "delay", type: "number",           def: "—",                          desc: "Entry animation delay in seconds" },
         ]} />
       </DocSection>
 
