@@ -421,6 +421,32 @@ const NAV_CSS = `
   display: flex;
 }
 
+/* Primary Sign In pill rendered in the logged-out slot. Matches
+   .hs-nav-v2__pill geometry (40px tall, same padding + type scale) so Sign In
+   lines up with Get the App and Reminders. Brand red fill with on-primary
+   text; the ramp mirrors the dark/ghost pill hover scheme. */
+.hs-nav-v2__signin {
+  flex: none;
+  height: 40px;
+  padding: 0 var(--space-4);
+  margin: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--color-brand-primary);
+  color: var(--color-text-on-primary);
+  font-weight: var(--font-weight-label-sb-15);
+  font-size: var(--font-size-label-sb-15);
+  line-height: 1;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  transition: background 150ms ease;
+}
+.hs-nav-v2__signin:hover { background: var(--color-brand-primary-hover, var(--color-brand-primary)); }
+.hs-nav-v2__signin:active { background: var(--color-brand-primary-pressed, var(--color-brand-primary)); }
+
 /* ── Category link row ────────────────────────────────────── */
 .hs-nav-v2__linksrow {
   align-self: stretch;
@@ -712,6 +738,29 @@ const NAV_CSS = `
   transition: background 150ms ease;
 }
 .hs-nav-v2__mbtn:active { background: var(--color-state-pressed); }
+/* Mobile Sign In pill rendered in the logged-out compact bar. Height matches
+   .hs-nav-v2__mbtn so the right cluster keeps its baseline. */
+.hs-nav-v2__msignin {
+  flex: none;
+  height: var(--nav-m-btn);
+  padding: 0 var(--space-3);
+  margin: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--color-brand-primary);
+  color: var(--color-text-on-primary);
+  font-weight: var(--font-weight-label-sb-15);
+  font-size: var(--font-size-label-sb-15);
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 150ms ease;
+}
+.hs-nav-v2__msignin:hover { background: var(--color-brand-primary-hover, var(--color-brand-primary)); }
+.hs-nav-v2__msignin:active { background: var(--color-brand-primary-pressed, var(--color-brand-primary)); }
 /* The bell comes from Notification, which draws an 18px glyph for the desktop
    cluster. In the compact bar every glyph is 20px, so size it to match its
    siblings rather than fork the component. */
@@ -919,6 +968,14 @@ export interface WebsiteNavV2Props {
   searchPrompts?: string[];
   avatarSrc?: string;
   avatarInitials?: string;
+  /** When false, the avatar + cart slot is replaced by a primary Sign In button. Defaults to true (logged-in). */
+  isAuthenticated?: boolean;
+  /** Fires when the Sign In button is clicked (logged-out mode). */
+  onSignIn?: () => void;
+  /** Copy for the Sign In button, for localisation. */
+  signInLabel?: string;
+  /** When false, the notification bell is hidden regardless of auth state. Defaults to true. */
+  showNotifications?: boolean;
   /** Mascot image inside the Ask Stampy chip. Defaults to the bundled Stampy. */
   stampySrc?: string;
   onSearch?: () => void;
@@ -971,6 +1028,10 @@ export function WebsiteNavV2({
   searchPrompts = SEARCH_LINES,
   avatarSrc,
   avatarInitials = "HS",
+  isAuthenticated = true,
+  onSignIn,
+  signInLabel = "Sign In",
+  showNotifications = true,
   stampySrc,
   notifications,
   onSearch, onGetApp, onReminders, onLanguage, onNotifications,
@@ -1094,6 +1155,10 @@ export function WebsiteNavV2({
           onNotificationArchive={onNotificationArchive}
           onNotificationMarkAllRead={onNotificationMarkAllRead}
           onCart={onCart}
+          isAuthenticated={isAuthenticated}
+          onSignIn={onSignIn}
+          signInLabel={signInLabel}
+          showNotifications={showNotifications}
         />
       ) : (
         <>
@@ -1137,21 +1202,36 @@ export function WebsiteNavV2({
                 onSelect={changeLanguage}
               />
               {/* Owns its own trigger; .hs-notif__trigger matches .hs-nav-v2__iconbtn
-                  and .hs-notif is already position:relative/flex:none for this row. */}
-              <Notification
-                items={notifications}
-                onItemClick={onNotificationItemClick}
-                onShowMore={onNotificationShowMore}
-                onArchive={onNotificationArchive}
-                onMarkAllRead={onNotificationMarkAllRead}
-                onOpenChange={toggleNotifications}
-              />
+                  and .hs-notif is already position:relative/flex:none for this row.
+                  Notifications are a logged-in affordance, and the consumer can also
+                  drop them explicitly via showNotifications={false}. */}
+              {isAuthenticated && showNotifications && (
+                <Notification
+                  items={notifications}
+                  onItemClick={onNotificationItemClick}
+                  onShowMore={onNotificationShowMore}
+                  onArchive={onNotificationArchive}
+                  onMarkAllRead={onNotificationMarkAllRead}
+                  onOpenChange={toggleNotifications}
+                />
+              )}
+              {/* Cart ships in both states so a visitor can collect items
+                  before signing in; checkout flow is where auth gets gated. */}
               <button type="button" className="hs-nav-v2__iconbtn" aria-label="Cart" onClick={onCart}>
                 <ShoppingCart size={18} strokeWidth={2} style={{ strokeWidth: "calc(var(--lucide-stroke-width, 2) * 1.111)" }} aria-hidden />
               </button>
-              <button type="button" className="hs-nav-v2__avatar" aria-label="Profile" onClick={onProfile}>
-                <Avt src={avatarSrc} fallback={avatarInitials} size={36} />
-              </button>
+              {isAuthenticated ? (
+                <button type="button" className="hs-nav-v2__avatar" aria-label="Profile" onClick={onProfile}>
+                  <Avt src={avatarSrc} fallback={avatarInitials} size={36} />
+                </button>
+              ) : (
+                /* Avatar swaps for a primary Sign In pill in the logged-out
+                   state; its 40px height matches the Get the App / Reminders
+                   pills so the action row keeps its baseline. */
+                <button type="button" className="hs-nav-v2__signin" onClick={onSignIn}>
+                  {signInLabel}
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -1192,7 +1272,7 @@ export function WebsiteNavV2({
                 <span className="hs-nav-v2__sheen hs-nav-v2__sheen--l" aria-hidden="true" />
                 <span className="hs-nav-v2__sheen hs-nav-v2__sheen--r" aria-hidden="true" />
                 <img src={stampySrc ?? stampyBtnGraphic} alt="" />
-                <span>Ask Stampy AI</span>
+                <span>Try Easy Wizard Now</span>
               </button>
             </div>
 
@@ -1482,6 +1562,7 @@ type CompactBarProps = Pick<
   | "showLanguage" | "languages" | "notifications" | "onSearch"
   | "onNotificationItemClick" | "onNotificationShowMore"
   | "onNotificationArchive" | "onNotificationMarkAllRead" | "onCart"
+  | "isAuthenticated" | "onSignIn" | "signInLabel" | "showNotifications"
 > & {
   languages: NavLanguage[];
   language: string;
@@ -1503,6 +1584,10 @@ function CompactBar({
   onNotificationItemClick, onNotificationShowMore,
   onNotificationArchive, onNotificationMarkAllRead,
   onCart,
+  isAuthenticated = true,
+  onSignIn,
+  signInLabel = "Sign In",
+  showNotifications = true,
 }: CompactBarProps) {
   const glyph = { strokeWidth: "var(--lucide-stroke-width, 2)" } as React.CSSProperties;
 
@@ -1539,20 +1624,33 @@ function CompactBar({
         )}
 
         {/* Owns its own trigger and, forced to the phone presentation, opens
-            as a full-height sheet pinned under this 56px bar. */}
-        <Notification
-          mobile
-          items={notifications}
-          onItemClick={onNotificationItemClick}
-          onShowMore={onNotificationShowMore}
-          onArchive={onNotificationArchive}
-          onMarkAllRead={onNotificationMarkAllRead}
-          onOpenChange={onNotificationOpenChange}
-        />
+            as a full-height sheet pinned under this 56px bar. Dropped in the
+            logged-out state since notifications are an auth-gated surface, or
+            when the consumer explicitly turns the bell off. */}
+        {isAuthenticated && showNotifications && (
+          <Notification
+            mobile
+            items={notifications}
+            onItemClick={onNotificationItemClick}
+            onShowMore={onNotificationShowMore}
+            onArchive={onNotificationArchive}
+            onMarkAllRead={onNotificationMarkAllRead}
+            onOpenChange={onNotificationOpenChange}
+          />
+        )}
 
         <button type="button" className="hs-nav-v2__mbtn" aria-label="Cart" onClick={onCart}>
           <ShoppingCart size={20} strokeWidth={2} style={glyph} aria-hidden />
         </button>
+
+        {/* Logged-out CTA. Sits at the end so it reads as the primary action
+            in the right cluster; drops in the authenticated state since the
+            desktop/mobile avatar handoff lives elsewhere. */}
+        {!isAuthenticated && (
+          <button type="button" className="hs-nav-v2__msignin" onClick={onSignIn}>
+            {signInLabel}
+          </button>
+        )}
       </div>
     </div>
   );

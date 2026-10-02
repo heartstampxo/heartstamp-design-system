@@ -15,7 +15,7 @@ export function PlaceholderPage({ id }: PlaceholderPageProps) {
     }}>
       <div style={{ fontSize: "var(--font-size-h3)", opacity: .15 }}>📄</div>
       <div style={{ fontSize: "var(--font-size-h5)", fontWeight: "var(--font-weight-bold, 700)" as any, color: "var(--fg)" }}>{item?.title || id}</div>
-      <div style={{ fontSize: "var(--font-size-body-13)" }}>Documentation coming soon.</div>
+      <div style={{ fontSize: "var(--font-size-body-15)" }}>Documentation coming soon.</div>
       <Btn variant="outline" style={{ marginTop: "var(--space-2)" }}>Request docs</Btn>
     </div>
   );

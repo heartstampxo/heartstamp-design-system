@@ -11,7 +11,7 @@ import type { ChatScript, ChatMessage } from "./hs-chat-types";
 // Internal modules
 import { OCCASIONS, getRandomSuggestions, bubbleSpring, entranceSpring, bubbleBg, dmSans400 } from "./hs-stampy-constants";
 import { useBubbleTypewriter } from "./hs-stampy-hooks";
-import { WorkingSpinner, StampyBubble, UserBubble, StyleCarousel } from "./hs-stampy-bubbles";
+import { WorkingSpinner, StampyBubble, UserBubble, UserImageBubble, StyleCarousel } from "./hs-stampy-bubbles";
 import { OverflowMenu, ChecklistOverflowMenu, TemplateOverflowMenu, ActionOverflowMenuList, ActionChecklistOverflowMenu } from "./hs-stampy-menus";
 import { ChatHomeInput, ChatConversationInput, OccasionSuggestions } from "./hs-stampy-inputs";
 import { TadaBanner, ChatHomeScreen, ChatHeader } from "./hs-stampy-panels";
@@ -120,6 +120,50 @@ export function StampyChatbot({
     return () => window.removeEventListener("resize", check);
   }, []);
 
+  /* User-draggable width override. null = use the default 450px (sm) / full
+     (mobile) layout. A drag through the left-edge handle updates this and
+     subsequent renders pin both the outer wrapper and inner panel to it. */
+  const [panelWidth, setPanelWidth] = useState<number | null>(null);
+  const [handleHover, setHandleHover] = useState(false);
+  const dragStateRef = useRef<{ startX: number; startWidth: number } | null>(null);
+  const MIN_PANEL_W = 450;
+  const MAX_PANEL_W = 600;
+
+  useEffect(() => {
+    const onMove = (e: MouseEvent | TouchEvent) => {
+      if (!dragStateRef.current) return;
+      const clientX = "touches" in e ? e.touches[0]?.clientX : e.clientX;
+      if (clientX == null) return;
+      /* Panel is anchored right; dragging the left handle left (lower clientX)
+         widens the panel, so delta is start − current. */
+      const delta = dragStateRef.current.startX - clientX;
+      const next = Math.max(MIN_PANEL_W, Math.min(MAX_PANEL_W, dragStateRef.current.startWidth + delta));
+      setPanelWidth(next);
+    };
+    const onEnd = () => { dragStateRef.current = null; document.body.style.userSelect = ""; };
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onEnd);
+    window.addEventListener("touchmove", onMove, { passive: true });
+    window.addEventListener("touchend", onEnd);
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", onEnd);
+      window.removeEventListener("touchmove", onMove);
+      window.removeEventListener("touchend", onEnd);
+    };
+  }, []);
+
+  function startResize(clientX: number) {
+    dragStateRef.current = { startX: clientX, startWidth: panelWidth ?? 450 };
+    /* Prevent text selection while dragging so the cursor stays as ew-resize. */
+    document.body.style.userSelect = "none";
+  }
+
+  /* Drag works in both the normal and expanded chat modes on desktop. Mobile
+     and embedded sheets have no room to grow, so skip there. */
+  const canResize = !isMobile && !embedded && isOpen;
+  const widthStyle = canResize && panelWidth !== null ? { width: panelWidth } : {};
+
   const isWorking = sentMessage !== null;
 
   const handleNewConversation = () => {
@@ -227,6 +271,23 @@ export function StampyChatbot({
     setMessages(prev => [...prev, { role: "user", text: msg }]); setInputValue("");
   }
 
+  /* Fires when the user sends a message with an image attached. The input
+     has already handed us a data URL and cleared its own preview chip. The
+     first send also kicks the chatbot out of the home screen into the
+     conversation view, same as a text send; fall back to the alt text so
+     sentMessage is not empty when only an image was shared. */
+  function handleSendImage({ text, src, alt }: { text: string; src: string; alt: string }) {
+    const message: ChatMessage = { role: "user", text, image: { src, alt } };
+    if (!sentMessage) {
+      setSentMessage(text || alt || "[image]");
+      setMessages([message]);
+      setStepIndex(0);
+    } else {
+      setMessages(prev => [...prev, message]);
+    }
+    setInputValue("");
+  }
+
   function handleSend() {
     if (checklistSelection.length) {
       const picked = checklistSelection.join(", ");
@@ -305,7 +366,13 @@ export function StampyChatbot({
         <AnimatePresence>
           {showMenu && currentStep?.type === "checklist" && (
             <motion.div style={{ position: "absolute", bottom, left: 16, right: 16, zIndex: 20 }} {...MENU_MOTION}>
-              <ChecklistOverflowMenu pages={currentStep.pages} onClose={() => setShowMenu(false)} onSelectionChange={setChecklistSelection} onSkip={handleMenuSkip} />
+              <ChecklistOverflowMenu
+                pages={currentStep.pages}
+                onClose={() => setShowMenu(false)}
+                onSelectionChange={setChecklistSelection}
+                onSkip={handleMenuSkip}
+                onSend={(labels) => { setChecklistSelection([]); handleMenuComplete(labels.join(", ")); }}
+              />
             </motion.div>
           )}
         </AnimatePresence>
@@ -342,7 +409,7 @@ export function StampyChatbot({
                 )}
               </AnimatePresence>
               <div style={{ padding: "0 16px 16px", flexShrink: 0 }}>
-                <ChatHomeInput value={inputValue} onChange={setInputValue} onSend={handleSend} isRecording={isRecording} onToggleMic={toggleMic} />
+                <ChatHomeInput value={inputValue} onChange={setInputValue} onSend={handleSend} isRecording={isRecording} onToggleMic={toggleMic} onSendImage={handleSendImage} />
               </div>
             </motion.div>
           ) : (
@@ -351,7 +418,11 @@ export function StampyChatbot({
               <ScrollArea viewportRef={chatsScrollRef} className="flex-1 min-h-0">
                 <div ref={chatsInnerRef} style={{ display: "flex", flexDirection: "column", gap: 20, padding: "16px 16px 12px" }}>
                   {messages.map((msg, i) => msg.role === "user" ? (
-                    <UserBubble key={`msg-${i}`} text={msg.text} delay={0.1} />
+                    msg.image ? (
+                      <UserImageBubble key={`msg-${i}`} src={msg.image.src} alt={msg.image.alt ?? ""} text={msg.text || undefined} delay={0.1} />
+                    ) : (
+                      <UserBubble key={`msg-${i}`} text={msg.text} delay={0.1} />
+                    )
                   ) : (
                     <div key={`msg-${i}`} style={{ display: "flex", flexDirection: "column", gap: 16, width: "100%", flexShrink: 0 }}>
                       <StampyBubble text={msg.text} buttons={msg.buttons} buttonsUsed={i < messages.length - 1} onButtonClick={handleTriggerButton} buttonDelay={0.08} />
@@ -369,7 +440,7 @@ export function StampyChatbot({
                   </AnimatePresence>
                 </div>
               </ScrollArea>
-              <ChatConversationInput aiIconSrc={aiIconSrc} value={inputValue} onChange={setInputValue} onSend={handleSend} isRecording={isRecording} onToggleMic={toggleMic} />
+              <ChatConversationInput aiIconSrc={aiIconSrc} value={inputValue} onChange={setInputValue} onSend={handleSend} isRecording={isRecording} onToggleMic={toggleMic} onSendImage={handleSendImage} />
               {renderOverlayMenus(90)}
             </motion.div>
           )}
@@ -392,9 +463,41 @@ export function StampyChatbot({
             <img alt="Stampy mascot" className="w-full h-full object-contain pointer-events-none" src={stampyIconSrc} />
           </motion.div>
         ) : (
-          <motion.div key="opened" className="relative flex flex-col items-end gap-[var(--space-2)] w-full sm:w-[540px] px-3 sm:px-0 h-full" style={{ flexShrink: 0 }} initial={false} animate={{ opacity: 1 }} exit={{ opacity: 0, y: 30 }} transition={{ duration: 0.25, ease: "easeOut" }}>
+          <motion.div key="opened" className="relative flex flex-col items-end gap-[var(--space-2)] w-full sm:w-[540px] px-3 sm:px-0 h-full" style={{ flexShrink: 0, ...widthStyle }} initial={false} animate={{ opacity: 1 }} exit={{ opacity: 0, y: 30 }} transition={{ duration: 0.25, ease: "easeOut" }}>
             <div className="flex items-end justify-end w-full relative flex-1">
-              <motion.div className="flex flex-col items-start w-full sm:w-[450px] overflow-hidden" style={{ backgroundColor: "var(--color-bg-main)", marginRight: isMobile ? 0 : -5, borderRadius: 20, boxShadow: "var(--shadow-xs)" }} initial={{ opacity: 0, y: 24, scale: 0.98 }} animate={{ opacity: 1, scale: 1, y: 0, height: isExpanded ? (containerHeight ?? window.innerHeight) - 48 : isMobile ? Math.max(420, (containerHeight ?? window.innerHeight) - 80) : 550 }} transition={{ opacity: { duration: 0.3, ease: "easeOut" }, y: { duration: 0.35, ease: [0.16, 1, 0.3, 1] }, scale: { duration: 0.35, ease: [0.16, 1, 0.3, 1] }, height: { duration: 0.4, ease: [0.4, 0, 0.2, 1] } }}>
+              <motion.div className="relative flex flex-col items-start w-full sm:w-[450px] overflow-hidden" style={{ backgroundColor: "var(--color-bg-main)", marginRight: isMobile ? 0 : -5, borderRadius: 20, boxShadow: "var(--shadow-xs)", ...widthStyle }} initial={{ opacity: 0, y: 24, scale: 0.98 }} animate={{ opacity: 1, scale: 1, y: 0, height: isExpanded ? (containerHeight ?? window.innerHeight) - 48 : isMobile ? Math.max(420, (containerHeight ?? window.innerHeight) - 80) : 550 }} transition={{ opacity: { duration: 0.3, ease: "easeOut" }, y: { duration: 0.35, ease: [0.16, 1, 0.3, 1] }, scale: { duration: 0.35, ease: [0.16, 1, 0.3, 1] }, height: { duration: 0.4, ease: [0.4, 0, 0.2, 1] } }}>
+
+                {/* Left-edge drag handle (desktop, open, not expanded). The
+                    outer div is a 10px hit area with ew-resize cursor; inside
+                    sits a 2px brand-coloured line with a soft glow so users
+                    see it's grabbable without hovering. Hover amplifies the
+                    glow. Double-click resets to the default width. Lives
+                    inside the panel so overflow:hidden clips to the radius. */}
+                {canResize && (
+                  <div
+                    role="separator"
+                    aria-orientation="vertical"
+                    aria-label="Resize chat width (double-click to reset)"
+                    onMouseDown={e => { e.preventDefault(); startResize(e.clientX); }}
+                    onTouchStart={e => { const t = e.touches[0]; if (t) startResize(t.clientX); }}
+                    onDoubleClick={() => setPanelWidth(null)}
+                    onMouseEnter={() => setHandleHover(true)}
+                    onMouseLeave={() => setHandleHover(false)}
+                    style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 10, cursor: "ew-resize", zIndex: 40, display: "flex", alignItems: "center", justifyContent: "flex-start" }}
+                  >
+                    <div
+                      style={{
+                        width: 2,
+                        height: 32,
+                        marginLeft: 3,
+                        borderRadius: 2,
+                        backgroundColor: "var(--color-text-secondary)",
+                        opacity: dragStateRef.current ? 0.6 : handleHover ? 0.35 : 0,
+                        transition: "opacity 180ms ease",
+                      }}
+                    />
+                  </div>
+                )}
 
                 {/* HEADER */}
                 <ChatHeader
@@ -442,6 +545,7 @@ export function StampyChatbot({
                             onSend={handleSend}
                             isRecording={isRecording}
                             onToggleMic={toggleMic}
+                            onSendImage={handleSendImage}
                           />
                         </div>
                       </motion.div>
@@ -454,7 +558,9 @@ export function StampyChatbot({
 
                             {messages.map((msg, i) => {
                               if (msg.role === "user") {
-                                return (
+                                return msg.image ? (
+                                  <UserImageBubble key={`msg-${i}`} src={msg.image.src} alt={msg.image.alt ?? ""} text={msg.text || undefined} delay={0.1} />
+                                ) : (
                                   <UserBubble key={`msg-${i}`} text={msg.text} delay={0.1} />
                                 );
                               } else {
@@ -500,6 +606,7 @@ export function StampyChatbot({
                           onSend={handleSend}
                           isRecording={isRecording}
                           onToggleMic={toggleMic}
+                          onSendImage={handleSendImage}
                         />
 
                         {/* Overflow menus */}

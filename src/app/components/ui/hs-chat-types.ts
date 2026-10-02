@@ -100,4 +100,10 @@ export interface ChatMessage {
   text: string;
   buttons?: string[];
   showCarousel?: boolean;
+  /**
+   * Optional image attached to a user message. When present the message
+   * renders as a UserImageBubble with `text` as the caption (text may be
+   * empty, in which case the bubble shows the image alone).
+   */
+  image?: { src: string; alt?: string };
 }

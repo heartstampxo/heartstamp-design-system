@@ -226,8 +226,9 @@ import type { OverflowPage } from '@heartstampxo/design-system';
 
       <DocSection title="Checklist — Multi-Select">
         <p style={DESC_STYLE}>
-          Checkbox-style multi-select. Items toggle on tap; the menu reports what is ticked
-          through onSelectionChange and the consumer submits.
+          Checkbox-style multi-select. Items toggle on tap; the menu reports what is ticked through
+          onSelectionChange. When at least one item is ticked and onSend is wired, the ghost Skip
+          pill in the footer swaps to a primary Send pill and submits the final list to onSend.
         </p>
         <Preview
           title="Checklist overflow"
@@ -249,6 +250,7 @@ import type { ChecklistPage } from '@heartstampxo/design-system';
   onClose={() => setOpen(false)}
   onSelectionChange={(selected) => setPending(selected)}
   onSkip={() => sendMessage('skip')}
+  onSend={(selected) => sendMessage(selected.join(', '))}
 />`}
         >
           <div style={MENU_WRAPPER_STYLE}>
@@ -257,6 +259,7 @@ import type { ChecklistPage } from '@heartstampxo/design-system';
               onClose={NOOP}
               onSelectionChange={NOOP}
               onSkip={NOOP}
+              onSend={(selected) => alert(`Send: ${selected.join(", ")}`)}
             />
           </div>
         </Preview>
@@ -275,6 +278,7 @@ import type { ChecklistPage } from '@heartstampxo/design-system';
   onClose={() => setOpen(false)}
   onSelectionChange={(selected) => setPending(selected)}
   onSkip={() => sendMessage('skip')}
+  onSend={(selected) => sendMessage(selected.join(', '))}
   onShowMore={() => openFullList()}
 />`}
         >
@@ -285,6 +289,7 @@ import type { ChecklistPage } from '@heartstampxo/design-system';
               onSelectionChange={NOOP}
               onShowMore={() => alert("Show more clicked")}
               onSkip={() => alert("Skip clicked")}
+              onSend={(selected) => alert(`Send: ${selected.join(", ")}`)}
             />
           </div>
         </Preview>
@@ -292,12 +297,14 @@ import type { ChecklistPage } from '@heartstampxo/design-system';
         <PropsTable props={[
           { name: "pages",            type: "ChecklistPage[]",           def: "(required)", required: true, desc: "Array of pages — each has a question string and items array ({ id, label })" },
           { name: "onClose",          type: "() => void",                def: "(required)", required: true, desc: "Called when the × close button is tapped" },
-          { name: "onSelectionChange", type: "(selected: string[]) => void", def: "—",              desc: "Fired on every toggle with the labels currently ticked, across all pages. The menu has no send button — mirror this into your own state and submit it from your own input." },
+          { name: "onSelectionChange", type: "(selected: string[]) => void", def: "—",              desc: "Fired on every toggle with the labels currently ticked, across all pages. Mirror it into your own state when you need the live selection outside the menu; the in-menu Send also hands you the final list." },
           { name: "onShowMore",       type: "() => void",            def: "—",                          desc: "When provided, renders the Show more… action in the footer" },
           { name: "isLoadingShowMore", type: "boolean",              def: "false",                      desc: "Shows a spinner in the Show more… action and blocks repeat taps while more options load" },
           { name: "showMoreLabel",    type: "string",                def: '"Show more..."',             desc: "Copy for the show-more action, for localisation" },
-          { name: "onSkip",           type: "() => void",            def: "—",                          desc: "When provided, renders the Skip button in the footer. The consumer decides what skipping does — omit it and no Skip button is rendered." },
+          { name: "onSkip",           type: "() => void",            def: "—",                          desc: "When provided and nothing is ticked, renders the Skip pill in the footer. Once anything is ticked the pill swaps to Send if onSend is wired." },
           { name: "skipLabel",        type: "string",                def: '"Skip"',                     desc: "Copy for the Skip button, for localisation" },
+          { name: "onSend",           type: "(selected: string[]) => void", def: "—",                   desc: "When provided, renders a primary Send pill in place of Skip once at least one item is ticked. Fires with the final selection." },
+          { name: "sendLabel",        type: "string",                def: '"Send"',                     desc: "Copy for the Send button, for localisation" },
         ]} />
       </DocSection>
 

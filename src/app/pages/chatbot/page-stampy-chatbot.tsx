@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import { DocPage, DocSection } from "../../components/docs/doc-page";
 import { Preview } from "../../components/docs/doc-preview";
 import { PropsTable } from "../../components/docs/doc-props-table";
@@ -65,6 +66,22 @@ const STEP_TYPES = [
 ];
 
 export function PageStampyChatbot() {
+  /* The wrapper is 750px in the normal Preview and viewport-tall in Preview
+     fullscreen. Feeding its live clientHeight into StampyChatbot's
+     containerHeight prop makes the in-chat expand ⤢ grow to the actual
+     container, keeping the chatbot's own pt-6/pb-6 breathing room. */
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const [containerH, setContainerH] = useState(750);
+  useEffect(() => {
+    const el = wrapperRef.current;
+    if (!el) return;
+    const update = () => setContainerH(el.clientHeight);
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
   return (
     <DocPage
       title="Stampy Chatbot"
@@ -76,7 +93,7 @@ export function PageStampyChatbot() {
           selecting a suggestion to start the conversation flow.
         </p>
         <Preview title="Stampy Chatbot" height={750} fullWidth code={DEMO_CODE}>
-          <div style={{ width: "100%", height: 750, position: "relative", overflow: "hidden", borderRadius: "var(--radius-2xl)" }}>
+          <div ref={wrapperRef} style={{ width: "100%", alignSelf: "stretch", minHeight: 750, position: "relative", overflow: "hidden", borderRadius: "var(--radius-2xl)" }}>
             <StampyChatbot
               chatScript={demoChatScript}
               mascotSrc={chatMascotImg}
@@ -84,7 +101,7 @@ export function PageStampyChatbot() {
               backgroundSrc={chatHomeBgImg}
               stampyIconSrc={stampyIconImg}
               partyPopperSrc={partyPopperImg}
-              containerHeight={750}
+              containerHeight={containerH}
             />
           </div>
         </Preview>

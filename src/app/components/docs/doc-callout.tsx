@@ -20,7 +20,7 @@ export function Callout({ variant = "info", children }: CalloutProps) {
   return (
     <div style={{
       display: "flex", gap: "var(--space-2-5)", padding: "10px 14px", borderRadius: "var(--radius-lg)",
-      border: `1px solid ${border}`, background: bg, fontSize: "var(--font-size-body-13)", marginBottom: "var(--space-4)",
+      border: `1px solid ${border}`, background: bg, fontSize: "var(--font-size-body-15)", marginBottom: "var(--space-4)",
     }}>
       <Icon size={15} style={{ color, marginTop: 1, flexShrink: 0 }} />
       <span style={{ lineHeight: 1.6, color: "var(--fg)" }}>{children}</span>

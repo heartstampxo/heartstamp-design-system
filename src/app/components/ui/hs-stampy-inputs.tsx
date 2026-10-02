@@ -2,11 +2,125 @@
 // StampyChatbot — Input components (ChatHomeInput, ChatConversationInput, OccasionSuggestions)
 // ═══════════════════════════════════════════════════════════════════════════
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { ImagePlus, Mic, ArrowUp, X } from "lucide-react";
 import { motion } from "motion/react";
 
 import { dmSans400, dmSans500, getRandomSuggestions } from "./hs-stampy-constants";
+
+// ── Shared image attachment ───────────────────────────────────────────────
+
+export interface AttachedImage {
+  /** Image URL or data URL for the attached file. */
+  src: string;
+  /** Original filename, used as the bubble alt text. */
+  alt: string;
+}
+
+/* Images attach as base64 data URLs held in React state, so we cap input size
+   to keep the string from blowing out memory. 10 MB covers typical phone
+   photos; anything larger is dropped silently (demo scope). */
+const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
+/* `image/*` would let the OS picker return SVGs, which render in <img> safely
+   but can still fetch remote resources. Pin to common raster + animated formats. */
+const ACCEPTED_IMAGE_MIME = "image/jpeg,image/png,image/webp,image/gif";
+
+/**
+ * Reads the first selected file into a data URL and hands it off through
+ * `onAttached`. Non-image files, oversize files, and unreadable files are
+ * ignored — the UI simply shows no chip, which is the signal that nothing
+ * attached.
+ */
+function readImageAsDataUrl(
+  file: File | null | undefined,
+  onAttached: (image: AttachedImage) => void,
+) {
+  if (!file || !file.type.startsWith("image/") || file.size > MAX_IMAGE_BYTES) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    const src = typeof reader.result === "string" ? reader.result : "";
+    if (src) onAttached({ src, alt: file.name });
+  };
+  reader.onerror = () => { /* swallowed: no chip appears, user re-picks. */ };
+  reader.readAsDataURL(file);
+}
+
+/**
+ * Shared chip rendered above the textarea when an image is attached. Matches
+ * the small frame-around-thumbnail look (beige square outer, rounded image inner).
+ */
+function AttachedImageChip({ image, onRemove }: { image: AttachedImage; onRemove: () => void }) {
+  return (
+    <div
+      className="relative shrink-0 flex items-center justify-center rounded-[var(--radius-lg)]"
+      style={{ width: 48, height: 48, backgroundColor: "var(--color-brand-secondary-dim)" }}
+    >
+      <img
+        src={image.src}
+        alt={image.alt}
+        className="rounded-[var(--radius-md)] object-cover"
+        style={{ width: 36, height: 36 }}
+        draggable={false}
+      />
+      <button
+        type="button"
+        aria-label="Remove attached image"
+        onClick={onRemove}
+        className="absolute flex items-center justify-center rounded-full transition-colors"
+        style={{
+          top: -6, right: -6, width: 18, height: 18,
+          backgroundColor: "var(--color-bg-main)",
+          border: "1px solid var(--color-element-subtle)",
+          color: "var(--color-text-primary)",
+          boxShadow: "var(--shadow-xs)",
+        }}
+      >
+        <X size={11} strokeWidth={2} />
+      </button>
+    </div>
+  );
+}
+
+/**
+ * Local state + handlers for an image attachment slot. Both inputs share this
+ * verbatim; keeping it in one hook stops the two call sites drifting apart.
+ */
+function useImageAttachment() {
+  const [attachedImage, setAttachedImage] = useState<AttachedImage | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const openPicker = () => fileInputRef.current?.click();
+  const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    readImageAsDataUrl(e.target.files?.[0], setAttachedImage);
+    /* Reset so the same file picked twice in a row still fires change. */
+    e.target.value = "";
+  };
+  const clear = () => setAttachedImage(null);
+
+  return { attachedImage, fileInputRef, openPicker, onFileChange, clear };
+}
+
+/**
+ * Hidden file input + "Add reference images" pill button. Rendered by both
+ * inputs whenever `onSendImage` is wired; omitted entirely otherwise.
+ */
+function AttachReferenceButton({
+  fileInputRef, onFileChange, onClick,
+}: {
+  fileInputRef: React.RefObject<HTMLInputElement>;
+  onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onClick: () => void;
+}) {
+  return (
+    <>
+      <input ref={fileInputRef} type="file" accept={ACCEPTED_IMAGE_MIME} onChange={onFileChange} className="hidden" aria-hidden="true" tabIndex={-1} />
+      <button type="button" aria-label="Add reference images" onClick={onClick} className="transition-colors flex gap-[var(--space-1-5)] h-[32px] items-center px-[var(--space-2)] py-[var(--space-1-5)] relative rounded-[var(--radius-full)]" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }} onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-state-hover)")} onMouseLeave={e => (e.currentTarget.style.backgroundColor = "var(--color-brand-secondary-dim)")}>
+        <div className="size-[16px] relative shrink-0 flex items-center justify-center" style={{ color: "var(--color-text-primary)" }}><ImagePlus size={18} strokeWidth={1.5} absoluteStrokeWidth /></div>
+        <p className="font-medium leading-[var(--line-height-label-12)] text-[length:var(--font-size-label-12)] whitespace-nowrap" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>Add reference images</p>
+      </button>
+    </>
+  );
+}
 
 // ── ChatHomeInput ──────────────────────────────────────────────────────────
 
@@ -18,6 +132,11 @@ export interface ChatHomeInputProps {
   onChange?: (value: string) => void;
   isRecording?: boolean;
   onToggleMic?: () => void;
+  /**
+   * Called when the user sends with an attached image. Text may be empty when
+   * the user attached only an image. When omitted the attach button is hidden.
+   */
+  onSendImage?: (payload: { text: string; src: string; alt: string }) => void;
 }
 
 export function ChatHomeInput({
@@ -27,9 +146,11 @@ export function ChatHomeInput({
   onChange,
   isRecording: controlledRecording,
   onToggleMic,
+  onSendImage,
 }: ChatHomeInputProps) {
   const [localValue, setLocalValue] = useState("");
   const [localRecording, setLocalRecording] = useState(false);
+  const { attachedImage, fileInputRef, openPicker, onFileChange, clear: clearImage } = useImageAttachment();
 
   const isControlled = controlledValue !== undefined;
   const currentValue = isControlled ? controlledValue : localValue;
@@ -43,6 +164,13 @@ export function ChatHomeInput({
   }
 
   function handleSend() {
+    if (attachedImage) {
+      /* Controlled consumers clear their own value, same as the text path. */
+      onSendImage?.({ text: currentValue.trim(), src: attachedImage.src, alt: attachedImage.alt });
+      clearImage();
+      if (!isControlled) setLocalValue("");
+      return;
+    }
     if (!currentValue.trim()) return;
     onSend?.(currentValue);
     if (!isControlled) setLocalValue("");
@@ -53,8 +181,15 @@ export function ChatHomeInput({
     else setLocalRecording(r => !r);
   }
 
+  const canSend = !!attachedImage || !!currentValue.trim();
+
   return (
-    <div className="flex flex-col gap-[var(--space-6)] pb-[var(--space-2)] pt-[var(--space-3)] px-[var(--space-2)] rounded-[var(--radius-2xl)] shrink-0 w-full relative transition-colors duration-200" style={{ backgroundColor: "var(--color-bg-main)", border: "1px solid var(--color-element-subtle)", boxShadow: "var(--shadow-xs)" }}>
+    <div className="flex flex-col gap-[var(--space-3)] pb-[var(--space-2)] pt-[var(--space-3)] px-[var(--space-2)] rounded-[var(--radius-2xl)] shrink-0 w-full relative transition-colors duration-200" style={{ backgroundColor: "var(--color-bg-main)", border: "1px solid var(--color-element-subtle)", boxShadow: "var(--shadow-xs)" }}>
+      {attachedImage && (
+        <div className="flex items-start gap-[var(--space-2)] px-[var(--space-1-5)] shrink-0">
+          <AttachedImageChip image={attachedImage} onRemove={clearImage} />
+        </div>
+      )}
       <div className="flex items-center px-[var(--space-1-5)] relative shrink-0 w-full min-h-[32px]">
         <textarea
           className="flex-1 w-full resize-none bg-transparent outline-none text-[length:var(--font-size-body-15)] leading-[var(--line-height-body-15)]"
@@ -68,10 +203,7 @@ export function ChatHomeInput({
       </div>
       <div className="flex items-end justify-between relative shrink-0 w-full">
         <div className="flex gap-[var(--space-2)] items-end relative shrink-0">
-          <button className="transition-colors flex gap-[var(--space-1-5)] h-[32px] items-center px-[var(--space-2)] py-[var(--space-1-5)] relative rounded-[var(--radius-full)]" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }} onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-state-hover)")} onMouseLeave={e => (e.currentTarget.style.backgroundColor = "var(--color-brand-secondary-dim)")}>
-            <div className="size-[16px] relative shrink-0 flex items-center justify-center" style={{ color: "var(--color-text-primary)" }}><ImagePlus size={18} strokeWidth={1.5} absoluteStrokeWidth /></div>
-            <p className="font-medium leading-[var(--line-height-label-12)] text-[length:var(--font-size-label-12)] whitespace-nowrap" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>Add reference images</p>
-          </button>
+          {onSendImage && <AttachReferenceButton fileInputRef={fileInputRef} onFileChange={onFileChange} onClick={openPicker} />}
         </div>
         <div className="flex gap-[var(--space-1)] items-center relative shrink-0">
           <button
@@ -84,9 +216,9 @@ export function ChatHomeInput({
           </button>
           <button
             aria-label="Send" type="button" onClick={handleSend}
-            disabled={!currentValue.trim() && !currentRecording}
-            className={`flex items-center justify-center p-[var(--space-2)] relative rounded-[20px] shrink-0 size-[32px] transition-colors ${!currentValue.trim() ? "cursor-not-allowed" : ""}`}
-            style={currentValue.trim() ? { backgroundColor: "var(--color-brand-primary)", color: "var(--color-text-on-primary)" } : { backgroundColor: "var(--color-brand-secondary-dim)", color: "var(--color-text-secondary)" }}>
+            disabled={!canSend && !currentRecording}
+            className={`flex items-center justify-center p-[var(--space-2)] relative rounded-[20px] shrink-0 size-[32px] transition-colors ${!canSend ? "cursor-not-allowed" : ""}`}
+            style={canSend ? { backgroundColor: "var(--color-brand-primary)", color: "var(--color-text-on-primary)" } : { backgroundColor: "var(--color-brand-secondary-dim)", color: "var(--color-text-secondary)" }}>
             <ArrowUp size={18} strokeWidth={1.5} absoluteStrokeWidth />
           </button>
         </div>
@@ -109,6 +241,11 @@ export interface ChatConversationInputProps {
   onChange?: (value: string) => void;
   isRecording?: boolean;
   onToggleMic?: () => void;
+  /**
+   * Called when the user sends with an attached image. Text may be empty when
+   * the user attached only an image. When omitted the attach button is hidden.
+   */
+  onSendImage?: (payload: { text: string; src: string; alt: string }) => void;
 }
 
 export function ChatConversationInput({
@@ -119,10 +256,12 @@ export function ChatConversationInput({
   onChange,
   isRecording: controlledRecording,
   onToggleMic,
+  onSendImage,
 }: ChatConversationInputProps) {
   const [localValue, setLocalValue] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const [localRecording, setLocalRecording] = useState(false);
+  const { attachedImage, fileInputRef, openPicker, onFileChange, clear: clearImage } = useImageAttachment();
 
   const isControlled = controlledValue !== undefined;
   const currentValue = isControlled ? controlledValue : localValue;
@@ -136,6 +275,12 @@ export function ChatConversationInput({
   }
 
   function handleSend() {
+    if (attachedImage) {
+      onSendImage?.({ text: currentValue.trim(), src: attachedImage.src, alt: attachedImage.alt });
+      clearImage();
+      if (!isControlled) setLocalValue("");
+      return;
+    }
     if (!currentValue.trim()) return;
     onSend?.(currentValue);
     if (!isControlled) setLocalValue("");
@@ -146,8 +291,15 @@ export function ChatConversationInput({
     else setLocalRecording(r => !r);
   }
 
+  const canSend = !!attachedImage || !!currentValue.trim();
+
   return (
     <div className="w-full" style={{ backgroundColor: "var(--color-bg-main)" }}>
+      {attachedImage && (
+        <div className="flex items-start gap-[var(--space-2)] px-[var(--space-4)] pt-[var(--space-3)] shrink-0">
+          <AttachedImageChip image={attachedImage} onRemove={clearImage} />
+        </div>
+      )}
       {/* AI icon + textarea */}
       <div className="flex gap-[var(--space-2-5)] items-center px-[var(--space-4)] w-full shrink-0 mt-[var(--space-2)] mb-[var(--space-2)]">
         <motion.img
@@ -183,10 +335,7 @@ export function ChatConversationInput({
       {/* Bottom actions */}
       <div className="flex gap-[var(--space-2)] items-end px-[var(--space-4)] py-[var(--space-2)] w-full">
         <div className="flex flex-[1_0_0] gap-[var(--space-2)] items-end min-w-px">
-          <button className="transition-colors flex gap-[var(--space-1-5)] h-[32px] items-center px-[var(--space-2)] py-[var(--space-1-5)] relative rounded-[var(--radius-full)]" style={{ backgroundColor: "var(--color-brand-secondary-dim)" }} onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--color-state-hover)")} onMouseLeave={e => (e.currentTarget.style.backgroundColor = "var(--color-brand-secondary-dim)")}>
-            <div className="size-[16px] relative shrink-0 flex items-center justify-center" style={{ color: "var(--color-text-primary)" }}><ImagePlus size={18} strokeWidth={1.5} absoluteStrokeWidth /></div>
-            <p className="font-medium leading-[var(--line-height-label-12)] text-[length:var(--font-size-label-12)] whitespace-nowrap" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>Add reference images</p>
-          </button>
+          {onSendImage && <AttachReferenceButton fileInputRef={fileInputRef} onFileChange={onFileChange} onClick={openPicker} />}
         </div>
         <div className="flex gap-[var(--space-1)] items-center relative shrink-0">
           <button
@@ -198,8 +347,8 @@ export function ChatConversationInput({
             <Mic size={18} strokeWidth={1.5} absoluteStrokeWidth />
           </button>
           <button
-            className={`flex items-center justify-center p-[var(--space-2)] relative rounded-[20px] shrink-0 size-[32px] transition-colors ${!currentValue.trim() ? "cursor-not-allowed" : ""}`}
-            style={currentValue.trim() ? { backgroundColor: "var(--color-brand-primary)", color: "var(--color-text-on-primary)" } : { backgroundColor: "var(--color-brand-secondary-dim)", color: "var(--color-text-secondary)" }}
+            className={`flex items-center justify-center p-[var(--space-2)] relative rounded-[20px] shrink-0 size-[32px] transition-colors ${!canSend ? "cursor-not-allowed" : ""}`}
+            style={canSend ? { backgroundColor: "var(--color-brand-primary)", color: "var(--color-text-on-primary)" } : { backgroundColor: "var(--color-brand-secondary-dim)", color: "var(--color-text-secondary)" }}
             onClick={handleSend}>
             <ArrowUp size={18} strokeWidth={1.5} absoluteStrokeWidth />
           </button>

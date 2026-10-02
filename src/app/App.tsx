@@ -2431,6 +2431,13 @@ function PageWebsiteNav() {
   const [solidBg,           setSolidBg]           = useState(false);
   const [showCategoryStrip, setShowCategoryStrip]  = useState(true);
   const [showInvitationBtn, setShowInvitationBtn]  = useState(true);
+  /* Dev-only toggle on the V2 preview so both the authenticated (avatar +
+     cart) and logged-out (Sign In pill) states can be seen without wiring up
+     a real session. Does not ship. */
+  const [isAuthV2,          setIsAuthV2]          = useState(true);
+  /* The bell is off by default in the preview — consumers opt in via the
+     switch (or showNotifications={true} in their own app). */
+  const [showBellV2,        setShowBellV2]        = useState(false);
   const bgVariant = solidBg ? "solid" : "default";
 
   const buildCode = (auth: boolean) => {
@@ -2474,18 +2481,24 @@ function PageWebsiteNav() {
       {/* New navigation — WebsiteNavV2, in validation */}
       <DocSection
         title="New Navigation"
-        desc="WebsiteNavV2 is the design team's next-generation top navigation: a bolder, more action-oriented concept built from the new Figma spec. Both rows and the mega panel ride the marketing grid track, so the bar widens from 1200px to 1460px at viewports of 2000px and up along with the rest of the page, as long as nothing pins `--grid-max-width`. The grid's contract is that `--grid-max-width` is the outer width of the track and `--grid-margin` is subtracted from inside it, which puts content at 1168px on the 1200px tier and lines the bar up with `.hs-page-grid` exactly. Drop it onto a page whose own grid measures its 1200px to the content box instead and the bar comes out 32px narrower, which reads as a 16px inset per side and quietly scrolls the last category off the end of the strip, since the category row hides its scrollbar. To align it, set `--nav-track-margin` on the nav or any ancestor (and `--nav-track-max` too if the page's narrow tier differs), rather than redefining the grid tokens: those retune every grid consumer in the subtree, and pinning `--grid-max-width` to a number severs the wide tier. Hover any category in the second row and the mega menu drops out of it, covered on its own below. All three surfaces from the handoff are wired and ship inside the component: the bell opens the Notification panel (pass rows through `notifications`, handle the rest with the `onNotification*` callbacks), the globe opens the language dropdown (`languages`, `language`, `onLanguageChange`), and Reminders opens the design system's own Sheet on `direction=right` (`remindersLede`, `remindersSub`, `onSetReminders`, `onViewAllReminders`), which brings the overlay, the slide, focus handling and the close button with it; the nav only supplies the contents plus the spec's 456px width and off-white ground. It is viewport-level when you import it, as the spec asks. The demo below bounds it to the frame with `portalContainer`, which is the only reason it does not cover this page. The sheet's illustration is not bundled: pass `remindersArtSrc` for the alpha WebM and `remindersArtFallbackSrc` for the still, or leave both off and the copy renders alone. Auto-hide pauses while any surface is open, since transforming the nav would drag the fixed layers with it. The bordered box below is a stand-in viewport for the demo, nothing more: importing WebsiteNavV2 gets you the navigation and its surfaces, never the frame, the scroll container or the filler copy, and the Code tab shows exactly what ships. It's currently being validated against the spec; the current WebsiteNav below remains the production component until V2 is promoted."
+        desc="The next version of our website top bar. It carries the brand lockup, search, Get the App, Reminders, the bell, language and the account slot across two rows, with a mega menu that drops from any category. Still in testing, so the current WebsiteNav below stays live until this one is promoted."
         action={
-          <span style={{
-            fontSize: 10, fontWeight: "var(--font-weight-bold, 700)" as any, padding: "2px 8px", borderRadius: "var(--radius-full)",
-            background: LABEL_COLORS.beta.bg, color: LABEL_COLORS.beta.color,
-            textTransform: "uppercase" as const, letterSpacing: ".04em", whiteSpace: "nowrap" as const,
-          }}>Testing phase</span>
+          <div style={{ display: "flex", alignItems: "center", gap: "var(--space-4)" }}>
+            <Swt size="sm" checked={isAuthV2} onChange={setIsAuthV2} label={isAuthV2 ? "Logged in" : "Logged out"} />
+            <Swt size="sm" checked={showBellV2} onChange={setShowBellV2} label="Bell" />
+            <span style={{
+              fontSize: 10, fontWeight: "var(--font-weight-bold, 700)" as any, padding: "2px 8px", borderRadius: "var(--radius-full)",
+              background: LABEL_COLORS.beta.bg, color: LABEL_COLORS.beta.color,
+              textTransform: "uppercase" as const, letterSpacing: ".04em", whiteSpace: "nowrap" as const,
+            }}>Testing phase</span>
+          </div>
         }
       >
         <Preview
           title="WebsiteNavV2 · testing"
-          code={`import { WebsiteNavV2 } from "@heartstampxo/design-system";\n\n<WebsiteNavV2\n  avatarSrc="https://i.pravatar.cc/80?img=68"\n  onSearch={openSpotlight}      // also bound to ⌘K / Ctrl+K\n  onCategoryHover={openMegaPanel}\n  onAskStampy={openStampy}\n  notifications={notifications}          // omit to use the demo set\n  onNotifications={trackBellOpened}      // fires when the panel opens\n  onNotificationItemClick={openNotification}\n  onNotificationArchive={archiveNotification}\n  onNotificationMarkAllRead={markAllRead}\n/>`}
+          code={isAuthV2
+            ? `import { WebsiteNavV2 } from "@heartstampxo/design-system";\n\n<WebsiteNavV2\n  avatarSrc="https://i.pravatar.cc/80?img=68"\n  showNotifications={${showBellV2}}\n  onSearch={openSpotlight}      // also bound to ⌘K / Ctrl+K\n  onCategoryHover={openMegaPanel}\n  onAskStampy={openStampy}\n  notifications={notifications}          // omit to use the demo set\n  onNotifications={trackBellOpened}      // fires when the panel opens\n  onNotificationItemClick={openNotification}\n  onNotificationArchive={archiveNotification}\n  onNotificationMarkAllRead={markAllRead}\n/>`
+            : `import { WebsiteNavV2 } from "@heartstampxo/design-system";\n\n<WebsiteNavV2\n  isAuthenticated={false}\n  onSignIn={openSignIn}\n  onSearch={openSpotlight}      // also bound to ⌘K / Ctrl+K\n  onCategoryHover={openMegaPanel}\n  onAskStampy={openStampy}\n/>`}
           height={800}
           fullWidth
           canvasBg="var(--color-bg-editor)"
@@ -2494,7 +2507,7 @@ function PageWebsiteNav() {
           <NavV2Frame className="navv2-desk">
             {container => (
               <>
-                <WebsiteNavV2 avatarSrc="https://i.pravatar.cc/80?img=68" portalContainer={container} />
+                <WebsiteNavV2 avatarSrc="https://i.pravatar.cc/80?img=68" isAuthenticated={isAuthV2} showNotifications={showBellV2} portalContainer={container} />
                 <div className="navv2-filler">
                   <p>Scroll this frame to watch the bar stay stuck to the top. Open the globe, the bell or Reminders and the surface stays inside the frame, because the preview hands the nav this box to render into. In your app you leave that unset and they cover the viewport.</p>
                   <p>Narrow the frame with the viewport buttons above and the nav collapses to its compact bar on its own. It measures its own width, not the browser's.</p>
@@ -2508,18 +2521,24 @@ function PageWebsiteNav() {
 
       <DocSection
         title="New Navigation · Mobile"
-desc="Same component, no second import. WebsiteNavV2 measures its own box and swaps to this compact bar once it drops below 768px wide, so mounting it once covers both layouts; pass breakpoint to move the switch, or mobile to force the bar at any width as this preview does. It measures itself rather than the viewport, so it also collapses inside a narrow frame on a wide screen. The two rows become one 56px bar: a 112px lockup and an icon-only cluster, with the search pill, Get the App, the Reminders label, the Ask Stampy chip, the avatar and the whole category row dropping. Tap the bell and the tray opens as a full-height sheet pinned under the bar, since --notif-m-top reads the bar's own --nav-m-h. On a real phone the bar slides away on downward scroll and returns on upward; pass autoHideOnScroll={false} to pin it. The globe is here because the handoff asks for it, but production's cluster drops it, so pass showLanguage={false} to match production. The phone frame, its scroll container and the filler copy are demo chrome standing in for a viewport; the import is WebsiteNavV2 and nothing else."
+desc="Same component, one import. Below 768px of its own width WebsiteNavV2 collapses to this compact 56px bar, swapping the two rows for a single cluster with the logo, search, reminders, language, bell and cart. Tap the bell for a full height tray."
         action={
-          <span style={{
-            fontSize: 10, fontWeight: "var(--font-weight-bold, 700)" as any, padding: "2px 8px", borderRadius: "var(--radius-full)",
-            background: LABEL_COLORS.beta.bg, color: LABEL_COLORS.beta.color,
-            textTransform: "uppercase" as const, letterSpacing: ".04em", whiteSpace: "nowrap" as const,
-          }}>Testing phase</span>
+          <div style={{ display: "flex", alignItems: "center", gap: "var(--space-4)" }}>
+            <Swt size="sm" checked={isAuthV2} onChange={setIsAuthV2} label={isAuthV2 ? "Logged in" : "Logged out"} />
+            <Swt size="sm" checked={showBellV2} onChange={setShowBellV2} label="Bell" />
+            <span style={{
+              fontSize: 10, fontWeight: "var(--font-weight-bold, 700)" as any, padding: "2px 8px", borderRadius: "var(--radius-full)",
+              background: LABEL_COLORS.beta.bg, color: LABEL_COLORS.beta.color,
+              textTransform: "uppercase" as const, letterSpacing: ".04em", whiteSpace: "nowrap" as const,
+            }}>Testing phase</span>
+          </div>
         }
       >
         <Preview
           title="WebsiteNavV2Mobile · testing"
-          code={`import { WebsiteNavV2 } from "@heartstampxo/design-system";\n\n// One mount, both layouts. Below 768px of its own width this becomes\n// the compact bar on its own; \`mobile\` forces it at any width.\n<WebsiteNavV2\n  notifications={notifications}\n  onSearch={openSpotlight}\n  onReminders={openReminders}\n  onNotificationItemClick={openNotification}\n  onNotificationArchive={archiveNotification}\n  onNotificationMarkAllRead={markAllRead}\n  onCart={openCart}\n  showLanguage={false}          // match production's cluster\n/>`}
+          code={isAuthV2
+            ? `import { WebsiteNavV2 } from "@heartstampxo/design-system";\n\n// One mount, both layouts. Below 768px of its own width this becomes\n// the compact bar on its own; \`mobile\` forces it at any width.\n<WebsiteNavV2\n  notifications={notifications}\n  showNotifications={${showBellV2}}\n  onSearch={openSpotlight}\n  onReminders={openReminders}\n  onNotificationItemClick={openNotification}\n  onNotificationArchive={archiveNotification}\n  onNotificationMarkAllRead={markAllRead}\n  onCart={openCart}\n  showLanguage={false}          // match production's cluster\n/>`
+            : `import { WebsiteNavV2 } from "@heartstampxo/design-system";\n\n<WebsiteNavV2\n  isAuthenticated={false}\n  onSignIn={openSignIn}\n  onSearch={openSpotlight}\n  onReminders={openReminders}\n  onCart={openCart}\n  showLanguage={false}\n/>`}
           height={800}
           canvasBg="var(--color-bg-editor)"
         >
@@ -2527,7 +2546,7 @@ desc="Same component, no second import. WebsiteNavV2 measures its own box and sw
           <NavV2Frame className="navv2-phone">
             {container => (
               <>
-                <WebsiteNavV2 mobile portalContainer={container} />
+                <WebsiteNavV2 mobile isAuthenticated={isAuthV2} showNotifications={showBellV2} portalContainer={container} />
                 <div className="navv2-filler">
                   <p>Scroll down and the bar slides away; scroll back up and it returns. Tap the bell for the full-height tray, the globe for the language menu, or the calendar for the reminders sheet.</p>
                   <div className="navv2-spacer" />

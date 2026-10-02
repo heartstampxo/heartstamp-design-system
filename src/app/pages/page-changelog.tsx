@@ -30,6 +30,23 @@ const TAG_STYLES: Record<string, { bg: string; color: string }> = {
 
 const RELEASES: Release[] = [
   {
+    version: "2.1.70", date: "2 Oct 2026",
+    title: "Image uploads in chat, a logged out nav, and a draggable chat panel",
+    tags: ["feature", "docs", "tokens"],
+    items: [
+      "The Stampy chat input now has real image upload. Tap Add reference images, pick a photo from your device, and it appears as a chip above the text input. Hit send and the message posts as a UserImageBubble with the photo on top and whatever caption you typed below. Send with no caption and the bubble is just the photo.",
+      "The hidden file input is scoped to common image formats (jpeg, png, webp, gif), caps at 10 MB, and reads through FileReader into a data URL so nothing leaves the browser. SVG is left out on purpose: it renders fine in an img tag but can still reach for remote resources.",
+      "ChecklistOverflowMenu now has a primary Send button that takes over from Skip the moment anything is ticked. The pill slides in from the right as Skip slides out, so the swap reads as one motion. Pass onSend to opt in; omit it and the Skip-only behaviour is unchanged.",
+      "TemplateOverflowMenu card body text now reads at 15px like the menu header, not 13px. The card height is unchanged, so longer Front and Inside blocks clip to fit as before.",
+      "WebsiteNavV2 now has a logged out state. Pass isAuthenticated={false} and the avatar swaps for a primary Sign In pill. The cart stays so a visitor can collect items before signing in, and the bell drops because notifications only make sense for a signed in user. A separate showNotifications prop also hides the bell when you want to turn it off independently of auth.",
+      "The Sign In pill is 40px tall and uses the same font tokens as Get the App and Reminders, so the whole action row keeps its baseline whether the user is signed in or not. Mobile mirrors the same swap in the compact bar.",
+      "WebsiteNavV2 search chip label changed from Ask Stampy AI to Try Easy Wizard Now. The onAskStampy prop name stays, only the copy moved.",
+      "The Stampy chatbot panel can now be resized by dragging its left edge. A thin gray handle appears on hover, drag through 450 to 600 px, double click to reset. Works in both the normal and expanded chat modes on desktop; skipped on mobile and in embedded sheets.",
+      "The Stampy chatbot docs preview now fills the viewport when Preview goes fullscreen (no white bands above and below), and the in-chat expand button grows to the real container height via a ResizeObserver on the demo wrapper.",
+      "Docs body copy (section descriptions, callouts, placeholder text) now uses the 15px regular token, matching the page subtitle scale across every page. Code blocks and small UI chrome stay at 13px.",
+    ],
+  },
+  {
     version: "2.1.69", date: "1 Oct 2026",
     title: "A user bubble for when the user shares a photo",
     tags: ["feature"],

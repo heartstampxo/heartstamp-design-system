@@ -107,6 +107,22 @@ function OverflowSkipBtn({ label, onClick }: { label: string; onClick: () => voi
   );
 }
 
+/** Primary pill action in the OverflowMenu footer (right slot). Red fill. */
+function OverflowSendPrimaryBtn({ label, onClick }: { label: string; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      className="flex shrink-0 items-center justify-center gap-[var(--space-1)] px-[var(--space-3)] py-[var(--space-1-5)] cursor-pointer transition-colors"
+      style={{ backgroundColor: "var(--color-brand-primary)", borderRadius: "var(--radius-button)" }}
+      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--color-brand-primary-hover, var(--color-brand-primary))")}
+      onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "var(--color-brand-primary)")}
+      onClick={onClick}
+    >
+      <span className="leading-[var(--line-height-body-15)] text-[length:var(--font-size-body-15)] whitespace-nowrap" style={{ ...dmSans500, color: "var(--color-text-on-primary)" }}>{label}</span>
+    </button>
+  );
+}
+
 /** Height of one list row. Must match the `h-[36px]` rows below. */
 const ROW_H = 36;
 
@@ -292,23 +308,27 @@ export function OverflowMenu({
 // ── ChecklistOverflowMenu ──────────────────────────────────────────────────
 
 export function ChecklistOverflowMenu({
-  pages: checklistPages, onClose, onSelectionChange, onShowMore, isLoadingShowMore, showMoreLabel = "Show more...", onSkip, skipLabel = "Skip",
+  pages: checklistPages, onClose, onSelectionChange, onShowMore, isLoadingShowMore, showMoreLabel = "Show more...", onSkip, skipLabel = "Skip", onSend, sendLabel = "Send",
 }: {
   pages: ChecklistPage[];
   onClose: () => void;
   /** Fired on every toggle with the labels of everything currently ticked, across
-   *  all pages. The design has no send button in the menu, so the consumer owns
-   *  submission — mirror this into your own state and send it from your input. */
+   *  all pages. Mirror this into your own state when you need the live selection
+   *  outside the menu; the in-menu Send button also hands you the final list. */
   onSelectionChange?: (selected: string[]) => void;
   /** Renders the "Show more…" action when provided. */
   onShowMore?: () => void;
   isLoadingShowMore?: boolean;
   /** Copy for the show-more action, so consumers can localise it. */
   showMoreLabel?: string;
-  /** Renders the Skip button when provided. The consumer owns what skipping does. */
+  /** Renders the Skip button when provided and nothing is selected. The consumer owns what skipping does. */
   onSkip?: () => void;
   /** Copy for the Skip button, so consumers can localise it. */
   skipLabel?: string;
+  /** Renders a primary Send button in place of Skip once at least one item is ticked. Fires with the final selection. */
+  onSend?: (selected: string[]) => void;
+  /** Copy for the Send button, so consumers can localise it. */
+  sendLabel?: string;
 }) {
   const [page, setPage] = useState(0);
   const totalPages = checklistPages.length;
@@ -330,7 +350,13 @@ export function ChecklistOverflowMenu({
   const currentPageData = checklistPages[page];
   const checklistRef = useRevealAppended(currentPageData?.items.length ?? 0, isLoadingShowMore);
 
-  const showsFooter = !!onShowMore || !!onSkip;
+  /* Primary Send takes over from Skip once anything is ticked — the menu is
+     no longer a dismiss affordance, it's a submit one. If a consumer wires
+     Send but not Skip, the right slot stays empty while nothing is picked. */
+  const hasSelection = selected.size > 0;
+  const showsSend = hasSelection && !!onSend;
+  const showsSkip = !!onSkip && !showsSend;
+  const showsFooter = !!onShowMore || showsSend || showsSkip;
 
   return (
     <div
@@ -371,7 +397,34 @@ export function ChecklistOverflowMenu({
           {onShowMore
             ? <OverflowShowMoreBtn label={showMoreLabel} onClick={onShowMore} isLoading={isLoadingShowMore} />
             : <span />}
-          {onSkip && <OverflowSkipBtn label={skipLabel} onClick={onSkip} />}
+          {/* The Skip ↔ Send swap animates in place: the outgoing pill slides
+              out to the right as the new one slides in from the right. mode
+              "popLayout" lets them overlap so the slot is never visibly empty,
+              and initial={false} suppresses the entrance animation on first
+              mount so the menu opens with its pill already settled. */}
+          <AnimatePresence mode="popLayout" initial={false}>
+            {showsSend ? (
+              <motion.div
+                key="send"
+                initial={{ opacity: 0, x: 16 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 16 }}
+                transition={{ type: "spring", stiffness: 420, damping: 32 }}
+              >
+                <OverflowSendPrimaryBtn label={sendLabel} onClick={() => onSend!(labelsFor(selected))} />
+              </motion.div>
+            ) : showsSkip ? (
+              <motion.div
+                key="skip"
+                initial={{ opacity: 0, x: 16 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 16 }}
+                transition={{ type: "spring", stiffness: 420, damping: 32 }}
+              >
+                <OverflowSkipBtn label={skipLabel} onClick={onSkip!} />
+              </motion.div>
+            ) : null}
+          </AnimatePresence>
         </div>
       )}
     </div>
@@ -449,8 +502,8 @@ export function TemplateOverflowMenu({
                 onClick={() => onComplete(`${item.title}: "${item.front}" — ${item.insideHeading ?? ""} ${item.insideBody}`)}
               >
                 <p
-                  className="flex-1 min-h-0 w-full overflow-hidden text-[length:var(--font-size-body-13)] whitespace-pre-wrap"
-                  style={{ ...dmSans400, color: "var(--color-text-primary)", lineHeight: "normal" }}
+                  className="flex-1 min-h-0 w-full overflow-hidden text-[length:var(--font-size-body-15)] leading-[var(--line-height-body-15)] whitespace-pre-wrap"
+                  style={{ ...dmSans400, color: "var(--color-text-primary)" }}
                 >
                   {blocks.join("\n\n")}
                 </p>

@@ -98,7 +98,7 @@ export function DocSection({ title, desc, action, children }: DocSectionProps) {
             <h2 style={{ margin: 0, fontSize: "var(--font-size-h6)", fontWeight: "var(--font-weight-bold, 700)" as any, color: "var(--fg)" }}>{title}</h2>
             <CopySectionLinkButton sectionId={id} />
           </div>
-          {desc && <p style={{ margin: "4px 0 0", fontSize: "var(--font-size-body-13)", fontWeight: "var(--font-weight-body-13)" as React.CSSProperties["fontWeight"], color: "var(--muted-fg)" }}>{desc}</p>}
+          {desc && <p style={{ margin: "4px 0 0", fontSize: "var(--font-size-body-15)", fontWeight: "var(--font-weight-body-15)" as React.CSSProperties["fontWeight"], color: "var(--muted-fg)", lineHeight: 1.6 }}>{desc}</p>}
         </div>
         {action && <div style={{ flexShrink: 0 }}>{action}</div>}
       </div>
