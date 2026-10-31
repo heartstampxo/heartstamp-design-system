@@ -123,15 +123,15 @@ function OverflowSendPrimaryBtn({ label, onClick }: { label: string; onClick: ()
   );
 }
 
-/** Height of one list row. Must match the `h-[36px]` rows below. */
-const ROW_H = 36;
-
 /** Bring a newly appended batch into view once a "Show more" lands.
  *
- *  The list boxes hold six 36px rows, so rows seven onward arrive below the
+ *  The list boxes hold six one-line rows, so rows seven onward arrive below the
  *  fold. The spinner stopped and nothing on screen moved, and a customer took
  *  it that nothing had happened. This scrolls so the first new row sits at the
  *  top, which with batches of about six shows exactly what is new.
+ *
+ *  Rows wrap long options onto extra lines, so the offset is read from the
+ *  first new row's position rather than counted in fixed row heights.
  *
  *  While `busy` the count is deliberately not recorded, so the growth still
  *  reads as growth when the flag clears, whichever render delivers the new
@@ -146,10 +146,13 @@ function useRevealAppended(count: number, busy?: boolean) {
     prev.current = count;
     const el = ref.current;
     if (!el || count <= before) return;
+    const firstNew = el.children[before] as HTMLElement | undefined;
+    const firstRow = el.firstElementChild as HTMLElement | null;
+    if (!firstNew || !firstRow) return;
     const reduce =
       typeof window !== "undefined" &&
       window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-    el.scrollTo({ top: before * ROW_H, behavior: reduce ? "auto" : "smooth" });
+    el.scrollTo({ top: firstNew.offsetTop - firstRow.offsetTop, behavior: reduce ? "auto" : "smooth" });
   }, [count, busy]);
   return ref;
 }
@@ -275,17 +278,17 @@ export function OverflowMenu({
             </div>
           </div>
 
-          {/* Six 36px rows fit before the list starts scrolling — the design's full height. */}
+          {/* Six one-line rows fit before the list starts scrolling — the design's full height. Longer options wrap, so fewer show at once. */}
           <div ref={listRef} className={'w-full max-h-[216px] overflow-y-auto scrollbar-thin scrollbar-thumb-muted-foreground scrollbar-track-transparent'}>
             {items.map((item) => (
-              <div key={item.num} className="h-[36px] w-full shrink-0">
+              <div key={item.num} className="min-h-[36px] w-full shrink-0">
                 <div
-                  className="flex gap-[var(--space-2)] items-center px-[var(--space-2)] py-[var(--space-1-5)] w-full rounded-[var(--radius-sm)] transition-colors cursor-pointer"
+                  className="flex gap-[var(--space-2)] items-start px-[var(--space-2)] py-[var(--space-1-5)] w-full rounded-[var(--radius-sm)] transition-colors cursor-pointer"
                   {...hoverItem}
                   onClick={() => handleItemClick(item)}
                 >
                   <NumBadge num={item.num} />
-                  <p className="flex-1 leading-[var(--line-height-body-15)] text-[length:var(--font-size-body-15)] min-w-0 truncate" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{item.label}</p>
+                  <p className="flex-1 leading-[var(--line-height-body-15)] text-[length:var(--font-size-body-15)] min-w-0 break-words" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{item.label}</p>
                 </div>
               </div>
             ))}
@@ -373,17 +376,17 @@ export function ChecklistOverflowMenu({
         </div>
 
         <AnimatePresence mode="wait">
-          {/* Six 36px rows fit before the list starts scrolling — the design's full height. */}
+          {/* Six one-line rows fit before the list starts scrolling — the design's full height. Longer options wrap, so fewer show at once. */}
           <motion.div key={page} ref={checklistRef} className="w-full flex flex-col max-h-[216px] overflow-y-auto scrollbar-thin scrollbar-thumb-muted-foreground scrollbar-track-transparent" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} transition={{ type: "spring", stiffness: 380, damping: 28 }}>
             {currentPageData.items.map((item) => {
               const checked = selected.has(item.id);
               return (
-                <div key={item.id} className="h-[36px] w-full shrink-0">
-                  <div className="flex gap-[var(--space-2)] items-center px-[var(--space-2)] py-[var(--space-1-5)] rounded-[var(--radius-sm)] w-full cursor-pointer transition-colors" {...hoverItem} onClick={() => toggleItem(item.id)}>
-                    <div className="relative rounded-[var(--radius-xs)] shrink-0 size-[16px] flex items-center justify-center transition-colors duration-150" style={{ backgroundColor: checked ? "var(--color-brand-primary)" : "transparent", border: checked ? "1px solid var(--color-brand-primary)" : "1px solid var(--color-element-subtle)", boxShadow: "var(--shadow-xs)" }}>
+                <div key={item.id} className="min-h-[36px] w-full shrink-0">
+                  <div className="flex gap-[var(--space-2)] items-start px-[var(--space-2)] py-[var(--space-1-5)] rounded-[var(--radius-sm)] w-full cursor-pointer transition-colors" {...hoverItem} onClick={() => toggleItem(item.id)}>
+                    <div className="relative mt-[2px] rounded-[var(--radius-xs)] shrink-0 size-[16px] flex items-center justify-center transition-colors duration-150" style={{ backgroundColor: checked ? "var(--color-brand-primary)" : "transparent", border: checked ? "1px solid var(--color-brand-primary)" : "1px solid var(--color-element-subtle)", boxShadow: "var(--shadow-xs)" }}>
                       {checked && <svg width="10.7" height="7.75" viewBox="0 0 10.6633 7.74667" fill="none"><path d={CHECKMARK_PATH} stroke="var(--color-text-on-primary)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33" /></svg>}
                     </div>
-                    <p className="flex-1 leading-[var(--line-height-body-15)] text-[length:var(--font-size-body-15)] min-w-0 truncate" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{item.label}</p>
+                    <p className="flex-1 leading-[var(--line-height-body-15)] text-[length:var(--font-size-body-15)] min-w-0 break-words" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{item.label}</p>
                   </div>
                 </div>
               );
@@ -614,17 +617,17 @@ export function ActionOverflowMenuList({
       <div className="flex flex-col gap-[var(--space-2)] px-[var(--space-4)] w-full">
         <p className="leading-[var(--line-height-body-15)] text-[length:var(--font-size-body-15)]" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{adjustHeader}</p>
         <div className="flex flex-col w-full">
-          {/* Six 36px rows fit before the list starts scrolling — the design's full height. */}
+          {/* Six one-line rows fit before the list starts scrolling — the design's full height. Longer options wrap, so fewer show at once. */}
           <div className="flex flex-col w-full max-h-[216px] overflow-y-auto scrollbar-thin scrollbar-thumb-muted-foreground scrollbar-track-transparent">
             {items.map((item) => (
-              <div key={item.num} className="h-[36px] w-full shrink-0">
+              <div key={item.num} className="min-h-[36px] w-full shrink-0">
                 <div
-                  className="flex gap-[var(--space-2)] items-center px-[var(--space-2)] py-[var(--space-1-5)] w-full rounded-[var(--radius-sm)] transition-colors cursor-pointer"
+                  className="flex gap-[var(--space-2)] items-start px-[var(--space-2)] py-[var(--space-1-5)] w-full rounded-[var(--radius-sm)] transition-colors cursor-pointer"
                   {...hoverItem}
                   onClick={() => onComplete(item.label)}
                 >
                   <NumBadge num={item.num} />
-                  <p className="flex-1 leading-[var(--line-height-body-15)] text-[length:var(--font-size-body-15)] min-w-0 truncate" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{item.label}</p>
+                  <p className="flex-1 leading-[var(--line-height-body-15)] text-[length:var(--font-size-body-15)] min-w-0 break-words" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{item.label}</p>
                 </div>
               </div>
             ))}
@@ -692,17 +695,17 @@ export function ActionChecklistOverflowMenu({
           <p className="leading-[var(--line-height-body-15)] text-[length:var(--font-size-body-15)]" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{config.adjustHeader}</p>
         )}
         <div className="flex flex-col w-full">
-          {/* Six 36px rows fit before the list starts scrolling — the design's full height. */}
+          {/* Six one-line rows fit before the list starts scrolling — the design's full height. Longer options wrap, so fewer show at once. */}
           <div className="flex flex-col w-full max-h-[216px] overflow-y-auto scrollbar-thin scrollbar-thumb-muted-foreground scrollbar-track-transparent">
             {items.map((item) => {
               const checked = selected.has(item.id);
               return (
-                <div key={item.id} className="h-[36px] w-full shrink-0">
-                  <div className="flex gap-[var(--space-2)] items-center px-[var(--space-2)] py-[var(--space-1-5)] rounded-[var(--radius-sm)] w-full cursor-pointer transition-colors" {...hoverItem} onClick={() => toggleItem(item.id)}>
-                    <div className="relative rounded-[var(--radius-xs)] shrink-0 size-[16px] flex items-center justify-center transition-colors duration-150" style={{ backgroundColor: checked ? "var(--color-brand-primary)" : "transparent", border: checked ? "1px solid var(--color-brand-primary)" : "1px solid var(--color-element-subtle)", boxShadow: "var(--shadow-xs)" }}>
+                <div key={item.id} className="min-h-[36px] w-full shrink-0">
+                  <div className="flex gap-[var(--space-2)] items-start px-[var(--space-2)] py-[var(--space-1-5)] rounded-[var(--radius-sm)] w-full cursor-pointer transition-colors" {...hoverItem} onClick={() => toggleItem(item.id)}>
+                    <div className="relative mt-[2px] rounded-[var(--radius-xs)] shrink-0 size-[16px] flex items-center justify-center transition-colors duration-150" style={{ backgroundColor: checked ? "var(--color-brand-primary)" : "transparent", border: checked ? "1px solid var(--color-brand-primary)" : "1px solid var(--color-element-subtle)", boxShadow: "var(--shadow-xs)" }}>
                       {checked && <svg width="10.7" height="7.75" viewBox="0 0 10.6633 7.74667" fill="none"><path d={CHECKMARK_PATH} stroke="var(--color-text-on-primary)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33" /></svg>}
                     </div>
-                    <p className="flex-1 leading-[var(--line-height-body-15)] text-[length:var(--font-size-body-15)] min-w-0 truncate" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{item.label}</p>
+                    <p className="flex-1 leading-[var(--line-height-body-15)] text-[length:var(--font-size-body-15)] min-w-0 break-words" style={{ ...dmSans500, color: "var(--color-text-primary)" }}>{item.label}</p>
                   </div>
                 </div>
               );

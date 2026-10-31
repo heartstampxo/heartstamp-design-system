@@ -10,7 +10,10 @@ import { ChecklistOverflowMenu, OverflowMenu, TemplateOverflowMenu } from '../in
  * other time.
  */
 
-const ROW_H = 36;
+// Rows wrap long options, so the scroll target is read from the first new
+// row's position. jsdom has no layout; each row here reports a two-line height
+// so the tests prove the menus no longer assume one-line 36px rows.
+const ROW_H = 56;
 let scrollTo: ReturnType<typeof vi.fn>;
 let reduceMotion = false;
 
@@ -18,6 +21,10 @@ beforeEach(() => {
   scrollTo = vi.fn();
   // jsdom implements neither.
   HTMLElement.prototype.scrollTo = scrollTo as unknown as typeof HTMLElement.prototype.scrollTo;
+  vi.spyOn(HTMLElement.prototype, 'offsetTop', 'get').mockImplementation(function (this: HTMLElement) {
+    const siblings = this.parentElement ? Array.from(this.parentElement.children) : [];
+    return Math.max(0, siblings.indexOf(this)) * ROW_H;
+  });
   window.matchMedia = ((query: string) => ({
     matches: reduceMotion && query.includes('reduce'),
     media: query,

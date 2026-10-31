@@ -30,6 +30,17 @@ const TAG_STYLES: Record<string, { bg: string; color: string }> = {
 
 const RELEASES: Release[] = [
   {
+    version: "2.1.71", date: "31 Oct 2026",
+    title: "Stampy menu options show their full text",
+    tags: ["fix"],
+    items: [
+      "Options in OverflowMenu, ChecklistOverflowMenu, ActionOverflowMenuList and ActionChecklistOverflowMenu were cut to one line with an ellipsis. When Stampy offered rewritten messages, every option read the same up to the cut and there was no way to see the rest before picking one.",
+      "Long options now wrap onto as many lines as they need. One-line options keep the 36px row, and the list keeps its 216px height, so short lists look exactly as before and long ones scroll.",
+      "The number badge and the checkbox sit on the first line of a wrapped option rather than its middle.",
+      "Show more still scrolls the first new option to the top of the list. It now measures where that option is, instead of assuming every row is 36px.",
+    ],
+  },
+  {
     version: "2.1.70", date: "2 Oct 2026",
     title: "Image uploads in chat, a logged out nav, and a draggable chat panel",
     tags: ["feature", "docs", "tokens"],
