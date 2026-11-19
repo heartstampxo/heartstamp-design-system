@@ -99,13 +99,13 @@ const FOOTER_CSS = `
 .hs-wfoot__inner {
   /* The design system grid track. Its contract: --grid-max-width is the OUTER
      width and --grid-margin is subtracted from inside it, so content lands at
-     1168px on the 1200px tier and lines up with .hs-page-grid — and the wide
-     tier follows automatically, because tokens.css restates --grid-max-width
-     as 1460px at >= 2000px. Retune one block with --hs-track-max /
+     1428px on the 1460px default and lines up with .hs-page-grid — and the
+     wide tier follows automatically, because tokens.css restates
+     --grid-max-width as 1600px at >= 2400px. Retune one block with --hs-track-max /
      --hs-track-margin rather than redefining the grid tokens, which would
      retune every consumer in the subtree and, if pinned to a number, sever
      the wide tier. */
-  width: min(var(--hs-track-max, var(--grid-max-width, 1200px)), 100%);
+  width: min(var(--hs-track-max, var(--grid-max-width, 1460px)), 100%);
   margin-inline: auto;
   padding-inline: var(--hs-track-margin, var(--grid-margin, 16px));
   box-sizing: border-box;
@@ -121,7 +121,7 @@ const FOOTER_CSS = `
 }
 .hs-wfoot__about { width: 253px; flex: none; display: flex; flex-direction: column; gap: var(--space-4); align-items: flex-start; }
 /* The link columns sit ON the grid, not at an arbitrary width: eight of the
-   twelve on the 1200px track, seven once it widens to 1460px. Both are derived
+   twelve while the track is under 1460px, seven from 1460px up. Both are derived
    from the tokens, so a change to the gutter or the column count carries here
    rather than needing this recomputed by hand.
      column  = (track - 11 gutters) / 12
@@ -138,7 +138,7 @@ const FOOTER_CSS = `
   justify-content: flex-end;
   align-items: flex-start;
 }
-@media (min-width: 2000px) {
+@media (min-width: 1460px) {
   .hs-wfoot__cols { width: calc(7 * var(--wf-col) + 6 * var(--wf-gutter)); }
 }
 .hs-wfoot__col { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-4); align-items: flex-start; }
@@ -199,13 +199,13 @@ const FOOTER_CSS = `
 .hs-wfoot__barin {
   /* The design system grid track. Its contract: --grid-max-width is the OUTER
      width and --grid-margin is subtracted from inside it, so content lands at
-     1168px on the 1200px tier and lines up with .hs-page-grid — and the wide
-     tier follows automatically, because tokens.css restates --grid-max-width
-     as 1460px at >= 2000px. Retune one block with --hs-track-max /
+     1428px on the 1460px default and lines up with .hs-page-grid — and the
+     wide tier follows automatically, because tokens.css restates
+     --grid-max-width as 1600px at >= 2400px. Retune one block with --hs-track-max /
      --hs-track-margin rather than redefining the grid tokens, which would
      retune every consumer in the subtree and, if pinned to a number, sever
      the wide tier. */
-  width: min(var(--hs-track-max, var(--grid-max-width, 1200px)), 100%);
+  width: min(var(--hs-track-max, var(--grid-max-width, 1460px)), 100%);
   margin-inline: auto;
   padding-inline: var(--hs-track-margin, var(--grid-margin, 16px));
   box-sizing: border-box;

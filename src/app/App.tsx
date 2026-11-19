@@ -3680,10 +3680,10 @@ function PageTokensShadow() {
 function PageTokensGrid() {
 
   const breakpoints = [
-    { name: "Mobile",  range: "< 768px",     cols: 4,  gutter: "16px", margin: "16px", maxWidth: "1200px" },
-    { name: "Tablet",  range: "768–1023px",  cols: 12, gutter: "16px", margin: "16px", maxWidth: "1200px" },
-    { name: "Desktop", range: "1024–1999px", cols: 12, gutter: "24px", margin: "16px", maxWidth: "1200px" },
-    { name: "Wide",    range: "≥ 2000px",    cols: 12, gutter: "24px", margin: "16px", maxWidth: "1460px" },
+    { name: "Mobile",  range: "< 768px",     cols: 4,  gutter: "16px", margin: "16px", maxWidth: "Fluid" },
+    { name: "Tablet",  range: "768–1023px",  cols: 12, gutter: "16px", margin: "16px", maxWidth: "Fluid" },
+    { name: "Desktop", range: "1024–2399px", cols: 12, gutter: "24px", margin: "16px", maxWidth: "1460px" },
+    { name: "Wide",    range: "≥ 2400px",    cols: 12, gutter: "24px", margin: "16px", maxWidth: "1600px" },
   ];
 
   const columnExamples = [
@@ -3721,7 +3721,7 @@ function PageTokensGrid() {
           { token: "--grid-columns",   value: "12",     category: "Grid", usage: "Number of columns (desktop & tablet)" },
           { token: "--grid-gutter",    value: "24px",   category: "Grid", usage: "Column gap on desktop; 16px on mobile & tablet" },
           { token: "--grid-margin",    value: "16px",   category: "Grid", usage: "Outer horizontal padding for the grid track" },
-          { token: "--grid-max-width", value: "1200px → 1460px", category: "Grid", usage: "Outer width of the track, centered with margin: auto. --grid-margin is subtracted from inside it, so content is max-width − 2 × margin (1168px at the 1200px tier, 1428px at the 1460px tier). Widens to 1460px at viewports ≥ 2000px" },
+          { token: "--grid-max-width", value: "1460px → 1600px", category: "Grid", usage: "Outer width of the track, centered with margin: auto. --grid-margin is subtracted from inside it, so content is max-width − 2 × margin (1428px at the 1460px default, 1568px at the 1600px tier). Widens to 1600px at viewports ≥ 2400px" },
         ]} />
       </DocSection>
 
@@ -6028,10 +6028,10 @@ export default function App() {
           </div>
         </aside>
 
-        {/* MAIN — the content column IS the grid track (1200px, 1460px on the
+        {/* MAIN — the content column IS the grid track (1460px, 1600px on the
             wide tier), so pages align with the GridInspector overlay. */}
         <main style={{ flex: 1, overflowY: "auto", padding: "28px 0", transition: "background 0.15s ease, color 0.15s ease", ...mainStyle }}>
-          <div style={{ maxWidth: "var(--grid-max-width, 1200px)", margin: "0 auto", padding: "0 var(--grid-margin, 16px)" }}>
+          <div style={{ maxWidth: "var(--grid-max-width, 1460px)", margin: "0 auto", padding: "0 var(--grid-margin, 16px)" }}>
             <PageComp id={page} />
           </div>
         </main>

@@ -823,30 +823,30 @@ describe('GridOverlay / GridInspector', () => {
     expect(gridBreakpointFor(1023).name).toBe('Tablet');
   });
 
-  it('widens the track to 1460px on the Wide tier, in step with tokens.css', () => {
+  it('widens the track to 1600px on the Wide tier, in step with tokens.css', () => {
     /* The Wide media query lives in tokens.css, not grid.css, because it only
        restates --grid-max-width. Two sources of truth for one breakpoint is
        exactly the drift this asserts against: the helper below is what app
        code branches on, and it has to agree with the CSS that actually ships. */
     const tokens = readFileSync(join(process.cwd(), 'src/css/tokens.css'), 'utf8');
-    expect(tokens).toMatch(/--grid-max-width:\s*1200px/);
-    expect(tokens).toMatch(/@media\s*\(min-width:\s*2000px\)\s*\{\s*:root\s*\{\s*--grid-max-width:\s*1460px/s);
+    expect(tokens).toMatch(/--grid-max-width:\s*1460px/);
+    expect(tokens).toMatch(/@media\s*\(min-width:\s*2400px\)\s*\{\s*:root\s*\{\s*--grid-max-width:\s*1600px/s);
 
-    expect(gridBreakpointFor(2560)).toMatchObject({ name: 'Wide', columns: 12, gutter: 24, maxWidth: 1460 });
+    expect(gridBreakpointFor(2560)).toMatchObject({ name: 'Wide', columns: 12, gutter: 24, maxWidth: 1600 });
     // Wide changes the track and nothing else, so spans stay put
     expect(gridBreakpointFor(2560).columns).toBe(gridBreakpointFor(1440).columns);
     expect(gridBreakpointFor(2560).gutter).toBe(gridBreakpointFor(1440).gutter);
     expect(gridBreakpointFor(2560).margin).toBe(gridBreakpointFor(1440).margin);
 
-    // The 2000px boundary matches the media query: >= 2000 is Wide
-    expect(gridBreakpointFor(1999).name).toBe('Desktop');
-    expect(gridBreakpointFor(2000).name).toBe('Wide');
+    // The 2400px boundary matches the media query: >= 2400 is Wide
+    expect(gridBreakpointFor(2399).name).toBe('Desktop');
+    expect(gridBreakpointFor(2400).name).toBe('Wide');
 
     // A maximized Full HD window stays narrow; the tier is not resolution-keyed
-    expect(gridBreakpointFor(1905)).toMatchObject({ name: 'Desktop', maxWidth: 1200 });
-    // Every tier below Wide keeps the 1200px track
-    for (const w of [375, 768, 1024, 1440, 1920]) {
-      expect(gridBreakpointFor(w).maxWidth).toBe(1200);
+    expect(gridBreakpointFor(1905)).toMatchObject({ name: 'Desktop', maxWidth: 1460 });
+    // Every tier below Wide keeps the 1460px track
+    for (const w of [375, 768, 1024, 1440, 1920, 2399]) {
+      expect(gridBreakpointFor(w).maxWidth).toBe(1460);
     }
   });
 
@@ -1048,7 +1048,11 @@ describe('developer-facing docs stay in step with the code', () => {
       expect(row, `${bp.name} row`).toContain(`cols: ${bp.columns}`);
       expect(row, `${bp.name} row`).toContain(`gutter: "${bp.gutter}px"`);
       expect(row, `${bp.name} row`).toContain(`margin: "${bp.margin}px"`);
-      expect(row, `${bp.name} row`).toContain(`maxWidth: "${bp.maxWidth}px"`);
+      /* Mobile and Tablet never reach the cap (their widest viewport is under
+         it), so the docs call their track Fluid rather than quoting a number
+         the reader will never see. */
+      const fluid = width < 1024 && 1023 < bp.maxWidth;
+      expect(row, `${bp.name} row`).toContain(fluid ? 'maxWidth: "Fluid"' : `maxWidth: "${bp.maxWidth}px"`);
     }
 
     // The card body has to actually render the max-width row, or the tier is invisible

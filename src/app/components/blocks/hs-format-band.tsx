@@ -85,7 +85,7 @@ const BAND_CSS = `
      margin taken out of the width instead of added as padding. */
   --hs-fband-inset: calc(2 * var(--hs-track-margin, var(--grid-margin, 16px)));
   width: min(
-    calc(var(--hs-track-max, var(--grid-max-width, 1200px)) - var(--hs-fband-inset)),
+    calc(var(--hs-track-max, var(--grid-max-width, 1460px)) - var(--hs-fband-inset)),
     calc(100% - var(--hs-fband-inset))
   );
   margin-inline: auto;

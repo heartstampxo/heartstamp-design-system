@@ -8,14 +8,14 @@
  *
  * Breakpoints
  * ──────────────────────────────────────────────────────────────
- *   Wide     ≥ 2000px   12 columns  24px gutter  16px margin  1460px track
- *   Desktop  ≥ 1024px   12 columns  24px gutter  16px margin  1200px track
- *   Tablet   768–1023px 12 columns  16px gutter  16px margin  1200px track
- *   Mobile    < 768px    4 columns  16px gutter  16px margin  1200px track
+ *   Wide     ≥ 2400px   12 columns  24px gutter  16px margin  1600px track
+ *   Desktop  ≥ 1024px   12 columns  24px gutter  16px margin  1460px track
+ *   Tablet   768–1023px 12 columns  16px gutter  16px margin  fluid track
+ *   Mobile    < 768px    4 columns  16px gutter  16px margin  fluid track
  *
  * tokens.css is REQUIRED for the Wide tier. It carries the media query that
  * restates --grid-max-width, and the var() fallbacks in this file all say
- * 1200px — so importing grid.css alone yields a grid that silently never
+ * 1460px — so importing grid.css alone yields a grid that silently never
  * widens rather than one that visibly breaks. Import both.
  */
 
@@ -24,7 +24,7 @@
   display: grid;
   grid-template-columns: repeat(var(--grid-columns, 12), 1fr);
   gap: var(--grid-gutter, 24px);
-  max-width: var(--grid-max-width, 1200px);
+  max-width: var(--grid-max-width, 1460px);
   margin: 0 auto;
   padding: 48px var(--grid-margin, 16px) 80px;
   align-items: flex-start;
@@ -124,7 +124,7 @@
 
 .hs-grid-overlay__track {
   width: 100%;
-  max-width: var(--grid-max-width, 1200px);
+  max-width: var(--grid-max-width, 1460px);
   padding: 0 var(--grid-margin, 16px);
   display: flex;
   gap: var(--grid-gutter, 24px);

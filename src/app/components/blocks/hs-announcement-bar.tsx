@@ -63,7 +63,7 @@ const BAR_CSS = `
      offer wraps at the same measure as the page beneath it rather than
      running the whole width of a wide screen. Retunable per instance with
      --hs-track-max, like every other block. */
-  max-width: var(--hs-track-max, var(--grid-max-width, 1200px));
+  max-width: var(--hs-track-max, var(--grid-max-width, 1460px));
 }
 .hs-annbar svg { display: block; flex: none; }
 .hs-annbar__x {

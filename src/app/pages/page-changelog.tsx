@@ -30,6 +30,21 @@ const TAG_STYLES: Record<string, { bg: string; color: string }> = {
 
 const RELEASES: Release[] = [
   {
+    version: "2.1.72", date: "19 Nov 2026",
+    title: "The desktop grid is now 1460px, and 1600px on very wide screens",
+    tags: ["tokens", "docs"],
+    items: [
+      "The default page track is now 1460px. It was 1200px. Columns are about 97px wide.",
+      "On screens 2400px and wider (2.5K, 3K and up) the track grows to 1600px. Columns are about 108px wide. The old wide step was 1460px at 2000px.",
+      "Columns stay at 12 and the gutter stays at 24px, so every span helper simply gets wider.",
+      "The step is still based on the window width, not the screen resolution. A 4K laptop at 200% scaling reports 1920px, so it gets the 1460px track.",
+      "The change is in tokens.css, plus the copy in styles/theme.css for the docs app. The var() fallbacks in grid.css, the nav and every block now say 1460px, so a page that only imports grid.css gets the new default too.",
+      "Website footer: the link lists now use seven of the twelve columns from a 1460px window up, and eight below that. Before, the switch was at 2000px.",
+      "The grid overlay, the Grid docs page, the block docs notes and the tests all use the new numbers.",
+      "Mobile and tablet keep their own grids: 4 columns on mobile and 12 on tablet, both with a 16px gutter. Their track is fluid, so it fills the screen and never reaches 1460px. The Grid docs page now says Fluid for them, and the grid overlay shows the width actually on screen instead of the cap.",
+    ],
+  },
+  {
     version: "2.1.71", date: "31 Oct 2026",
     title: "Stampy menu options show their full text",
     tags: ["fix"],

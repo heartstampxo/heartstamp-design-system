@@ -21,9 +21,9 @@
 //   - the layout switch measures the nav's own width rather than the
 //     viewport, so it also collapses inside a narrow frame on a wide screen
 //     (docs previews, device frames), which a media query cannot see;
-//   - the content track uses --grid-max-width (1200px, 1460px wide tier)
-//     instead of a fixed 1200px, and gets the grid's 16px margins so the
-//     bar still breathes below 1200px viewports. --nav-track-max and
+//   - the content track uses --grid-max-width (1460px, 1600px wide tier)
+//     instead of a fixed width, and gets the grid's 16px margins so the
+//     bar still breathes below 1460px viewports. --nav-track-max and
 //     --nav-track-margin override that track for a page whose own grid is
 //     measured differently, without touching the grid tokens themselves;
 //     see the note on .hs-nav-v2 in NAV_CSS;
@@ -226,13 +226,13 @@ const NAV_CSS = `
   /* Content track. Both rows and the mega panel ride
        width: min(--nav-track-max, 100%); padding: 0 --nav-track-margin
      and both properties fall through to the marketing grid tokens when the
-     consumer leaves them alone, so the bar picks up the 1460px wide tier at
-     >= 2000px on its own. The grid's contract is that --grid-max-width is the
+     consumer leaves them alone, so the bar picks up the 1600px wide tier at
+     >= 2400px on its own. The grid's contract is that --grid-max-width is the
      OUTER width of the track and --grid-margin is subtracted from inside it,
-     so content comes out at max-width - 2 x margin (1168px at the 1200px
-     tier). That matches .hs-page-grid exactly.
+     so content comes out at max-width - 2 x margin (1428px at the 1460px
+     default). That matches .hs-page-grid exactly.
 
-     A page whose own grid measures 1200px to the CONTENT box instead will be
+     A page whose own grid measures 1460px to the CONTENT box instead will be
      32px wider than the bar, which reads as a 16px inset per side and quietly
      scrolls the last category out of the strip. To align them, set
      --nav-track-margin to 0px on the nav or on any ancestor (and
@@ -298,7 +298,7 @@ const NAV_CSS = `
 /* Scroll auto-hide, phone only, driven by the autoHideOnScroll effect. */
 .hs-nav-v2[data-hidden] { transform: translateY(-100%); }
 .hs-nav-v2__row {
-  width: min(var(--nav-track-max, var(--grid-max-width, 1200px)), 100%);
+  width: min(var(--nav-track-max, var(--grid-max-width, 1460px)), 100%);
   box-sizing: border-box;
   padding: 0 var(--nav-track-margin, var(--grid-margin, 16px));
   display: flex;
@@ -507,7 +507,7 @@ const NAV_CSS = `
    margins, so the panel has to match or its contents sit outside the track. */
 .hs-nav-v2__megagrid {
   position: relative;
-  width: min(var(--nav-track-max, var(--grid-max-width, 1200px)), 100%);
+  width: min(var(--nav-track-max, var(--grid-max-width, 1460px)), 100%);
   box-sizing: border-box;
   padding: var(--mega-pad-top) var(--nav-track-margin, var(--grid-margin, 16px)) var(--mega-pad-bottom);
   display: flex;

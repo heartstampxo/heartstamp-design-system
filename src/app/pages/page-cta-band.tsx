@@ -132,9 +132,9 @@ export function PageCtaBand() {
               title: "Footer columns on the grid",
               content: (
                 <Callout variant="info">
-                  The four link lists span <strong>eight of the twelve columns</strong> on the
-                  1200px track and <strong>seven</strong> once it widens to 1460px at 2000px and
-                  up — the About column takes the rest. Both spans are derived from the tokens
+                  The four link lists span <strong>eight of the twelve columns</strong> while the
+                  track is still narrower than 1460px and <strong>seven</strong> from a 1460px
+                  viewport up — the About column takes the rest. Both spans are derived from the tokens
                   rather than measured by hand:{" "}
                   <code>column = (track − 11 gutters) / 12</code>, and{" "}
                   <code>N spans = N columns + (N−1) gutters</code>. The gap between the lists is{" "}
@@ -156,14 +156,14 @@ export function PageCtaBand() {
                     <code>@import "@heartstampxo/design-system/grid.css";</code>
                     <br />
                     Both, not just the grid — <code>tokens.css</code> carries the media query that
-                    restates <code>--grid-max-width</code> as 1460px at 2000px and up. With only
-                    the grid imported the var() fallbacks hold it at 1200px, so the wide tier
+                    restates <code>--grid-max-width</code> as 1600px at 2400px and up. With only
+                    the grid imported the var() fallbacks hold it at 1460px, so the wide tier
                     silently never arrives rather than visibly breaking.
                   </Callout>
                   <Callout variant="info">
                     The track is <code>min(--grid-max-width, 100%)</code> with{" "}
                     <code>--grid-margin</code> as inside padding — the grid's own contract, where
-                    the max-width is the OUTER measure. Content lands at 1168px on the 1200px tier
+                    the max-width is the OUTER measure. Content lands at 1428px on the 1460px default
                     and lines up with <code>.hs-page-grid</code> exactly. To retune one block, set{" "}
                     <code>--hs-track-max</code> or <code>--hs-track-margin</code> on it rather than
                     redefining the grid tokens, which retunes every consumer in the subtree and,

@@ -35,14 +35,14 @@ export interface GridBreakpoint {
  * is why that field exists: without it the inspector reports Desktop and Wide
  * identically and the readout cannot show the grid widening.
  *
- * The 2000px cut is a viewport measurement, not a screen-resolution one. See
+ * The 2400px cut is a viewport measurement, not a screen-resolution one. See
  * the note in tokens.css for why resolution is the wrong signal here.
  */
 export function gridBreakpointFor(width: number): GridBreakpoint {
-  if (width < 768) return { name: "Mobile", columns: 4, gutter: 16, margin: 16, maxWidth: 1200 };
-  if (width < 1024) return { name: "Tablet", columns: 12, gutter: 16, margin: 16, maxWidth: 1200 };
-  if (width < 2000) return { name: "Desktop", columns: 12, gutter: 24, margin: 16, maxWidth: 1200 };
-  return { name: "Wide", columns: 12, gutter: 24, margin: 16, maxWidth: 1460 };
+  if (width < 768) return { name: "Mobile", columns: 4, gutter: 16, margin: 16, maxWidth: 1460 };
+  if (width < 1024) return { name: "Tablet", columns: 12, gutter: 16, margin: 16, maxWidth: 1460 };
+  if (width < 2400) return { name: "Desktop", columns: 12, gutter: 24, margin: 16, maxWidth: 1460 };
+  return { name: "Wide", columns: 12, gutter: 24, margin: 16, maxWidth: 1600 };
 }
 
 /** Resolves a selector or element to a node, SSR-safely. */
@@ -361,8 +361,9 @@ export function GridInspector({
                 {bp.gutter}px gutter · {bp.margin}px margin ·{" "}
                 {/* The track width is the whole difference between Desktop and
                     Wide, so it has to be on the readout for the tier to be
-                    legible at all. */}
-                <span style={strongStyle}>{bp.maxWidth}px</span> track
+                    legible at all. Below the max width the track is fluid, so
+                    show what is actually on screen, not the cap. */}
+                <span style={strongStyle}>{Math.min(bp.maxWidth, viewport)}px</span> track
               </>
             ) : (
               description

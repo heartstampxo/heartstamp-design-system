@@ -79,13 +79,13 @@ const FAQ_CSS = `
 .hs-faq__inner {
   /* The design system grid track. Its contract: --grid-max-width is the OUTER
      width and --grid-margin is subtracted from inside it, so content lands at
-     1168px on the 1200px tier and lines up with .hs-page-grid — and the wide
-     tier follows automatically, because tokens.css restates --grid-max-width
-     as 1460px at >= 2000px. Retune one block with --hs-track-max /
+     1428px on the 1460px default and lines up with .hs-page-grid — and the
+     wide tier follows automatically, because tokens.css restates
+     --grid-max-width as 1600px at >= 2400px. Retune one block with --hs-track-max /
      --hs-track-margin rather than redefining the grid tokens, which would
      retune every consumer in the subtree and, if pinned to a number, sever
      the wide tier. */
-  width: min(var(--hs-track-max, var(--grid-max-width, 1200px)), 100%);
+  width: min(var(--hs-track-max, var(--grid-max-width, 1460px)), 100%);
   margin-inline: auto;
   padding-inline: var(--hs-track-margin, var(--grid-margin, 16px));
   /* Block padding lives here, not on the root: the root establishes the

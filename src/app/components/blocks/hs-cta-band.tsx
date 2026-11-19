@@ -55,7 +55,7 @@ const CTA_CSS = `
      system track so the block can be retuned with --hs-track-max like every
      other one rather than being pinned to a number. The track is wider than
      790px at every tier, so this is the floor that matters, not the cap. */
-  width: min(790px, var(--hs-track-max, var(--grid-max-width, 1200px)));
+  width: min(790px, var(--hs-track-max, var(--grid-max-width, 1460px)));
   max-width: 100%;
   display: flex;
   flex-direction: column;

@@ -89,7 +89,7 @@ export function PageAnnouncementBar() {
               content: (
                 <Callout variant="info">
                   Unlike the marketing blocks, this bar deliberately does <strong>not</strong> sit
-                  on the grid track — an offer strip that stopped at the 1200px column with the
+                  on the grid track — an offer strip that stopped at the grid column with the
                   page ground either side would read as a banner someone forgot to stretch. It
                   spans whatever it is given, and the copy inside it centres. So there is no{" "}
                   <code>grid.css</code> requirement here; <code>tokens.css</code> alone is enough,

@@ -113,7 +113,7 @@ describe('WebsiteNavV2 mega panel rides the nav grid track', () => {
     const row = block(src, '.hs-nav-v2__row');
     const mega = block(src, '.hs-nav-v2__megagrid');
 
-    const TRACK = 'width: min(var(--nav-track-max, var(--grid-max-width, 1200px)), 100%)';
+    const TRACK = 'width: min(var(--nav-track-max, var(--grid-max-width, 1460px)), 100%)';
     expect(row).toContain(TRACK);
     expect(mega).toContain(TRACK);
 
@@ -131,13 +131,13 @@ describe('WebsiteNavV2 mega panel rides the nav grid track', () => {
   it('leaves the track overridable, and still tiered when nobody overrides it', () => {
     const src = read('src/app/components/ui/hs-website-nav-v2.tsx');
 
-    // --grid-max-width is restated as 1460px at >= 2000px in tokens.css, and the
+    // --grid-max-width is restated as 1600px at >= 2400px in tokens.css, and the
     // nav inherits that only for as long as it keeps reading the token. Pinning
     // a number here (or in a consumer's --nav-track-max) is what severs the wide
     // tier, which is how the bar ended up 200px narrow against a 1400px page.
     for (const rule of ['.hs-nav-v2__row', '.hs-nav-v2__megagrid', '.hs-nav-v2__megarule']) {
       expect(block(src, rule), `${rule} left the grid tokens`)
-        .toMatch(/var\(--nav-track-(max|margin), var\(--grid-(max-width, 1200px|margin, 16px)\)\)/);
+        .toMatch(/var\(--nav-track-(max|margin), var\(--grid-(max-width, 1460px|margin, 16px)\)\)/);
     }
 
     // Both properties must stay UNSET on .hs-nav-v2. The nav is a descendant of

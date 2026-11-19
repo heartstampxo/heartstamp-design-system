@@ -22,12 +22,12 @@
   --space-16: 64px;
 
   /* Grid tokens — mirrors tokens.css, which the docs app does not import.
-     Without these the ≥2000px wide tier never fires here and the overlay
-     stays on the 1200px var() fallback in grid.css. */
+     Without these the ≥2400px wide tier never fires here and the overlay
+     stays on the 1460px var() fallback in grid.css. */
   --grid-columns: 12;
   --grid-gutter: 24px;
   --grid-margin: 16px;
-  --grid-max-width: 1200px;
+  --grid-max-width: 1460px;
 
   --font-size: 16px;
   --background: #ffffff;
@@ -256,8 +256,8 @@
 }
 
 /* Grid wide tier — keep in sync with tokens.css */
-@media (min-width: 2000px) {
+@media (min-width: 2400px) {
   :root {
-    --grid-max-width: 1460px;
+    --grid-max-width: 1600px;
   }
 }

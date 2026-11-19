@@ -13,7 +13,7 @@
   --grid-columns:   12;
   --grid-gutter:    24px;
   --grid-margin:    16px;
-  --grid-max-width: 1200px;
+  --grid-max-width: 1460px;
 
   /* ── Space (4px base scale) ──────────────────────────────── */
   --space-0:   0px;
@@ -257,21 +257,22 @@
 }
 
 /*
- * Wide tier — the track widens to 1460px on large displays.
+ * Wide tier — the track widens from the 1460px default to 1600px.
+ *
+ *   Up to 2399px (Full HD, scaled 4K laptops)  1460px track  ~97px columns
+ *   2400px and wider (2.5K, 3K and up)         1600px track  ~108px columns
  *
  * Keyed on viewport width, not screen resolution: a 4K panel at 200% scaling
  * reports the same 1920px viewport as a Full HD panel at 100%, and a
  * resolution query would also widen the track inside a half-width window and
- * overflow it. 2000px sits clear of a maximized Full HD window (~1905px) and
- * of a maximized 2K one (~2545px); 1920px would straddle the former, since
- * macOS overlay scrollbars leave the full width where Windows does not.
+ * overflow it.
  *
- * Columns and gutter are unchanged, so the extra 260px all goes to column
- * width (75.3px → 97px) and the span helpers are unaffected.
+ * Columns and gutter are unchanged, so the extra 140px all goes to column
+ * width (97px → 108px) and the span helpers are unaffected.
  */
-@media (min-width: 2000px) {
+@media (min-width: 2400px) {
   :root {
-    --grid-max-width: 1460px;
+    --grid-max-width: 1600px;
   }
 }
 
