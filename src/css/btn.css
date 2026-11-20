@@ -40,6 +40,16 @@
   pointer-events: none;
 }
 
+/* Loading is not disabled-looking: the button keeps its full colour and size
+   and only shows the spinner. It still ignores clicks (pointer-events from
+   :disabled above), and overflow is clipped in case the loading label is
+   longer than the width the button is held at. */
+.hs-btn--loading { pointer-events: none; }
+.hs-btn--loading:disabled {
+  opacity: 1;
+  overflow: hidden;
+}
+
 /* ── Variant: default (primary) ────────────────────────────── */
 .hs-btn--default {
   background: var(--color-brand-primary);
@@ -148,6 +158,16 @@
   font-size: var(--font-size-btn-lg, 15px);
 }
 
+/* ── Size: xxl ──────────────────────────────────────────────── */
+.hs-btn--size-xxl {
+  height: 56px;
+  padding: 0 28px;
+  font-size: var(--font-size-btn-lg, 15px);
+  /* --radius-button (25px) is under half of 56px and would leave flat ends,
+     so xxl takes the full radius to stay a pill. */
+  border-radius: var(--radius-full, 999px);
+}
+
 /* ── Size: icon-sm ──────────────────────────────────────────── */
 .hs-btn--size-icon-sm {
   height: 36px;
@@ -174,6 +194,14 @@
   height: 48px;
   width: 48px;
   padding: 0;
+}
+
+/* ── Size: icon-xxl ─────────────────────────────────────────── */
+.hs-btn--size-icon-xxl {
+  height: 56px;
+  width: 56px;
+  padding: 0;
+  border-radius: var(--radius-full, 999px);
 }
 
 /* ── Loading spinner ────────────────────────────────────────── */

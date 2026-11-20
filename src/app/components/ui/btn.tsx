@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useLayoutEffect, useRef } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { Loader2 } from "lucide-react";
 import { cn } from "./utils";
@@ -49,10 +49,12 @@ const btnVariants = cva(
         sm:        "hs-btn--size-sm",
         lg:        "hs-btn--size-lg",
         xl:        "hs-btn--size-xl",
+        xxl:       "hs-btn--size-xxl",
         "icon-sm": "hs-btn--size-icon-sm",
         icon:      "hs-btn--size-icon",
         "icon-lg": "hs-btn--size-icon-lg",
         "icon-xl": "hs-btn--size-icon-xl",
+        "icon-xxl": "hs-btn--size-icon-xxl",
       },
     },
     defaultVariants: {
@@ -75,6 +77,9 @@ export interface BtnProps
   loading?: boolean;
 }
 
+/* useLayoutEffect warns during SSR; fall back to useEffect on the server */
+const useIsoLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
+
 /* ── Component ───────────────────────────────────────────────── */
 export function Btn({
   variant = "default",
@@ -89,13 +94,26 @@ export function Btn({
 }: BtnProps) {
   const textColor = COLOR_MAP[variant ?? "default"];
 
+  /* Loading never changes the button's size. The width at rest is measured
+     after every non-loading render, and while loading the button is held at
+     it, so swapping the label (e.g. "Save" to "Saving…") or adding the
+     spinner does not make the button jump. A width passed in style wins. */
+  const ref = useRef<HTMLButtonElement>(null);
+  const restWidth = useRef<number | null>(null);
+  useIsoLayoutEffect(() => {
+    if (!loading && ref.current) restWidth.current = ref.current.getBoundingClientRect().width;
+  });
+  const lockedWidth = loading && restWidth.current ? { width: restWidth.current } : undefined;
+
   const button = (
     <button
       type={type}
-      className={cn(btnVariants({ variant, size }), className)}
-      style={{ color: textColor, ...style }}
+      className={cn(btnVariants({ variant, size }), loading && "hs-btn--loading", className)}
+      style={{ color: textColor, ...lockedWidth, ...style }}
       disabled={props.disabled || loading}
+      aria-busy={loading || undefined}
       {...props}
+      ref={ref}
     >
       {loading ? (
         <>

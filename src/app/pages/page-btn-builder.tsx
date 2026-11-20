@@ -15,11 +15,11 @@ import { CodeBlock } from "../components/docs/doc-code-block";
 ───────────────────────────────────────────────────────────────── */
 
 type BVariant = "default" | "secondary" | "outline" | "primary-ghost" | "secondary-ghost" | "link" | "destructive";
-type BSize    = "sm" | "default" | "lg" | "xl";
+type BSize    = "sm" | "default" | "lg" | "xl" | "xxl";
 type IPos     = "none" | "left" | "right" | "only";
 
 const ICON_ONLY_SIZE_MAP: Record<BSize, string> = {
-  sm: "icon-sm", default: "icon", lg: "icon-lg", xl: "icon-xl",
+  sm: "icon-sm", default: "icon", lg: "icon-lg", xl: "icon-xl", xxl: "icon-xxl",
 };
 
 const PRESET_ICONS: { name: string; label: string }[] = [
@@ -153,6 +153,7 @@ export function BtnBuilder() {
             <option value="default">default — 40px</option>
             <option value="lg">lg — 44px</option>
             <option value="xl">xl — 48px</option>
+            <option value="xxl">xxl — 56px</option>
           </select>
         </div>
 

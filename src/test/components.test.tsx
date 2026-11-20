@@ -126,6 +126,43 @@ describe('component behavior and style contracts', () => {
     expect(button).toHaveStyle({ color: 'var(--color-text-on-secondary)' });
   });
 
+  it('keeps its size and colour while loading', () => {
+    const rect = vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect')
+      .mockReturnValue({ width: 212, height: 40 } as DOMRect);
+    const { rerender } = render(<Btn>Click to simulate load</Btn>);
+    rerender(<Btn loading>Please wait…</Btn>);
+
+    const button = screen.getByRole('button', { name: /please wait/i });
+    // Held at the width it had at rest, though the label got shorter
+    expect(button).toHaveStyle({ width: '212px' });
+    // Not the faded disabled look: its own class restores full opacity
+    expect(button.className).toContain('hs-btn--loading');
+    expect(button).toBeDisabled();
+    expect(button).toHaveAttribute('aria-busy', 'true');
+    const css = readFileSync(join(process.cwd(), 'src/css/btn.css'), 'utf8');
+    expect(css).toMatch(/\.hs-btn--loading:disabled\s*\{\s*opacity:\s*1/);
+
+    // Back at rest the lock is released
+    rerender(<Btn>Click to simulate load</Btn>);
+    expect(screen.getByRole('button', { name: /simulate/i }).style.width).toBe('');
+    rect.mockRestore();
+  });
+
+  it('adds xxl as a 56px size without touching xl', () => {
+    render(<><Btn size="xxl">Big</Btn><Btn size="icon-xxl" aria-label="Add">+</Btn></>);
+    expect(screen.getByRole('button', { name: 'Big' }).className).toContain('hs-btn--size-xxl');
+    expect(screen.getByRole('button', { name: 'Add' }).className).toContain('hs-btn--size-icon-xxl');
+
+    const css = readFileSync(join(process.cwd(), 'src/css/btn.css'), 'utf8');
+    expect(css).toMatch(/\.hs-btn--size-xxl\s*\{\s*height:\s*56px/);
+    expect(css).toMatch(/\.hs-btn--size-icon-xxl\s*\{\s*height:\s*56px;\s*width:\s*56px/);
+    // xxl is a full pill: the 25px button radius would leave flat ends at 56px
+    expect(css).toMatch(/\.hs-btn--size-xxl\s*\{[^}]*border-radius:\s*var\(--radius-full/);
+    expect(css).toMatch(/\.hs-btn--size-icon-xxl\s*\{[^}]*border-radius:\s*var\(--radius-full/);
+    // xl stays at 48px; xxl is a new step above it, not a resize
+    expect(css).toMatch(/\.hs-btn--size-xl\s*\{\s*height:\s*48px/);
+  });
+
   it('applies Bdg variant styles', () => {
     render(<Bdg variant="outline">Draft</Bdg>);
 

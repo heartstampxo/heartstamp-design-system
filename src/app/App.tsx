@@ -137,52 +137,36 @@ function PageButton() {
       <BtnBuilder />
     </DocSection>
     <DocSection title="Variants">
-      <Preview title="All variants" code={`{/* Primary */}\n<Button size="sm" variant="default">Button</Button>\n<Button variant="default">Button</Button>\n<Button size="lg" variant="default">Button</Button>\n\n{/* Secondary */}\n<Button size="sm" variant="secondary">Button</Button>\n<Button variant="secondary">Button</Button>\n<Button size="lg" variant="secondary">Button</Button>\n\n{/* Outline */}\n<Button size="sm" variant="outline">Button</Button>\n<Button variant="outline">Button</Button>\n<Button size="lg" variant="outline">Button</Button>\n\n{/* Primary Ghost */}\n<Button size="sm" variant="primary-ghost">Button</Button>\n<Button variant="primary-ghost">Button</Button>\n<Button size="lg" variant="primary-ghost">Button</Button>\n\n{/* Secondary Ghost */}\n<Button size="sm" variant="secondary-ghost">Button</Button>\n<Button variant="secondary-ghost">Button</Button>\n<Button size="lg" variant="secondary-ghost">Button</Button>\n\n{/* Link */}\n<Button size="sm" variant="link">Button</Button>\n<Button variant="link">Button</Button>\n<Button size="lg" variant="link">Button</Button>\n\n{/* Icon only */}\n<Button size="icon" variant="default"><Plus size={14} /></Button>\n<Button size="icon" variant="secondary"><Search size={14} /></Button>\n<Button size="icon" variant="outline"><Star size={14} /></Button>`} filename="button-variants.tsx">
+      <Preview title="All variants" code={`{/* Primary */}\n<Button size="sm" variant="default">Button</Button>\n<Button variant="default">Button</Button>\n<Button size="lg" variant="default">Button</Button>\n<Button size="xl" variant="default">Button</Button>\n<Button size="xxl" variant="default">Button</Button>\n\n{/* Secondary */}\n<Button size="sm" variant="secondary">Button</Button>\n<Button variant="secondary">Button</Button>\n<Button size="lg" variant="secondary">Button</Button>\n<Button size="xl" variant="secondary">Button</Button>\n<Button size="xxl" variant="secondary">Button</Button>\n\n{/* Outline */}\n<Button size="sm" variant="outline">Button</Button>\n<Button variant="outline">Button</Button>\n<Button size="lg" variant="outline">Button</Button>\n<Button size="xl" variant="outline">Button</Button>\n<Button size="xxl" variant="outline">Button</Button>\n\n{/* Primary Ghost */}\n<Button size="sm" variant="primary-ghost">Button</Button>\n<Button variant="primary-ghost">Button</Button>\n<Button size="lg" variant="primary-ghost">Button</Button>\n<Button size="xl" variant="primary-ghost">Button</Button>\n<Button size="xxl" variant="primary-ghost">Button</Button>\n\n{/* Secondary Ghost */}\n<Button size="sm" variant="secondary-ghost">Button</Button>\n<Button variant="secondary-ghost">Button</Button>\n<Button size="lg" variant="secondary-ghost">Button</Button>\n<Button size="xl" variant="secondary-ghost">Button</Button>\n<Button size="xxl" variant="secondary-ghost">Button</Button>\n\n{/* Link */}\n<Button size="sm" variant="link">Button</Button>\n<Button variant="link">Button</Button>\n<Button size="lg" variant="link">Button</Button>\n<Button size="xl" variant="link">Button</Button>\n<Button size="xxl" variant="link">Button</Button>\n\n{/* Icon only */}\n<Button size="icon-sm" variant="default"><Plus size={14} /></Button>\n<Button size="icon" variant="default"><Plus size={14} /></Button>\n<Button size="icon-lg" variant="default"><Plus size={14} /></Button>\n<Button size="icon-xl" variant="default"><Plus size={14} /></Button>\n<Button size="icon-xxl" variant="default"><Plus size={14} /></Button>\n<Button size="icon" variant="secondary"><Search size={14} /></Button>\n<Button size="icon" variant="outline"><Star size={14} /></Button>`} filename="button-variants.tsx">
         {(() => {
           const labelStyle: React.CSSProperties = {
             width: 116, flexShrink: 0, fontSize: 11, fontFamily: "monospace",
             color: "var(--muted-fg)", letterSpacing: ".01em"
           };
           const row = (label: string, children: React.ReactNode) => (
-            <div key={label} style={{ display: "flex", alignItems: "center", gap: "var(--space-2-5)", width: "100%" }}>
+            <div key={label} style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: "var(--space-2-5)", width: "100%" }}>
               <span style={labelStyle}>{label}</span>
               {children}
             </div>
           );
+          /* Every size, smallest to largest, on every variant */
+          const SIZES = ["sm", "default", "lg", "xl", "xxl"] as const;
+          const VARIANTS = [
+            ["Primary", "default"], ["Secondary", "secondary"], ["Outline", "outline"],
+            ["Primary Ghost", "primary-ghost"], ["Secondary Ghost", "secondary-ghost"],
+            ["Link", "link"],
+          ] as const;
           return (
             <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-3-5)", width: "100%", padding: "4px 0" }}>
-              {row("Primary", <>
-                <Btn size="sm" variant="default">Button</Btn>
-                <Btn variant="default">Button</Btn>
-                <Btn size="lg" variant="default">Button</Btn>
-              </>)}
-              {row("Secondary", <>
-                <Btn size="sm" variant="secondary">Button</Btn>
-                <Btn variant="secondary">Button</Btn>
-                <Btn size="lg" variant="secondary">Button</Btn>
-              </>)}
-              {row("Outline", <>
-                <Btn size="sm" variant="outline">Button</Btn>
-                <Btn variant="outline">Button</Btn>
-                <Btn size="lg" variant="outline">Button</Btn>
-              </>)}
-              {row("Primary Ghost", <>
-                <Btn size="sm" variant="primary-ghost">Button</Btn>
-                <Btn variant="primary-ghost">Button</Btn>
-                <Btn size="lg" variant="primary-ghost">Button</Btn>
-              </>)}
-              {row("Secondary Ghost", <>
-                <Btn size="sm" variant="secondary-ghost">Button</Btn>
-                <Btn variant="secondary-ghost">Button</Btn>
-                <Btn size="lg" variant="secondary-ghost">Button</Btn>
-              </>)}
-              {row("Link", <>
-                <Btn size="sm" variant="link">Button</Btn>
-                <Btn variant="link">Button</Btn>
-                <Btn size="lg" variant="link">Button</Btn>
-              </>)}
+              {VARIANTS.map(([label, variant]) => row(label, <>
+                {SIZES.map(size => <Btn key={size} size={size} variant={variant}>Button</Btn>)}
+              </>))}
               {row("Icon only", <>
+                <Btn size="icon-sm" variant="default"><IcoLink name="Plus"><Plus size={14} /></IcoLink></Btn>
                 <Btn size="icon" variant="default"><IcoLink name="Plus"><Plus size={16} /></IcoLink></Btn>
+                <Btn size="icon-lg" variant="default"><IcoLink name="Plus"><Plus size={16} /></IcoLink></Btn>
+                <Btn size="icon-xl" variant="default"><IcoLink name="Plus"><Plus size={18} /></IcoLink></Btn>
+                <Btn size="icon-xxl" variant="default"><IcoLink name="Plus"><Plus size={20} /></IcoLink></Btn>
                 <Btn size="icon" variant="secondary"><IcoLink name="Search"><Search size={16} /></IcoLink></Btn>
                 <Btn size="icon" variant="outline"><IcoLink name="Star"><Star size={16} /></IcoLink></Btn>
               </>)}
@@ -192,29 +176,35 @@ function PageButton() {
       </Preview>
     </DocSection>
     <DocSection title="Sizes">
-      <Preview title="All sizes" code={`// Padding & font-size are fully token-driven:\n// --btn-padding-lg / --btn-padding-default / --btn-padding-sm / --btn-padding-icon\n// --font-size-btn-lg / --font-size-btn / --font-size-btn-sm\n<Button size="lg">Large</Button>\n<Button size="default">Default</Button>\n<Button size="sm">Small</Button>\n<Button size="icon"><ChevronRight size={14} /></Button>`} filename="button-sizes.tsx">
-        <Btn size="lg">Large</Btn><Btn>Default</Btn><Btn size="sm">Small</Btn>
+      <Preview title="All sizes" code={`// Heights: xxl 56px · xl 48px · lg 44px · default 40px · sm 36px\n// --font-size-btn-lg / --font-size-btn / --font-size-btn-sm\n<Button size="xxl">2X Large</Button>\n<Button size="xl">X Large</Button>\n<Button size="lg">Large</Button>\n<Button size="default">Default</Button>\n<Button size="sm">Small</Button>\n<Button size="icon"><ChevronRight size={14} /></Button>`} filename="button-sizes.tsx">
+        <Btn size="xxl">2X Large</Btn><Btn size="xl">X Large</Btn><Btn size="lg">Large</Btn><Btn>Default</Btn><Btn size="sm">Small</Btn>
         <Btn size="icon"><ChevronRight size={16} /></Btn>
       </Preview>
     </DocSection>
     <DocSection title="With Icons">
       {React.createElement(() => {
-        const [iconSize, setIconSize] = useState<"sm"|"default"|"lg">("default");
+        const [iconSize, setIconSize] = useState<"sm"|"default"|"lg"|"xl"|"xxl">("default");
         const sizeAttr = iconSize === "default" ? "" : ` size="${iconSize}"`;
-        const code = `// Each variant supports a labeled + icon-only form.\n// The size tab controls padding/font across all variants.\n\n<Button${sizeAttr}><Plus size={14} /> Create</Button>\n<Button${sizeAttr} size="icon"><Plus size={14} /></Button>\n\n<Button variant="secondary"${sizeAttr}><Upload size={14} /> Export</Button>\n<Button variant="secondary"${sizeAttr} size="icon"><Upload size={14} /></Button>\n\n<Button variant="outline"${sizeAttr}><ArrowRight size={14} /> Learn more</Button>\n<Button variant="outline"${sizeAttr} size="icon"><ArrowRight size={14} /></Button>\n\n<Button variant="primary-ghost"${sizeAttr}><Star size={14} /> Favourite</Button>\n<Button variant="primary-ghost"${sizeAttr} size="icon"><Star size={14} /></Button>\n\n<Button variant="secondary-ghost"${sizeAttr}><Star size={14} /> Favourite</Button>\n<Button variant="secondary-ghost"${sizeAttr} size="icon"><Star size={14} /></Button>`;
+        const iconOnlySize = ({ sm: "icon-sm", default: "icon", lg: "icon-lg", xl: "icon-xl", xxl: "icon-xxl" } as const)[iconSize];
+        /* Glyph grows with the button so it does not look lost on xl and xxl */
+        const glyph = ({ sm: 14, default: 16, lg: 16, xl: 18, xxl: 20 } as const)[iconSize];
+        const rows: { label: string; variant: "default"|"secondary"|"outline"|"primary-ghost"|"secondary-ghost"; Icon: typeof Plus; iconName: string; text: string }[] = [
+          { label: "Primary",        variant: "default",         Icon: Plus,       iconName: "Plus",       text: "Create"     },
+          { label: "Secondary",      variant: "secondary",       Icon: Upload,     iconName: "Upload",     text: "Export"     },
+          { label: "Outline",        variant: "outline",         Icon: ArrowRight, iconName: "ArrowRight", text: "Learn more" },
+          { label: "Primary Ghost",  variant: "primary-ghost",   Icon: Star,       iconName: "Star",       text: "Favourite"  },
+          { label: "Secondary Ghost",variant: "secondary-ghost", Icon: Star,       iconName: "Star",       text: "Favourite"  },
+        ];
+        const code = `// Each variant supports a labeled + icon-only form.\n// The size tab controls height, padding and font across all variants.\n\n` +
+          rows.map(({ variant, iconName, text }) => {
+            const v = variant === "default" ? "" : ` variant="${variant}"`;
+            return `<Button${v}${sizeAttr}><${iconName} size={${glyph}} /> ${text}</Button>\n<Button${v} size="${iconOnlySize}"><${iconName} size={${glyph}} /></Button>`;
+          }).join("\n\n");
         const labelStyle: React.CSSProperties = {
           width: 116, flexShrink: 0, fontSize: 11, fontFamily: "monospace",
           color: "var(--muted-fg)", letterSpacing: ".01em"
         };
-        const iconOnlySize = ({ sm: "icon-sm", default: "icon", lg: "icon-lg" } as const)[iconSize];
-        const rows: { label: string; variant: "default"|"secondary"|"outline"|"primary-ghost"|"secondary-ghost"; icon: React.ReactNode; text: string }[] = [
-          { label: "Primary",        variant: "default",         icon: <Plus size={16} />,      text: "Create"    },
-          { label: "Secondary",      variant: "secondary",       icon: <Upload size={16} />,     text: "Export"    },
-          { label: "Outline",        variant: "outline",         icon: <ArrowRight size={16} />, text: "Learn more"},
-          { label: "Primary Ghost",  variant: "primary-ghost",   icon: <Star size={16} />,       text: "Favourite" },
-          { label: "Secondary Ghost",variant: "secondary-ghost", icon: <Star size={16} />,       text: "Favourite" },
-        ];
-        const sizes: ("sm"|"default"|"lg")[] = ["sm", "default", "lg"];
+        const sizes: ("sm"|"default"|"lg"|"xl"|"xxl")[] = ["sm", "default", "lg", "xl", "xxl"];
         return (
           <>
             <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", marginBottom: "var(--space-2)" }}>
@@ -226,11 +216,11 @@ function PageButton() {
             </div>
             <Preview title="Icon buttons" code={code}>
               <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)", width: "100%", padding: "4px 0" }}>
-                {rows.map(({ label, variant, icon, text }) => (
+                {rows.map(({ label, variant, Icon, text }) => (
                   <div key={label} style={{ display: "flex", alignItems: "center", gap: "var(--space-2-5)" }}>
                     <span style={labelStyle}>{label}</span>
-                    <Btn variant={variant} size={iconSize}>{icon}{text}</Btn>
-                    <Btn variant={variant} size={iconOnlySize}>{icon}</Btn>
+                    <Btn variant={variant} size={iconSize}><Icon size={glyph} />{text}</Btn>
+                    <Btn variant={variant} size={iconOnlySize}><Icon size={glyph} /></Btn>
                   </div>
                 ))}
               </div>
@@ -241,9 +231,9 @@ function PageButton() {
     </DocSection>
     <DocSection title="Loading State">
       {React.createElement(() => {
-        const [loadSize, setLoadSize] = useState<"sm"|"default"|"lg">("default");
+        const [loadSize, setLoadSize] = useState<"sm"|"default"|"lg"|"xl"|"xxl">("default");
         const [loadingLocal, setLoadingLocal] = useState(false);
-        const sizes: ("sm"|"default"|"lg")[] = ["sm", "default", "lg"];
+        const sizes: ("sm"|"default"|"lg"|"xl"|"xxl")[] = ["sm", "default", "lg", "xl", "xxl"];
         const sizeStr = loadSize === "default" ? "" : ` size="${loadSize}"`;
         const code = `<Btn${sizeStr} loading>\n  Please wait\n</Btn>`;
         return (
@@ -288,7 +278,7 @@ function PageButton() {
     <DocSection title="Props">
       <PropsTable props={[
         { name: "variant", type: '"default"|"secondary"|"outline"|"primary-ghost"|"secondary-ghost"|"link"|"destructive"', def: '"default"', desc: 'Visual style. All colours are driven by --color-brand-* and --color-state-* semantic tokens.' },
-        { name: "size", type: '"default"|"sm"|"lg"|"xl"|"icon-sm"|"icon"|"icon-lg"|"icon-xl"', def: '"default"', desc: 'Size variant — controls height, padding, and font-size via --font-size-btn-* tokens.' },
+        { name: "size", type: '"default"|"sm"|"lg"|"xl"|"xxl"|"icon-sm"|"icon"|"icon-lg"|"icon-xl"|"icon-xxl"', def: '"default"', desc: 'Size variant — controls height, padding, and font-size via --font-size-btn-* tokens. Heights: sm 36px, default 40px, lg 44px, xl 48px, xxl 56px.' },
         { name: "loading", type: "boolean", def: "false", desc: "Shows a spinner (Loader2) and disables the button. Use instead of disabled for async actions." },
         { name: "disabled", type: "boolean", def: "false", desc: "Disables interaction and reduces opacity to 0.2. Shows a tooltip set by disabledTooltip." },
         { name: "disabledTooltip", type: "string", def: '"Disabled"', desc: "Tooltip text shown on hover when the button is disabled." },
@@ -4043,7 +4033,7 @@ const variant: BtnVariant = 'primary-ghost'
 // BtnVariant → 'default' | 'secondary' | 'outline' | 'primary-ghost' | 'secondary-ghost' | 'link' | 'destructive'
 
 const size: BtnSize = 'lg'
-// BtnSize    → 'default' | 'sm' | 'lg' | 'xl' | 'icon-sm' | 'icon' | 'icon-lg' | 'icon-xl'
+// BtnSize    → 'default' | 'sm' | 'lg' | 'xl' | 'xxl' | 'icon-sm' | 'icon' | 'icon-lg' | 'icon-xl' | 'icon-xxl'
 
 // Props auto-complete in your IDE, full HTML button attributes pass through
 <Btn variant={variant} size={size} loading={false}>

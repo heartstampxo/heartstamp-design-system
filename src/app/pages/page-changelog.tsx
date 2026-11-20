@@ -30,6 +30,21 @@ const TAG_STYLES: Record<string, { bg: string; color: string }> = {
 
 const RELEASES: Release[] = [
   {
+    version: "2.1.73", date: "20 Nov 2026",
+    title: "A new xxl button size, and loading buttons keep their size and colour",
+    tags: ["feature", "fix", "docs"],
+    items: [
+      "Btn has a new size=\"xxl\". It is 56px tall, with 28px of padding on each side and the same 15px text as lg and xl.",
+      "xxl is fully rounded. The usual 25px button radius is less than half of 56px and would leave flat ends, so xxl uses the full radius token and stays a pill. icon-xxl is a full circle.",
+      "There is also size=\"icon-xxl\", a 56px square for icon only buttons, so the Button Builder can make an xxl icon button.",
+      "xl is not changed. It stays at 48px, and every button that already uses it looks the same.",
+      "Loading fix: a loading button no longer shrinks or fades. It keeps the width it had before loading, even when its label changes, and keeps its full colour with only the spinning icon added. Before, it took the 20% opacity of a disabled button. It still ignores clicks while loading.",
+      "Docs: the Sizes section on the Button page now shows every text size, xxl, xl, lg, default and sm. Before, it showed only lg, default and sm. The props table lists each height, and the Button Builder has an xxl option.",
+      "Docs: All variants now shows every size on every variant. The Icon only row shows all five icon sizes.",
+      "Docs: the With Icons and Loading State sections now have a tab for every size, sm, default, lg, xl and xxl. Before, they had only sm, default and lg. In With Icons the icon grows a little on xl and xxl, and its code sample no longer writes size twice on icon only buttons.",
+    ],
+  },
+  {
     version: "2.1.72", date: "19 Nov 2026",
     title: "The desktop grid is now 1460px, and 1600px on very wide screens",
     tags: ["tokens", "docs"],
