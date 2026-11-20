@@ -30,6 +30,19 @@ const TAG_STYLES: Record<string, { bg: string; color: string }> = {
 
 const RELEASES: Release[] = [
   {
+    version: "2.1.74", date: "20 Nov 2026",
+    title: "Every change now needs a changelog entry",
+    tags: ["docs"],
+    items: [
+      "Every push and pull request must now add an entry to this changelog page. This applies to everyone, whether they push by hand or through a code agent.",
+      "A new Changelog updated check runs in CI on every push and pull request. It fails if the changelog page was not changed, or if the newest entry is not the version CI will release, which is the package.json version plus one patch.",
+      "The publish and website deploy workflows run the same check first. A push without an entry is not published to npm and not deployed to the website.",
+      "Renumbering the old top entry does not count. The check makes sure the previous entry is still there, below the new one. A second push to a branch before release can add items to its unreleased entry.",
+      "npm install now adds a pre-push hook that runs the check before a push leaves your machine. Run it any time with npm run check:changelog.",
+      "AGENTS.md explains the rule and the entry format for developers and code agents. CLAUDE.md points to it, and the README has a short section on it.",
+    ],
+  },
+  {
     version: "2.1.73", date: "20 Nov 2026",
     title: "A new xxl button size, and loading buttons keep their size and colour",
     tags: ["feature", "fix", "docs"],

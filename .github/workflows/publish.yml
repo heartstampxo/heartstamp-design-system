@@ -18,6 +18,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Nothing ships without a changelog entry. Same rule as the CI check,
+      # in scripts/check-changelog.mjs. Skipped for manual re-runs.
+      - name: Check changelog entry
+        if: github.event_name == 'push'
+        run: node scripts/check-changelog.mjs "${{ github.event.before }}"
 
       - name: Setup Node
         uses: actions/setup-node@v4

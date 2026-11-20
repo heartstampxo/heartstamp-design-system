@@ -11,6 +11,20 @@ on:
       - development
 
 jobs:
+  changelog:
+    name: Changelog updated
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Every push and pull request must add an entry to the design system
+      # changelog page. The rule lives in scripts/check-changelog.mjs.
+      - name: Check changelog entry
+        run: node scripts/check-changelog.mjs "${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}"
+
   check:
     name: Typecheck, test, build, and pack
     runs-on: ubuntu-latest

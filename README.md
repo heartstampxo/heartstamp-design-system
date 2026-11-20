@@ -176,7 +176,23 @@ npm run test
 
 # Verify the package can be released
 npm run check:release
+
+# Check your changelog entry before pushing
+npm run check:changelog
 ```
+
+### Every change needs a changelog entry
+
+Every push and pull request must add an entry to the changelog page,
+`src/app/pages/page-changelog.tsx`. This applies to everyone, whether you
+push by hand or through a code agent. A push without an entry fails the
+**Changelog updated** check, and it is not published to npm or deployed to
+the website.
+
+Add the entry at the top of `RELEASES`, with the version CI will release:
+the version in `package.json` plus one patch. See [AGENTS.md](AGENTS.md) for
+the format. `npm install` also adds a local pre-push hook that runs the same
+check before your push leaves your machine.
 
 ---
 
@@ -186,8 +202,9 @@ This package is published to GitHub Packages as `@heartstampxo/design-system`.
 
 Publishing is automatic. Every push or merge to `main` triggers the publish workflow:
 
-1. GitHub Actions installs dependencies.
-2. The package release gate runs:
+1. The changelog check runs. A push without a new changelog entry stops here.
+2. GitHub Actions installs dependencies.
+3. The package release gate runs:
 
 ```bash
 npm run typecheck
@@ -195,9 +212,9 @@ npm run build
 npm pack --dry-run
 ```
 
-3. The workflow bumps the patch version automatically, for example `1.12.1` to `1.12.2`.
-4. The workflow commits and pushes the version bump back to `main` with `[skip ci]`.
-5. The workflow publishes the new package version to GitHub Packages.
+4. The workflow bumps the patch version automatically, for example `1.12.1` to `1.12.2`.
+5. The workflow commits and pushes the version bump back to `main` with `[skip ci]`.
+6. The workflow publishes the new package version to GitHub Packages.
 
 Unit tests run in CI for visibility, but they do not block package publishing.
 

@@ -1,0 +1,25 @@
+#!/bin/sh
+# Changelog gate, run before anything leaves your machine. Same rule as the
+# CI check: scripts/check-changelog.mjs. Installed by `npm install` (the
+# prepare script points core.hooksPath at .githooks).
+#
+# Git passes one line per ref being pushed:
+#   <local ref> <local sha> <remote ref> <remote sha>
+zero=0000000000000000000000000000000000000000
+head=$(git rev-parse HEAD)
+status=0
+while read -r local_ref local_sha remote_ref remote_sha; do
+  case "$remote_ref" in
+    refs/heads/main|refs/heads/development) ;;
+    *) continue ;;
+  esac
+  [ "$local_sha" = "$zero" ] && continue          # deleting a branch
+  if [ "$local_sha" != "$head" ]; then
+    echo "pre-push: pushing a ref other than HEAD; check it with: npm run check:changelog -- <base>"
+    continue
+  fi
+  base=$remote_sha
+  [ "$base" = "$zero" ] && base=origin/main
+  node scripts/check-changelog.mjs "$base" || status=1
+done
+exit $status

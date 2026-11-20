@@ -60,6 +60,8 @@
     "./grid.css": "./dist/css/grid.css"
   },
   "scripts": {
+    "prepare": "node -e \"try{require('child_process').execSync('git config core.hooksPath .githooks',{stdio:'ignore'})}catch{}\"",
+    "check:changelog": "node scripts/check-changelog.mjs",
     "build": "vite build && node scripts/copy-dist-css.mjs",
     "optimize:images": "node scripts/optimize-images.mjs",
     "build:site": "vite build --config vite.site.config.ts",
