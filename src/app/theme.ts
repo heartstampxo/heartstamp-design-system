@@ -204,6 +204,8 @@ export const DARK_THEME: Record<string, string> = {
   "--color-google-pay-bg":       "#1c1c1e",
   "--color-google-pay-bg-hover": "#2c2c2e",
   "--color-google-pay-text":     "#ffffff",
+  /* Marketing highlight – same in both modes */
+  "--color-marketing-highlight": "#ffe58a",
   /* Primary-ghost – dark mode overrides */
   "--btn-primary-ghost-color": "var(--color-text-link)",
   "--btn-primary-ghost-bg":    "var(--color-brand-secondary-dim)",
@@ -270,6 +272,8 @@ export const LIGHT_THEME: Record<string, string> = {
   "--color-google-pay-bg":       "#ffffff",
   "--color-google-pay-bg-hover": "rgba(36,36,35,0.10)",
   "--color-google-pay-text":     "#242423",
+  /* Marketing highlight – same in both modes */
+  "--color-marketing-highlight": "#ffe58a",
   /* Primary-ghost – light mode */
   "--btn-primary-ghost-color": "var(--color-brand-primary)",
   "--btn-primary-ghost-bg":    "var(--color-brand-primary-dim)",
@@ -330,6 +334,8 @@ export const LIGHT_TOKENS: Record<string, Record<string, string>> = {
     "Hover":   "rgba(36, 36, 35, 0.06)",
     "Pressed": "rgba(36, 36, 35, 0.08)",
     "Error":   "#be1d2c",
+  },  Marketing: {
+    "Highlight": "#ffe58a",
   },
 };
 
@@ -369,6 +375,8 @@ export const DARK_TOKENS: Record<string, Record<string, string>> = {
     "Hover":   "rgba(245, 245, 244, 0.08)",
     "Pressed": "rgba(245, 245, 244, 0.10)",
     "Error":   "#f54051",
+  },  Marketing: {
+    "Highlight": "#ffe58a",
   },
 };
 
@@ -408,6 +416,8 @@ export const TOKEN_VARIABLE_NAMES: Record<string, Record<string, string>> = {
     "Hover":   "--color-state-hover",
     "Pressed": "--color-state-pressed",
     "Error":   "--color-state-error",
+  },  Marketing: {
+    "Highlight": "--color-marketing-highlight",
   },
 };
 
@@ -417,4 +427,5 @@ export const GROUP_DESCRIPTIONS: Record<string, string> = {
   Brand:      "HeartStamp brand primitives — primary red and secondary dark, with all interactive state variants.",
   Element:    "UI element fills for borders, dividers, disabled states, and link colors.",
   States:     "Interaction state overlays applied on top of surfaces for hover, press, and error feedback.",
+  Marketing:  "Marketing only. Highlight is a highlighter fill behind text, for example a sale price. Text on it uses Text Primary (--color-text-primary).",
 };

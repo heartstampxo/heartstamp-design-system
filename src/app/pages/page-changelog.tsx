@@ -30,6 +30,20 @@ const TAG_STYLES: Record<string, { bg: string; color: string }> = {
 
 const RELEASES: Release[] = [
   {
+    version: "2.1.75", date: "25 Nov 2026",
+    title: "Marketing highlight color, Analytics in the sidebar",
+    tags: ["tokens", "feature", "docs"],
+    items: [
+      "New color token --color-marketing-highlight (#ffe58a), for marketing only. It is a highlighter fill behind text, for example a struck through old price next to a sale price.",
+      "Text on the highlight uses --color-text-primary. The highlight keeps the same value in dark mode.",
+      "Color Tokens has a new Marketing group with the token and a sale price example.",
+      "Getting Started has a new Analytics item, right below Changelog. It opens the design system analytics dashboard in a new tab.",
+      "The dashboard shows which apps use the design system and on which version, which components they use and how often, pull requests, how much work is done with AI agents, and a health score.",
+      "The dashboard is a separate app with a team password, because it shows data from private repos and this docs site is public. Ask the design system team for the password.",
+      "Sidebar items can now link outside the docs. An item with an href opens it in a new tab and shows a small external link icon, in the sidebar and in search results.",
+    ],
+  },
+  {
     version: "2.1.74", date: "20 Nov 2026",
     title: "Every change now needs a changelog entry",
     tags: ["docs"],

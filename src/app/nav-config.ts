@@ -8,6 +8,14 @@ export const LABEL_COLORS: Record<string, { bg: string; color: string }> = {
   beta:       { bg: "rgba(245,158,11,.13)",  color: "#f59e0b" },
   deprecated: { bg: "rgba(239,68,68,.13)",   color: "#ef4444" },
 };
+/**
+ * The design system analytics dashboard (usage, pull requests, AI agents,
+ * health). A separate, password-protected app, because it shows data from
+ * private repos and this docs site is public. Code: ds-analytics.
+ */
+export const ANALYTICS_URL = "https://ds-analytics-five.vercel.app";
+
+/* An item with `href` opens that address in a new tab instead of a docs page */
 export const NAV = [
   {
     title: "Getting Started", items: [
@@ -16,6 +24,7 @@ export const NAV = [
       { title: "Theming",       id: "theming" },
       { title: "Grid System",   id: "tokens-grid", label: "new" },
       { title: "Changelog",     id: "changelog",   label: "new" },
+      { title: "Analytics",     id: "analytics",   href: ANALYTICS_URL },
     ]
   },
   {

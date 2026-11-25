@@ -2772,6 +2772,30 @@ function TokenColorSwatch({ name, value, variable }: { name: string; value: stri
   );
 }
 
+/* Usage of the Marketing Highlight token: a sale price with the old price
+   highlighted and struck through */
+function MarketingHighlightExample() {
+  return (
+    <div style={{
+      marginTop: "var(--space-4)", padding: "var(--space-6)",
+      border: "1px solid var(--color-element-subtle)", borderRadius: "var(--radius-2xl)",
+      display: "flex", flexDirection: "column", gap: "var(--space-3)",
+    }}>
+      <div style={{ fontSize: "var(--font-size-label-12)", color: "var(--muted-fg)" }}>Example: sale price</div>
+      <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", fontSize: "var(--font-size-h4)", fontWeight: "var(--font-weight-bold)" as any, color: "var(--fg)" }}>
+        <span>$2.23</span>
+        <span style={{
+          background: "var(--color-marketing-highlight)", color: "var(--color-text-primary)",
+          textDecoration: "line-through", padding: "0 var(--space-1)", borderRadius: "var(--radius-sm)",
+        }}>$2.79</span>
+      </div>
+      <code style={{ fontSize: "var(--font-size-label-12)", color: "var(--muted-fg)", fontFamily: "monospace" }}>
+        background: var(--color-marketing-highlight); color: var(--color-text-primary);
+      </code>
+    </div>
+  );
+}
+
 function PageTokensColor() {
   const { dark } = React.useContext(AppNavContext);
   const tokens = dark ? DARK_TOKENS : LIGHT_TOKENS;
@@ -2814,6 +2838,7 @@ function PageTokensColor() {
               />
             ))}
           </div>
+          {group === "Marketing" && <MarketingHighlightExample />}
           <div style={{ height: 1, background: "var(--border)", marginTop: 36 }} />
         </section>
       ))}

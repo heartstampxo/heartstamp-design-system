@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Search } from "lucide-react";
+import { ExternalLink, Search } from "lucide-react";
 import pkg from "../../../../package.json";
 import { NAV, ALL_ITEMS, LABEL_COLORS } from "../../nav-config";
 import { Inp } from "../ui/hs-inp";
@@ -17,14 +17,21 @@ export function Sidebar({ active, onSelect, onClose }: SidebarProps) {
   const [search, setSearch] = useState("");
 
   // Renders a single nav row; on mobile, picking a page also closes the drawer
-  const navRow = (item: { id: string; title: string; label?: string; group?: string }) => (
+  // An item with an href (e.g. Analytics) opens outside the docs in a new tab
+  const navRow = (item: { id: string; title: string; label?: string; group?: string; href?: string }) => (
     <PnNavRow
       key={item.id}
       size="sm"
       label={item.title}
       active={active === item.id}
-      onClick={() => { onSelect(item.id); onClose?.(); }}
-      badge={item.label && (
+      onClick={() => {
+        if (item.href) window.open(item.href, "_blank", "noopener,noreferrer");
+        else onSelect(item.id);
+        onClose?.();
+      }}
+      badge={item.href ? (
+        <ExternalLink size={12} aria-label="Opens in a new tab" style={{ color: "var(--muted-fg)" }} />
+      ) : item.label && (
         <span style={{
           fontSize: 10, fontWeight: "var(--font-weight-bold, 700)" as any, padding: "1px 6px", borderRadius: "var(--radius-full)",
           background: LABEL_COLORS[item.label].bg, color: LABEL_COLORS[item.label].color,
@@ -40,7 +47,7 @@ export function Sidebar({ active, onSelect, onClose }: SidebarProps) {
     display: "flex", flexDirection: "column",
     gap: "var(--space-0-5)",
   };
-  const navLinks = (items: { id: string; title: string; label?: string; group?: string }[], grouped = false) => {
+  const navLinks = (items: { id: string; title: string; label?: string; group?: string; href?: string }[], grouped = false) => {
     if (!grouped) return <div style={listStyle}>{items.map(navRow)}</div>;
 
     const nodes: React.ReactNode[] = [];

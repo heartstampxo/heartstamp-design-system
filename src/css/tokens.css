@@ -239,6 +239,11 @@
   --color-state-dislike:      #ef4444;
   --color-state-dislike-rgb:  239, 68, 68;
 
+  /* ── Marketing ──────────────────────────────────────────── */
+  /* Highlighter fill behind marketing text (sale prices, key words).
+     Text on it uses --color-text-primary. */
+  --color-marketing-highlight: #ffe58a;
+
   /* ── RGB channel tokens (for dynamic rgba() in JS) ──────── */
   --color-brand-primary-rgb:  190, 29, 44;
 
